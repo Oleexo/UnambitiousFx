@@ -4,9 +4,9 @@ namespace Oleexo.UnambitiousFx.Core;
 
 internal sealed class FailureResult<TValue> : Result<TValue> where TValue : notnull
 {
-    private readonly Error _error;
+    private readonly IError _error;
 
-    public FailureResult(Error error)
+    public FailureResult(IError error)
     {
         _error = error;
     }
@@ -14,12 +14,12 @@ internal sealed class FailureResult<TValue> : Result<TValue> where TValue : notn
     public override bool IsFaulted => true;
     public override bool IsSuccess => false;
 
-    public override void Match(Action<TValue> success, Action<Error> failure)
+    public override void Match(Action<TValue> success, Action<IError> failure)
     {
         failure(_error);
     }
 
-    public override TOut Match<TOut>(Func<TValue, TOut> success, Func<Error, TOut> failure)
+    public override TOut Match<TOut>(Func<TValue, TOut> success, Func<IError, TOut> failure)
     {
         return failure(_error);
     }
@@ -34,17 +34,17 @@ internal sealed class FailureResult<TValue> : Result<TValue> where TValue : notn
         return new ValueTask();
     }
 
-    public override void IfFailure(Action<Error> action)
+    public override void IfFailure(Action<IError> action)
     {
         action(_error);
     }
 
-    public override ValueTask IfFailure(Func<Error, ValueTask> action)
+    public override ValueTask IfFailure(Func<IError, ValueTask> action)
     {
         return action(_error);
     }
 
-    public override bool Ok([NotNullWhen(true)] out TValue? value, [NotNullWhen(false)] out Error? error)
+    public override bool Ok([NotNullWhen(true)] out TValue? value, [NotNullWhen(false)] out IError? error)
     {
         value = default;
         error = _error;

@@ -14,12 +14,12 @@ internal sealed class SuccessResult<TValue> : Result<TValue> where TValue : notn
     public override bool IsFaulted => false;
     public override bool IsSuccess => true;
 
-    public override void Match(Action<TValue> success, Action<Error> failure)
+    public override void Match(Action<TValue> success, Action<IError> failure)
     {
         success(_value);
     }
 
-    public override TOut Match<TOut>(Func<TValue, TOut> success, Func<Error, TOut> failure)
+    public override TOut Match<TOut>(Func<TValue, TOut> success, Func<IError, TOut> failure)
     {
         return success(_value);
     }
@@ -34,16 +34,16 @@ internal sealed class SuccessResult<TValue> : Result<TValue> where TValue : notn
         return action(_value);
     }
 
-    public override void IfFailure(Action<Error> action)
+    public override void IfFailure(Action<IError> action)
     {
     }
 
-    public override ValueTask IfFailure(Func<Error, ValueTask> action)
+    public override ValueTask IfFailure(Func<IError, ValueTask> action)
     {
         return new ValueTask();
     }
 
-    public override bool Ok([NotNullWhen(true)] out TValue? value, [NotNullWhen(false)] out Error? error)
+    public override bool Ok([NotNullWhen(true)] out TValue? value, [NotNullWhen(false)] out IError? error)
     {
         value = _value;
         error = null;

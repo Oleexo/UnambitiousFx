@@ -1,6 +1,6 @@
 namespace Oleexo.UnambitiousFx.Core;
 
-public record Error
+public record Error : IError
 {
     private Dictionary<string, string>? _additionalInfo;
     private IEnumerable<Error>? _children;

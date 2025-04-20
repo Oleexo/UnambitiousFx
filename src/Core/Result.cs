@@ -9,7 +9,7 @@ public abstract class Result<TValue> : IResult<TValue> where TValue : notnull
         return new SuccessResult<TValue>(value);
     }
     
-    public static Result<TValue> Failure(Error error)
+    public static Result<TValue> Failure(IError error)
     {
         return new FailureResult<TValue>(error);
     }
@@ -18,18 +18,18 @@ public abstract class Result<TValue> : IResult<TValue> where TValue : notnull
     /// <inheritdoc/>
     public abstract bool IsSuccess { get; }
     /// <inheritdoc/>
-    public abstract void Match(Action<TValue> success, Action<Error> failure);
+    public abstract void Match(Action<TValue> success, Action<IError> failure);
     /// <inheritdoc/>
-    public abstract TOut Match<TOut>(Func<TValue, TOut> success, Func<Error, TOut> failure);
+    public abstract TOut Match<TOut>(Func<TValue, TOut> success, Func<IError, TOut> failure);
     /// <inheritdoc/>
     public abstract void IfSuccess(Action<TValue> action);
     /// <inheritdoc/>
     public abstract ValueTask IfSuccess(Func<TValue, ValueTask> action);
     /// <inheritdoc/>
-    public abstract void IfFailure(Action<Error> action);
+    public abstract void IfFailure(Action<IError> action);
     /// <inheritdoc/>
-    public abstract ValueTask IfFailure(Func<Error, ValueTask> action);
+    public abstract ValueTask IfFailure(Func<IError, ValueTask> action);
 
     /// <inheritdoc/>
-    public abstract bool Ok([NotNullWhen(true)] out TValue? value, [NotNullWhen(false)] out Error? error);
+    public abstract bool Ok([NotNullWhen(true)] out TValue? value, [NotNullWhen(false)] out IError? error);
 }
