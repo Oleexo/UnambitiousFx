@@ -6,4 +6,3 @@ updates:
       interval: "weekly"
     labels:
       - "dependencies"
-    versioning-strategy: auto
