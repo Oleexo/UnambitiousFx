@@ -24,6 +24,25 @@ internal sealed class SuccessResult<TValue> : Result<TValue> where TValue : notn
         return success(_value);
     }
 
+    public override void IfSuccess(Action<TValue> action)
+    {
+        action(_value);
+    }
+
+    public override ValueTask IfSuccess(Func<TValue, ValueTask> action)
+    {
+        return action(_value);
+    }
+
+    public override void IfFailure(Action<Error> action)
+    {
+    }
+
+    public override ValueTask IfFailure(Func<Error, ValueTask> action)
+    {
+        return new ValueTask();
+    }
+
     public override bool Ok([NotNullWhen(true)] out TValue? value, [NotNullWhen(false)] out Error? error)
     {
         value = _value;

@@ -26,6 +26,34 @@ public interface IResult<TValue> : IResult
     TOut Match<TOut>(Func<TValue, TOut> success,
         Func<Error, TOut> failure);
 
+    /// Executes the provided action if the result is successful.
+    /// This method allows performing additional operations when the result is in a successful state.
+    /// <param name="action">
+    /// The action to execute if the result is successful. It takes the successfully returned value as a parameter.
+    /// </param>
+    void IfSuccess(Action<TValue>                                                              action);
+
+    /// Executes the specified action if the operation was successful.
+    /// Use this method to perform side effects or additional logic when a successful result is present.
+    /// <param name="action">
+    /// The action to execute if the result is successful. It takes the successfully returned value as a parameter.
+    /// </param>
+    ValueTask IfSuccess(Func<TValue, ValueTask>                                                action);
+
+    /// Executes the specified action if the result is in a faulted state, passing the associated error.
+    /// Use this method to handle the failure case specifically by executing the provided action.
+    /// <param name="action">
+    /// The action to execute when the result is faulted. It receives the Error object representing the failure as its parameter.
+    /// </param>
+    void IfFailure(Action<Error>                                                              action);
+
+    /// Executes a specified action if the result is faulted. Use this method to perform operations
+    /// based on the failure state of the result object.
+    /// <param name="action">
+    /// The action to execute if the result is faulted. It takes the Error object representing the error as a parameter.
+    /// </param>
+    ValueTask IfFailure(Func<Error, ValueTask>                                                action);
+
     /// Checks if the result indicates success or failure, and outputs the corresponding value or error.
     /// <param name="value">When the method returns true, this will contain the successful value of the result. If the method returns false, this will be null.</param>
     /// <param name="error">When the method returns false, this will contain the error associated with the result. If the method returns true, this will be null.</param>
