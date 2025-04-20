@@ -26,7 +26,6 @@ internal sealed class FailureResult<TValue> : Result<TValue> where TValue : notn
 
     public override void IfSuccess(Action<TValue> action)
     {
-        
     }
 
     public override ValueTask IfSuccess(Func<TValue, ValueTask> action)
