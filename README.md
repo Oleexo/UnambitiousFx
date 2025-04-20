@@ -14,3 +14,4 @@ development.
 - Modular architecture
 - Best practice implementations
 - Web API development utilities
+- Compatible with NativeAOT
