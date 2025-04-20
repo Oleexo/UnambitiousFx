@@ -1,8 +1,9 @@
 <Project>
     <PropertyGroup>
         <Authors>Oleexo</Authors>
-        <RootNamespace>$(Authors).UnambitiousFx.$(MSBuildProjectName)</RootNamespace>
-        <AssemblyName>$(Authors).UnambitiousFx.$(MSBuildProjectName)</AssemblyName>
+        <Product>UnambitiousFx</Product>
+        <RootNamespace>$(Authors).$(Product).$(MSBuildProjectName)</RootNamespace>
+        <AssemblyName>$(Authors).$(Product).$(MSBuildProjectName)</AssemblyName>
         <WarningsAsErrors>true</WarningsAsErrors>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <Nullable>enable</Nullable>
@@ -13,7 +14,7 @@
         <RepositoryType>git</RepositoryType>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <PackageProjectUrl>https://github.com/Oleexo/UnambitiousDotnet</PackageProjectUrl>
-        
+
     </PropertyGroup>
 
     <ItemGroup Condition="$(CI) == 'true'">

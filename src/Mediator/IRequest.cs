@@ -1,5 +1,4 @@
 namespace Oleexo.UnambitiousFx.Mediator;
 
-public interface IRequest<TResponse>
-{
+public interface IRequest<TResponse> {
 }

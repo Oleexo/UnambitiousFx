@@ -4,8 +4,7 @@ namespace Oleexo.UnambitiousFx.Core;
 
 /// Defines a contract representing the result of an operation, indicating whether it succeeded or failed and providing state information.
 public interface IResult<TValue> : IResult
-    where TValue : notnull
-{
+    where TValue : notnull {
     /// Matches the result state and executes the respective action based on whether the result
     /// is successful or faulted. Use this method to handle both success and failure cases directly
     /// through actions.
@@ -16,7 +15,7 @@ public interface IResult<TValue> : IResult
     ///     The action to execute if the result is faulted. It takes the Error object representing the error as a parameter.
     /// </param>
     void Match(Action<TValue> success,
-        Action<IError> failure);
+               Action<IError> failure);
 
     /// Matches the result of an operation, calling a function depending on its success or failure state.
     /// <param name="success">
@@ -27,7 +26,7 @@ public interface IResult<TValue> : IResult
     /// <typeparam name="TOut">The return type of the success or failure function.</typeparam>
     /// <returns>The result from either the success or failure function, depending on the operation's state.</returns>
     TOut Match<TOut>(Func<TValue, TOut> success,
-        Func<IError, TOut> failure);
+                     Func<IError, TOut> failure);
 
     /// Executes the provided action if the result is successful.
     /// This method allows performing additional operations when the result is in a successful state.
@@ -71,12 +70,12 @@ public interface IResult<TValue> : IResult
     ///     Returns true if the result is successful and contains a valid value; otherwise, returns false if the result
     ///     contains an error.
     /// </returns>
-    bool Ok([NotNullWhen(true)] out TValue? value, [NotNullWhen(false)] out IError? error);
+    bool Ok([NotNullWhen(true)] out  TValue? value,
+            [NotNullWhen(false)] out IError? error);
 }
 
 /// Represents the result of an operation with a possible success or failure state.
-public interface IResult
-{
+public interface IResult {
     /// Indicates whether the current result represents a failure state.
     /// If the value of this property is true, it means an error or fault occurred
     /// during the operation represented by the result. Conversely, if it is false,

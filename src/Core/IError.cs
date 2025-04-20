@@ -3,8 +3,7 @@ namespace Oleexo.UnambitiousFx.Core;
 /// <summary>
 ///     Represents a contract for defining application errors with extended information.
 /// </summary>
-public interface IError
-{
+public interface IError {
     /// <summary>
     ///     Gets the descriptive message associated with the error.
     /// </summary>

@@ -2,8 +2,8 @@
 
 namespace Oleexo.UnambitiousFx.Core;
 
-public abstract class Result<TValue> : IResult<TValue> where TValue : notnull
-{
+public abstract class Result<TValue> : IResult<TValue>
+    where TValue : notnull {
     /// <inheritdoc />
     public abstract bool IsFaulted { get; }
 
@@ -11,10 +11,12 @@ public abstract class Result<TValue> : IResult<TValue> where TValue : notnull
     public abstract bool IsSuccess { get; }
 
     /// <inheritdoc />
-    public abstract void Match(Action<TValue> success, Action<IError> failure);
+    public abstract void Match(Action<TValue> success,
+                               Action<IError> failure);
 
     /// <inheritdoc />
-    public abstract TOut Match<TOut>(Func<TValue, TOut> success, Func<IError, TOut> failure);
+    public abstract TOut Match<TOut>(Func<TValue, TOut> success,
+                                     Func<IError, TOut> failure);
 
     /// <inheritdoc />
     public abstract void IfSuccess(Action<TValue> action);
@@ -29,15 +31,14 @@ public abstract class Result<TValue> : IResult<TValue> where TValue : notnull
     public abstract ValueTask IfFailure(Func<IError, ValueTask> action);
 
     /// <inheritdoc />
-    public abstract bool Ok([NotNullWhen(true)] out TValue? value, [NotNullWhen(false)] out IError? error);
+    public abstract bool Ok([NotNullWhen(true)] out  TValue? value,
+                            [NotNullWhen(false)] out IError? error);
 
-    public static Result<TValue> Success(TValue value)
-    {
+    public static Result<TValue> Success(TValue value) {
         return new SuccessResult<TValue>(value);
     }
 
-    public static Result<TValue> Failure(IError error)
-    {
+    public static Result<TValue> Failure(IError error) {
         return new FailureResult<TValue>(error);
     }
 }
