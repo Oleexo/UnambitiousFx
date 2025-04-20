@@ -2,4 +2,7 @@
   <Folder Name="/src/">
     <Project Path="src\Core\Core.csproj" Type="Classic C#" />
   </Folder>
+  <Folder Name="/_/">
+    <File Path=".gitignore" />
+  </Folder>
 </Solution>
