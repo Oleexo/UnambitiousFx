@@ -13,7 +13,7 @@
         <RepositoryType>git</RepositoryType>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <PackageProjectUrl>https://github.com/Oleexo/UnambitiousDotnet</PackageProjectUrl>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        
     </PropertyGroup>
 
     <ItemGroup Condition="$(CI) == 'true'">

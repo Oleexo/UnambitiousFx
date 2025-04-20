@@ -2,7 +2,14 @@
   <Folder Name="/src/">
     <Project Path="src\Core\Core.csproj" Type="Classic C#" />
   </Folder>
+  <Folder Name="/test/">
+    <Project Path="test\Core.Tests\Core.Tests.csproj" Type="Classic C#" />
+  </Folder>
   <Folder Name="/_/">
     <File Path=".gitignore" />
+    <File Path="build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
   </Folder>
 </Solution>
