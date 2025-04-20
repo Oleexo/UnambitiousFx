@@ -25,13 +25,4 @@ jobs:
         run: dotnet build --no-restore
 
       - name: Test
-        run: dotnet test --verbosity normal --configuration Release --logger "trx" --results-directory "./test-results/" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-  
-      - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
-        with:
-          files: |
-            test-results/**/*.trx
-        
-      
+        run: dotnet test --verbosity normal --configuration Release
