@@ -1,10 +1,11 @@
 using System.Diagnostics.CodeAnalysis;
+using Oleexo.UnambitiousFx.Core.Abstractions;
 
 namespace Oleexo.UnambitiousFx.Core;
 
 public abstract class Option<TValue> : IOption<TValue>
     where TValue : notnull {
-    public static Option<TValue> None => new NoneOption<TValue>();
+    public static readonly Option<TValue> None = new NoneOption<TValue>();
 
     public abstract bool    IsSome { get; }
     public abstract bool    IsNone { get; }

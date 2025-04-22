@@ -1,6 +1,42 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Oleexo.UnambitiousFx.Core.Abstractions;
 
 namespace Oleexo.UnambitiousFx.Core;
+
+internal sealed class SuccessResult : Result {
+    public override bool IsFaulted => false;
+    public override bool IsSuccess => true;
+
+    public override void Match(Action         success,
+                               Action<IError> failure) {
+        success();
+    }
+
+    public override TOut Match<TOut>(Func<TOut>         success,
+                                     Func<IError, TOut> failure) {
+        return success();
+    }
+
+    public override void IfSuccess(Action action) {
+        action();
+    }
+
+    public override ValueTask IfSuccess(Func<ValueTask> action) {
+        return action();
+    }
+
+    public override void IfFailure(Action<IError> action) {
+    }
+
+    public override ValueTask IfFailure(Func<IError, ValueTask> action) {
+        return ValueTask.CompletedTask;
+    }
+
+    public override bool Ok([NotNullWhen(false)] out IError? error) {
+        error = null;
+        return true;
+    }
+}
 
 internal sealed class SuccessResult<TValue> : Result<TValue>
     where TValue : notnull {
@@ -35,7 +71,7 @@ internal sealed class SuccessResult<TValue> : Result<TValue>
     }
 
     public override ValueTask IfFailure(Func<IError, ValueTask> action) {
-        return new ValueTask();
+        return ValueTask.CompletedTask;
     }
 
     public override bool Ok([NotNullWhen(true)] out  TValue? value,

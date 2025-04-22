@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
-using Oleexo.UnambitiousFx.Core;
+using Oleexo.UnambitiousFx.Core.Abstractions;
+using Oleexo.UnambitiousFx.Mediator.Abstractions;
 
 namespace Oleexo.UnambitiousFx.Mediator.Pipelines;
 

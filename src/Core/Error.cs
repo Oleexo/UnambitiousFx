@@ -1,8 +1,10 @@
+using Oleexo.UnambitiousFx.Core.Abstractions;
+
 namespace Oleexo.UnambitiousFx.Core;
 
-public record Error : IError {
+public sealed record Error : IError {
     private Dictionary<string, string>? _additionalInfo;
-    private IEnumerable<Error>?         _children;
+    private IEnumerable<IError>?        _children;
 
     public Error(string message) {
         Message = message;
@@ -19,11 +21,12 @@ public record Error : IError {
         Exception = exception;
     }
 
+    public IEnumerable<IError> Children => _children ??= [];
+
     public string Message { get; }
     public string Code    { get; } = string.Empty;
 
     public Exception?                 Exception      { get; }
-    public IEnumerable<Error>         Children       => _children ??= Array.Empty<Error>();
     public Dictionary<string, string> AdditionalInfo => _additionalInfo ??= new Dictionary<string, string>();
 
     public void AddChildren(IEnumerable<Error> errors) {
