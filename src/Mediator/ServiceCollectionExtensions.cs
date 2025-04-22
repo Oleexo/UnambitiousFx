@@ -6,6 +6,19 @@ using Oleexo.UnambitiousFx.Mediator.Resolvers;
 namespace Oleexo.UnambitiousFx.Mediator;
 
 public interface IMediatorConfig {
+    IMediatorConfig SetLifetime(ServiceLifetime lifetime);
+
+    IMediatorConfig RegisterHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest, TResponse>()
+        where TResponse : notnull
+        where TRequest : IRequest<TResponse>
+        where THandler : class, IRequestHandler<TRequest, TResponse>;
+
+    IMediatorConfig RegisterHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest>()
+        where TRequest : IRequest
+        where THandler : class, IRequestHandler<TRequest>;
+
+    IMediatorConfig RegisterRequestPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TRequestPipelineBehavior>()
+        where TRequestPipelineBehavior : class, IRequestPipelineBehavior;
 }
 
 internal sealed class MediatorConfig : IMediatorConfig {
@@ -37,6 +50,13 @@ internal sealed class MediatorConfig : IMediatorConfig {
         where THandler : class, IRequestHandler<TRequest> {
         _actions.Add((services,
                       lifetime) => services.RegisterHandler<THandler, TRequest>(lifetime));
+        return this;
+    }
+
+    public IMediatorConfig RegisterRequestPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TRequestPipelineBehavior>()
+        where TRequestPipelineBehavior : class, IRequestPipelineBehavior {
+        _actions.Add((services,
+                      lifetime) => services.RegisterRequestPipelineBehavior<TRequestPipelineBehavior>(lifetime));
         return this;
     }
 
@@ -79,18 +99,11 @@ public static class ServiceCollectionExtensions {
         return services;
     }
 
-    internal static IServiceCollection RegisterRequestPipelineBehavior(this IServiceCollection services,
-                                                                       [DynamicallyAccessedMembers(
-                                                                           DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.Interfaces)]
-                                                                       Type requestBehaviorType,
-                                                                       ServiceLifetime lifetime = ServiceLifetime.Scoped) {
-        if (!requestBehaviorType.IsGenericType ||
-            !requestBehaviorType.GetInterfaces()
-                                .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRequestPipelineBehavior<,>))) {
-            throw new ArgumentException($"Type {requestBehaviorType.Name} must implement IRequestPipelineBehavior<,>", nameof(requestBehaviorType));
-        }
-
-        services.Add(new ServiceDescriptor(typeof(IRequestPipelineBehavior<,>), requestBehaviorType, lifetime));
+    internal static IServiceCollection RegisterRequestPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TRequestPipelineBehavior>(
+        this IServiceCollection services,
+        ServiceLifetime         lifetime = ServiceLifetime.Scoped)
+        where TRequestPipelineBehavior : class, IRequestPipelineBehavior {
+        services.Add(new ServiceDescriptor(typeof(IRequestPipelineBehavior), typeof(TRequestPipelineBehavior), lifetime));
         return services;
     }
 }
