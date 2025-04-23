@@ -1,4 +1,4 @@
-﻿using Oleexo.UnambitiousFx.Core.Abstractions;
+﻿using Oleexo.UnambitiousFx.Core;
 
 namespace Oleexo.UnambitiousFx.Mediator.Abstractions;
 
@@ -10,6 +10,6 @@ public interface IContext {
                      TValue value)
         where TValue : notnull;
 
-    IOption<TValue> Get<TValue>(string key)
+    Option<TValue> Get<TValue>(string key)
         where TValue : notnull;
 }

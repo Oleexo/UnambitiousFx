@@ -1,5 +1,4 @@
 ﻿using Oleexo.UnambitiousFx.Core;
-using Oleexo.UnambitiousFx.Core.Abstractions;
 using Oleexo.UnambitiousFx.Mediator.Abstractions;
 
 namespace Oleexo.UnambitiousFx.Mediator;
@@ -21,7 +20,7 @@ public sealed class Context : IContext {
         _data[key] = value;
     }
 
-    public IOption<TValue> Get<TValue>(string key)
+    public Option<TValue> Get<TValue>(string key)
         where TValue : notnull {
         if (_data.TryGetValue(key, out var value) &&
             value is TValue valueAsTValue) {

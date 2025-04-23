@@ -1,4 +1,4 @@
-using Oleexo.UnambitiousFx.Core.Abstractions;
+using Oleexo.UnambitiousFx.Core;
 using Oleexo.UnambitiousFx.Mediator.Abstractions;
 
 namespace Oleexo.UnambitiousFx.Mediator;
@@ -15,17 +15,17 @@ internal sealed class ProxyRequestHandler<TRequestHandler, TRequest> : IRequestH
         _behaviors = behaviors;
     }
 
-    public ValueTask<IResult> HandleAsync(IContext          context,
-                                          TRequest          request,
-                                          CancellationToken cancellationToken = default) {
+    public ValueTask<Result> HandleAsync(IContext          context,
+                                         TRequest          request,
+                                         CancellationToken cancellationToken = default) {
         return ExecutePipelineAsync(context, request, _behaviors.ToArray(), 0, cancellationToken);
     }
 
-    private ValueTask<IResult> ExecutePipelineAsync(IContext                   context,
-                                                    TRequest                   request,
-                                                    IRequestPipelineBehavior[] behaviors,
-                                                    int                        index,
-                                                    CancellationToken          cancellationToken) {
+    private ValueTask<Result> ExecutePipelineAsync(IContext                   context,
+                                                   TRequest                   request,
+                                                   IRequestPipelineBehavior[] behaviors,
+                                                   int                        index,
+                                                   CancellationToken          cancellationToken) {
         if (index >= behaviors.Length) {
             return _handler.HandleAsync(context, request, cancellationToken);
         }
@@ -33,7 +33,7 @@ internal sealed class ProxyRequestHandler<TRequestHandler, TRequest> : IRequestH
         return behaviors[index]
            .HandleAsync(request, Next, cancellationToken);
 
-        ValueTask<IResult> Next() {
+        ValueTask<Result> Next() {
             return ExecutePipelineAsync(context, request, behaviors, index + 1, cancellationToken);
         }
     }
@@ -52,17 +52,17 @@ internal class ProxyRequestHandler<TRequestHandler, TRequest, TResponse> : IRequ
         _behaviors = behaviors;
     }
 
-    public virtual ValueTask<IResult<TResponse>> HandleAsync(IContext          context,
-                                                             TRequest          request,
-                                                             CancellationToken cancellationToken = default) {
+    public virtual ValueTask<Result<TResponse>> HandleAsync(IContext          context,
+                                                            TRequest          request,
+                                                            CancellationToken cancellationToken = default) {
         return ExecutePipelineAsync(context, request, _behaviors.ToArray(), 0, cancellationToken);
     }
 
-    private ValueTask<IResult<TResponse>> ExecutePipelineAsync(IContext                   context,
-                                                               TRequest                   request,
-                                                               IRequestPipelineBehavior[] behaviors,
-                                                               int                        index,
-                                                               CancellationToken          cancellationToken) {
+    private ValueTask<Result<TResponse>> ExecutePipelineAsync(IContext                   context,
+                                                              TRequest                   request,
+                                                              IRequestPipelineBehavior[] behaviors,
+                                                              int                        index,
+                                                              CancellationToken          cancellationToken) {
         if (index >= behaviors.Length) {
             return _handler.HandleAsync(context, request, cancellationToken);
         }
@@ -70,7 +70,7 @@ internal class ProxyRequestHandler<TRequestHandler, TRequest, TResponse> : IRequ
         return behaviors[index]
            .HandleAsync(request, Next, cancellationToken);
 
-        ValueTask<IResult<TResponse>> Next() {
+        ValueTask<Result<TResponse>> Next() {
             return ExecutePipelineAsync(context, request, behaviors, index + 1, cancellationToken);
         }
     }

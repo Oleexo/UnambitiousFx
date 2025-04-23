@@ -1,19 +1,30 @@
-using Oleexo.UnambitiousFx.Core.Abstractions;
+using Oleexo.UnambitiousFx.Core;
 using Oleexo.UnambitiousFx.Mediator.Abstractions;
 
 namespace Oleexo.UnambitiousFx.Mediator.Tests.Definitions;
 
-public sealed class TestRequestPipelineBehavior<TRequest, TResponse> : IRequestPipelineBehavior<TRequest, TResponse>
-    where TResponse : notnull
-    where TRequest : IRequest<TResponse> {
-    public bool      Executed        { get; private set; }
-    public TRequest? RequestExecuted { get; private set; }
-    public int       ExecutionCount  { get; private set; }
-    public Action?   OnExecuted      { get; set; }
+public sealed class TestRequestPipelineBehavior : IRequestPipelineBehavior {
+    public bool    Executed        { get; private set; }
+    public object? RequestExecuted { get; private set; }
+    public int     ExecutionCount  { get; private set; }
+    public Action? OnExecuted      { get; set; }
 
-    public ValueTask<IResult<TResponse>> HandleAsync(TRequest                          request,
-                                                     RequestHandlerDelegate<TResponse> next,
-                                                     CancellationToken                 cancellationToken = default) {
+    public ValueTask<Result> HandleAsync<TRequest>(TRequest               request,
+                                                   RequestHandlerDelegate next,
+                                                   CancellationToken      cancellationToken = default)
+        where TRequest : IRequest {
+        Executed        = true;
+        RequestExecuted = request;
+        ExecutionCount++;
+        OnExecuted?.Invoke();
+        return next();
+    }
+
+    public ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest                          request,
+                                                                         RequestHandlerDelegate<TResponse> next,
+                                                                         CancellationToken                 cancellationToken = default)
+        where TRequest : IRequest<TResponse>
+        where TResponse : notnull {
         Executed        = true;
         RequestExecuted = request;
         ExecutionCount++;

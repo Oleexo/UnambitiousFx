@@ -5,7 +5,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Core\Core.csproj"/>
         <ProjectReference Include="..\Mediator.Abstractions\Mediator.Abstractions.csproj"/>
     </ItemGroup>
 

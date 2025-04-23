@@ -11,7 +11,7 @@ public sealed class ProxyRequestHandlerTests {
             Assert.Equal(1, order);
             order++;
         };
-        var behavior = new TestRequestPipelineBehavior<RequestExample, int>();
+        var behavior = new TestRequestPipelineBehavior();
         behavior.OnExecuted = () => {
             Assert.Equal(0, order);
             order++;

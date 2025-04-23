@@ -1,5 +1,3 @@
-using Oleexo.UnambitiousFx.Core.Abstractions;
-
 namespace Oleexo.UnambitiousFx.Core;
 
 public sealed record Error : IError {

@@ -8,6 +8,12 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\src\Mediator\Mediator.csproj"/>
+        <ProjectReference Include="..\Application\Application.csproj"/>
     </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="WebApi.Tests"/>
+    </ItemGroup>
+
 
 </Project>

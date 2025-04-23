@@ -1,4 +1,4 @@
-using Oleexo.UnambitiousFx.Core.Abstractions;
+using Oleexo.UnambitiousFx.Core;
 
 namespace Oleexo.UnambitiousFx.Mediator.Abstractions;
 
@@ -7,7 +7,7 @@ namespace Oleexo.UnambitiousFx.Mediator.Abstractions;
 /// </summary>
 /// <typeparam name="TResponse">The type of response</typeparam>
 /// <returns>A task containing the response</returns>
-public delegate ValueTask<IResult<TResponse>> RequestHandlerDelegate<TResponse>()
+public delegate ValueTask<Result<TResponse>> RequestHandlerDelegate<TResponse>()
     where TResponse : notnull;
 
-public delegate ValueTask<IResult> RequestHandlerDelegate();
+public delegate ValueTask<Result> RequestHandlerDelegate();

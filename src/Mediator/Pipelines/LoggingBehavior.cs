@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
-using Oleexo.UnambitiousFx.Core.Abstractions;
+using Oleexo.UnambitiousFx.Core;
 using Oleexo.UnambitiousFx.Mediator.Abstractions;
 
 namespace Oleexo.UnambitiousFx.Mediator.Pipelines;
@@ -12,9 +12,9 @@ public sealed class LoggingBehavior : IRequestPipelineBehavior {
         _logger = logger;
     }
 
-    public async ValueTask<IResult> HandleAsync<TRequest>(TRequest               request,
-                                                          RequestHandlerDelegate next,
-                                                          CancellationToken      cancellationToken = default)
+    public async ValueTask<Result> HandleAsync<TRequest>(TRequest               request,
+                                                         RequestHandlerDelegate next,
+                                                         CancellationToken      cancellationToken = default)
         where TRequest : IRequest {
         var requestName = typeof(TRequest).Name;
         _logger.LogInformation("Handling {RequestName}", requestName);
@@ -31,9 +31,9 @@ public sealed class LoggingBehavior : IRequestPipelineBehavior {
         return result;
     }
 
-    public async ValueTask<IResult<TResponse>> HandleAsync<TRequest, TResponse>(TRequest                          request,
-                                                                                RequestHandlerDelegate<TResponse> next,
-                                                                                CancellationToken                 cancellationToken = default)
+    public async ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest                          request,
+                                                                               RequestHandlerDelegate<TResponse> next,
+                                                                               CancellationToken                 cancellationToken = default)
         where TRequest : IRequest<TResponse>
         where TResponse : notnull {
         var requestName = typeof(TRequest).Name;

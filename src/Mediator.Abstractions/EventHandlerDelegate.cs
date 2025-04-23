@@ -1,5 +1,5 @@
-﻿using Oleexo.UnambitiousFx.Core.Abstractions;
+﻿using Oleexo.UnambitiousFx.Core;
 
 namespace Oleexo.UnambitiousFx.Mediator.Abstractions;
 
-public delegate ValueTask<IOption<IError>> EventHandlerDelegate();
+public delegate ValueTask<Option<IError>> EventHandlerDelegate();

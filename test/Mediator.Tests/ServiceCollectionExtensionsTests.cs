@@ -23,7 +23,7 @@ public sealed class ServiceCollectionExtensionsTests {
     public async Task GivenRequestWithBehavior_WhenResolve_ThenReturnResult() {
         var services = new ServiceCollection()
                       .RegisterHandler<RequestExampleHandler, RequestExample, int>(ServiceLifetime.Transient)
-                      .RegisterRequestPipelineBehavior(typeof(TestRequestPipelineBehavior<,>))
+                      .RegisterRequestPipelineBehavior<TestRequestPipelineBehavior>()
                       .BuildServiceProvider();
 
         var handler = services.GetRequiredService<IRequestHandler<RequestExample, int>>();

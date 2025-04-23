@@ -1,10 +1,12 @@
 <Solution>
   <Folder Name="/examples/" />
   <Folder Name="/examples/mediator/">
+    <Project Path="examples\mediator\Application\Application.csproj" Type="Classic C#" />
+    <Project Path="examples\mediator\WebApi.Tests\WebApi.Tests.csproj" Type="Classic C#" />
+    <Project Path="examples\mediator\WebApiAot\WebApiAot.csproj" Type="Classic C#" />
     <Project Path="examples\mediator\WebApi\WebApi.csproj" Type="Classic C#" />
   </Folder>
   <Folder Name="/src/">
-    <Project Path="src\Core.Abstractions\Core.Abstractions.csproj" Type="Classic C#" />
     <Project Path="src\Core\Core.csproj" Type="Classic C#" />
     <Project Path="src\Mediator.Abstractions\Mediator.Abstractions.csproj" Type="Classic C#" />
     <Project Path="src\Mediator\Mediator.csproj" Type="Classic C#" />

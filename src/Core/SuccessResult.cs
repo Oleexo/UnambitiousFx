@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Oleexo.UnambitiousFx.Core.Abstractions;
 
 namespace Oleexo.UnambitiousFx.Core;
 
