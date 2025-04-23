@@ -3,10 +3,12 @@ using Oleexo.UnambitiousFx.Mediator.Abstractions;
 
 namespace Oleexo.UnambitiousFx.Mediator;
 
-public sealed class Context : IContext {
+internal sealed class Context : IContext {
     private readonly Dictionary<string, object> _data = new();
+    private readonly IPublisher                 _publisher;
 
-    public Context() {
+    public Context(IPublisher publisher) {
+        _publisher    = publisher;
         CorrelationId = Guid.CreateVersion7();
         OccuredAt     = DateTimeOffset.UtcNow;
     }
@@ -28,5 +30,11 @@ public sealed class Context : IContext {
         }
 
         return Option<TValue>.None;
+    }
+
+    public ValueTask<Result> PublishAsync<TEvent>(TEvent            @event,
+                                                  CancellationToken cancellationToken = default)
+        where TEvent : IEvent {
+        return _publisher.PublishAsync(this, @event, cancellationToken);
     }
 }

@@ -9,10 +9,12 @@ public sealed class ServiceCollectionExtensionsTests {
     public async Task GivenRequest_WhenResolve_ThenReturnResult() {
         var services = new ServiceCollection()
                       .RegisterHandler<RequestExampleHandler, RequestExample, int>()
+                      .AddScoped<IContextFactory, ContextFactory>()
                       .BuildServiceProvider();
 
         var handler = services.GetRequiredService<IRequestHandler<RequestExample, int>>();
-        var ctx     = new Context();
+        var ctx = services.GetRequiredService<IContextFactory>()
+                          .Create();
 
         var result = await handler.HandleAsync(ctx, new RequestExample(), CancellationToken.None);
 
@@ -24,10 +26,12 @@ public sealed class ServiceCollectionExtensionsTests {
         var services = new ServiceCollection()
                       .RegisterHandler<RequestExampleHandler, RequestExample, int>(ServiceLifetime.Transient)
                       .RegisterRequestPipelineBehavior<TestRequestPipelineBehavior>()
+                      .AddScoped<IContextFactory, ContextFactory>()
                       .BuildServiceProvider();
 
         var handler = services.GetRequiredService<IRequestHandler<RequestExample, int>>();
-        var ctx     = new Context();
+        var ctx = services.GetRequiredService<IContextFactory>()
+                          .Create();
 
         var result = await handler.HandleAsync(ctx, new RequestExample(), CancellationToken.None);
 

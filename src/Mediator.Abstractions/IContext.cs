@@ -12,4 +12,8 @@ public interface IContext {
 
     Option<TValue> Get<TValue>(string key)
         where TValue : notnull;
+
+    ValueTask<Result> PublishAsync<TEvent>(TEvent            @event,
+                                           CancellationToken cancellationToken = default)
+        where TEvent : IEvent;
 }

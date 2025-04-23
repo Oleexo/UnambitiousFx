@@ -1,6 +1,6 @@
 namespace Oleexo.UnambitiousFx.Core;
 
-public sealed record Error : IError {
+public record Error : IError {
     private Dictionary<string, string>? _additionalInfo;
     private IEnumerable<IError>?        _children;
 
@@ -27,7 +27,7 @@ public sealed record Error : IError {
     public Exception?                 Exception      { get; }
     public Dictionary<string, string> AdditionalInfo => _additionalInfo ??= new Dictionary<string, string>();
 
-    public void AddChildren(IEnumerable<Error> errors) {
+    public void AddChildren(IEnumerable<IError> errors) {
         _children = _children is null
                         ? errors
                         : _children.Concat(errors);

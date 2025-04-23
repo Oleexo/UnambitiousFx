@@ -1,3 +1,5 @@
+using NSubstitute;
+using Oleexo.UnambitiousFx.Mediator.Abstractions;
 using Oleexo.UnambitiousFx.Mediator.Tests.Definitions;
 
 namespace Oleexo.UnambitiousFx.Mediator.Tests;
@@ -5,8 +7,9 @@ namespace Oleexo.UnambitiousFx.Mediator.Tests;
 public sealed class ProxyRequestHandlerTests {
     [Fact]
     public async Task GivenARequestPipelineBehavior_WhenProxyHandle_ShouldCallTheBehavior() {
-        var order   = 0;
-        var handler = new RequestExampleHandler();
+        var order     = 0;
+        var publisher = Substitute.For<IPublisher>();
+        var handler   = new RequestExampleHandler();
         handler.OnExecuted = () => {
             Assert.Equal(1, order);
             order++;
@@ -19,7 +22,7 @@ public sealed class ProxyRequestHandlerTests {
         var proxy   = new ProxyRequestHandler<RequestExampleHandler, RequestExample, int>(handler, [behavior]);
         var request = new RequestExample();
 
-        var result = await proxy.HandleAsync(new Context(), request, CancellationToken.None);
+        var result = await proxy.HandleAsync(new Context(publisher), request, CancellationToken.None);
 
         Assert.True(result.IsSuccess);
         Assert.True(handler.Executed);
