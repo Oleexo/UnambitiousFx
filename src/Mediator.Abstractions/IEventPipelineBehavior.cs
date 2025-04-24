@@ -3,7 +3,8 @@
 namespace Oleexo.UnambitiousFx.Mediator.Abstractions;
 
 public interface IEventPipelineBehavior {
-    ValueTask<Result> HandleAsync<TEvent>(TEvent               @event,
+    ValueTask<Result> HandleAsync<TEvent>(IContext             context,
+                                          TEvent               @event,
                                           EventHandlerDelegate next,
                                           CancellationToken    cancellationToken = default);
 }

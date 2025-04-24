@@ -34,7 +34,7 @@ internal sealed class ProxyEventHandler<TEvent> : IEventHandler<TEvent>
         }
 
         return behaviors[index]
-           .HandleAsync(@event, Next, cancellationToken);
+           .HandleAsync(context, @event, Next, cancellationToken);
 
         ValueTask<Result> Next() {
             return ExecutePipelineAsync(context, @event, behaviors, index + 1, cancellationToken);
