@@ -1,7 +1,7 @@
 ﻿using Oleexo.UnambitiousFx.Core;
 using Oleexo.UnambitiousFx.Mediator.Abstractions;
 
-namespace Oleexo.UnambitiousFx.Mediator.Resolvers;
+namespace Oleexo.UnambitiousFx.Mediator.Orchestrators;
 
 public interface IEventOrchestrator {
     ValueTask<IEnumerable<Result>> RunAsync<TEvent>(IContext                           context,

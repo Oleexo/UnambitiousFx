@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Oleexo.UnambitiousFx.Mediator.Abstractions;
+using Oleexo.UnambitiousFx.Mediator.Orchestrators;
 
 namespace Oleexo.UnambitiousFx.Mediator;
 
@@ -18,4 +19,7 @@ public interface IMediatorConfig {
 
     IMediatorConfig RegisterRequestPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TRequestPipelineBehavior>()
         where TRequestPipelineBehavior : class, IRequestPipelineBehavior;
+
+    IMediatorConfig SetEventOrchestrator<TEventOrchestrator>()
+        where TEventOrchestrator : class, IEventOrchestrator;
 }

@@ -1,17 +1,20 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Oleexo.UnambitiousFx.Mediator.Abstractions;
+using Oleexo.UnambitiousFx.Mediator.Orchestrators;
 
 namespace Oleexo.UnambitiousFx.Mediator;
 
 internal sealed class MediatorConfig : IMediatorConfig {
     private readonly List<Action<IServiceCollection, ServiceLifetime>> _actions = new();
     private readonly IServiceCollection                                _services;
+    private          Type                                              _eventOrchestrator;
     private          ServiceLifetime                                   _lifetime;
 
     public MediatorConfig(IServiceCollection services) {
-        _services = services;
-        _lifetime = ServiceLifetime.Scoped;
+        _services          = services;
+        _lifetime          = ServiceLifetime.Scoped;
+        _eventOrchestrator = typeof(SequentialEventOrchestrator);
     }
 
     public IMediatorConfig SetLifetime(ServiceLifetime lifetime) {
@@ -43,9 +46,17 @@ internal sealed class MediatorConfig : IMediatorConfig {
         return this;
     }
 
+    public IMediatorConfig SetEventOrchestrator<TEventOrchestrator>()
+        where TEventOrchestrator : class, IEventOrchestrator {
+        _eventOrchestrator = typeof(TEventOrchestrator);
+        return this;
+    }
+
     public void Apply() {
         foreach (var action in _actions) {
             action(_services, _lifetime);
         }
+
+        _services.AddScoped<IEventOrchestrator, SequentialEventOrchestrator>();
     }
 }
