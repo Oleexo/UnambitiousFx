@@ -1,29 +1,30 @@
-using NSubstitute;
+﻿using NSubstitute;
 using Oleexo.UnambitiousFx.Mediator.Abstractions;
+using Oleexo.UnambitiousFx.Mediator.Orchestrators;
 using Oleexo.UnambitiousFx.Mediator.Tests.Definitions;
 
 namespace Oleexo.UnambitiousFx.Mediator.Tests;
 
-public sealed class ProxyRequestHandlerTests {
+public sealed class ProxyEventHandlerTests {
     [Fact]
-    public async Task GivenARequestPipelineBehavior_WhenProxyHandle_ShouldCallTheBehavior() {
+    public async Task GivenAEventPipelineBehavior_WhenProxyHandle_ShouldCallTheBehavior() {
         var order     = 0;
         var publisher = Substitute.For<IPublisher>();
-        var handler   = new RequestExampleHandler();
+        var handler   = new EventExampleHandler1();
         handler.OnExecuted = () => {
             Assert.Equal(1, order);
             order++;
         };
-        var behavior = new TestRequestPipelineBehavior();
+        var behavior = new TestEventPipelineBehavior();
         behavior.OnExecuted = () => {
             Assert.Equal(0, order);
             order++;
         };
-        var proxy   = new ProxyRequestHandler<RequestExampleHandler, RequestExample, int>(handler, [behavior]);
-        var request = new RequestExample();
-
-        var result = await proxy.HandleAsync(new Context(publisher), request, CancellationToken.None);
-
+        var proxy  = new ProxyEventHandler<EventExample>([handler], [behavior], new SequentialEventOrchestrator());
+        var @event = new EventExample();
+        
+        var result = await proxy.HandleAsync(new Context(publisher), @event, CancellationToken.None);
+        
         Assert.True(result.IsSuccess);
         Assert.True(handler.Executed);
         Assert.Equal(1, handler.ExecutionCount);

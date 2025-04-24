@@ -6,5 +6,6 @@ public interface IEventPipelineBehavior {
     ValueTask<Result> HandleAsync<TEvent>(IContext             context,
                                           TEvent               @event,
                                           EventHandlerDelegate next,
-                                          CancellationToken    cancellationToken = default);
+                                          CancellationToken    cancellationToken = default)
+        where TEvent : IEvent;
 }

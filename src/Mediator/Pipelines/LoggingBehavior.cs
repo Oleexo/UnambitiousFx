@@ -15,7 +15,8 @@ public sealed class LoggingBehavior : IRequestPipelineBehavior, IEventPipelineBe
     public async ValueTask<Result> HandleAsync<TEvent>(IContext             context,
                                                        TEvent               @event,
                                                        EventHandlerDelegate next,
-                                                       CancellationToken    cancellationToken = default) {
+                                                       CancellationToken    cancellationToken = default)
+        where TEvent : IEvent {
         var eventName = typeof(TEvent).Name;
         _logger.LogInformation("Handling {EventName}", eventName);
 
