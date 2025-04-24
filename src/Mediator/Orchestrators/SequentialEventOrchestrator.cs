@@ -4,10 +4,10 @@ using Oleexo.UnambitiousFx.Mediator.Abstractions;
 namespace Oleexo.UnambitiousFx.Mediator.Orchestrators;
 
 public sealed class SequentialEventOrchestrator : IEventOrchestrator {
-    public async ValueTask<IEnumerable<Result>> RunAsync<TEvent>(IContext                           context,
-                                                                 IEnumerable<IEventHandler<TEvent>> handlers,
-                                                                 TEvent                             @event,
-                                                                 CancellationToken                  cancellationToken = default)
+    public async ValueTask<Result> RunAsync<TEvent>(IContext                           context,
+                                                    IEnumerable<IEventHandler<TEvent>> handlers,
+                                                    TEvent                             @event,
+                                                    CancellationToken                  cancellationToken = default)
         where TEvent : IEvent {
         var results = new List<Result>();
         foreach (var eventHandler in handlers) {
@@ -15,6 +15,6 @@ public sealed class SequentialEventOrchestrator : IEventOrchestrator {
             results.Add(result);
         }
 
-        return results;
+        return results.ToResult();
     }
 }

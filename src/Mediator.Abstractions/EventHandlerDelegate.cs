@@ -2,4 +2,4 @@
 
 namespace Oleexo.UnambitiousFx.Mediator.Abstractions;
 
-public delegate ValueTask<Option<IError>> EventHandlerDelegate();
+public delegate ValueTask<Result> EventHandlerDelegate();

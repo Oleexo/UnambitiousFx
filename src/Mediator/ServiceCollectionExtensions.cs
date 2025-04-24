@@ -12,7 +12,8 @@ public static class ServiceCollectionExtensions {
         configure(cfg);
         cfg.Apply();
         return services.AddScoped<IDependencyResolver, DefaultDependencyResolver>()
-                       .AddScoped<ISender, Sender>();
+                       .AddScoped<ISender, Sender>()
+                       .AddScoped<IPublisher, Publisher>();
     }
 
     internal static IServiceCollection RegisterHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest, TResponse>(
