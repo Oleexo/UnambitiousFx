@@ -15,11 +15,8 @@ internal sealed class Publisher : IPublisher {
                                                   TEvent            @event,
                                                   CancellationToken cancellationToken = default)
         where TEvent : IEvent {
-        var handler = _dependencyResolver.GetService<ProxyEventHandler<TEvent>>();
-        if (handler is null) {
-            throw new MissingHandlerException(typeof(ProxyEventHandler<TEvent>));
-        }
-
-        return handler.HandleAsync(context, @event, cancellationToken);
+        return _dependencyResolver.GetService<IEventHandlerExecutor<TEvent>>()
+                                  .Match(handler => handler.HandleAsync(context, @event, cancellationToken),
+                                         () => throw new MissingHandlerException(typeof(EventHandlerExecutor<TEvent>)));
     }
 }

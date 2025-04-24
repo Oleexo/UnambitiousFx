@@ -4,15 +4,15 @@ using Oleexo.UnambitiousFx.Mediator.Orchestrators;
 
 namespace Oleexo.UnambitiousFx.Mediator;
 
-internal sealed class ProxyEventHandler<TEvent> : IEventHandler<TEvent>
+internal sealed class EventHandlerExecutor<TEvent> : IEventHandlerExecutor<TEvent>
     where TEvent : IEvent {
     private readonly IEnumerable<IEventPipelineBehavior> _behaviors;
     private readonly IEventOrchestrator                  _eventOrchestrator;
     private readonly IEnumerable<IEventHandler<TEvent>>  _handlers;
 
-    public ProxyEventHandler(IEnumerable<IEventHandler<TEvent>>  handlers,
-                             IEnumerable<IEventPipelineBehavior> behaviors,
-                             IEventOrchestrator                  eventOrchestrator) {
+    public EventHandlerExecutor(IEnumerable<IEventHandler<TEvent>>  handlers,
+                                IEnumerable<IEventPipelineBehavior> behaviors,
+                                IEventOrchestrator                  eventOrchestrator) {
         _handlers          = handlers;
         _behaviors         = behaviors;
         _eventOrchestrator = eventOrchestrator;
@@ -21,7 +21,6 @@ internal sealed class ProxyEventHandler<TEvent> : IEventHandler<TEvent>
     public ValueTask<Result> HandleAsync(IContext          context,
                                          TEvent            @event,
                                          CancellationToken cancellationToken = default) {
-       
         return ExecutePipelineAsync(context, @event, _behaviors.ToArray(), 0, cancellationToken);
     }
 

@@ -5,7 +5,7 @@ using Oleexo.UnambitiousFx.Mediator.Tests.Definitions;
 
 namespace Oleexo.UnambitiousFx.Mediator.Tests;
 
-public sealed class ProxyEventHandlerTests {
+public sealed class EventHandlerExecutorTests {
     [Fact]
     public async Task GivenAEventPipelineBehavior_WhenProxyHandle_ShouldCallTheBehavior() {
         var order     = 0;
@@ -20,7 +20,7 @@ public sealed class ProxyEventHandlerTests {
             Assert.Equal(0, order);
             order++;
         };
-        var proxy  = new ProxyEventHandler<EventExample>([handler], [behavior], new SequentialEventOrchestrator());
+        var proxy  = new EventHandlerExecutor<EventExample>([handler], [behavior], new SequentialEventOrchestrator());
         var @event = new EventExample();
 
         var result = await proxy.HandleAsync(new Context(publisher), @event, CancellationToken.None);
@@ -51,7 +51,7 @@ public sealed class ProxyEventHandlerTests {
             }
         });
 
-        var proxy  = new ProxyEventHandler<EventExample>([handler], behaviors, new SequentialEventOrchestrator());
+        var proxy  = new EventHandlerExecutor<EventExample>([handler], behaviors, new SequentialEventOrchestrator());
         var @event = new EventExample();
 
         var result = await proxy.HandleAsync(new Context(publisher), @event, CancellationToken.None);

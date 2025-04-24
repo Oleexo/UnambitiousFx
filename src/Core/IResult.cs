@@ -85,6 +85,16 @@ public interface IResult<TValue>
     /// </returns>
     bool Ok([NotNullWhen(true)] out  TValue? value,
             [NotNullWhen(false)] out IError? error);
+
+    /// Determines whether the operation was successful and provides the resulting value if so.
+    /// <param name="value">
+    ///     When the operation is successful, this parameter is set to the returned value. Otherwise, it is set to null.
+    /// </param>
+    /// <returns>
+    ///     Returns true if the operation was successful and `value` is set to the resulting data.
+    ///     Returns false if the operation failed and `value` is set to null.
+    /// </returns>
+    bool Ok([NotNullWhen(true)] out TValue? value);
 }
 
 /// Represents an operation result indicating success or failure.

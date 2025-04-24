@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Oleexo.UnambitiousFx.Core;
 
 namespace Oleexo.UnambitiousFx.Mediator.Resolvers;
 
@@ -9,13 +10,11 @@ internal sealed class DefaultDependencyResolver : IDependencyResolver {
         _serviceProvider = serviceProvider;
     }
 
-    public TService? GetService<TService>()
+    public Option<TService> GetService<TService>()
         where TService : class {
-        return _serviceProvider.GetService(typeof(TService)) as TService;
-    }
-
-    public IEnumerable<TService> GetServices<TService>()
-        where TService : class {
-        return _serviceProvider.GetServices<TService>();
+        var service = _serviceProvider.GetService<TService>();
+        return service is not null
+                   ? Option.Some(service)
+                   : Option.None<TService>();
     }
 }

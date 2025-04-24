@@ -14,7 +14,7 @@ public static class ServiceCollectionExtensions {
         return services.AddScoped<IDependencyResolver, DefaultDependencyResolver>()
                        .AddScoped<ISender, Sender>()
                        .AddScoped<IPublisher, Publisher>()
-                       .AddScoped(typeof(ProxyEventHandler<>))
+                       .AddScoped(typeof(IEventHandlerExecutor<>), typeof(EventHandlerExecutor<>))
                        .AddScoped<IContextFactory, ContextFactory>();
     }
 

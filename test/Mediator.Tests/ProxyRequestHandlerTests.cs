@@ -9,7 +9,7 @@ public sealed class ProxyRequestHandlerTests {
     public async Task GivenARequestPipelineBehavior_WhenProxyHandle_ShouldCallTheBehavior() {
         var order     = 0;
         var publisher = Substitute.For<IPublisher>();
-        var handler   = new RequestExampleHandler();
+        var handler   = new RequestWithResponseExampleHandler();
         handler.OnExecuted = () => {
             Assert.Equal(1, order);
             order++;
@@ -19,8 +19,8 @@ public sealed class ProxyRequestHandlerTests {
             Assert.Equal(0, order);
             order++;
         };
-        var proxy   = new ProxyRequestHandler<RequestExampleHandler, RequestExample, int>(handler, [behavior]);
-        var request = new RequestExample();
+        var proxy   = new ProxyRequestHandler<RequestWithResponseExampleHandler, RequestWithResponseExample, int>(handler, [behavior]);
+        var request = new RequestWithResponseExample();
 
         var result = await proxy.HandleAsync(new Context(publisher), request, CancellationToken.None);
 

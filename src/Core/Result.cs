@@ -36,6 +36,11 @@ public abstract class Result : IResult {
         return new SuccessResult();
     }
 
+    public static Result<TValue> Success<TValue>(TValue value)
+        where TValue : notnull {
+        return new SuccessResult<TValue>(value);
+    }
+
     public static Result Failure(IError error) {
         return new FailureResult(error);
     }
@@ -72,6 +77,9 @@ public abstract class Result<TValue> : IResult<TValue>
     /// <inheritdoc />
     public abstract bool Ok([NotNullWhen(true)] out  TValue? value,
                             [NotNullWhen(false)] out IError? error);
+
+    /// <inheritdoc />
+    public abstract bool Ok([NotNullWhen(true)] out TValue? value);
 
     public static Result<TValue> Success(TValue value) {
         return new SuccessResult<TValue>(value);

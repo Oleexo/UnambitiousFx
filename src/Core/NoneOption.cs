@@ -27,4 +27,14 @@ internal sealed class NoneOption<TValue> : Option<TValue>
         value = default;
         return false;
     }
+
+    public override TOut Match<TOut>(Func<TValue, TOut> some,
+                                     Func<TOut>         none) {
+        return none();
+    }
+
+    public override void Match(Action<TValue> some,
+                               Action         none) {
+        none();
+    }
 }

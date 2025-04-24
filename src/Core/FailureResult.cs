@@ -85,4 +85,9 @@ internal sealed class FailureResult<TValue> : Result<TValue>
         error = _error;
         return false;
     }
+
+    public override bool Ok([NotNullWhen(true)] out TValue? value) {
+        value = default;
+        return false;
+    }
 }

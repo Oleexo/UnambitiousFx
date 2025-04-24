@@ -8,3 +8,7 @@ public interface IEventHandler<in TEvent>
                                   TEvent            @event,
                                   CancellationToken cancellationToken = default);
 }
+
+public interface IEventHandlerExecutor<in TEvent> : IEventHandler<TEvent>
+    where TEvent : IEvent {
+}

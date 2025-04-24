@@ -14,4 +14,10 @@ public interface IOption<TValue> : IOption {
     void IfSome(Action<TValue>                some);
     ValueTask IfSome(Func<TValue, ValueTask>  some);
     bool Some([NotNullWhen(true)] out TValue? value);
+
+    TOut Match<TOut>(Func<TValue, TOut> some,
+                     Func<TOut>         none);
+
+    void Match(Action<TValue> some,
+               Action         none);
 }

@@ -33,4 +33,14 @@ internal sealed class SomeOption<TValue> : Option<TValue>
         value = _value;
         return true;
     }
+
+    public override TOut Match<TOut>(Func<TValue, TOut> some,
+                                     Func<TOut>         none) {
+        return some(_value);
+    }
+
+    public override void Match(Action<TValue> some,
+                               Action         none) {
+        some(_value);
+    }
 }

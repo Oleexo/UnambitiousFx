@@ -8,14 +8,14 @@ public sealed class ServiceCollectionExtensionsTests {
     [Fact]
     public async Task GivenRequest_WhenResolve_ThenReturnResult() {
         var services = new ServiceCollection()
-                      .AddMediator(cfg => { cfg.RegisterHandler<RequestExampleHandler, RequestExample, int>(); })
+                      .AddMediator(cfg => { cfg.RegisterHandler<RequestWithResponseExampleHandler, RequestWithResponseExample, int>(); })
                       .BuildServiceProvider();
 
-        var handler = services.GetRequiredService<IRequestHandler<RequestExample, int>>();
+        var handler = services.GetRequiredService<IRequestHandler<RequestWithResponseExample, int>>();
         var ctx = services.GetRequiredService<IContextFactory>()
                           .Create();
 
-        var result = await handler.HandleAsync(ctx, new RequestExample(), CancellationToken.None);
+        var result = await handler.HandleAsync(ctx, new RequestWithResponseExample(), CancellationToken.None);
 
         Assert.True(result.IsSuccess);
     }
@@ -24,16 +24,16 @@ public sealed class ServiceCollectionExtensionsTests {
     public async Task GivenRequestWithBehavior_WhenResolve_ThenReturnResult() {
         var services = new ServiceCollection()
                       .AddMediator(cfg => {
-                           cfg.RegisterHandler<RequestExampleHandler, RequestExample, int>();
+                           cfg.RegisterHandler<RequestWithResponseExampleHandler, RequestWithResponseExample, int>();
                            cfg.RegisterRequestPipelineBehavior<TestRequestPipelineBehavior>();
                        })
                       .BuildServiceProvider();
 
-        var handler = services.GetRequiredService<IRequestHandler<RequestExample, int>>();
+        var handler = services.GetRequiredService<IRequestHandler<RequestWithResponseExample, int>>();
         var ctx = services.GetRequiredService<IContextFactory>()
                           .Create();
 
-        var result = await handler.HandleAsync(ctx, new RequestExample(), CancellationToken.None);
+        var result = await handler.HandleAsync(ctx, new RequestWithResponseExample(), CancellationToken.None);
 
         Assert.True(result.IsSuccess);
     }

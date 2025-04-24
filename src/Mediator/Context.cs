@@ -1,4 +1,5 @@
-﻿using Oleexo.UnambitiousFx.Core;
+﻿using System.Diagnostics.CodeAnalysis;
+using Oleexo.UnambitiousFx.Core;
 using Oleexo.UnambitiousFx.Mediator.Abstractions;
 
 namespace Oleexo.UnambitiousFx.Mediator;
@@ -43,7 +44,19 @@ internal sealed class Context : IContext {
         return _publisher.PublishAsync(Clone(), @event, cancellationToken);
     }
 
-    private Context Clone() {
+    public bool TryGet<TValue>(string                          key,
+                               [NotNullWhen(true)] out TValue? value) {
+        if (_data.TryGetValue(key, out var data) &&
+            data is TValue dataAsTValue) {
+            value = dataAsTValue;
+            return true;
+        }
+
+        value = default;
+        return false;
+    }
+
+    public Context Clone() {
         return new Context(this);
     }
 }

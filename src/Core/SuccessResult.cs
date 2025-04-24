@@ -79,4 +79,9 @@ internal sealed class SuccessResult<TValue> : Result<TValue>
         error = null;
         return true;
     }
+
+    public override bool Ok([NotNullWhen(true)] out TValue? value) {
+        value = _value;
+        return true;
+    }
 }
