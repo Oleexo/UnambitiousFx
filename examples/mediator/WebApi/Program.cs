@@ -1,5 +1,6 @@
 using Application.Application.Todos;
 using Application.Domain.Entities;
+using Application.Domain.Events;
 using Application.Domain.Repositories;
 using Application.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -10,12 +11,16 @@ using WebApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMediator(cfg => {
-    cfg.RegisterHandler<CreateTodoCommandHandler, CreateTodoCommand, Guid>()
-       .RegisterHandler<DeleteTodoCommandHandler, DeleteTodoCommand>()
-       .RegisterHandler<ListTodoQueryHandler, ListTodoQuery, IEnumerable<Todo>>()
-       .RegisterHandler<TodoQueryHandler, TodoQuery, Todo>()
-       .RegisterHandler<UpdateTodoCommandHandler, UpdateTodoCommand>();
+    cfg.RegisterRequestHandler<CreateTodoCommandHandler, CreateTodoCommand, Guid>()
+       .RegisterRequestHandler<DeleteTodoCommandHandler, DeleteTodoCommand>()
+       .RegisterRequestHandler<ListTodoQueryHandler, ListTodoQuery, IEnumerable<Todo>>()
+       .RegisterRequestHandler<TodoQueryHandler, TodoQuery, Todo>()
+       .RegisterRequestHandler<UpdateTodoCommandHandler, UpdateTodoCommand>()
+       .RegisterEventHandler<TodoCreatedHandler, TodoCreated>()
+       .RegisterEventHandler<TodoUpdatedHandler, TodoUpdated>()
+       .RegisterEventHandler<TodoDeletedHandler, TodoDeleted>();
     cfg.RegisterRequestPipelineBehavior<LoggingBehavior>();
+    cfg.RegisterEventPipelineBehavior<LoggingBehavior>();
 });
 builder.Services.AddScoped<ITodoRepository, TodoRepository>();
 var app = builder.Build();
@@ -88,5 +93,5 @@ todoEndpoints.MapDelete("/{id:guid}", async ([FromServices] ISender sender,
 app.Run();
 
 namespace WebApi {
-    public partial class Program;
+    public class Program;
 }

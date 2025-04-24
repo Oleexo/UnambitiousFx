@@ -1,4 +1,5 @@
-﻿using Application.Domain.Repositories;
+﻿using Application.Domain.Events;
+using Application.Domain.Repositories;
 using Oleexo.UnambitiousFx.Core;
 using Oleexo.UnambitiousFx.Mediator.Abstractions;
 
@@ -21,6 +22,10 @@ public sealed class DeleteTodoCommandHandler : IRequestHandler<DeleteTodoCommand
         }
 
         await _todoRepository.DeleteAsync(todo.Id, cancellationToken);
+
+        await context.PublishAsync(new TodoDeleted {
+            Todo = todo
+        }, cancellationToken);
 
         return Result.Success();
     }

@@ -12,11 +12,11 @@ var builder = WebApplication.CreateSlimBuilder(args);
 
 builder.Services.ConfigureHttpJsonOptions(options => { options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default); });
 builder.Services.AddMediator(cfg => {
-    cfg.RegisterHandler<CreateTodoCommandHandler, CreateTodoCommand, Guid>()
-       .RegisterHandler<DeleteTodoCommandHandler, DeleteTodoCommand>()
-       .RegisterHandler<ListTodoQueryHandler, ListTodoQuery, IEnumerable<Todo>>()
-       .RegisterHandler<TodoQueryHandler, TodoQuery, Todo>()
-       .RegisterHandler<UpdateTodoCommandHandler, UpdateTodoCommand>();
+    cfg.RegisterRequestHandler<CreateTodoCommandHandler, CreateTodoCommand, Guid>()
+       .RegisterRequestHandler<DeleteTodoCommandHandler, DeleteTodoCommand>()
+       .RegisterRequestHandler<ListTodoQueryHandler, ListTodoQuery, IEnumerable<Todo>>()
+       .RegisterRequestHandler<TodoQueryHandler, TodoQuery, Todo>()
+       .RegisterRequestHandler<UpdateTodoCommandHandler, UpdateTodoCommand>();
     cfg.RegisterRequestPipelineBehavior<LoggingBehavior>();
 });
 builder.Services.AddScoped<ITodoRepository, TodoRepository>();
@@ -90,5 +90,5 @@ todoEndpoints.MapDelete("/{id:guid}", async ([FromServices] ISender sender,
 app.Run();
 
 namespace WebApiAot {
-    public partial class Program;
+    public class Program;
 }

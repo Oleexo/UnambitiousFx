@@ -8,14 +8,18 @@ namespace Oleexo.UnambitiousFx.Mediator;
 public interface IMediatorConfig {
     IMediatorConfig SetLifetime(ServiceLifetime lifetime);
 
-    IMediatorConfig RegisterHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest, TResponse>()
+    IMediatorConfig RegisterRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest, TResponse>()
         where TResponse : notnull
         where TRequest : IRequest<TResponse>
         where THandler : class, IRequestHandler<TRequest, TResponse>;
 
-    IMediatorConfig RegisterHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest>()
+    IMediatorConfig RegisterRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest>()
         where TRequest : IRequest
         where THandler : class, IRequestHandler<TRequest>;
+
+    IMediatorConfig RegisterEventHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TEvent>()
+        where TEvent : IEvent
+        where THandler : class, IEventHandler<TEvent>;
 
     IMediatorConfig RegisterRequestPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TRequestPipelineBehavior>()
         where TRequestPipelineBehavior : class, IRequestPipelineBehavior;

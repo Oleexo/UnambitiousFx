@@ -1,4 +1,5 @@
 ﻿using Application.Domain.Entities;
+using Application.Domain.Events;
 using Application.Domain.Repositories;
 using Oleexo.UnambitiousFx.Core;
 using Oleexo.UnambitiousFx.Mediator.Abstractions;
@@ -22,6 +23,9 @@ public sealed class CreateTodoCommandHandler : IRequestHandler<CreateTodoCommand
 
         await _todoRepository.CreateAsync(todo, cancellationToken);
 
+        await context.PublishAsync(new TodoCreated {
+            Todo = todo
+        }, cancellationToken);
         return Result<Guid>.Success(todo.Id);
     }
 }

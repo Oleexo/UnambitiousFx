@@ -25,20 +25,28 @@ internal sealed class MediatorConfig : IMediatorConfig {
         return this;
     }
 
-    public IMediatorConfig RegisterHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest, TResponse>()
+    public IMediatorConfig RegisterRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest, TResponse>()
         where TResponse : notnull
         where TRequest : IRequest<TResponse>
         where THandler : class, IRequestHandler<TRequest, TResponse> {
         _actions.Add((services,
-                      lifetime) => services.RegisterHandler<THandler, TRequest, TResponse>(lifetime));
+                      lifetime) => services.RegisterRequestHandler<THandler, TRequest, TResponse>(lifetime));
         return this;
     }
 
-    public IMediatorConfig RegisterHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest>()
+    public IMediatorConfig RegisterRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest>()
         where TRequest : IRequest
         where THandler : class, IRequestHandler<TRequest> {
         _actions.Add((services,
-                      lifetime) => services.RegisterHandler<THandler, TRequest>(lifetime));
+                      lifetime) => services.RegisterRequestHandler<THandler, TRequest>(lifetime));
+        return this;
+    }
+
+    public IMediatorConfig RegisterEventHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TEvent>()
+        where THandler : class, IEventHandler<TEvent>
+        where TEvent : IEvent {
+        _actions.Add((services,
+                      lifetime) => services.RegisterEventHandler<THandler, TEvent>(lifetime));
         return this;
     }
 

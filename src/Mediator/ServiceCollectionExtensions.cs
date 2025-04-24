@@ -18,7 +18,7 @@ public static class ServiceCollectionExtensions {
                        .AddScoped<IContextFactory, ContextFactory>();
     }
 
-    internal static IServiceCollection RegisterHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest, TResponse>(
+    internal static IServiceCollection RegisterRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest, TResponse>(
         this IServiceCollection services,
         ServiceLifetime         lifetime = ServiceLifetime.Scoped)
         where TResponse : notnull
@@ -29,13 +29,22 @@ public static class ServiceCollectionExtensions {
         return services;
     }
 
-    internal static IServiceCollection RegisterHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest>(
+    internal static IServiceCollection RegisterRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest>(
         this IServiceCollection services,
         ServiceLifetime         lifetime = ServiceLifetime.Scoped)
         where TRequest : IRequest
         where THandler : class, IRequestHandler<TRequest> {
         services.Add(new ServiceDescriptor(typeof(THandler),                  typeof(THandler),                                lifetime));
         services.Add(new ServiceDescriptor(typeof(IRequestHandler<TRequest>), typeof(ProxyRequestHandler<THandler, TRequest>), lifetime));
+        return services;
+    }
+
+    internal static IServiceCollection RegisterEventHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TEvent>(
+        this IServiceCollection services,
+        ServiceLifetime         lifetime = ServiceLifetime.Scoped)
+        where THandler : class, IEventHandler<TEvent>
+        where TEvent : IEvent {
+        services.Add(new ServiceDescriptor(typeof(IEventHandler<TEvent>), typeof(THandler), lifetime));
         return services;
     }
 

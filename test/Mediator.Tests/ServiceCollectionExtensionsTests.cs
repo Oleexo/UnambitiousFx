@@ -8,7 +8,7 @@ public sealed class ServiceCollectionExtensionsTests {
     [Fact]
     public async Task GivenRequest_WhenResolve_ThenReturnResult() {
         var services = new ServiceCollection()
-                      .AddMediator(cfg => { cfg.RegisterHandler<RequestWithResponseExampleHandler, RequestWithResponseExample, int>(); })
+                      .AddMediator(cfg => { cfg.RegisterRequestHandler<RequestWithResponseExampleHandler, RequestWithResponseExample, int>(); })
                       .BuildServiceProvider();
 
         var handler = services.GetRequiredService<IRequestHandler<RequestWithResponseExample, int>>();
@@ -24,7 +24,7 @@ public sealed class ServiceCollectionExtensionsTests {
     public async Task GivenRequestWithBehavior_WhenResolve_ThenReturnResult() {
         var services = new ServiceCollection()
                       .AddMediator(cfg => {
-                           cfg.RegisterHandler<RequestWithResponseExampleHandler, RequestWithResponseExample, int>();
+                           cfg.RegisterRequestHandler<RequestWithResponseExampleHandler, RequestWithResponseExample, int>();
                            cfg.RegisterRequestPipelineBehavior<TestRequestPipelineBehavior>();
                        })
                       .BuildServiceProvider();

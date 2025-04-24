@@ -1,4 +1,5 @@
-﻿using Application.Domain.Repositories;
+﻿using Application.Domain.Events;
+using Application.Domain.Repositories;
 using Oleexo.UnambitiousFx.Core;
 using Oleexo.UnambitiousFx.Mediator.Abstractions;
 
@@ -23,6 +24,9 @@ public sealed class UpdateTodoCommandHandler : IRequestHandler<UpdateTodoCommand
         todo.Name = request.Name;
 
         await _todoRepository.UpdateAsync(todo, cancellationToken);
+        await context.PublishAsync(new TodoUpdated {
+            Todo = todo
+        }, cancellationToken);
 
         return Result.Success();
     }
