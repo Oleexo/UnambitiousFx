@@ -9,7 +9,8 @@ public sealed class TestRequestPipelineBehavior : IRequestPipelineBehavior {
     public int     ExecutionCount  { get; private set; }
     public Action? OnExecuted      { get; set; }
 
-    public ValueTask<Result> HandleAsync<TRequest>(TRequest               request,
+    public ValueTask<Result> HandleAsync<TRequest>(IContext               context,
+                                                   TRequest               request,
                                                    RequestHandlerDelegate next,
                                                    CancellationToken      cancellationToken = default)
         where TRequest : IRequest {
@@ -20,7 +21,8 @@ public sealed class TestRequestPipelineBehavior : IRequestPipelineBehavior {
         return next();
     }
 
-    public ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest                          request,
+    public ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(IContext                          context,
+                                                                         TRequest                          request,
                                                                          RequestHandlerDelegate<TResponse> next,
                                                                          CancellationToken                 cancellationToken = default)
         where TRequest : IRequest<TResponse>

@@ -12,7 +12,8 @@ public sealed class LoggingBehavior : IRequestPipelineBehavior {
         _logger = logger;
     }
 
-    public async ValueTask<Result> HandleAsync<TRequest>(TRequest               request,
+    public async ValueTask<Result> HandleAsync<TRequest>(IContext               context,
+                                                         TRequest               request,
                                                          RequestHandlerDelegate next,
                                                          CancellationToken      cancellationToken = default)
         where TRequest : IRequest {
@@ -31,7 +32,8 @@ public sealed class LoggingBehavior : IRequestPipelineBehavior {
         return result;
     }
 
-    public async ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest                          request,
+    public async ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(IContext                          context,
+                                                                               TRequest                          request,
                                                                                RequestHandlerDelegate<TResponse> next,
                                                                                CancellationToken                 cancellationToken = default)
         where TRequest : IRequest<TResponse>

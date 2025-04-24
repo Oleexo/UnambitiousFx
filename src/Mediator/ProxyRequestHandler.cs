@@ -31,7 +31,7 @@ internal sealed class ProxyRequestHandler<TRequestHandler, TRequest> : IRequestH
         }
 
         return behaviors[index]
-           .HandleAsync(request, Next, cancellationToken);
+           .HandleAsync(context, request, Next, cancellationToken);
 
         ValueTask<Result> Next() {
             return ExecutePipelineAsync(context, request, behaviors, index + 1, cancellationToken);
@@ -68,7 +68,7 @@ internal class ProxyRequestHandler<TRequestHandler, TRequest, TResponse> : IRequ
         }
 
         return behaviors[index]
-           .HandleAsync(request, Next, cancellationToken);
+           .HandleAsync(context, request, Next, cancellationToken);
 
         ValueTask<Result<TResponse>> Next() {
             return ExecutePipelineAsync(context, request, behaviors, index + 1, cancellationToken);
