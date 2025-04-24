@@ -13,7 +13,9 @@ public static class ServiceCollectionExtensions {
         cfg.Apply();
         return services.AddScoped<IDependencyResolver, DefaultDependencyResolver>()
                        .AddScoped<ISender, Sender>()
-                       .AddScoped<IPublisher, Publisher>();
+                       .AddScoped<IPublisher, Publisher>()
+                       .AddScoped(typeof(ProxyEventHandler<>))
+                       .AddScoped<IContextFactory, ContextFactory>();
     }
 
     internal static IServiceCollection RegisterHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest, TResponse>(
