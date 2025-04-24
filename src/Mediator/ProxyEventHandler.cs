@@ -21,6 +21,7 @@ internal sealed class ProxyEventHandler<TEvent> : IEventHandler<TEvent>
     public ValueTask<Result> HandleAsync(IContext          context,
                                          TEvent            @event,
                                          CancellationToken cancellationToken = default) {
+       
         return ExecutePipelineAsync(context, @event, _behaviors.ToArray(), 0, cancellationToken);
     }
 
