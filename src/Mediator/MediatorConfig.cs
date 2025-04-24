@@ -8,8 +8,11 @@ namespace Oleexo.UnambitiousFx.Mediator;
 internal sealed class MediatorConfig : IMediatorConfig {
     private readonly List<Action<IServiceCollection, ServiceLifetime>> _actions = new();
     private readonly IServiceCollection                                _services;
-    private          Type                                              _eventOrchestrator;
-    private          ServiceLifetime                                   _lifetime;
+
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    private Type _eventOrchestrator;
+
+    private ServiceLifetime _lifetime;
 
     public MediatorConfig(IServiceCollection services) {
         _services          = services;
@@ -46,7 +49,14 @@ internal sealed class MediatorConfig : IMediatorConfig {
         return this;
     }
 
-    public IMediatorConfig SetEventOrchestrator<TEventOrchestrator>()
+    public IMediatorConfig RegisterEventPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TEventPipelineBehavior>()
+        where TEventPipelineBehavior : class, IEventPipelineBehavior {
+        _actions.Add((services,
+                      lifetime) => services.RegisterEventPipelineBehavior<TEventPipelineBehavior>(lifetime));
+        return this;
+    }
+
+    public IMediatorConfig SetEventOrchestrator<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TEventOrchestrator>()
         where TEventOrchestrator : class, IEventOrchestrator {
         _eventOrchestrator = typeof(TEventOrchestrator);
         return this;
@@ -57,6 +67,6 @@ internal sealed class MediatorConfig : IMediatorConfig {
             action(_services, _lifetime);
         }
 
-        _services.AddScoped<IEventOrchestrator, SequentialEventOrchestrator>();
+        _services.AddScoped(typeof(IEventOrchestrator), _eventOrchestrator);
     }
 }

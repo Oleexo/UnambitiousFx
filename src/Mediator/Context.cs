@@ -13,6 +13,11 @@ internal sealed class Context : IContext {
         OccuredAt     = DateTimeOffset.UtcNow;
     }
 
+    private Context(Context context) {
+        _data      = context._data;
+        _publisher = context._publisher;
+    }
+
     public Guid           CorrelationId { get; }
     public DateTimeOffset OccuredAt     { get; }
 
@@ -35,6 +40,10 @@ internal sealed class Context : IContext {
     public ValueTask<Result> PublishAsync<TEvent>(TEvent            @event,
                                                   CancellationToken cancellationToken = default)
         where TEvent : IEvent {
-        return _publisher.PublishAsync(this, @event, cancellationToken);
+        return _publisher.PublishAsync(Clone(), @event, cancellationToken);
+    }
+
+    private Context Clone() {
+        return new Context(this);
     }
 }

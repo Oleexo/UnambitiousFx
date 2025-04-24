@@ -20,6 +20,9 @@ public interface IMediatorConfig {
     IMediatorConfig RegisterRequestPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TRequestPipelineBehavior>()
         where TRequestPipelineBehavior : class, IRequestPipelineBehavior;
 
-    IMediatorConfig SetEventOrchestrator<TEventOrchestrator>()
+    IMediatorConfig RegisterEventPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TEventPipelineBehavior>()
+        where TEventPipelineBehavior : class, IEventPipelineBehavior;
+
+    IMediatorConfig SetEventOrchestrator<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TEventOrchestrator>()
         where TEventOrchestrator : class, IEventOrchestrator;
 }

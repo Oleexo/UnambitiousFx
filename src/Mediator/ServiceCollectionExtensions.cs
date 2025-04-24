@@ -46,4 +46,12 @@ public static class ServiceCollectionExtensions {
         services.Add(new ServiceDescriptor(typeof(IRequestPipelineBehavior), typeof(TRequestPipelineBehavior), lifetime));
         return services;
     }
+
+    internal static IServiceCollection RegisterEventPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TEventPipelineBehavior>(
+        this IServiceCollection services,
+        ServiceLifetime         lifetime = ServiceLifetime.Scoped)
+        where TEventPipelineBehavior : class, IEventPipelineBehavior {
+        services.Add(new ServiceDescriptor(typeof(IEventPipelineBehavior), typeof(TEventPipelineBehavior), lifetime));
+        return services;
+    }
 }
