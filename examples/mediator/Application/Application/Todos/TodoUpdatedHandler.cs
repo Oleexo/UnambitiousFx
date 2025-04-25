@@ -1,10 +1,12 @@
 ﻿using Application.Domain.Events;
 using Microsoft.Extensions.Logging;
 using UnambitiousFx.Core;
+using UnambitiousFx.Mediator;
 using UnambitiousFx.Mediator.Abstractions;
 
 namespace Application.Application.Todos;
 
+[EventHandler<TodoUpdated>]
 public sealed class TodoUpdatedHandler : IEventHandler<TodoUpdated> {
     private readonly ILogger<TodoUpdatedHandler> _logger;
 

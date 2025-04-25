@@ -1,10 +1,12 @@
 ﻿using Application.Domain.Entities;
 using Application.Domain.Repositories;
 using UnambitiousFx.Core;
+using UnambitiousFx.Mediator;
 using UnambitiousFx.Mediator.Abstractions;
 
 namespace Application.Application.Todos;
 
+[RequestHandler<ListTodoQuery, IEnumerable<Todo>>]
 public sealed class ListTodoQueryHandler : IRequestHandler<ListTodoQuery, IEnumerable<Todo>> {
     private readonly ITodoRepository _todoRepository;
 

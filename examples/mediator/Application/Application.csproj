@@ -8,6 +8,8 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\src\Mediator.Abstractions\Mediator.Abstractions.csproj"/>
+        <ProjectReference Include="..\..\..\src\Mediator.Generator\Mediator.Generator.csproj"
+                          OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
     </ItemGroup>
 
     <ItemGroup>

@@ -8,6 +8,7 @@ namespace UnambitiousFx.Mediator;
 internal sealed class MediatorConfig : IMediatorConfig {
     private readonly List<Action<IServiceCollection, ServiceLifetime>> _actions = new();
     private readonly IServiceCollection                                _services;
+    private          DefaultDependencyInjectionBuilder                 _builder;
 
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
     private Type _eventOrchestrator;
@@ -18,6 +19,7 @@ internal sealed class MediatorConfig : IMediatorConfig {
         _services          = services;
         _lifetime          = ServiceLifetime.Scoped;
         _eventOrchestrator = typeof(SequentialEventOrchestrator);
+        _builder           = new DefaultDependencyInjectionBuilder();
     }
 
     public IMediatorConfig SetLifetime(ServiceLifetime lifetime) {
@@ -25,7 +27,7 @@ internal sealed class MediatorConfig : IMediatorConfig {
         return this;
     }
 
-    public IMediatorConfig RegisterRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest, TResponse>()
+    public IDependencyInjectionBuilder RegisterRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest, TResponse>()
         where TResponse : notnull
         where TRequest : IRequest<TResponse>
         where THandler : class, IRequestHandler<TRequest, TResponse> {
@@ -34,7 +36,7 @@ internal sealed class MediatorConfig : IMediatorConfig {
         return this;
     }
 
-    public IMediatorConfig RegisterRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest>()
+    public IDependencyInjectionBuilder RegisterRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest>()
         where TRequest : IRequest
         where THandler : class, IRequestHandler<TRequest> {
         _actions.Add((services,
@@ -42,7 +44,7 @@ internal sealed class MediatorConfig : IMediatorConfig {
         return this;
     }
 
-    public IMediatorConfig RegisterEventHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TEvent>()
+    public IDependencyInjectionBuilder RegisterEventHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TEvent>()
         where THandler : class, IEventHandler<TEvent>
         where TEvent : IEvent {
         _actions.Add((services,
@@ -70,7 +72,15 @@ internal sealed class MediatorConfig : IMediatorConfig {
         return this;
     }
 
+    public IMediatorConfig AddRegisterGroup(IRegisterGroup group) {
+        _builder = new DefaultDependencyInjectionBuilder();
+        group.Register(_builder);
+        return this;
+    }
+
     public void Apply() {
+        _builder.Apply(_services, _lifetime);
+
         foreach (var action in _actions) {
             action(_services, _lifetime);
         }

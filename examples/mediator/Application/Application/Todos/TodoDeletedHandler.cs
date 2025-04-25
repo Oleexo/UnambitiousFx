@@ -1,10 +1,12 @@
 ﻿using Application.Domain.Events;
 using Microsoft.Extensions.Logging;
 using UnambitiousFx.Core;
+using UnambitiousFx.Mediator;
 using UnambitiousFx.Mediator.Abstractions;
 
 namespace Application.Application.Todos;
 
+[EventHandler<TodoDeleted>]
 public sealed class TodoDeletedHandler : IEventHandler<TodoDeleted> {
     private readonly ILogger<TodoDeletedHandler> _logger;
 

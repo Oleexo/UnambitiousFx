@@ -1,10 +1,12 @@
 ﻿using Application.Domain.Events;
 using Application.Domain.Repositories;
 using UnambitiousFx.Core;
+using UnambitiousFx.Mediator;
 using UnambitiousFx.Mediator.Abstractions;
 
 namespace Application.Application.Todos;
 
+[RequestHandler<UpdateTodoCommand>]
 public sealed class UpdateTodoCommandHandler : IRequestHandler<UpdateTodoCommand> {
     private readonly ITodoRepository _todoRepository;
 

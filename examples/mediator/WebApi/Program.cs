@@ -11,14 +11,14 @@ using WebApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMediator(cfg => {
+    cfg.AddRegisterGroup(new ManualRegisterGroup());
+
     cfg.RegisterRequestHandler<CreateTodoCommandHandler, CreateTodoCommand, Guid>()
-       .RegisterRequestHandler<DeleteTodoCommandHandler, DeleteTodoCommand>()
        .RegisterRequestHandler<ListTodoQueryHandler, ListTodoQuery, IEnumerable<Todo>>()
-       .RegisterRequestHandler<TodoQueryHandler, TodoQuery, Todo>()
        .RegisterRequestHandler<UpdateTodoCommandHandler, UpdateTodoCommand>()
-       .RegisterEventHandler<TodoCreatedHandler, TodoCreated>()
        .RegisterEventHandler<TodoUpdatedHandler, TodoUpdated>()
        .RegisterEventHandler<TodoDeletedHandler, TodoDeleted>();
+
     cfg.RegisterRequestPipelineBehavior<SimpleLoggingBehavior>();
     cfg.RegisterEventPipelineBehavior<SimpleLoggingBehavior>();
 });
