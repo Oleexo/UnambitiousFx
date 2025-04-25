@@ -123,4 +123,8 @@ internal sealed class SuccessResult<TValue> : Result<TValue>
         value = _value;
         return true;
     }
+
+    public override Result<TOut> Bind<TOut>(Func<TValue, Result<TOut>> bind) {
+        return bind(_value);
+    }
 }

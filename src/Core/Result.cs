@@ -135,6 +135,24 @@ public abstract class Result<TValue> : Result, IResult<TValue>
     public abstract bool Ok([NotNullWhen(true)] out TValue? value);
 
     /// <summary>
+    ///     Binds the current result to a new operation. If the current result is a successful result,
+    ///     invokes the provided function to map the current value to a new <see cref="Result{TOut}" />
+    ///     of type <typeparamref name="TOut" />. If the current result is a failure, the failure is propagated
+    ///     without invoking the provided function.
+    /// </summary>
+    /// <typeparam name="TOut">The type of the value in the resulting <see cref="Result{TOut}" />.</typeparam>
+    /// <param name="bind">
+    ///     A function that takes the current value of type <typeparamref name="TValue" /> as input
+    ///     and returns a new <see cref="Result{TOut}" />.
+    /// </param>
+    /// <returns>
+    ///     A new <see cref="Result{TOut}" /> obtained by applying the <paramref name="bind" /> function if the
+    ///     current result is successful, or the original failure result if the current result is a failure.
+    /// </returns>
+    public abstract Result<TOut> Bind<TOut>(Func<TValue, Result<TOut>> bind)
+        where TOut : notnull;
+
+    /// <summary>
     ///     Creates a success result.
     /// </summary>
     /// <param name="value">The value to associate with the success result.</param>

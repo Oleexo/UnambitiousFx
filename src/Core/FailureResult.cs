@@ -128,4 +128,8 @@ internal sealed class FailureResult<TValue> : Result<TValue>
         value = default;
         return false;
     }
+
+    public override Result<TOut> Bind<TOut>(Func<TValue, Result<TOut>> bind) {
+        return new FailureResult<TOut>(_error);
+    }
 }
