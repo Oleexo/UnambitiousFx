@@ -21,10 +21,10 @@
         <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All"/>
     </ItemGroup>
 
-    <ItemGroup Condition="!Exists('README.MD')">
-        <None Include="$(SolutionDir)README.MD" Pack="true" PackagePath="\"/>
+    <ItemGroup Condition="!Exists('README.md')">
+        <None Include="$(SolutionDir)README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
-    <ItemGroup Condition="Exists('README.MD')">
-        <None Include="README.MD" Pack="true" PackagePath="\"/>
+    <ItemGroup Condition="Exists('README.md')">
+        <None Include="README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
 </Project>
