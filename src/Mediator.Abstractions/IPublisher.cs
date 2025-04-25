@@ -1,6 +1,6 @@
-using Oleexo.UnambitiousFx.Core;
+using UnambitiousFx.Core;
 
-namespace Oleexo.UnambitiousFx.Mediator.Abstractions;
+namespace UnambitiousFx.Mediator.Abstractions;
 
 /// <summary>
 ///     Represents a publisher capable of handling and publishing events to their respective subscribers or processors.

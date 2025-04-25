@@ -1,6 +1,6 @@
-﻿using Oleexo.UnambitiousFx.Core;
+﻿using UnambitiousFx.Core;
 
-namespace Oleexo.UnambitiousFx.Mediator.Abstractions;
+namespace UnambitiousFx.Mediator.Abstractions;
 
 /// <summary>
 ///     Defines a handler for a specific event type.

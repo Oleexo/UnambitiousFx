@@ -1,4 +1,4 @@
-namespace Oleexo.UnambitiousFx.Mediator;
+namespace UnambitiousFx.Mediator;
 
 /// <summary>
 ///     Represents an exception that is thrown when no handler is found for a specified request type.

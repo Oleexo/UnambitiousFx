@@ -1,8 +1,8 @@
-﻿using Oleexo.UnambitiousFx.Core;
-using Oleexo.UnambitiousFx.Mediator.Abstractions;
-using Oleexo.UnambitiousFx.Mediator.Orchestrators;
+﻿using UnambitiousFx.Core;
+using UnambitiousFx.Mediator.Abstractions;
+using UnambitiousFx.Mediator.Orchestrators;
 
-namespace Oleexo.UnambitiousFx.Mediator;
+namespace UnambitiousFx.Mediator;
 
 internal sealed class EventHandlerExecutor<TEvent> : IEventHandlerExecutor<TEvent>
     where TEvent : IEvent {

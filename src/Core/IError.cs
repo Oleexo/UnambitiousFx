@@ -1,4 +1,4 @@
-namespace Oleexo.UnambitiousFx.Core;
+namespace UnambitiousFx.Core;
 
 /// <summary>
 ///     Represents a contract for defining application errors with extended information.

@@ -1,4 +1,4 @@
-﻿namespace Oleexo.UnambitiousFx.Core;
+﻿namespace UnambitiousFx.Core;
 
 internal sealed record AggregateError : Error {
     /// <summary>

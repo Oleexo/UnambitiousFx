@@ -1,4 +1,4 @@
-namespace Oleexo.UnambitiousFx.Core.Tests;
+namespace UnambitiousFx.Core.Tests;
 
 public sealed class ResultTests {
     [Fact]

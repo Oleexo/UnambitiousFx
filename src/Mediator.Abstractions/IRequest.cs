@@ -1,4 +1,4 @@
-namespace Oleexo.UnambitiousFx.Mediator.Abstractions;
+namespace UnambitiousFx.Mediator.Abstractions;
 
 /// <summary>
 ///     Represents a marker interface that defines a request within the mediator pattern.

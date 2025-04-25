@@ -1,4 +1,4 @@
-namespace Oleexo.UnambitiousFx.Core;
+namespace UnambitiousFx.Core;
 
 /// <summary>
 ///     Represents an application error with basic details such as message, code, exception,

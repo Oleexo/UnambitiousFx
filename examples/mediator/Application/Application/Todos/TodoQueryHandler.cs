@@ -1,7 +1,7 @@
 ﻿using Application.Domain.Entities;
 using Application.Domain.Repositories;
-using Oleexo.UnambitiousFx.Core;
-using Oleexo.UnambitiousFx.Mediator.Abstractions;
+using UnambitiousFx.Core;
+using UnambitiousFx.Mediator.Abstractions;
 
 namespace Application.Application.Todos;
 

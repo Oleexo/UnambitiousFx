@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace Oleexo.UnambitiousFx.Core;
+namespace UnambitiousFx.Core;
 
 /// Defines a contract representing the result of an operation, indicating whether it succeeded or failed and providing state information.
 public interface IResult<TValue>

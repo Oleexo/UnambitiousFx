@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace Oleexo.UnambitiousFx.Core;
+namespace UnambitiousFx.Core;
 
 /// <summary>
 ///     Provides a static class to create and work with instances of <see cref="Option{TValue}" />,

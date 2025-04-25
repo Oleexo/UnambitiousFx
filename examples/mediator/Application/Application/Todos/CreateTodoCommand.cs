@@ -1,4 +1,4 @@
-﻿using Oleexo.UnambitiousFx.Mediator.Abstractions;
+﻿using UnambitiousFx.Mediator.Abstractions;
 
 namespace Application.Application.Todos;
 

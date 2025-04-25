@@ -1,6 +1,6 @@
-﻿using Oleexo.UnambitiousFx.Core;
+﻿using UnambitiousFx.Core;
 
-namespace Oleexo.UnambitiousFx.Mediator.Abstractions;
+namespace UnambitiousFx.Mediator.Abstractions;
 
 /// <summary>
 ///     Represents a delegate that serves as a handler for processing events within the mediator pipeline.

@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace Oleexo.UnambitiousFx.Core;
+namespace UnambitiousFx.Core;
 
 internal sealed class FailureResult : Result {
     private readonly IError _error;

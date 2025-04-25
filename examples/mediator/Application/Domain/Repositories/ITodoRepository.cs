@@ -1,5 +1,5 @@
 ﻿using Application.Domain.Entities;
-using Oleexo.UnambitiousFx.Core;
+using UnambitiousFx.Core;
 
 namespace Application.Domain.Repositories;
 

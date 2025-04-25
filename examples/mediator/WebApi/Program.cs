@@ -4,9 +4,9 @@ using Application.Domain.Events;
 using Application.Domain.Repositories;
 using Application.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Oleexo.UnambitiousFx.Mediator;
-using Oleexo.UnambitiousFx.Mediator.Abstractions;
-using Oleexo.UnambitiousFx.Mediator.Pipelines;
+using UnambitiousFx.Mediator;
+using UnambitiousFx.Mediator.Abstractions;
+using UnambitiousFx.Mediator.Pipelines;
 using WebApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);

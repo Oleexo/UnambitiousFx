@@ -1,7 +1,7 @@
-using Oleexo.UnambitiousFx.Core;
-using Oleexo.UnambitiousFx.Mediator.Abstractions;
+using UnambitiousFx.Core;
+using UnambitiousFx.Mediator.Abstractions;
 
-namespace Oleexo.UnambitiousFx.Mediator;
+namespace UnambitiousFx.Mediator;
 
 internal sealed class ProxyRequestHandler<TRequestHandler, TRequest> : IRequestHandler<TRequest>
     where TRequestHandler : class, IRequestHandler<TRequest>

@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Oleexo.UnambitiousFx.Core;
-using Oleexo.UnambitiousFx.Mediator.Abstractions;
+using UnambitiousFx.Core;
+using UnambitiousFx.Mediator.Abstractions;
 
-namespace Oleexo.UnambitiousFx.Mediator;
+namespace UnambitiousFx.Mediator;
 
 internal sealed class Context : IContext {
     private readonly Dictionary<string, object> _data = new();

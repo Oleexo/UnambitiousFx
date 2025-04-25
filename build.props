@@ -2,8 +2,8 @@
     <PropertyGroup>
         <Authors>Oleexo</Authors>
         <Product>UnambitiousFx</Product>
-        <RootNamespace>$(Authors).$(Product).$(MSBuildProjectName)</RootNamespace>
-        <AssemblyName>$(Authors).$(Product).$(MSBuildProjectName)</AssemblyName>
+        <RootNamespace>$(Product).$(MSBuildProjectName)</RootNamespace>
+        <AssemblyName>$(Product).$(MSBuildProjectName)</AssemblyName>
         <WarningsAsErrors>true</WarningsAsErrors>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <Nullable>enable</Nullable>

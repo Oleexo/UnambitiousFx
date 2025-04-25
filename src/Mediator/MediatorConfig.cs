@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
-using Oleexo.UnambitiousFx.Mediator.Abstractions;
-using Oleexo.UnambitiousFx.Mediator.Orchestrators;
+using UnambitiousFx.Mediator.Abstractions;
+using UnambitiousFx.Mediator.Orchestrators;
 
-namespace Oleexo.UnambitiousFx.Mediator;
+namespace UnambitiousFx.Mediator;
 
 internal sealed class MediatorConfig : IMediatorConfig {
     private readonly List<Action<IServiceCollection, ServiceLifetime>> _actions = new();

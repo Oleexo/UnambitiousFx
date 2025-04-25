@@ -1,8 +1,8 @@
-﻿using Oleexo.UnambitiousFx.Core;
-using Oleexo.UnambitiousFx.Mediator.Abstractions;
-using Oleexo.UnambitiousFx.Mediator.Resolvers;
+﻿using UnambitiousFx.Core;
+using UnambitiousFx.Mediator.Abstractions;
+using UnambitiousFx.Mediator.Resolvers;
 
-namespace Oleexo.UnambitiousFx.Mediator;
+namespace UnambitiousFx.Mediator;
 
 internal sealed class Publisher : IPublisher {
     private readonly IDependencyResolver _dependencyResolver;

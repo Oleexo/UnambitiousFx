@@ -1,6 +1,6 @@
-using Oleexo.UnambitiousFx.Core;
+using UnambitiousFx.Core;
 
-namespace Oleexo.UnambitiousFx.Mediator.Resolvers;
+namespace UnambitiousFx.Mediator.Resolvers;
 
 /// <summary>
 ///     Represents a dependency resolver used to retrieve implementations of services.

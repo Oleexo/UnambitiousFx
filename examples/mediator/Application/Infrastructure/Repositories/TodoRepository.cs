@@ -1,6 +1,6 @@
 ﻿using Application.Domain.Entities;
 using Application.Domain.Repositories;
-using Oleexo.UnambitiousFx.Core;
+using UnambitiousFx.Core;
 
 namespace Application.Infrastructure.Repositories;
 

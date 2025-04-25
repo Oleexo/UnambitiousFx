@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
-using Oleexo.UnambitiousFx.Core;
+using UnambitiousFx.Core;
 
-namespace Oleexo.UnambitiousFx.Mediator.Resolvers;
+namespace UnambitiousFx.Mediator.Resolvers;
 
 internal sealed class DefaultDependencyResolver : IDependencyResolver {
     private readonly IServiceProvider _serviceProvider;

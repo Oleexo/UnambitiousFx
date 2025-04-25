@@ -1,4 +1,4 @@
-﻿namespace Oleexo.UnambitiousFx.Core;
+﻿namespace UnambitiousFx.Core;
 
 /// Provides extension methods for working with collections of `Result` instances.
 public static class ResultExtensions {

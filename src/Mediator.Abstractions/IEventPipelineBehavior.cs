@@ -1,6 +1,6 @@
-﻿using Oleexo.UnambitiousFx.Core;
+﻿using UnambitiousFx.Core;
 
-namespace Oleexo.UnambitiousFx.Mediator.Abstractions;
+namespace UnambitiousFx.Mediator.Abstractions;
 
 /// <summary>
 ///     Defines an interface for implementing a pipeline behavior that can be executed

@@ -1,9 +1,9 @@
 ﻿using NSubstitute;
-using Oleexo.UnambitiousFx.Mediator.Abstractions;
-using Oleexo.UnambitiousFx.Mediator.Orchestrators;
-using Oleexo.UnambitiousFx.Mediator.Tests.Definitions;
+using UnambitiousFx.Mediator.Abstractions;
+using UnambitiousFx.Mediator.Orchestrators;
+using UnambitiousFx.Mediator.Tests.Definitions;
 
-namespace Oleexo.UnambitiousFx.Mediator.Tests;
+namespace UnambitiousFx.Mediator.Tests;
 
 public sealed class EventHandlerExecutorTests {
     [Fact]

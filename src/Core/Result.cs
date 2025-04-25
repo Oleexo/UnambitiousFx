@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace Oleexo.UnambitiousFx.Core;
+namespace UnambitiousFx.Core;
 
 /// Represents an abstract base class for handling operation results. This class provides methods
 /// and properties to indicate whether an operation was successful or faulted, along with mechanisms

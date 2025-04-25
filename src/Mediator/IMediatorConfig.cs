@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
-using Oleexo.UnambitiousFx.Mediator.Abstractions;
-using Oleexo.UnambitiousFx.Mediator.Orchestrators;
+using UnambitiousFx.Mediator.Abstractions;
+using UnambitiousFx.Mediator.Orchestrators;
 
-namespace Oleexo.UnambitiousFx.Mediator;
+namespace UnambitiousFx.Mediator;
 
 /// <summary>
 ///     Represents the configuration provider for the mediator, allowing the setup of different

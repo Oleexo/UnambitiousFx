@@ -1,4 +1,4 @@
-﻿namespace Oleexo.UnambitiousFx.Mediator.Abstractions;
+﻿namespace UnambitiousFx.Mediator.Abstractions;
 
 /// <summary>
 ///     Represents a factory responsible for creating <see cref="IContext" /> instances.

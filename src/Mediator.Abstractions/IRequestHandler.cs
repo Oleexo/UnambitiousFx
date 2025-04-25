@@ -1,6 +1,6 @@
-using Oleexo.UnambitiousFx.Core;
+using UnambitiousFx.Core;
 
-namespace Oleexo.UnambitiousFx.Mediator.Abstractions;
+namespace UnambitiousFx.Mediator.Abstractions;
 
 /// <summary>
 ///     Defines a contract for a handler responsible for processing a specific type of request.

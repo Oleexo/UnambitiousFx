@@ -1,9 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
-using Oleexo.UnambitiousFx.Mediator.Abstractions;
-using Oleexo.UnambitiousFx.Mediator.Resolvers;
+using UnambitiousFx.Mediator.Abstractions;
+using UnambitiousFx.Mediator.Resolvers;
 
-namespace Oleexo.UnambitiousFx.Mediator;
+namespace UnambitiousFx.Mediator;
 
 /// <summary>
 ///     Provides extension methods for registering mediator services and related components

@@ -1,6 +1,6 @@
-using Oleexo.UnambitiousFx.Mediator.Abstractions;
+using UnambitiousFx.Mediator.Abstractions;
 
-namespace Oleexo.UnambitiousFx.Mediator.Tests.Definitions;
+namespace UnambitiousFx.Mediator.Tests.Definitions;
 
 public sealed record RequestExample : IRequest {
 }

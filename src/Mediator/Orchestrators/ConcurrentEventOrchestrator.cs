@@ -1,7 +1,7 @@
-﻿using Oleexo.UnambitiousFx.Core;
-using Oleexo.UnambitiousFx.Mediator.Abstractions;
+﻿using UnambitiousFx.Core;
+using UnambitiousFx.Mediator.Abstractions;
 
-namespace Oleexo.UnambitiousFx.Mediator.Orchestrators;
+namespace UnambitiousFx.Mediator.Orchestrators;
 
 /// <summary>
 ///     An orchestrator that concurrently executes multiple event handlers for a specified event type.

@@ -1,10 +1,10 @@
 using NSubstitute;
-using Oleexo.UnambitiousFx.Core;
-using Oleexo.UnambitiousFx.Mediator.Abstractions;
-using Oleexo.UnambitiousFx.Mediator.Resolvers;
-using Oleexo.UnambitiousFx.Mediator.Tests.Definitions;
+using UnambitiousFx.Core;
+using UnambitiousFx.Mediator.Abstractions;
+using UnambitiousFx.Mediator.Resolvers;
+using UnambitiousFx.Mediator.Tests.Definitions;
 
-namespace Oleexo.UnambitiousFx.Mediator.Tests;
+namespace UnambitiousFx.Mediator.Tests;
 
 public sealed class PublisherTest {
     private readonly Publisher           _publisher;

@@ -1,7 +1,7 @@
-using Oleexo.UnambitiousFx.Core;
-using Oleexo.UnambitiousFx.Mediator.Abstractions;
+using UnambitiousFx.Core;
+using UnambitiousFx.Mediator.Abstractions;
 
-namespace Oleexo.UnambitiousFx.Mediator.Tests.Definitions;
+namespace UnambitiousFx.Mediator.Tests.Definitions;
 
 public sealed class RequestExampleHandler : IRequestHandler<RequestExample> {
     public bool            Executed        { get; private set; }

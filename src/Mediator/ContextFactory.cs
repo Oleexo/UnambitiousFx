@@ -1,6 +1,6 @@
-﻿using Oleexo.UnambitiousFx.Mediator.Abstractions;
+﻿using UnambitiousFx.Mediator.Abstractions;
 
-namespace Oleexo.UnambitiousFx.Mediator;
+namespace UnambitiousFx.Mediator;
 
 internal sealed class ContextFactory : IContextFactory {
     private readonly IPublisher _publisher;

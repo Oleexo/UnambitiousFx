@@ -1,8 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
-using Oleexo.UnambitiousFx.Mediator.Abstractions;
-using Oleexo.UnambitiousFx.Mediator.Tests.Definitions;
+using UnambitiousFx.Mediator.Abstractions;
+using UnambitiousFx.Mediator.Tests.Definitions;
 
-namespace Oleexo.UnambitiousFx.Mediator.Tests;
+namespace UnambitiousFx.Mediator.Tests;
 
 public sealed class ServiceCollectionExtensionsTests {
     [Fact]

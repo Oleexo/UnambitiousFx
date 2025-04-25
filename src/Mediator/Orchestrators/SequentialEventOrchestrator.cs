@@ -1,7 +1,7 @@
-﻿using Oleexo.UnambitiousFx.Core;
-using Oleexo.UnambitiousFx.Mediator.Abstractions;
+﻿using UnambitiousFx.Core;
+using UnambitiousFx.Mediator.Abstractions;
 
-namespace Oleexo.UnambitiousFx.Mediator.Orchestrators;
+namespace UnambitiousFx.Mediator.Orchestrators;
 
 /// Represents an orchestrator responsible for executing event handlers sequentially.
 /// This class is specifically designed to handle events by invoking each corresponding
