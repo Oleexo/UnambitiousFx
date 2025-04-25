@@ -4,8 +4,9 @@ branches:
     regex: ^master$|^main$
     mode: ContinuousDelivery
     increment: Patch
+    label: ''
   others:
     regex: ^(?!.*main|.*master).*$
     mode: ContinuousDeployment
-    tag: useBranchName
+    label: '{BranchName}'
     increment: Patch
