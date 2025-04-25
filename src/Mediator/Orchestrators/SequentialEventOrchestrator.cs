@@ -3,7 +3,12 @@ using Oleexo.UnambitiousFx.Mediator.Abstractions;
 
 namespace Oleexo.UnambitiousFx.Mediator.Orchestrators;
 
+/// Represents an orchestrator responsible for executing event handlers sequentially.
+/// This class is specifically designed to handle events by invoking each corresponding
+/// event handler in sequence. It ensures that every handler processes the event in the
+/// specified order, and their individual results are aggregated into a single final result.
 public sealed class SequentialEventOrchestrator : IEventOrchestrator {
+    /// <inheritdoc />
     public async ValueTask<Result> RunAsync<TEvent>(IContext                           context,
                                                     IEnumerable<IEventHandler<TEvent>> handlers,
                                                     TEvent                             @event,

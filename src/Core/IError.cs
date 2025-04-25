@@ -31,7 +31,7 @@ public interface IError {
     ///     is linked to the error.
     /// </remarks>
     /// <value>
-    ///     The exception instance that caused the error, or null if no exception is available.
+    ///     The exception instance that caused the error or null if no exception is available.
     /// </value>
     Exception? Exception { get; }
 

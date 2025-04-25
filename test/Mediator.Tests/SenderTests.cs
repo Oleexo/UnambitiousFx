@@ -50,7 +50,7 @@ public sealed class SenderTests {
         // Arrange
         var request = new RequestWithResponseExample();
         _resolver.GetService<IRequestHandler<RequestWithResponseExample, int>>()
-                 .Returns(Option<IRequestHandler<RequestWithResponseExample, int>>.None);
+                 .Returns(Option<IRequestHandler<RequestWithResponseExample, int>>.None());
 
         // Act & Assert
         await Assert.ThrowsAsync<MissingHandlerException>(() => _sender.SendAsync<RequestWithResponseExample, int>(request, CancellationToken.None)

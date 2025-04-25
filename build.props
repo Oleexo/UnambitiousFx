@@ -9,22 +9,8 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>latest</LangVersion>
-        <PackageOutputPath>$(SolutionDir)local_packages</PackageOutputPath>
-        <RepositoryUrl>https://github.com/Oleexo/UnambitiousFx.git</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PublishRepositoryUrl>true</PublishRepositoryUrl>
-        <PackageProjectUrl>https://github.com/Oleexo/UnambitiousFx</PackageProjectUrl>
 
     </PropertyGroup>
 
-    <ItemGroup Condition="$(CI) == 'true'">
-        <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All"/>
-    </ItemGroup>
 
-    <ItemGroup Condition="!Exists('README.md')">
-        <None Include="$(SolutionDir)README.md" Pack="true" PackagePath="\"/>
-    </ItemGroup>
-    <ItemGroup Condition="Exists('README.md')">
-        <None Include="README.md" Pack="true" PackagePath="\"/>
-    </ItemGroup>
 </Project>

@@ -25,7 +25,7 @@ public sealed class TodoRepository : ITodoRepository {
             return ValueTask.FromResult(Option<Todo>.Some(todo));
         }
 
-        return ValueTask.FromResult(Option<Todo>.None);
+        return ValueTask.FromResult(Option<Todo>.None());
     }
 
     public ValueTask<IEnumerable<Todo>> GetAllAsync(CancellationToken cancellationToken = default) {

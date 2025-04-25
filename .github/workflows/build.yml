@@ -40,5 +40,7 @@ jobs:
         run: dotnet build --no-restore --configuration Release --property:Version=${{ steps.gitversion.outputs.SemVer }}
 
       - name: Test
-        run: dotnet test --no-build --verbosity normal --configuration Release  
-      
+        run: dotnet test --no-build --verbosity normal --configuration Release
+
+      - name: Push Packages to GitHub Packages
+        run: dotnet nuget push ./packages/*.nupkg --api-key ${{ secrets.MYGETS_TOKEN }} --source https://www.myget.org/F/unambitiousfx/api/v2/package --skip-duplicate

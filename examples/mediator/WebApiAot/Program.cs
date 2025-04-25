@@ -17,7 +17,7 @@ builder.Services.AddMediator(cfg => {
        .RegisterRequestHandler<ListTodoQueryHandler, ListTodoQuery, IEnumerable<Todo>>()
        .RegisterRequestHandler<TodoQueryHandler, TodoQuery, Todo>()
        .RegisterRequestHandler<UpdateTodoCommandHandler, UpdateTodoCommand>();
-    cfg.RegisterRequestPipelineBehavior<LoggingBehavior>();
+    cfg.RegisterRequestPipelineBehavior<SimpleLoggingBehavior>();
 });
 builder.Services.AddScoped<ITodoRepository, TodoRepository>();
 

@@ -19,8 +19,8 @@ builder.Services.AddMediator(cfg => {
        .RegisterEventHandler<TodoCreatedHandler, TodoCreated>()
        .RegisterEventHandler<TodoUpdatedHandler, TodoUpdated>()
        .RegisterEventHandler<TodoDeletedHandler, TodoDeleted>();
-    cfg.RegisterRequestPipelineBehavior<LoggingBehavior>();
-    cfg.RegisterEventPipelineBehavior<LoggingBehavior>();
+    cfg.RegisterRequestPipelineBehavior<SimpleLoggingBehavior>();
+    cfg.RegisterEventPipelineBehavior<SimpleLoggingBehavior>();
 });
 builder.Services.AddScoped<ITodoRepository, TodoRepository>();
 var app = builder.Build();

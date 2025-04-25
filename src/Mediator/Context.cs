@@ -35,7 +35,7 @@ internal sealed class Context : IContext {
             return Option<TValue>.Some(valueAsTValue);
         }
 
-        return Option<TValue>.None;
+        return Option<TValue>.None();
     }
 
     public ValueTask<Result> PublishAsync<TEvent>(TEvent            @event,

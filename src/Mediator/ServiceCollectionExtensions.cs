@@ -5,7 +5,17 @@ using Oleexo.UnambitiousFx.Mediator.Resolvers;
 
 namespace Oleexo.UnambitiousFx.Mediator;
 
+/// <summary>
+///     Provides extension methods for registering mediator services and related components
+///     within an <see cref="IServiceCollection" />.
+/// </summary>
 public static class ServiceCollectionExtensions {
+    /// <summary>
+    ///     Adds the mediator services to the specified IServiceCollection.
+    /// </summary>
+    /// <param name="services">The service collection to add the mediator services to.</param>
+    /// <param name="configure">A delegate to configure the mediator services.</param>
+    /// <returns>The IServiceCollection with the mediator services added.</returns>
     public static IServiceCollection AddMediator(this IServiceCollection services,
                                                  Action<IMediatorConfig> configure) {
         var cfg = new MediatorConfig(services);

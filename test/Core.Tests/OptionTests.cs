@@ -24,7 +24,7 @@ public sealed class OptionTests {
 
     [Fact]
     public void GivenANoneOption_WhenCallingSome_ThenReturnsFalse() {
-        var option = Option<int>.None;
+        var option = Option<int>.None();
 
         var b = option.Some(out _);
 
@@ -43,7 +43,7 @@ public sealed class OptionTests {
 
     [Fact]
     public void GivenANoneOption_WhenCallingIfSome_ThenDoesNotCallTheAction() {
-        var option = Option<int>.None;
+        var option = Option<int>.None();
 
         var called = false;
         option.IfSome(_ => called = true);
@@ -63,7 +63,7 @@ public sealed class OptionTests {
 
     [Fact]
     public void GivenANoneOption_WhenCallingIfNone_ThenCallsTheAction() {
-        var option = Option<int>.None;
+        var option = Option<int>.None();
 
         var called = false;
         option.IfNone(() => called = true);
@@ -87,14 +87,14 @@ public sealed class OptionTests {
 
     [Fact]
     public void GivenANoneOption_IsSomeShouldBeFalse() {
-        var option = Option<int>.None;
+        var option = Option<int>.None();
 
         Assert.False(option.IsSome);
     }
 
     [Fact]
     public void GivenANoneOption_IsNoneShouldBeTrue() {
-        var option = Option<int>.None;
+        var option = Option<int>.None();
 
         Assert.True(option.IsNone);
     }
@@ -114,7 +114,7 @@ public sealed class OptionTests {
 
     [Fact]
     public async Task GivenANoneOption_WhenCallingAsyncIfSome_ThenDoesNotCallTheAction() {
-        var option = Option<int>.None;
+        var option = Option<int>.None();
 
         var called = false;
         await option.IfSome(_ => {
@@ -140,7 +140,7 @@ public sealed class OptionTests {
 
     [Fact]
     public async Task GivenANoneOption_WhenCallingAsyncIfNone_ThenCallsTheAction() {
-        var option = Option<int>.None;
+        var option = Option<int>.None();
 
         var called = false;
         await option.IfNone(() => {
@@ -160,7 +160,7 @@ public sealed class OptionTests {
 
     [Fact]
     public void GivenANoneOption_CaseShouldReturnNull() {
-        var option = Option<int>.None;
+        var option = Option<int>.None();
 
         Assert.Null(option.Case);
     }
