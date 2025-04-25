@@ -10,10 +10,10 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>latest</LangVersion>
         <PackageOutputPath>$(SolutionDir)local_packages</PackageOutputPath>
-        <RepositoryUrl>https://github.com/Oleexo/UnambitiousDotnet.git</RepositoryUrl>
+        <RepositoryUrl>https://github.com/Oleexo/UnambitiousFx.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
-        <PackageProjectUrl>https://github.com/Oleexo/UnambitiousDotnet</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/Oleexo/UnambitiousFx</PackageProjectUrl>
 
     </PropertyGroup>
 
