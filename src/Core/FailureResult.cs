@@ -132,4 +132,8 @@ internal sealed class FailureResult<TValue> : Result<TValue>
     public override Result<TOut> Bind<TOut>(Func<TValue, Result<TOut>> bind) {
         return new FailureResult<TOut>(_error);
     }
+
+    public override ValueTask<Result<TOut>> Bind<TOut>(Func<TValue, ValueTask<Result<TOut>>> bind) {
+        return new ValueTask<Result<TOut>>(new FailureResult<TOut>(_error));
+    }
 }

@@ -142,14 +142,29 @@ public abstract class Result<TValue> : Result, IResult<TValue>
     /// </summary>
     /// <typeparam name="TOut">The type of the value in the resulting <see cref="Result{TOut}" />.</typeparam>
     /// <param name="bind">
-    ///     A function that takes the current value of type <typeparamref name="TValue" /> as input
-    ///     and returns a new <see cref="Result{TOut}" />.
+    ///     A function to be executed if the current result is successful, returning a new asynchronous result of type
+    ///     <see cref="Result{TOut}" />.
     /// </param>
     /// <returns>
     ///     A new <see cref="Result{TOut}" /> obtained by applying the <paramref name="bind" /> function if the
     ///     current result is successful, or the original failure result if the current result is a failure.
     /// </returns>
     public abstract Result<TOut> Bind<TOut>(Func<TValue, Result<TOut>> bind)
+        where TOut : notnull;
+
+    /// Binds the current result to a transformation function that executes asynchronously, enabling continuation
+    /// of operations on the value if the result is successful.
+    /// If the result is a failure, the original failure is propagated without executing the transformation.
+    /// <typeparam name="TOut">The type of the value in the resulting result from the binding operation.</typeparam>
+    /// <param name="bind">
+    ///     A function to be executed if the current result is successful, returning a new asynchronous result of type
+    ///     <see cref="Result{TOut}" />.
+    /// </param>
+    /// <returns>
+    ///     A new asynchronous result that is the result of the function provided, or the propagated failure in case the
+    ///     current result is a failure.
+    /// </returns>
+    public abstract ValueTask<Result<TOut>> Bind<TOut>(Func<TValue, ValueTask<Result<TOut>>> bind)
         where TOut : notnull;
 
     /// <summary>

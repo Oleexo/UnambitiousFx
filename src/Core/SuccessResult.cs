@@ -127,4 +127,8 @@ internal sealed class SuccessResult<TValue> : Result<TValue>
     public override Result<TOut> Bind<TOut>(Func<TValue, Result<TOut>> bind) {
         return bind(_value);
     }
+
+    public override ValueTask<Result<TOut>> Bind<TOut>(Func<TValue, ValueTask<Result<TOut>>> bind) {
+        return bind(_value);
+    }
 }
