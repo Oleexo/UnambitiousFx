@@ -36,6 +36,34 @@ public abstract class Result : IResult {
     /// <inheritdoc />
     public abstract bool Ok([NotNullWhen(false)] out IError? error);
 
+    /// Binds the current result to another operation that returns a new result. If the current
+    /// result is successful, the provided function is executed, and the result of that function
+    /// is returned. If the current result is faulted, the fault is propagated without executing
+    /// the provided function.
+    /// <param name="bind">
+    ///     A function that takes no parameters and returns a new result. This function is executed
+    ///     only if the current result is successful.
+    /// </param>
+    /// <returns>
+    ///     A new result obtained from executing the provided function if the current result is
+    ///     successful, or the existing faulted result if the current result is faulted.
+    /// </returns>
+    public abstract Result Bind(Func<Result> bind);
+
+    /// Binds the current result to a function that returns a new `Result` instance.
+    /// If the current result is successful, the function provided is executed to determine the next result.
+    /// If the current result is faulted, the fault state is propagated without invoking the provided function.
+    /// <param name="bind">
+    ///     A function that is invoked if the current result is successful. This function returns a new `Result` instance
+    ///     representing the next operation's result.
+    /// </param>
+    /// <returns>
+    ///     Returns the new `Result` instance obtained by invoking the `bind` function if the current result is successful. If
+    ///     the current result is faulted, it returns a propagated fault state.
+    /// </returns>
+    public abstract Result<TOut> Bind<TOut>(Func<Result<TOut>> bind)
+        where TOut : notnull;
+
     /// Represents a successful result.
     /// <return>
     ///     A new instance of a successful result.
@@ -83,14 +111,8 @@ public abstract class Result : IResult {
 /// detailed error information when operations do not succeed.
 /// Designed with flexibility in mind, this class provides methods to act upon success or failure, match results, and
 /// retrieve values or errors, ensuring clean and clear separation between operational contexts.
-public abstract class Result<TValue> : IResult<TValue>
+public abstract class Result<TValue> : Result, IResult<TValue>
     where TValue : notnull {
-    /// <inheritdoc />
-    public abstract bool IsFaulted { get; }
-
-    /// <inheritdoc />
-    public abstract bool IsSuccess { get; }
-
     /// <inheritdoc />
     public abstract void Match(Action<TValue> success,
                                Action<IError> failure);
@@ -104,12 +126,6 @@ public abstract class Result<TValue> : IResult<TValue>
 
     /// <inheritdoc />
     public abstract ValueTask IfSuccess(Func<TValue, ValueTask> action);
-
-    /// <inheritdoc />
-    public abstract void IfFailure(Action<IError> action);
-
-    /// <inheritdoc />
-    public abstract ValueTask IfFailure(Func<IError, ValueTask> action);
 
     /// <inheritdoc />
     public abstract bool Ok([NotNullWhen(true)] out  TValue? value,
@@ -130,7 +146,7 @@ public abstract class Result<TValue> : IResult<TValue>
     /// Creates a new failure result containing the specified error.
     /// <param name="error">The error associated with the failure result.</param>
     /// <returns>A failure result containing the provided error.</returns>
-    public static Result<TValue> Failure(IError error) {
+    public new static Result<TValue> Failure(IError error) {
         return new FailureResult<TValue>(error);
     }
 

@@ -3,21 +3,8 @@ using System.Diagnostics.CodeAnalysis;
 namespace UnambitiousFx.Core;
 
 /// Defines a contract representing the result of an operation, indicating whether it succeeded or failed and providing state information.
-public interface IResult<TValue>
+public interface IResult<TValue> : IResult
     where TValue : notnull {
-    /// Indicates whether the current result represents a failure state.
-    /// If the value of this property is true, it means an error or fault occurred
-    /// during the operation represented by the result. Conversely, if it is false,
-    /// it indicates that the result is either successful or in a non-failure state.
-    bool IsFaulted { get; }
-
-    /// Indicates whether the result represents a successful operation.
-    /// This property returns true if the result signifies success, and false otherwise.
-    /// It is the counterpart of the IsFaulted property, which indicates whether the
-    /// result represents a failure. When IsSuccess is true, the result can be expected
-    /// to hold a valid value or signify a completed operation without errors.
-    bool IsSuccess { get; }
-
     /// Matches the result state and executes the respective action based on whether the result
     /// is successful or faulted. Use this method to handle both success and failure cases directly
     /// through actions.
@@ -54,21 +41,6 @@ public interface IResult<TValue>
     ///     The action to execute if the result is successful. It takes the successfully returned value as a parameter.
     /// </param>
     ValueTask IfSuccess(Func<TValue, ValueTask> action);
-
-    /// Executes the specified action if the result is in a faulted state, passing the associated error.
-    /// Use this method to handle the failure case specifically by executing the provided action.
-    /// <param name="action">
-    ///     The action to execute when the result is faulted. It receives the Error object representing the failure as its
-    ///     parameter.
-    /// </param>
-    void IfFailure(Action<IError> action);
-
-    /// Executes a specified action if the result is faulted. Use this method to perform operations
-    /// based on the failure state of the result object.
-    /// <param name="action">
-    ///     The action to execute if the result is faulted. It takes the Error object representing the error as a parameter.
-    /// </param>
-    ValueTask IfFailure(Func<IError, ValueTask> action);
 
     /// Checks if the result indicates success or failure, and outputs the corresponding value or error.
     /// <param name="value">

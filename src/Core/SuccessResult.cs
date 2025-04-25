@@ -16,6 +16,14 @@ internal sealed class SuccessResult : Result {
         return success();
     }
 
+    public override Result Bind(Func<Result> bind) {
+        return bind();
+    }
+
+    public override Result<TOut> Bind<TOut>(Func<Result<TOut>> bind) {
+        return bind();
+    }
+
     public override void IfSuccess(Action action) {
         action();
     }
@@ -48,6 +56,32 @@ internal sealed class SuccessResult<TValue> : Result<TValue>
     public override bool IsFaulted => false;
     public override bool IsSuccess => true;
 
+    public override void Match(Action         success,
+                               Action<IError> failure) {
+        success();
+    }
+
+    public override TOut Match<TOut>(Func<TOut>         success,
+                                     Func<IError, TOut> failure) {
+        return success();
+    }
+
+    public override Result Bind(Func<Result> bind) {
+        return bind();
+    }
+
+    public override Result<TOut> Bind<TOut>(Func<Result<TOut>> bind) {
+        return bind();
+    }
+
+    public override void IfSuccess(Action action) {
+        action();
+    }
+
+    public override ValueTask IfSuccess(Func<ValueTask> action) {
+        return action();
+    }
+
     public override void Match(Action<TValue> success,
                                Action<IError> failure) {
         success(_value);
@@ -71,6 +105,11 @@ internal sealed class SuccessResult<TValue> : Result<TValue>
 
     public override ValueTask IfFailure(Func<IError, ValueTask> action) {
         return ValueTask.CompletedTask;
+    }
+
+    public override bool Ok([NotNullWhen(false)] out IError? error) {
+        error = null;
+        return true;
     }
 
     public override bool Ok([NotNullWhen(true)] out  TValue? value,
