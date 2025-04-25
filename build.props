@@ -9,6 +9,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>latest</LangVersion>
+        <Copyright>Copyright 2025 (c) Maxime Charles. All rights reserved.</Copyright>
 
     </PropertyGroup>
 
