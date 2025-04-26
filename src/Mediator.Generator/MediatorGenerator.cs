@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
 namespace UnambitiousFx.Mediator.Generator;
@@ -65,5 +66,89 @@ public class MediatorGenerator : IIncrementalGenerator {
     public void Initialize(IncrementalGeneratorInitializationContext context) {
         context.RegisterPostInitializationOutput(x => x.AddSource($"{LongRequestHandlerAttributeName}.g.cs", SourceText.From(RequestHandlerAttributeCode, Encoding.UTF8)));
         context.RegisterPostInitializationOutput(x => x.AddSource($"{LongEventHandlerAttributeName}.g.cs",   SourceText.From(EventHandlerAttributeCode,   Encoding.UTF8)));
+
+        // Get the compilation
+        var compilationProvider = context.CompilationProvider;
+
+        // Transform the compilation to extract the root namespace
+        var rootNamespaceProvider = compilationProvider
+           .Select((compilation,
+                    _) => compilation.GetRootNamespaceFromAssemblyAttributes());
+
+
+        var requestHandlerWithResponseDetails = context.SyntaxProvider.ForAttributeWithMetadataName($"{FullRequestHandlerAttributeName}`2", static (node,
+                                                                                                        _) => {
+                                                                                                        var isClass = node is ClassDeclarationSyntax;
+
+                                                                                                        return isClass;
+                                                                                                    },
+                                                                                                    static (ctx,
+                                                                                                            _) => GetRequestHandlerDetail(ctx));
+        var requestHandlerWithoutResponseDetails = context.SyntaxProvider.ForAttributeWithMetadataName($"{FullRequestHandlerAttributeName}`1", static (node,
+                                                                                                           _) => {
+                                                                                                           var isClass = node is ClassDeclarationSyntax;
+
+                                                                                                           return isClass;
+                                                                                                       },
+                                                                                                       static (ctx,
+                                                                                                               _) => GetRequestHandlerDetail(ctx));
+
+        // Merge both request handler collections
+        var allRequestHandlers = requestHandlerWithResponseDetails.Collect()
+                                                                  .Combine(requestHandlerWithoutResponseDetails.Collect())
+                                                                  .Select((tuple, _) => tuple.Left.AddRange(tuple.Right));
+        
+        var combinedProvider = allRequestHandlers.Combine(rootNamespaceProvider);
+
+        context.RegisterSourceOutput(combinedProvider, (ctx,
+                                                        tuple) => {
+            var (details, rootNamespace) = tuple;
+            ctx.AddSource("RegisterGroup.g.cs", RegisterGroupFactory.Create(rootNamespace, AbstractionsNamespace, details));
+        });
+    }
+
+    private static RequestHandlerDetail? GetRequestHandlerDetail(GeneratorAttributeSyntaxContext ctx) {
+        foreach (var attribute in ctx.Attributes) {
+            if (!(attribute.AttributeClass?.Name is LongRequestHandlerAttributeName or ShortRequestHandlerAttributeName)) {
+                // wrong attribute
+                continue;
+            }
+
+            if (ctx.TargetNode is not ClassDeclarationSyntax classDeclaration) {
+                // not a class
+                continue;
+            }
+
+            var className  = classDeclaration.Identifier.ValueText;
+            var @namespace = classDeclaration.GetNamespace();
+            var (requestType, responseType) = GetRequestInfo(attribute);
+
+            return new RequestHandlerDetail(className, @namespace, requestType, responseType);
+        }
+
+        return null;
+    }
+
+    private static (string RequestType, string? ResponseType) GetRequestInfo(AttributeData attribute) {
+        // Get the attribute constructor's type arguments
+        var typeArgs = attribute.AttributeClass?.TypeArguments;
+        if (typeArgs is null ||
+            typeArgs.Value.Length == 0) {
+            return (string.Empty, null);
+        }
+
+
+        // Get the fully qualified name of the request type
+        var requestType = typeArgs.Value[0]
+                                  .ToDisplayString();
+
+        // Check if there's a response type (generic attribute with 2 type parameters)
+        string? responseType = null;
+        if (typeArgs.Value.Length > 1) {
+            responseType = typeArgs.Value[1]
+                                   .ToDisplayString();
+        }
+
+        return (requestType, responseType);
     }
 }
