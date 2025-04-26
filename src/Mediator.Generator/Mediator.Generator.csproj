@@ -9,6 +9,9 @@
         <IncludeBuildOutput>false</IncludeBuildOutput>
         <IsRoslynComponent>true</IsRoslynComponent>
         <IsAotCompatible>false</IsAotCompatible>
+        <GenerateDocumentationFile>false</GenerateDocumentationFile>
+        <IncludeSymbols>false</IncludeSymbols>
+        <NoWarn>$(NoWarn);NU5128</NoWarn>
     </PropertyGroup>
 
 
@@ -16,5 +19,18 @@
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all"/>
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all"/>
     </ItemGroup>
+
+    <ItemGroup>
+        <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true"
+              PackagePath="analyzers/dotnet/cs" Visible="false"/>
+    </ItemGroup>
+
+    <Target Name="AddAnalyzerToPackage" BeforeTargets="GenerateNuspec">
+        <ItemGroup>
+            <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true"
+                  PackagePath="analyzers/dotnet/cs"/>
+        </ItemGroup>
+    </Target>
+
 
 </Project>
