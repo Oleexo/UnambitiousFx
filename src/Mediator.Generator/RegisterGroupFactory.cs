@@ -5,9 +5,9 @@ using Microsoft.CodeAnalysis.Text;
 namespace UnambitiousFx.Mediator.Generator;
 
 internal static class RegisterGroupFactory {
-    public static SourceText Create(string?                               rootNamespace,
-                                    string                                abstractionsNamespace,
-                                    ImmutableArray<RequestHandlerDetail?> details) {
+    public static SourceText Create(string?                        rootNamespace,
+                                    string                         abstractionsNamespace,
+                                    ImmutableArray<HandlerDetail?> details) {
         var sb = new StringBuilder();
 
         sb.AppendLine($"namespace {rootNamespace};");
@@ -21,18 +21,37 @@ internal static class RegisterGroupFactory {
                 continue;
             }
 
-            if (detail.Value.ResponseType is null) {
-                sb.AppendLine($"        builder.RegisterRequestHandler<{GlobalizeType(detail.Value.RequestHandlerType)}, {GlobalizeType(detail.Value.RequestType)}>();");
-            }
-            else {
-                sb.AppendLine(
-                    $"        builder.RegisterRequestHandler<{GlobalizeType(detail.Value.RequestHandlerType)},{GlobalizeType(detail.Value.RequestType)}, {GlobalizeType(detail.Value.ResponseType)}>();");
+            switch (detail.Value.HandlerType) {
+                case HandlerType.RequestHandler:
+                    RegisterRequestHandler(sb, detail.Value);
+                    break;
+                case HandlerType.EventHandler:
+                    RegisterEventHandler(sb, detail.Value);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
         sb.AppendLine("    }");
         sb.AppendLine("}");
         return SourceText.From(sb.ToString(), Encoding.UTF8);
+    }
+
+    private static void RegisterEventHandler(StringBuilder sb,
+                                             HandlerDetail detail) {
+        sb.AppendLine($"        builder.RegisterEventHandler<{GlobalizeType(detail.FullHandlerTypeName)}, {GlobalizeType(detail.FullTargetTypeName)}>();");
+    }
+
+    private static void RegisterRequestHandler(StringBuilder sb,
+                                               HandlerDetail detail) {
+        if (detail.FullResponseType is null) {
+            sb.AppendLine($"        builder.RegisterRequestHandler<{GlobalizeType(detail.FullHandlerTypeName)}, {GlobalizeType(detail.FullTargetTypeName)}>();");
+        }
+        else {
+            sb.AppendLine(
+                $"        builder.RegisterRequestHandler<{GlobalizeType(detail.FullHandlerTypeName)}, {GlobalizeType(detail.FullTargetTypeName)}, {GlobalizeType(detail.FullResponseType)}>();");
+        }
     }
 
     private static string GlobalizeType(string input) {

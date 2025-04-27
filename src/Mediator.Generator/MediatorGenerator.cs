@@ -92,13 +92,24 @@ public class MediatorGenerator : IIncrementalGenerator {
                                                                                                        },
                                                                                                        static (ctx,
                                                                                                                _) => GetRequestHandlerDetail(ctx));
+        var eventHandlerDetails = context.SyntaxProvider.ForAttributeWithMetadataName($"{FullEventHandlerAttributeName}`1", static (node,
+                                                                                          _) => {
+                                                                                          var isClass = node is ClassDeclarationSyntax;
 
-        // Merge both request handler collections
-        var allRequestHandlers = requestHandlerWithResponseDetails.Collect()
-                                                                  .Combine(requestHandlerWithoutResponseDetails.Collect())
-                                                                  .Select((tuple, _) => tuple.Left.AddRange(tuple.Right));
-        
-        var combinedProvider = allRequestHandlers.Combine(rootNamespaceProvider);
+                                                                                          return isClass;
+                                                                                      },
+                                                                                      static (ctx,
+                                                                                              _) => GetEventHandlerDetail(ctx));
+
+        var allHandlerDetails = requestHandlerWithResponseDetails.Collect()
+                                                                 .Combine(requestHandlerWithoutResponseDetails.Collect())
+                                                                 .Select((tuple,
+                                                                          _) => tuple.Left.AddRange(tuple.Right))
+                                                                 .Combine(eventHandlerDetails.Collect())
+                                                                 .Select((tuple,
+                                                                          _) => tuple.Left.AddRange(tuple.Right));
+
+        var combinedProvider = allHandlerDetails.Combine(rootNamespaceProvider);
 
         context.RegisterSourceOutput(combinedProvider, (ctx,
                                                         tuple) => {
@@ -107,7 +118,7 @@ public class MediatorGenerator : IIncrementalGenerator {
         });
     }
 
-    private static RequestHandlerDetail? GetRequestHandlerDetail(GeneratorAttributeSyntaxContext ctx) {
+    private static HandlerDetail? GetRequestHandlerDetail(GeneratorAttributeSyntaxContext ctx) {
         foreach (var attribute in ctx.Attributes) {
             if (!(attribute.AttributeClass?.Name is LongRequestHandlerAttributeName or ShortRequestHandlerAttributeName)) {
                 // wrong attribute
@@ -123,7 +134,29 @@ public class MediatorGenerator : IIncrementalGenerator {
             var @namespace = classDeclaration.GetNamespace();
             var (requestType, responseType) = GetRequestInfo(attribute);
 
-            return new RequestHandlerDetail(className, @namespace, requestType, responseType);
+            return new HandlerDetail(HandlerType.RequestHandler, className, @namespace, requestType, responseType);
+        }
+
+        return null;
+    }
+
+    private static HandlerDetail? GetEventHandlerDetail(GeneratorAttributeSyntaxContext ctx) {
+        foreach (var attribute in ctx.Attributes) {
+            if (!(attribute.AttributeClass?.Name is LongEventHandlerAttributeName or ShortEventHandlerAttributeName)) {
+                // wrong attribute
+                continue;
+            }
+
+            if (ctx.TargetNode is not ClassDeclarationSyntax classDeclaration) {
+                // not a class
+                continue;
+            }
+
+            var className  = classDeclaration.Identifier.ValueText;
+            var @namespace = classDeclaration.GetNamespace();
+            var (requestType, responseType) = GetRequestInfo(attribute);
+
+            return new HandlerDetail(HandlerType.EventHandler, className, @namespace, requestType, responseType);
         }
 
         return null;
