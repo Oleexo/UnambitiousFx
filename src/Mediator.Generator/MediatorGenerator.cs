@@ -64,8 +64,10 @@ public class MediatorGenerator : IIncrementalGenerator {
     ///     that allow the generator to specify how it interacts with the compilation process.
     /// </param>
     public void Initialize(IncrementalGeneratorInitializationContext context) {
-        context.RegisterPostInitializationOutput(x => x.AddSource($"{LongRequestHandlerAttributeName}.g.cs", SourceText.From(RequestHandlerAttributeCode, Encoding.UTF8)));
-        context.RegisterPostInitializationOutput(x => x.AddSource($"{LongEventHandlerAttributeName}.g.cs",   SourceText.From(EventHandlerAttributeCode,   Encoding.UTF8)));
+        context.RegisterPostInitializationOutput(static x => {
+            x.AddSource($"{LongRequestHandlerAttributeName}.g.cs", SourceText.From(RequestHandlerAttributeCode, Encoding.UTF8));
+            x.AddSource($"{LongEventHandlerAttributeName}.g.cs",   SourceText.From(EventHandlerAttributeCode,   Encoding.UTF8));
+        });
 
         // Get the compilation
         var compilationProvider = context.CompilationProvider;
@@ -111,8 +113,8 @@ public class MediatorGenerator : IIncrementalGenerator {
 
         var combinedProvider = allHandlerDetails.Combine(rootNamespaceProvider);
 
-        context.RegisterSourceOutput(combinedProvider, (ctx,
-                                                        tuple) => {
+        context.RegisterSourceOutput(combinedProvider, static (ctx,
+                                                               tuple) => {
             var (details, rootNamespace) = tuple;
             if (string.IsNullOrEmpty(rootNamespace)) {
                 ctx.ReportDiagnostic(Diagnostic.Create(
