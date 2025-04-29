@@ -116,16 +116,55 @@ public class MediatorGenerator : IIncrementalGenerator {
             var (details, rootNamespace) = tuple;
             if (string.IsNullOrEmpty(rootNamespace)) {
                 ctx.ReportDiagnostic(Diagnostic.Create(
-                    new DiagnosticDescriptor(
-                        "MDG001",
-                        "Root namespace not found",
-                        "Root namespace could not be determined. Please ensure assembly has a root namespace defined.",
-                        "Mediator.Generator",
-                        DiagnosticSeverity.Error,
-                        true),
-                    Location.None));
+                                         new DiagnosticDescriptor(
+                                             "MDG001",
+                                             "Root namespace not found",
+                                             "Root namespace could not be determined. Please ensure assembly has a root namespace defined.",
+                                             "Mediator.Generator",
+                                             DiagnosticSeverity.Error,
+                                             true),
+                                         Location.None));
                 return;
             }
+
+            if (details.Length == 0) {
+                ctx.ReportDiagnostic(Diagnostic.Create(
+                                         new DiagnosticDescriptor(
+                                             "MDG002",
+                                             "No handler found",
+                                             "No handler found in this assembly. Use RequestHandlerAttribute or EventHandlerAttribute to mark a class as a handler.",
+                                             "Mediator.Generator",
+                                             DiagnosticSeverity.Info,
+                                             true),
+                                         Location.None));
+            }
+            else {
+                foreach (var detail in details) {
+                    if (detail is null) {
+                        ctx.ReportDiagnostic(Diagnostic.Create(
+                                                 new DiagnosticDescriptor(
+                                                     "MDG004",
+                                                     "Null handler found",
+                                                     "Null handler found in this assembly. Use RequestHandlerAttribute or EventHandlerAttribute to mark a class as a handler.",
+                                                     "Mediator.Generator",
+                                                     DiagnosticSeverity.Warning,
+                                                     true),
+                                                 Location.None));
+                    }
+                    else {
+                        ctx.ReportDiagnostic(Diagnostic.Create(
+                                                 new DiagnosticDescriptor(
+                                                     "MDG003",
+                                                     "Handler found",
+                                                     $"Handler {detail.Value.ClassName}",
+                                                     "Mediator.Generator",
+                                                     DiagnosticSeverity.Info,
+                                                     true),
+                                                 detail.Value.Location ?? Location.None));
+                    }
+                }
+            }
+
             ctx.AddSource("RegisterGroup.g.cs", RegisterGroupFactory.Create(rootNamespace, AbstractionsNamespace, details));
         });
     }
@@ -146,7 +185,8 @@ public class MediatorGenerator : IIncrementalGenerator {
             var @namespace = classDeclaration.GetNamespace();
             var (requestType, responseType) = GetRequestInfo(attribute);
 
-            return new HandlerDetail(HandlerType.RequestHandler, className, @namespace, requestType, responseType);
+            var location = classDeclaration.GetLocation();
+            return new HandlerDetail(HandlerType.RequestHandler, className, @namespace, requestType, responseType, location);
         }
 
         return null;
@@ -168,7 +208,9 @@ public class MediatorGenerator : IIncrementalGenerator {
             var @namespace = classDeclaration.GetNamespace();
             var (requestType, responseType) = GetRequestInfo(attribute);
 
-            return new HandlerDetail(HandlerType.EventHandler, className, @namespace, requestType, responseType);
+            var location = classDeclaration.GetLocation();
+
+            return new HandlerDetail(HandlerType.EventHandler, className, @namespace, requestType, responseType, location);
         }
 
         return null;

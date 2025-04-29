@@ -1,3 +1,5 @@
+using Microsoft.CodeAnalysis;
+
 namespace UnambitiousFx.Mediator.Generator;
 
 public readonly record struct HandlerDetail {
@@ -5,18 +7,21 @@ public readonly record struct HandlerDetail {
                          string      className,
                          string      @namespace,
                          string      fullTargetTypeName,
-                         string?     fullResponseType) {
+                         string?     fullResponseType,
+                         Location?   location) {
         HandlerType        = handlerType;
         ClassName          = className;
         Namespace          = @namespace;
         FullTargetTypeName = fullTargetTypeName;
         FullResponseType   = fullResponseType;
+        Location           = location;
     }
 
     public string      ClassName           { get; }
     public string      Namespace           { get; }
     public string      FullTargetTypeName  { get; }
     public string?     FullResponseType    { get; }
+    public Location?   Location            { get; }
     public HandlerType HandlerType         { get; }
     public string      FullHandlerTypeName => $"{Namespace}.{ClassName}";
 }
