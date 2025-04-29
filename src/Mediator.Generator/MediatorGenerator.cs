@@ -114,6 +114,18 @@ public class MediatorGenerator : IIncrementalGenerator {
         context.RegisterSourceOutput(combinedProvider, (ctx,
                                                         tuple) => {
             var (details, rootNamespace) = tuple;
+            if (string.IsNullOrEmpty(rootNamespace)) {
+                ctx.ReportDiagnostic(Diagnostic.Create(
+                    new DiagnosticDescriptor(
+                        "MDG001",
+                        "Root namespace not found",
+                        "Root namespace could not be determined. Please ensure assembly has a root namespace defined.",
+                        "Mediator.Generator",
+                        DiagnosticSeverity.Error,
+                        true),
+                    Location.None));
+                return;
+            }
             ctx.AddSource("RegisterGroup.g.cs", RegisterGroupFactory.Create(rootNamespace, AbstractionsNamespace, details));
         });
     }
