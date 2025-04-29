@@ -11,6 +11,7 @@ internal static class RegisterGroupFactory {
         var sb = new StringBuilder();
 
         sb.AppendLine($"namespace {rootNamespace};");
+        sb.AppendLine();
 
         sb.AppendLine($"public sealed class RegisterGroup : global::{abstractionsNamespace}.IRegisterGroup");
         sb.AppendLine("{");

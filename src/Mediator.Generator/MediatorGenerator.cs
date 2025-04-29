@@ -74,8 +74,8 @@ public class MediatorGenerator : IIncrementalGenerator {
 
         // Transform the compilation to extract the root namespace
         var rootNamespaceProvider = compilationProvider
-           .Select((compilation,
-                    _) => compilation.GetRootNamespaceFromAssemblyAttributes());
+           .Select(static (compilation,
+                           _) => compilation.GetRootNamespaceFromAssemblyAttributes());
 
 
         var requestHandlerWithResponseDetails = context.SyntaxProvider.ForAttributeWithMetadataName($"{FullRequestHandlerAttributeName}`2", static (node,
@@ -105,17 +105,28 @@ public class MediatorGenerator : IIncrementalGenerator {
 
         var allHandlerDetails = requestHandlerWithResponseDetails.Collect()
                                                                  .Combine(requestHandlerWithoutResponseDetails.Collect())
-                                                                 .Select((tuple,
-                                                                          _) => tuple.Left.AddRange(tuple.Right))
+                                                                 .Select(static (tuple,
+                                                                                 _) => tuple.Left.AddRange(tuple.Right))
                                                                  .Combine(eventHandlerDetails.Collect())
-                                                                 .Select((tuple,
-                                                                          _) => tuple.Left.AddRange(tuple.Right));
+                                                                 .Select(static (tuple,
+                                                                                 _) => tuple.Left.AddRange(tuple.Right));
 
         var combinedProvider = allHandlerDetails.Combine(rootNamespaceProvider);
 
         context.RegisterSourceOutput(combinedProvider, static (ctx,
                                                                tuple) => {
             var (details, rootNamespace) = tuple;
+            ctx.ReportDiagnostic(Diagnostic.Create(
+                                     new DiagnosticDescriptor(
+                                         "MDG005",
+                                         "RegisterGroup generation started",
+                                         "RegisterGroup generation started with {0} handlers and root namespace {1}",
+                                         "Mediator.Generator",
+                                         DiagnosticSeverity.Info,
+                                         true),
+                                     Location.None,
+                                     details.Length, rootNamespace));
+
             if (string.IsNullOrEmpty(rootNamespace)) {
                 ctx.ReportDiagnostic(Diagnostic.Create(
                                          new DiagnosticDescriptor(
