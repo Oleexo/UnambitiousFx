@@ -19,32 +19,37 @@
 # in the templates via {{ site.myvariable }}.
 
 title: UnambitiousFx
+email: your-email@example.com
 description: >- # this means to ignore newlines until "baseurl:"
-  UnambitiousFx is a collection of C# libraries designed to simplify 
-  common programming tasks with a focus on simplicity and usability.
+  UnambitiousFx is a collection of modular .NET libraries for web API development,
+  featuring functional programming constructs, mediator pattern implementation,
+  and messaging capabilities. Designed for simplicity, flexibility, and Native AOT compatibility.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
-github_username: UnambitiousFx
+twitter_username: jekyllrb
+github_username:  jekyll
 
 # Build settings
-theme: minima
+theme: just-the-docs
 plugins:
   - jekyll-feed
 
-# Collections
-collections:
-  docs:
-    output: true
-    permalink: /docs/:path/
-
-# Default front matter for collections
 defaults:
   - scope:
-      path: ""
-      type: "docs"
+      path: "docs" # an empty string here means all files in the project
+      type: "pages"
     values:
-      layout: "page"
-      nav_order: 1
+      layout: "default"
+
+color_scheme: dark
+
+# Back to top link
+back_to_top: true
+back_to_top_text: "Back to top"
+
+nav_external_links:
+  - title: Github
+    url: https://github.com/oleexo/UnambitiousFx
 
 # Exclude from processing.
 # The following items will not be processed, by default.
