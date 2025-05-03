@@ -1,29 +1,17 @@
 <Project>
     <PropertyGroup>
         <Authors>Oleexo</Authors>
-        <RootNamespace>$(Authors).UnambitiousFx.$(MSBuildProjectName)</RootNamespace>
-        <AssemblyName>$(Authors).UnambitiousFx.$(MSBuildProjectName)</AssemblyName>
+        <Product>UnambitiousFx</Product>
+        <RootNamespace>$(Product).$(MSBuildProjectName)</RootNamespace>
+        <AssemblyName>$(Product).$(MSBuildProjectName)</AssemblyName>
         <WarningsAsErrors>true</WarningsAsErrors>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>latest</LangVersion>
-        <PackageOutputPath>$(SolutionDir)local_packages</PackageOutputPath>
-        <RepositoryUrl>https://github.com/Oleexo/UnambitiousDotnet.git</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PublishRepositoryUrl>true</PublishRepositoryUrl>
-        <PackageProjectUrl>https://github.com/Oleexo/UnambitiousDotnet</PackageProjectUrl>
-        
+        <Copyright>Copyright 2025 (c) Maxime Charles. All rights reserved.</Copyright>
+
     </PropertyGroup>
 
-    <ItemGroup Condition="$(CI) == 'true'">
-        <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All"/>
-    </ItemGroup>
 
-    <ItemGroup Condition="!Exists('README.MD')">
-        <None Include="$(SolutionDir)README.MD" Pack="true" PackagePath="\"/>
-    </ItemGroup>
-    <ItemGroup Condition="Exists('README.MD')">
-        <None Include="README.MD" Pack="true" PackagePath="\"/>
-    </ItemGroup>
 </Project>

@@ -1,0 +1,12 @@
+next-version: 0.1.0
+branches:
+  main:
+    regex: ^master$|^main$
+    mode: ContinuousDelivery
+    increment: Patch
+    label: ''
+  others:
+    regex: ^(?!.*main|.*master).*$
+    mode: ContinuousDeployment
+    label: '{BranchName}'
+    increment: Patch

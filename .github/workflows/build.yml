@@ -1,18 +1,34 @@
 ﻿name: Build and Test
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
+    paths:
+      - '**.cs'
+      - '**.csproj'
+      - '**.props'
+      - '.github/workflows/build.yml'
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    if: github.event.pull_request.draft == false
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v3.2.0
+        with:
+          versionSpec: '6.2.x'
+
+      - name: Determine Version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v3.2.0
+        with:
+          useConfigFile: true
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -22,7 +38,13 @@ jobs:
         run: dotnet restore
 
       - name: Build
-        run: dotnet build --no-restore --configuration Release
+        run: dotnet build --no-restore --configuration Release --property:Version=${{ steps.gitversion.outputs.SemVer }}
 
       - name: Test
         run: dotnet test --no-build --verbosity normal --configuration Release
+
+      - name: Pack NuGet packages
+        run: dotnet pack --configuration Release --no-build --property:Version=${{ steps.gitversion.outputs.SemVer }}
+
+      - name: Push Packages to GitHub Packages
+        run: dotnet nuget push ./local_packages/*.nupkg --api-key ${{ secrets.MYGETS_TOKEN }} --source https://www.myget.org/F/unambitiousfx/api/v2/package --skip-duplicate

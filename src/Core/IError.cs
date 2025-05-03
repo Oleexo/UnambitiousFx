@@ -1,10 +1,9 @@
-namespace Oleexo.UnambitiousFx.Core;
+namespace UnambitiousFx.Core;
 
 /// <summary>
 ///     Represents a contract for defining application errors with extended information.
 /// </summary>
-public interface IError
-{
+public interface IError {
     /// <summary>
     ///     Gets the descriptive message associated with the error.
     /// </summary>
@@ -32,7 +31,7 @@ public interface IError
     ///     is linked to the error.
     /// </remarks>
     /// <value>
-    ///     The exception instance that caused the error, or null if no exception is available.
+    ///     The exception instance that caused the error or null if no exception is available.
     /// </value>
     Exception? Exception { get; }
 
@@ -40,7 +39,7 @@ public interface IError
     ///     A collection of child errors associated with the current error.
     ///     This property helps capture additional context or details by linking related errors together.
     /// </summary>
-    IEnumerable<Error> Children { get; }
+    IEnumerable<IError> Children { get; }
 
     /// Provides additional information related to the error.
     /// This property contains a dictionary where the keys represent custom metadata keys associated with the error,
