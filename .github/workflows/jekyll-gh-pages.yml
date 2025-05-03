@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - "main"
+      - "fix/jekyll-theme-building"
     paths:
       - 'docs/*'
       - '.github/workflows/jekyll-gh-pages.yml'
@@ -43,7 +44,7 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Build with Jekyll
         # Outputs to the './_site' directory by default
-        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}" --source "./docs"
         env:
           JEKYLL_ENV: production
       - name: Upload artifact
