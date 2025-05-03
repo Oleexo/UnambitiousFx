@@ -6,7 +6,6 @@ on:
   push:
     branches:
       - "main"
-      - "features/init-pages-pipeline"
     paths:
       - 'docs/*'
       - '.github/workflows/jekyll-gh-pages.yml'
