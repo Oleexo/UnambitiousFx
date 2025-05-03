@@ -43,4 +43,12 @@ internal sealed class SomeOption<TValue> : Option<TValue>
                                Action         none) {
         some(_value);
     }
+
+    public override Option<TOut> Bind<TOut>(Func<TValue, Option<TOut>> someFunc) {
+        return someFunc(_value);
+    }
+
+    public override ValueTask<Option<TOut>> Bind<TOut>(Func<TValue, ValueTask<Option<TOut>>> someFunc) {
+        return someFunc(_value);
+    }
 }

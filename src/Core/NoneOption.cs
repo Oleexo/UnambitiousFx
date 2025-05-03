@@ -37,4 +37,12 @@ internal sealed class NoneOption<TValue> : Option<TValue>
                                Action         none) {
         none();
     }
+
+    public override Option<TOut> Bind<TOut>(Func<TValue, Option<TOut>> someFunc) {
+        return new NoneOption<TOut>();
+    }
+
+    public override ValueTask<Option<TOut>> Bind<TOut>(Func<TValue, ValueTask<Option<TOut>>> someFunc) {
+        return new ValueTask<Option<TOut>>();
+    }
 }

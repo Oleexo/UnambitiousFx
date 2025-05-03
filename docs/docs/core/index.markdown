@@ -12,9 +12,9 @@ The Core library of UnambitiousFx provides fundamental functional programming ty
 
 The library includes three main types:
 
-- **[Result](result.html)** - Represents the outcome of an operation that can either succeed with a value or fail with an error
-- **[Option](option.html)** - Represents an optional value that may or may not be present
-- **[Either](either.html)** - Represents a value that can be one of two possible types
+- **[Result](result.markdown)** - Represents the outcome of an operation that can either succeed with a value or fail with an error
+- **[Option](option.markdown)** - Represents an optional value that may or may not be present
+- **[Either](either.markdown)** - Represents a value that can be one of two possible types
 
 These types help you write code that is more explicit about possible outcomes, reducing the need for exceptions and null checks, and making your code more predictable and easier to reason about.
 
@@ -30,10 +30,9 @@ These types help you write code that is more explicit about possible outcomes, r
 
 Click on each type to learn more about its usage and features:
 
-- [Result](result.html) - For operations that can succeed or fail
-- [Option](option.html) - For values that may or may not be present
-- [Either](either.html) - For values that can be one of two possible types
-- [Combining Types](combining-types.html) - For creating powerful abstractions with multiple types
+- [Result](result.markdown) - For operations that can succeed or fail
+- [Option](option.markdown) - For values that may or may not be present
+- [Either](either.markdown) - For values that can be one of two possible types
 
 ## Example
 

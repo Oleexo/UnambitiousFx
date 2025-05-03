@@ -68,6 +68,32 @@ public abstract class Option<TValue> : IOption<TValue>
     public abstract void Match(Action<TValue> some,
                                Action         none);
 
+    /// Transforms the value contained in the current Option instance using the specified function and returns a new Option instance.
+    /// If the current instance is None, the function is not invoked, and None is returned.
+    /// <param name="someFunc">A function to transform the value of type TValue into an <see cref="Option{TOut}" /> instance.</param>
+    /// <typeparam name="TOut">The type of value contained in the resulting <see cref="Option{TOut}" />.</typeparam>
+    /// <returns>
+    ///     An <see cref="Option{TOut}" /> containing the transformed value if the current instance is Some; otherwise,
+    ///     None.
+    /// </returns>
+    public abstract Option<TOut> Bind<TOut>(Func<TValue, Option<TOut>> someFunc)
+        where TOut : notnull;
+
+    /// Transforms the value contained in the current Option instance asynchronously using the specified function
+    /// and returns a new Option instance wrapped in a ValueTask.
+    /// If the current instance is None, the function is not invoked, and None is returned.
+    /// <param name="someFunc">
+    ///     A function to transform the value of type TValue into a <see cref="ValueTask{TResult}" />
+    ///     containing an <see cref="Option{TOut}" /> instance.
+    /// </param>
+    /// <typeparam name="TOut">The type of value contained in the resulting <see cref="Option{TOut}" />.</typeparam>
+    /// <returns>
+    ///     A <see cref="ValueTask{TResult}" /> containing an <see cref="Option{TOut}" />
+    ///     if the current instance is Some; otherwise, an <see cref="Option{TOut}" /> representing None.
+    /// </returns>
+    public abstract ValueTask<Option<TOut>> Bind<TOut>(Func<TValue, ValueTask<Option<TOut>>> someFunc)
+        where TOut : notnull;
+
     /// Creates an Option instance that represents no value.
     /// <returns>An <see cref="Option{TValue}" /> instance representing no value.</returns>
     public static Option<TValue> None() {
@@ -81,5 +107,16 @@ public abstract class Option<TValue> : IOption<TValue>
     /// <returns>An <see cref="Option{TValue}" /> containing the specified value.</returns>
     public static Option<TValue> Some(TValue value) {
         return new SomeOption<TValue>(value);
+    }
+
+    /// Defines an implicit conversion from a value of type
+    /// <typeparamref name="TValue" />
+    /// to an
+    /// <see cref="Option{TValue}" />
+    /// .
+    /// <param name="value">The value to convert into an Option. The value cannot be null.</param>
+    /// <returns>An <see cref="Option{TValue}" /> instance containing the provided value.</returns>
+    public static implicit operator Option<TValue>(TValue value) {
+        return Some(value);
     }
 }

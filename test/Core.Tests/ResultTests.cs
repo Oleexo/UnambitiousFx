@@ -1,5 +1,8 @@
+using JetBrains.Annotations;
+
 namespace UnambitiousFx.Core.Tests;
 
+[TestSubject(typeof(Result<>))]
 public sealed class ResultTests {
     [Fact]
     public void GivenASuccessResult_WhenCallingOk_ThenReturnsTrue() {
@@ -113,5 +116,38 @@ public sealed class ResultTests {
         result.Match(_ => called = false, _ => called = true);
 
         Assert.True(called);
+    }
+
+    [Fact]
+    public void GivenMultipleFunctions_WhenChained_ThenCallsTheLastFunction() {
+        var result = GetUser("toto")
+                    .Bind(user => GetLatestOrder(user))
+                    .Bind(tuple => GetShippingInfo(tuple));
+
+        if (result.Ok(out var value, out _)) {
+            Assert.Equal("Hello 42 from fx", value);
+        }
+        else {
+            Assert.Fail("Result should be successful but was marked as failed");
+        }
+
+        return;
+
+        Result<string> GetShippingInfo((string order, int user) tuple) {
+            return $"Hello {tuple.user} from {tuple.order}";
+        }
+
+        Result<(string, int)> GetLatestOrder(int user) {
+            return user == 42
+                       ? ("fx", 42)
+                       : ("fx", 24);
+        }
+
+        // Example of chaining operations that might fail
+        Result<int> GetUser(string userId) {
+            return userId == "toto"
+                       ? 42
+                       : 24;
+        }
     }
 }
