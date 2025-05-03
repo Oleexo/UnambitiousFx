@@ -24,9 +24,9 @@ description: >- # this means to ignore newlines until "baseurl:"
   UnambitiousFx is a collection of modular .NET libraries for web API development,
   featuring functional programming constructs, mediator pattern implementation,
   and messaging capabilities. Designed for simplicity, flexibility, and Native AOT compatibility.
-baseurl: "oleexo.github.io/UnambitiousFx" # the subpath of your site, e.g. /blog
-url: "http://oleexo.github.io/UnambitiousFx" # the base hostname & protocol for your site, e.g. http://example.com
-github_username:  oleexo
+baseurl: "/UnambitiousFx" # the subpath of your site, e.g. /blog
+url: "http://oleexo.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+github_username: oleexo
 
 # Build settings
 theme: just-the-docs
