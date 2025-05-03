@@ -6,7 +6,6 @@ on:
   push:
     branches:
       - "main"
-      - "fix/jekyll-theme-building"
     paths:
       - 'docs/*'
       - '.github/workflows/jekyll-gh-pages.yml'
