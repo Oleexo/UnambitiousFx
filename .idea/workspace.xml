@@ -5,22 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b79bc9a0-bf1f-4d25-a8f8-ff266284c226" name="Changes" comment="Add mediator documentation&#10;&#10;Introduce comprehensive documentation for UnambitiousFx.Mediator, detailing event pipeline behaviors, mediator registration, event publishing, and the mediator generator. Includes examples for practical implementation and best practices to enhance usability and integration.">
-      <change afterPath="$PROJECT_DIR$/test/Core.Tests/EitherTests.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/build.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/build.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Unambitious/.idea/indexLayout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Unambitious/.idea/indexLayout.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Directory.Packages.props" beforeDir="false" afterPath="$PROJECT_DIR$/Directory.Packages.props" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/docs/core/combining-types.markdown" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/docs/core/either.markdown" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/core/either.markdown" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/docs/core/index.markdown" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/core/index.markdown" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/docs/core/option.markdown" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/core/option.markdown" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/docs/core/result.markdown" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs/core/result.markdown" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Core/NoneOption.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Core/NoneOption.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Core/Option.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Core/Option.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Core/SomeOption.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Core/SomeOption.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Core.Tests/Core.Tests.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/test/Core.Tests/Core.Tests.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Core.Tests/OptionTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/Core.Tests/OptionTests.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Core.Tests/ResultTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/Core.Tests/ResultTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/about.markdown" beforeDir="false" afterPath="$PROJECT_DIR$/docs/about.markdown" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,7 +89,7 @@
       <workItem from="1746101290493" duration="2546000" />
       <workItem from="1746271312011" duration="1308000" />
       <workItem from="1746273708882" duration="20000" />
-      <workItem from="1746273740877" duration="1968000" />
+      <workItem from="1746273740877" duration="2657000" />
     </task>
     <task id="LOCAL-00001" summary="Use just docs theme for documentation">
       <option name="closed" value="true" />

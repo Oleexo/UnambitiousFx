@@ -3,16 +3,6 @@
 UnambitiousFx is a collection of libraries that facilitate web API development using best practices and a modular
 approach.
 
-## Features
-
-### Core
-
-Todo
-
-### Mediator
-
-Todo
-
 ## Why choose UnambitiousFx?
 
 ### Simplicity
@@ -51,27 +41,6 @@ With the increasing challenges of cloud deployment, containerization, and the ne
 Native AOT compilation has become an essential feature for modern .NET applications.
 By embracing AOT compilation, these libraries help deliver lightweight, high-performance
 solutions that meet today's demanding deployment requirements.
-
-## FAQ
-
-### Why creating UnambitiousFx?
-
-I created UnambitiousFx to share key concepts and patterns I've refined through years of web API development experience.
-While not aiming to be the most popular .NET library, its focused purpose is to simplify and streamline common web API
-development challenges.
-
-Several excellent libraries that inspired me are transitioning to open source after years of reliable service. Rather
-than replacing these libraries, UnambitiousFx offers an alternative approach built on solid architectural principles and
-modern development practices.
-
-### How will libraries evolve?
-
-I actively maintain and update these libraries as I use them in my own projects, ensuring they adhere to the latest
-web API development best practices in .NET.
-
-The libraries are compiled against the most recent .NET Framework version and use the latest stable NuGet packages.
-While maintaining compatibility with previous .NET versions, I'll continue support as long as it doesn't require
-significant codebase divergence.
 
 ### Can you participate?
 
