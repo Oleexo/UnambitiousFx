@@ -3,6 +3,19 @@
 UnambitiousFx is a collection of libraries that facilitate web API development using best practices and a modular
 approach.
 
+## Documentation
+
+Get started by [reading through the documentation](https://oleexo.github.io/UnambitiousFx/).
+
+## Features
+
+- Core
+    - Result
+    - Option
+    - Either
+- Mediator
+- Messaging (Coming soon)
+
 ## Why choose UnambitiousFx?
 
 ### Simplicity

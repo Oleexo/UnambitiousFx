@@ -49,7 +49,11 @@ back_to_top_text: "Back to top"
 nav_external_links:
   - title: Github
     url: https://github.com/oleexo/UnambitiousFx
+    hide_icon: false # set to true to hide the external link icon - defaults to false
+    opens_in_new_tab: false # set to true to open this link in a new tab - defaults to false
 
+
+footer_content: "Copyright &copy; 2025 Maxime Charles. Distributed by an <a href=\"https://github.com/Oleexo/UnambitiousFx/blob/main/LICENSE\">GNU General Public License v3.0</a>"
 # logo: "/assets/images/logo_128x128.jpg"
 
 # Exclude from processing.
