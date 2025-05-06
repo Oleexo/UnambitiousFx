@@ -22,7 +22,7 @@ public sealed class ProxyRequestHandlerTests {
         var proxy   = new ProxyRequestHandler<RequestWithResponseExampleHandler, RequestWithResponseExample, int>(handler, [behavior]);
         var request = new RequestWithResponseExample();
 
-        var result = await proxy.HandleAsync(new Context(publisher), request, CancellationToken.None);
+        var result = await proxy.HandleAsync(new DefaultContext(), request, CancellationToken.None);
 
         Assert.True(result.IsSuccess);
         Assert.True(handler.Executed);

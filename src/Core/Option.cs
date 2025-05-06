@@ -68,6 +68,18 @@ public abstract class Option<TValue> : IOption<TValue>
     public abstract void Match(Action<TValue> some,
                                Action         none);
 
+    /// <inheritdoc />
+    IOption<TOut> IOption<TValue>.Bind<TOut>(Func<TValue, IOption<TOut>> someFunc) {
+        return Bind(value => someFunc(value)
+                       .Match(Option<TOut>.Some, Option<TOut>.None));
+    }
+
+    /// <inheritdoc />
+    async ValueTask<IOption<TOut>> IOption<TValue>.Bind<TOut>(Func<TValue, ValueTask<IOption<TOut>>> someFunc) {
+        return await Bind(value => someFunc(value)
+                             .Match(Option<TOut>.Some, Option<TOut>.None));
+    }
+
     /// Transforms the value contained in the current Option instance using the specified function and returns a new Option instance.
     /// If the current instance is None, the function is not invoked, and None is returned.
     /// <param name="someFunc">A function to transform the value of type TValue into an <see cref="Option{TOut}" /> instance.</param>

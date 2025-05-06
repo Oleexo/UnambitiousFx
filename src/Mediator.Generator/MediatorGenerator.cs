@@ -21,10 +21,23 @@ public class MediatorGenerator : IIncrementalGenerator {
     private const string AbstractionsNamespace            = "UnambitiousFx.Mediator.Abstractions";
     private const string ShortRequestHandlerAttributeName = "RequestHandler";
     private const string ShortEventHandlerAttributeName   = "EventHandler";
+    private const string ShortContextAttributeName        = "Context";
     private const string LongRequestHandlerAttributeName  = $"{ShortRequestHandlerAttributeName}Attribute";
     private const string LongEventHandlerAttributeName    = $"{ShortEventHandlerAttributeName}Attribute";
+    private const string LongContextAttributeName         = $"{ShortContextAttributeName}Attribute";
     private const string FullRequestHandlerAttributeName  = $"{BaseNamespace}.{LongRequestHandlerAttributeName}";
     private const string FullEventHandlerAttributeName    = $"{BaseNamespace}.{LongEventHandlerAttributeName}";
+    private const string FullContextAttributeName         = $"{BaseNamespace}.{LongContextAttributeName}";
+
+    private const string ContextAttributeCode =
+        $$"""
+          #nullable enable
+          namespace {{BaseNamespace}};
+
+          [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
+          public sealed class {{LongContextAttributeName}} : Attribute {
+          }
+          """;
 
     private const string RequestHandlerAttributeCode =
         $$"""
@@ -67,6 +80,7 @@ public class MediatorGenerator : IIncrementalGenerator {
         context.RegisterPostInitializationOutput(static x => {
             x.AddSource($"{LongRequestHandlerAttributeName}.g.cs", SourceText.From(RequestHandlerAttributeCode, Encoding.UTF8));
             x.AddSource($"{LongEventHandlerAttributeName}.g.cs",   SourceText.From(EventHandlerAttributeCode,   Encoding.UTF8));
+            x.AddSource($"{LongContextAttributeName}.g.cs",        SourceText.From(ContextAttributeCode,        Encoding.UTF8));
         });
 
         // Get the compilation
@@ -77,13 +91,14 @@ public class MediatorGenerator : IIncrementalGenerator {
            .Select(static (compilation,
                            _) => compilation.GetRootNamespaceFromAssemblyAttributes());
 
+        var contextDetails = context.SyntaxProvider.ForAttributeWithMetadataName(FullContextAttributeName, static (node,
+                                                                                                                   _) => node is ClassDeclarationSyntax
+                                                                                     or InterfaceDeclarationSyntax,
+                                                                                 GetContextDetail);
 
-        var requestHandlerWithResponseDetails = context.SyntaxProvider.ForAttributeWithMetadataName($"{FullRequestHandlerAttributeName}`2", static (node,
-                                                                                                        _) => {
-                                                                                                        var isClass = node is ClassDeclarationSyntax;
-
-                                                                                                        return isClass;
-                                                                                                    },
+        var requestHandlerWithResponseDetails = context.SyntaxProvider.ForAttributeWithMetadataName($"{FullRequestHandlerAttributeName}`2",
+                                                                                                    static (node,
+                                                                                                            _) => node is ClassDeclarationSyntax,
                                                                                                     static (ctx,
                                                                                                             _) => GetRequestHandlerDetail(ctx));
         var requestHandlerWithoutResponseDetails = context.SyntaxProvider.ForAttributeWithMetadataName($"{FullRequestHandlerAttributeName}`1", static (node,
@@ -111,11 +126,19 @@ public class MediatorGenerator : IIncrementalGenerator {
                                                                  .Select(static (tuple,
                                                                                  _) => tuple.Left.AddRange(tuple.Right));
 
-        var combinedProvider = allHandlerDetails.Combine(rootNamespaceProvider);
+        var combinedProvider = rootNamespaceProvider
+                              .Combine(contextDetails.Collect())
+                              .Select((tuple,
+                                       _) => {
+                                   return (tuple.Left, tuple.Right.FirstOrDefault(x => x.HasValue));
+                               })
+                              .Combine(allHandlerDetails)
+                              .Select((tuple,
+                                       _) => (tuple.Left.Left, tuple.Left.Item2, tuple.Right));
 
         context.RegisterSourceOutput(combinedProvider, static (ctx,
                                                                tuple) => {
-            var (details, rootNamespace) = tuple;
+            var (rootNamespace, contextDetail, handlerDetails) = tuple;
             ctx.ReportDiagnostic(Diagnostic.Create(
                                      new DiagnosticDescriptor(
                                          "MDG005",
@@ -125,7 +148,7 @@ public class MediatorGenerator : IIncrementalGenerator {
                                          DiagnosticSeverity.Info,
                                          true),
                                      Location.None,
-                                     details.Length, rootNamespace));
+                                     handlerDetails.Length, rootNamespace));
 
             if (string.IsNullOrEmpty(rootNamespace)) {
                 ctx.ReportDiagnostic(Diagnostic.Create(
@@ -140,7 +163,7 @@ public class MediatorGenerator : IIncrementalGenerator {
                 return;
             }
 
-            if (details.Length == 0) {
+            if (handlerDetails.Length == 0) {
                 ctx.ReportDiagnostic(Diagnostic.Create(
                                          new DiagnosticDescriptor(
                                              "MDG002",
@@ -152,7 +175,7 @@ public class MediatorGenerator : IIncrementalGenerator {
                                          Location.None));
             }
             else {
-                foreach (var detail in details) {
+                foreach (var detail in handlerDetails) {
                     if (detail is null) {
                         ctx.ReportDiagnostic(Diagnostic.Create(
                                                  new DiagnosticDescriptor(
@@ -178,8 +201,36 @@ public class MediatorGenerator : IIncrementalGenerator {
                 }
             }
 
-            ctx.AddSource("RegisterGroup.g.cs", RegisterGroupFactory.Create(rootNamespace, AbstractionsNamespace, details));
+            contextDetail ??= new ContextDetail(AbstractionsNamespace, "IContext");
+
+            ctx.AddSource("RegisterGroup.g.cs", RegisterGroupFactory.Create(rootNamespace, AbstractionsNamespace, contextDetail.Value, handlerDetails));
         });
+    }
+
+    private static ContextDetail? GetContextDetail(GeneratorAttributeSyntaxContext ctx,
+                                                   CancellationToken               cancellationToken) {
+        foreach (var attribute in ctx.Attributes) {
+            if (cancellationToken.IsCancellationRequested) {
+                return null;
+            }
+
+            if (!(attribute.AttributeClass?.Name is LongContextAttributeName or ShortContextAttributeName)) {
+                // wrong attribute
+                continue;
+            }
+
+
+            var semanticModel = ctx.SemanticModel;
+            var symbol        = semanticModel.GetDeclaredSymbol(ctx.TargetNode);
+            var parts         = symbol?.ToDisplayParts();
+            if (parts is null) {
+                return null;
+            }
+
+            return new ContextDetail(parts.Value);
+        }
+
+        return null;
     }
 
     private static HandlerDetail? GetRequestHandlerDetail(GeneratorAttributeSyntaxContext ctx) {
@@ -229,7 +280,7 @@ public class MediatorGenerator : IIncrementalGenerator {
         return null;
     }
 
-    private static (string RequestType, string? ResponseType) GetRequestInfo(AttributeData attribute) {
+    private static ( string RequestType, string? ResponseType) GetRequestInfo(AttributeData attribute) {
         // Get the attribute constructor's type arguments
         var typeArgs = attribute.AttributeClass?.TypeArguments;
         if (typeArgs is null ||

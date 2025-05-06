@@ -10,7 +10,10 @@ public interface IDependencyInjectionBuilder {
     /// </summary>
     /// <typeparam name="TRequestHandler">
     ///     The type of the request handler to be registered, which must implement
-    ///     <see cref="IRequestHandler{TRequest, TResponse}" />.
+    ///     <see cref="IRequestHandler{TContext, TRequest, TResponse}" />.
+    /// </typeparam>
+    /// <typeparam name="TContext">
+    ///     The type of the context in which the request is handled, which must implement <see cref="IContext" />.
     /// </typeparam>
     /// <typeparam name="TRequest">
     ///     The type of the request being handled, which must implement <see cref="IRequest{TResponse}" />.
@@ -23,36 +26,61 @@ public interface IDependencyInjectionBuilder {
     ///     response.
     ///     It enables decoupling of the request processing logic and promotes testability and maintainability.
     /// </remarks>
-    IDependencyInjectionBuilder RegisterRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TRequestHandler, TRequest, TResponse>()
-        where TRequestHandler : class, IRequestHandler<TRequest, TResponse>
+    IDependencyInjectionBuilder RegisterRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TRequestHandler, TContext, TRequest,
+                                                       TResponse>()
+        where TRequestHandler : class, IRequestHandler<TContext, TRequest, TResponse>
         where TResponse : notnull
-        where TRequest : IRequest<TResponse>;
-
-    /// Registers a request handler for handling a specified request type without producing a response.
-    /// TRequestHandler: The type of the request handler to be registered. Must implement the IRequestHandler interface with the specified TRequest type.
-    /// TRequest: The type of the request to be handled. Must implement the IRequest interface.
-    /// This method is used to register a request handler that processes a specific request type without returning a response.
-    /// The method ensures that the appropriate request handler is associated with its corresponding request type for processing.
-    IDependencyInjectionBuilder RegisterRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TRequestHandler, TRequest>()
-        where TRequestHandler : class, IRequestHandler<TRequest>
-        where TRequest : IRequest;
+        where TRequest : IRequest<TResponse>
+        where TContext : IContext;
 
     /// <summary>
-    ///     Registers an event handler for a specific event type in the dependency injection system.
+    ///     Registers a request handler implementation for a specific request type within the dependency injection system.
+    /// </summary>
+    /// <typeparam name="TRequestHandler">
+    ///     The type of the request handler to be registered, which must implement
+    ///     <see cref="IRequestHandler{TContext, TRequest}" />.
+    /// </typeparam>
+    /// <typeparam name="TContext">
+    ///     The type of the context in which the request is handled, which must implement <see cref="IContext" />.
+    /// </typeparam>
+    /// <typeparam name="TRequest">
+    ///     The type of the request being handled, which must implement <see cref="IRequest" />.
+    /// </typeparam>
+    /// <returns>
+    ///     The current instance of <see cref="IDependencyInjectionBuilder" />, enabling method chaining.
+    /// </returns>
+    /// <remarks>
+    ///     This method is used to dynamically register a request handler for processing specific request types. It allows
+    ///     dependency injection of handlers, promoting modular design and enhancing maintainability.
+    /// </remarks>
+    IDependencyInjectionBuilder RegisterRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TRequestHandler, TContext, TRequest>()
+        where TRequestHandler : class, IRequestHandler<TContext, TRequest>
+        where TRequest : IRequest
+        where TContext : IContext;
+
+    /// <summary>
+    ///     Registers an event handler implementation for a specific event and context type with the dependency injection
+    ///     system.
     /// </summary>
     /// <typeparam name="TEventHandler">
-    ///     The type of the event handler to be registered. Must implement the <see cref="IEventHandler{TEvent}" /> interface
-    ///     and have public constructors.
+    ///     The type of the event handler to be registered, which must implement
+    ///     <see cref="IEventHandler{TContext, TEvent}" />.
+    /// </typeparam>
+    /// <typeparam name="TContext">
+    ///     The type of the context in which the event is handled, which must implement <see cref="IContext" />.
     /// </typeparam>
     /// <typeparam name="TEvent">
-    ///     The type of the event that the event handler processes. Must implement the <see cref="IEvent" /> interface.
+    ///     The type of the event being handled, which must implement <see cref="IEvent" />.
     /// </typeparam>
     /// <remarks>
-    ///     This method is typically used to bind event types to their corresponding handlers within the dependency injection
-    ///     container,
-    ///     enabling automatic resolution and invocation of the handlers during event processing.
+    ///     This method is mainly used to integrate event handling mechanisms into the dependency injection container,
+    ///     allowing automatic resolution and invocation of appropriate handlers when events occur.
     /// </remarks>
-    IDependencyInjectionBuilder RegisterEventHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TEventHandler, TEvent>()
-        where TEventHandler : class, IEventHandler<TEvent>
-        where TEvent : IEvent;
+    /// <returns>
+    ///     The dependency injection builder, enabling method chaining in the context of dependency registration.
+    /// </returns>
+    IDependencyInjectionBuilder RegisterEventHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TEventHandler, TContext, TEvent>()
+        where TEventHandler : class, IEventHandler<TContext, TEvent>
+        where TEvent : class, IEvent
+        where TContext : IContext;
 }

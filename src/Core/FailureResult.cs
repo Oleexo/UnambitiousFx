@@ -9,6 +9,10 @@ internal sealed class FailureResult : Result {
         _error = error;
     }
 
+    public FailureResult(string message) {
+        _error = new Error(message);
+    }
+
     public override bool IsFaulted => true;
     public override bool IsSuccess => false;
 

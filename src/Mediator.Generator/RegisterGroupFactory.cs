@@ -7,6 +7,7 @@ namespace UnambitiousFx.Mediator.Generator;
 internal static class RegisterGroupFactory {
     public static SourceText Create(string?                        rootNamespace,
                                     string                         abstractionsNamespace,
+                                    ContextDetail                  contextDetail,
                                     ImmutableArray<HandlerDetail?> details) {
         var sb = new StringBuilder();
 
@@ -24,10 +25,10 @@ internal static class RegisterGroupFactory {
 
             switch (detail.Value.HandlerType) {
                 case HandlerType.RequestHandler:
-                    RegisterRequestHandler(sb, detail.Value);
+                    RegisterRequestHandler(sb, contextDetail, detail.Value);
                     break;
                 case HandlerType.EventHandler:
-                    RegisterEventHandler(sb, detail.Value);
+                    RegisterEventHandler(sb, contextDetail, detail.Value);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -40,18 +41,22 @@ internal static class RegisterGroupFactory {
     }
 
     private static void RegisterEventHandler(StringBuilder sb,
+                                             ContextDetail contextDetail,
                                              HandlerDetail detail) {
-        sb.AppendLine($"        builder.RegisterEventHandler<{GlobalizeType(detail.FullHandlerTypeName)}, {GlobalizeType(detail.FullTargetTypeName)}>();");
+        sb.AppendLine(
+            $"        builder.RegisterEventHandler<{GlobalizeType(detail.FullHandlerTypeName)}, {GlobalizeType(contextDetail.ClassName)}, {GlobalizeType(detail.FullTargetTypeName)}>();");
     }
 
     private static void RegisterRequestHandler(StringBuilder sb,
+                                               ContextDetail contextDetail,
                                                HandlerDetail detail) {
         if (detail.FullResponseType is null) {
-            sb.AppendLine($"        builder.RegisterRequestHandler<{GlobalizeType(detail.FullHandlerTypeName)}, {GlobalizeType(detail.FullTargetTypeName)}>();");
+            sb.AppendLine(
+                $"        builder.RegisterRequestHandler<{GlobalizeType(detail.FullHandlerTypeName)}, {GlobalizeType(contextDetail.ClassName)}, {GlobalizeType(detail.FullTargetTypeName)}>();");
         }
         else {
             sb.AppendLine(
-                $"        builder.RegisterRequestHandler<{GlobalizeType(detail.FullHandlerTypeName)}, {GlobalizeType(detail.FullTargetTypeName)}, {GlobalizeType(detail.FullResponseType)}>();");
+                $"        builder.RegisterRequestHandler<{GlobalizeType(detail.FullHandlerTypeName)}, {GlobalizeType(contextDetail.ClassName)}, {GlobalizeType(detail.FullTargetTypeName)}, {GlobalizeType(detail.FullResponseType)}>();");
         }
     }
 
@@ -68,5 +73,9 @@ internal static class RegisterGroupFactory {
         }
 
         return $"global::{input}";
+    }
+
+    private static string GlobalizeType(IEnumerable<string> inputs) {
+        return $"global::{string.Concat(inputs)}";
     }
 }
