@@ -1,10 +1,12 @@
+using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using UnambitiousFx.Mediator.Abstractions;
 using UnambitiousFx.Mediator.Tests.Definitions;
 
 namespace UnambitiousFx.Mediator.Tests;
 
-public sealed class ServiceCollectionExtensionsTests {
+[TestSubject(typeof(DependencyInjectionExtensions))]
+public sealed class DependencyInjectionExtensionsTests {
     [Fact]
     public async Task GivenRequest_WhenResolve_ThenReturnResult() {
         var services = new ServiceCollection()

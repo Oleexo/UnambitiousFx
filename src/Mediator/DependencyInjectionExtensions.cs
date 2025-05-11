@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using UnambitiousFx.Mediator.Abstractions;
 using UnambitiousFx.Mediator.Resolvers;
 
@@ -9,7 +10,7 @@ namespace UnambitiousFx.Mediator;
 ///     Provides extension methods for registering mediator services and related components
 ///     within an <see cref="IServiceCollection" />.
 /// </summary>
-public static class ServiceCollectionExtensions {
+public static class DependencyInjectionExtensions {
     /// <summary>
     ///     Adds the mediator services to the specified IServiceCollection.
     /// </summary>
@@ -21,11 +22,12 @@ public static class ServiceCollectionExtensions {
         var cfg = new MediatorConfig(services);
         configure(cfg);
         cfg.Apply();
-        return services.AddScoped<IDependencyResolver, DefaultDependencyResolver>()
-                       .AddScoped<ISender, Sender>()
-                       .AddScoped<IPublisher, Publisher>()
-                       .AddScoped(typeof(IEventHandlerExecutor<>), typeof(EventHandlerExecutor<>))
-                       .AddScoped<IContextFactory, ContextFactory>();
+        services.TryAddScoped<IDependencyResolver, DefaultDependencyResolver>();
+        services.TryAddScoped<IEventDispatcher, EventDispatcher>();
+        services.TryAddScoped<ISender, Sender>();
+        services.TryAddScoped<IPublisher, Publisher>();
+        services.TryAddScoped<IContextFactory, ContextFactory>();
+        return services;
     }
 
     internal static IServiceCollection RegisterRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest, TResponse>(
