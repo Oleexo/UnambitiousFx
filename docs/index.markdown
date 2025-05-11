@@ -7,31 +7,12 @@ permalink: /
 
 # UnambitiousFx
 
-UnambitiousFx is a collection of libraries that facilitate web API development using best practices and a modular approach. It's designed to simplify complex tasks while providing powerful, flexible tools for .NET developers.
+UnambitiousFx is a collection of libraries that facilitate web API development using best practices and a modular
+approach. It's designed to simplify complex tasks while providing powerful, flexible tools for .NET developers.
 
 {: .fs-6 .fw-300 }
 
 [View on GitHub](https://github.com/oleexo/UnambitiousFx){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
-
----
-
-## Why Choose UnambitiousFx?
-
-### Simplicity
-
-As Dr. Werner Vogels emphasized, the key to great software lies in hiding complexity while exposing simplicity. UnambitiousFx strives to create intuitive and easy-to-use libraries that abstract away unnecessary complications, focusing on clean, natural interfaces that developers can understand immediately.
-
-### Modular Architecture
-
-UnambitiousFx is a modular ecosystem where each component is like an independent island, connected by clean interfaces and shared principles. Each module is designed to stand on its own while working seamlessly with others. You can choose to use any combination of modules that suits your needs, or easily integrate individual components with your preferred third-party packages.
-
-### Web API Development Utilities
-
-UnambitiousFx is designed to complement ASP.NET Core, not replace it. The libraries provide additional features and utilities that enhance the development of fast, efficient, and maintainable Web APIs while leveraging ASP.NET Core's robust foundation.
-
-### Compatible with NativeAOT
-
-Each library is meticulously designed with Native AOT (Ahead-of-Time) compilation in mind, ensuring optimal performance and efficiency. This results in faster startup times, reduced memory footprint, and improved runtime performance - essential features for modern .NET applications.
 
 ---
 
@@ -46,7 +27,7 @@ Each library is meticulously designed with Native AOT (Ahead-of-Time) compilatio
       <div class="card-body">
         <p>A collection of functional programming constructs that enhance error handling and null safety in .NET applications.</p>
         <p>Includes Option, Either, and Result types to help you write more robust and maintainable code.</p>
-        <a href="/docs/core/" class="btn btn-outline">Learn More</a>
+        <a href="{{ site.baseurl }}/docs/core/" class="btn btn-outline">Learn More</a>
       </div>
     </div>
   </div>
@@ -59,7 +40,7 @@ Each library is meticulously designed with Native AOT (Ahead-of-Time) compilatio
       <div class="card-body">
         <p>An implementation of the mediator pattern for .NET applications, facilitating loose coupling between components.</p>
         <p>Simplifies request/response handling, command processing, and event distribution in your application.</p>
-        <a href="/mediator/" class="btn btn-outline">Learn More</a>
+        <a href="{{ site.baseurl }}/docs/mediator/" class="btn btn-outline">Learn More</a>
       </div>
     </div>
   </div>
@@ -77,6 +58,35 @@ Each library is meticulously designed with Native AOT (Ahead-of-Time) compilatio
     </div>
   </div>
 </div>
+
+## Why Choose UnambitiousFx?
+
+### Simplicity
+
+As Dr. Werner Vogels emphasized, the key to great software lies in hiding complexity while exposing simplicity.
+UnambitiousFx strives to create intuitive and easy-to-use libraries that abstract away unnecessary complications,
+focusing on clean, natural interfaces that developers can understand immediately.
+
+### Modular Architecture
+
+UnambitiousFx is a modular ecosystem where each component is like an independent island, connected by clean interfaces
+and shared principles. Each module is designed to stand on its own while working seamlessly with others. You can choose
+to use any combination of modules that suits your needs, or easily integrate individual components with your preferred
+third-party packages.
+
+### Web API Development Utilities
+
+UnambitiousFx is designed to complement ASP.NET Core, not replace it. The libraries provide additional features and
+utilities that enhance the development of fast, efficient, and maintainable Web APIs while leveraging ASP.NET Core's
+robust foundation.
+
+### Compatible with NativeAOT
+
+Each library is meticulously designed with Native AOT (Ahead-of-Time) compilation in mind, ensuring optimal performance
+and efficiency. This results in faster startup times, reduced memory footprint, and improved runtime performance -
+essential features for modern .NET applications.
+
+---
 
 <style>
 .grid-container {

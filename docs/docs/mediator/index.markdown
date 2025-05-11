@@ -8,11 +8,13 @@ has_children: true
 
 # Mediator
 
-UnambitiousFx.Mediator is a lightweight implementation of the mediator pattern for .NET applications. It facilitates loose coupling between components by providing a central communication mechanism.
+UnambitiousFx.Mediator is a lightweight implementation of the mediator pattern for .NET applications. It facilitates
+loose coupling between components by providing a central communication mechanism.
 
 ## Overview
 
-The mediator pattern is a behavioral design pattern that reduces coupling between components by having them communicate indirectly through a mediator object. UnambitiousFx.Mediator implements this pattern with a focus on:
+The mediator pattern is a behavioral design pattern that reduces coupling between components by having them communicate
+indirectly through a mediator object. UnambitiousFx.Mediator implements this pattern with a focus on:
 
 - **Simplicity**: Clean, intuitive API that's easy to understand and use
 - **Flexibility**: Support for both request/response and event-based communication
@@ -32,13 +34,21 @@ Each request has a corresponding handler that contains the logic to process the 
 
 ### Events and Handlers
 
-Events represent notifications that something has happened. They are published by components and can be handled by multiple event handlers.
+Events represent notifications that something has happened. They are published by components and can be handled by
+multiple event handlers.
 
 ### Pipeline Behaviors
 
-Pipeline behaviors allow you to add cross-cutting concerns to your request and event processing pipelines, such as logging, validation, and error handling.
+Pipeline behaviors allow you to add cross-cutting concerns to your request and event processing pipelines, such as
+logging, validation, and error handling.
 
 ## Getting Started
+
+Install Nuget package
+
+```sh
+dotnet add package UnambitiousFx.Mediator
+```
 
 To get started with UnambitiousFx.Mediator, follow these guides:
 

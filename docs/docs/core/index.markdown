@@ -6,17 +6,21 @@ has_children: true
 
 # Core
 
-The Core library of UnambitiousFx provides fundamental functional programming types that help you write more robust and expressive code. These types follow functional programming principles to handle common scenarios like operations that might fail, optional values, and disjoint unions.
+The Core library of UnambitiousFx provides fundamental functional programming types that help you write more robust and
+expressive code. These types follow functional programming principles to handle common scenarios like operations that
+might fail, optional values, and disjoint unions.
 
 ## Overview
 
 The library includes three main types:
 
-- **[Result](result.markdown)** - Represents the outcome of an operation that can either succeed with a value or fail with an error
+- **[Result](result.markdown)** - Represents the outcome of an operation that can either succeed with a value or fail
+  with an error
 - **[Option](option.markdown)** - Represents an optional value that may or may not be present
 - **[Either](either.markdown)** - Represents a value that can be one of two possible types
 
-These types help you write code that is more explicit about possible outcomes, reducing the need for exceptions and null checks, and making your code more predictable and easier to reason about.
+These types help you write code that is more explicit about possible outcomes, reducing the need for exceptions and null
+checks, and making your code more predictable and easier to reason about.
 
 ## Key Benefits
 
@@ -27,6 +31,12 @@ These types help you write code that is more explicit about possible outcomes, r
 - **Type Safety**: Leverage the type system to ensure correct handling of all possible states
 
 ## Getting Started
+
+Install Nuget package
+
+```sh
+dotnet add package UnambitiousFx.Core
+```
 
 Click on each type to learn more about its usage and features:
 
@@ -40,9 +50,9 @@ Here's a quick example of how these types can be used together:
 
 ```csharp
 // Define functions that return different types
-Result<User> GetUser(string userId) => /* implementation */;
-Option<Address> GetPrimaryAddress(User user) => /* implementation */;
-Either<Error, ShippingLabel> CreateShippingLabel(Address address) => /* implementation */;
+Option<User> GetUser(string userId) => /* implementation */;
+Result<ShippingLabel> CreateShippingLabel(Address address) => /* implementation */;
+Either<Address, IEnumerable<Address>> GetPrimaryAddress(User user) => /* implementation */;
 
 // Compose them together
 Result<Either<Error, ShippingLabel>> ProcessOrder(string userId) {
@@ -59,4 +69,5 @@ Result<Either<Error, ShippingLabel>> ProcessOrder(string userId) {
 }
 ```
 
-This example demonstrates how these types can be combined to handle complex workflows with multiple potential failure points in a clean, type-safe way.
+This example demonstrates how these types can be combined to handle complex workflows with multiple potential failure
+points in a clean, type-safe way.

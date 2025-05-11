@@ -1,7 +1,7 @@
 <Solution>
   <Folder Name="/examples/" />
   <Folder Name="/examples/mediator/">
-    <Project Path="examples\mediator\Application\Application.csproj" Type="Classic C#" />
+    <Project Path="examples\mediator\Common\Common.csproj" Type="Classic C#" />
     <Project Path="examples\mediator\WebApi.Tests\WebApi.Tests.csproj" Type="Classic C#" />
     <Project Path="examples\mediator\WebApiAot\WebApiAot.csproj" Type="Classic C#" />
     <Project Path="examples\mediator\WebApi\WebApi.csproj" Type="Classic C#" />
@@ -22,5 +22,6 @@
     <File Path="Directory.Packages.props" />
     <File Path="LICENSE" />
     <File Path="README.md" />
+    <File Path="global.json" />
   </Folder>
 </Solution>

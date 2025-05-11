@@ -9,11 +9,12 @@ public sealed class TestEventPipelineBehavior : IEventPipelineBehavior {
     public int     ExecutionCount { get; private set; }
     public Action? OnExecuted     { get; set; }
 
-    public ValueTask<Result> HandleAsync<TEvent>(IContext             context,
-                                                 TEvent               @event,
-                                                 EventHandlerDelegate next,
-                                                 CancellationToken    cancellationToken = default)
-        where TEvent : IEvent {
+    public ValueTask<Result> HandleAsync<TContext, TEvent>(TContext             context,
+                                                           TEvent               @event,
+                                                           EventHandlerDelegate next,
+                                                           CancellationToken    cancellationToken = default)
+        where TEvent : IEvent
+        where TContext : IContext {
         Executed      = true;
         EventExecuted = @event;
         ExecutionCount++;

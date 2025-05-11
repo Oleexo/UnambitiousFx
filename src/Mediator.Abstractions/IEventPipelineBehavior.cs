@@ -6,29 +6,33 @@ namespace UnambitiousFx.Mediator.Abstractions;
 ///     Defines an interface for implementing a pipeline behavior that can be executed
 ///     around the handling of events in an event-driven mediator pattern.
 /// </summary>
-public interface IEventPipelineBehavior {
-    /// Handles the specified event by invoking the next delegate in the event pipeline behavior chain.
-    /// <typeparam name="TEvent">The type of the event being handled. Must implement the <see cref="IEvent" /> interface.</typeparam>
+public interface IEventPipelineBehavior<TContext>
+    where TContext : IContext {
+    /// Handles the given event by executing the next delegate in the event pipeline behavior chain.
+    /// <typeparam name="TEvent">
+    ///     The type of the event being processed. Must implement the <see cref="IEvent" /> interface.
+    /// </typeparam>
     /// <param name="context">
-    ///     The execution context associated with the event. Provides metadata such as correlation ID and occurrence time.
+    ///     The execution context associated with the event, containing relevant information like correlation ID and event
+    ///     time.
     /// </param>
     /// <param name="event">
-    ///     The event instance that is being processed by the pipeline behavior.
+    ///     The event instance that is currently being handled by the pipeline behavior.
     /// </param>
     /// <param name="next">
-    ///     A delegate that points to the next behavior in the pipeline, or the final event handler if this is the last
+    ///     A delegate representing the subsequent behavior in the pipeline or the ultimate handler when this is the final
     ///     behavior.
     /// </param>
     /// <param name="cancellationToken">
-    ///     A token that can be used to propagate notification of cancellation.
+    ///     A token to signal cancellation of the operation.
     /// </param>
     /// <returns>
-    ///     A <see cref="ValueTask{Result}" /> representing the result of this pipeline behavior and subsequent behaviors or
-    ///     handlers.
-    ///     If successful, the result will indicate the successful processing of the event; otherwise, it will indicate a
-    ///     failure.
+    ///     A <see cref="ValueTask{Result}" /> representing the execution result of the pipeline behavior and the following
+    ///     chain.
+    ///     A successful result indicates the event was processed correctly, while a failure result represents processing
+    ///     issues.
     /// </returns>
-    ValueTask<Result> HandleAsync<TEvent>(IContext             context,
+    ValueTask<Result> HandleAsync<TEvent>(TContext             context,
                                           TEvent               @event,
                                           EventHandlerDelegate next,
                                           CancellationToken    cancellationToken = default)

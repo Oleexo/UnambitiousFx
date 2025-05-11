@@ -13,4 +13,12 @@ public interface IDependencyResolver {
     /// </returns>
     Option<TService> GetService<TService>()
         where TService : class;
+
+    /// Retrieves all services of the specified type from the dependency resolver.
+    /// <typeparam name="TService">The type of the services to retrieve.</typeparam>
+    /// <returns>
+    ///     An enumerable of the retrieved services of the specified type.
+    /// </returns>
+    IEnumerable<TService> GetServices<TService>()
+        where TService : class;
 }

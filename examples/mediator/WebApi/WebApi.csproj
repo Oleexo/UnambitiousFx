@@ -8,7 +8,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\src\Mediator\Mediator.csproj"/>
-        <ProjectReference Include="..\Application\Application.csproj"/>
+        <ProjectReference Include="..\Common\Common.csproj"/>
     </ItemGroup>
 
     <ItemGroup>

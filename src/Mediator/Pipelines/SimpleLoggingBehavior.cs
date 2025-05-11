@@ -7,21 +7,23 @@ namespace UnambitiousFx.Mediator.Pipelines;
 
 /// <summary>
 ///     Represents a behavior for logging execution details in the mediator pipeline.
-///     This class implements both <see cref="IRequestPipelineBehavior" /> and <see cref="IEventPipelineBehavior" />
+///     This class implements both <see cref="IRequestPipelineBehavior{TContext}" /> and
+///     <see cref="IEventPipelineBehavior{TContext}" />
 ///     to provide logging capabilities for request and event handling.
 /// </summary>
-public sealed class SimpleLoggingBehavior : IRequestPipelineBehavior, IEventPipelineBehavior {
-    private readonly ILogger<SimpleLoggingBehavior> _logger;
+public sealed class SimpleLoggingBehavior<TContext> : IRequestPipelineBehavior<TContext>, IEventPipelineBehavior<TContext>
+    where TContext : IContext {
+    private readonly ILogger<SimpleLoggingBehavior<TContext>> _logger;
 
     /// Represents a simple logging behavior in a mediator pipeline.
     /// This class implements both IRequestPipelineBehavior and IEventPipelineBehavior
     /// to add logging capabilities for requests and events, respectively.
-    public SimpleLoggingBehavior(ILogger<SimpleLoggingBehavior> logger) {
+    public SimpleLoggingBehavior(ILogger<SimpleLoggingBehavior<TContext>> logger) {
         _logger = logger;
     }
 
     /// <inheritdoc />
-    public async ValueTask<Result> HandleAsync<TEvent>(IContext             context,
+    public async ValueTask<Result> HandleAsync<TEvent>(TContext             context,
                                                        TEvent               @event,
                                                        EventHandlerDelegate next,
                                                        CancellationToken    cancellationToken = default)
@@ -44,7 +46,7 @@ public sealed class SimpleLoggingBehavior : IRequestPipelineBehavior, IEventPipe
     }
 
     /// <inheritdoc />
-    public async ValueTask<Result> HandleAsync<TRequest>(IContext               context,
+    public async ValueTask<Result> HandleAsync<TRequest>(TContext               context,
                                                          TRequest               request,
                                                          RequestHandlerDelegate next,
                                                          CancellationToken      cancellationToken = default)
@@ -68,7 +70,7 @@ public sealed class SimpleLoggingBehavior : IRequestPipelineBehavior, IEventPipe
     }
 
     /// <inheritdoc />
-    public async ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(IContext                          context,
+    public async ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TContext                          context,
                                                                                TRequest                          request,
                                                                                RequestHandlerDelegate<TResponse> next,
                                                                                CancellationToken                 cancellationToken = default)

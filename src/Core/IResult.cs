@@ -67,6 +67,39 @@ public interface IResult<TValue> : IResult
     ///     Returns false if the operation failed and `value` is set to null.
     /// </returns>
     bool Ok([NotNullWhen(true)] out TValue? value);
+
+    /// <summary>
+    ///     Binds the current result to a new operation. If the current result is a successful result,
+    ///     invokes the provided function to map the current value to a new <see cref="IResult{TOut}" />
+    ///     of type <typeparamref name="TOut" />. If the current result is a failure, the failure is propagated
+    ///     without invoking the provided function.
+    /// </summary>
+    /// <typeparam name="TOut">The type of the value in the resulting <see cref="IResult{TOut}" />.</typeparam>
+    /// <param name="bind">
+    ///     A function to be executed if the current result is successful, returning a new asynchronous result of type
+    ///     <see cref="IResult{TOut}" />.
+    /// </param>
+    /// <returns>
+    ///     A new <see cref="IResult{TOut}" /> obtained by applying the <paramref name="bind" /> function if the
+    ///     current result is successful, or the original failure result if the current result is a failure.
+    /// </returns>
+    IResult<TOut> Bind<TOut>(Func<TValue, IResult<TOut>> bind)
+        where TOut : notnull;
+
+    /// Binds the current result to a transformation function that executes asynchronously, enabling continuation
+    /// of operations on the value if the result is successful.
+    /// If the result is a failure, the original failure is propagated without executing the transformation.
+    /// <typeparam name="TOut">The type of the value in the resulting result from the binding operation.</typeparam>
+    /// <param name="bind">
+    ///     A function to be executed if the current result is successful, returning a new asynchronous result of type
+    ///     <see cref="IResult{TOut}" />.
+    /// </param>
+    /// <returns>
+    ///     A new asynchronous result that is the result of the function provided, or the propagated failure in case the
+    ///     current result is a failure.
+    /// </returns>
+    ValueTask<IResult<TOut>> Bind<TOut>(Func<TValue, ValueTask<IResult<TOut>>> bind)
+        where TOut : notnull;
 }
 
 /// Represents an operation result indicating success or failure.

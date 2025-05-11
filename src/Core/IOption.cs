@@ -79,4 +79,30 @@ public interface IOption<TValue> : IOption {
     /// <param name="none">The action to execute when the `Option` does not contain a value.</param>
     void Match(Action<TValue> some,
                Action         none);
+
+    /// Transforms the value contained in the current Option instance using the specified function and returns a new Option instance.
+    /// If the current instance is None, the function is not invoked, and None is returned.
+    /// <param name="someFunc">A function to transform the value of type TValue into an <see cref="IOption{TOut}" /> instance.</param>
+    /// <typeparam name="TOut">The type of value contained in the resulting <see cref="IOption{TOut}" />.</typeparam>
+    /// <returns>
+    ///     An <see cref="IOption{TOut}" /> containing the transformed value if the current instance is Some; otherwise,
+    ///     None.
+    /// </returns>
+    IOption<TOut> Bind<TOut>(Func<TValue, IOption<TOut>> someFunc)
+        where TOut : notnull;
+
+    /// Transforms the value contained in the current Option instance asynchronously using the specified function
+    /// and returns a new Option instance wrapped in a ValueTask.
+    /// If the current instance is None, the function is not invoked, and None is returned.
+    /// <param name="someFunc">
+    ///     A function to transform the value of type TValue into a <see cref="ValueTask{TResult}" />
+    ///     containing an <see cref="IOption{TOut}" /> instance.
+    /// </param>
+    /// <typeparam name="TOut">The type of value contained in the resulting <see cref="IOption{TOut}" />.</typeparam>
+    /// <returns>
+    ///     A <see cref="ValueTask{TResult}" /> containing an <see cref="IOption{TOut}" />
+    ///     if the current instance is Some; otherwise, an <see cref="IOption{TOut}" /> representing None.
+    /// </returns>
+    ValueTask<IOption<TOut>> Bind<TOut>(Func<TValue, ValueTask<IOption<TOut>>> someFunc)
+        where TOut : notnull;
 }

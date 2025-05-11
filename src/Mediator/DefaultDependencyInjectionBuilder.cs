@@ -7,29 +7,32 @@ namespace UnambitiousFx.Mediator;
 internal sealed class DefaultDependencyInjectionBuilder : IDependencyInjectionBuilder {
     private readonly List<Action<IServiceCollection, ServiceLifetime>> _actions = [];
 
-    public IDependencyInjectionBuilder RegisterRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TRequestHandler, TRequest,
+    public IDependencyInjectionBuilder RegisterRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TRequestHandler, TContext, TRequest,
                                                               TResponse>()
-        where TRequestHandler : class, IRequestHandler<TRequest, TResponse>
+        where TRequestHandler : class, IRequestHandler<TContext, TRequest, TResponse>
         where TRequest : IRequest<TResponse>
-        where TResponse : notnull {
+        where TResponse : notnull
+        where TContext : IContext {
         _actions.Add((services,
-                      lifetime) => services.RegisterRequestHandler<TRequestHandler, TRequest, TResponse>(lifetime));
+                      lifetime) => services.RegisterRequestHandler<TRequestHandler, TContext, TRequest, TResponse>(lifetime));
         return this;
     }
 
-    public IDependencyInjectionBuilder RegisterRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TRequestHandler, TRequest>()
-        where TRequestHandler : class, IRequestHandler<TRequest>
-        where TRequest : IRequest {
+    public IDependencyInjectionBuilder RegisterRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TRequestHandler, TContext, TRequest>()
+        where TRequestHandler : class, IRequestHandler<TContext, TRequest>
+        where TRequest : IRequest
+        where TContext : IContext {
         _actions.Add((services,
-                      lifetime) => services.RegisterRequestHandler<TRequestHandler, TRequest>(lifetime));
+                      lifetime) => services.RegisterRequestHandler<TRequestHandler, TContext, TRequest>(lifetime));
         return this;
     }
 
-    public IDependencyInjectionBuilder RegisterEventHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TEventHandler, TEvent>()
-        where TEventHandler : class, IEventHandler<TEvent>
-        where TEvent : IEvent {
+    public IDependencyInjectionBuilder RegisterEventHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TEventHandler, TContext, TEvent>()
+        where TEventHandler : class, IEventHandler<TContext, TEvent>
+        where TEvent : class, IEvent
+        where TContext : IContext {
         _actions.Add((services,
-                      lifetime) => services.RegisterEventHandler<TEventHandler, TEvent>(lifetime));
+                      lifetime) => services.RegisterEventHandler<TEventHandler, TContext, TEvent>(lifetime));
         return this;
     }
 

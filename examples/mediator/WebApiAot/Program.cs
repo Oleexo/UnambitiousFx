@@ -1,7 +1,9 @@
-using Application.Application.Todos;
-using Application.Domain.Entities;
-using Application.Domain.Repositories;
-using Application.Infrastructure.Repositories;
+using Common;
+using Common.Application;
+using Common.Application.Todos;
+using Common.Domain.Entities;
+using Common.Domain.Repositories;
+using Common.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using UnambitiousFx.Mediator;
 using UnambitiousFx.Mediator.Abstractions;
@@ -11,13 +13,12 @@ using WebApiAot.Models;
 var builder = WebApplication.CreateSlimBuilder(args);
 
 builder.Services.ConfigureHttpJsonOptions(options => { options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default); });
-builder.Services.AddMediator(cfg => {
-    cfg.RegisterRequestHandler<CreateTodoCommandHandler, CreateTodoCommand, Guid>()
-       .RegisterRequestHandler<DeleteTodoCommandHandler, DeleteTodoCommand>()
-       .RegisterRequestHandler<ListTodoQueryHandler, ListTodoQuery, IEnumerable<Todo>>()
-       .RegisterRequestHandler<TodoQueryHandler, TodoQuery, Todo>()
-       .RegisterRequestHandler<UpdateTodoCommandHandler, UpdateTodoCommand>();
-    cfg.RegisterRequestPipelineBehavior<SimpleLoggingBehavior>();
+builder.Services.AddMediator<IAppContext>(cfg => {
+    cfg.AddRegisterGroup(new ManualRegisterGroup());
+    cfg.AddRegisterGroup(new RegisterGroup());
+
+    cfg.RegisterRequestPipelineBehavior<SimpleLoggingBehavior<IAppContext>>();
+    cfg.RegisterEventPipelineBehavior<SimpleLoggingBehavior<IAppContext>>();
 });
 builder.Services.AddScoped<ITodoRepository, TodoRepository>();
 
@@ -36,9 +37,9 @@ todoEndpoints.MapGet("/{id:guid}", async ([FromRoute]    Guid    id,
                         error => Results.BadRequest(error.Message));
 });
 
-todoEndpoints.MapGet("/", async ([FromServices] IRequestHandler<ListTodoQuery, IEnumerable<Todo>> handler,
-                                 [FromServices] IContextFactory                                   contextFactory,
-                                 CancellationToken                                                cancellationToken) => {
+todoEndpoints.MapGet("/", async ([FromServices] IRequestHandler<IAppContext, ListTodoQuery, IEnumerable<Todo>> handler,
+                                 [FromServices] IContextFactory<IAppContext>                                   contextFactory,
+                                 CancellationToken                                                             cancellationToken) => {
     var query = new ListTodoQuery();
 
     var ctx    = contextFactory.Create();
@@ -59,11 +60,11 @@ todoEndpoints.MapPost("/", async ([FromServices] ISender         sender,
                         error => Results.BadRequest(error.Message));
 });
 
-todoEndpoints.MapPut("/{id:guid}", async ([FromServices] IRequestHandler<UpdateTodoCommand> handler,
-                                          [FromServices] IContextFactory                    contextFactory,
-                                          [FromRoute]    Guid                               id,
-                                          [FromBody]     UpdateTodoModel                    input,
-                                          CancellationToken                                 cancellationToken) => {
+todoEndpoints.MapPut("/{id:guid}", async ([FromServices] IRequestHandler<IAppContext, UpdateTodoCommand> handler,
+                                          [FromServices] IContextFactory<IAppContext>                    contextFactory,
+                                          [FromRoute]    Guid                                            id,
+                                          [FromBody]     UpdateTodoModel                                 input,
+                                          CancellationToken                                              cancellationToken) => {
     var command = new UpdateTodoCommand {
         Id   = id,
         Name = input.Name

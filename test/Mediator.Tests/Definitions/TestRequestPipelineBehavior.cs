@@ -9,11 +9,12 @@ public sealed class TestRequestPipelineBehavior : IRequestPipelineBehavior {
     public int     ExecutionCount  { get; private set; }
     public Action? OnExecuted      { get; set; }
 
-    public ValueTask<Result> HandleAsync<TRequest>(IContext               context,
-                                                   TRequest               request,
-                                                   RequestHandlerDelegate next,
-                                                   CancellationToken      cancellationToken = default)
-        where TRequest : IRequest {
+    public ValueTask<Result> HandleAsync<TContext, TRequest>(TContext               context,
+                                                             TRequest               request,
+                                                             RequestHandlerDelegate next,
+                                                             CancellationToken      cancellationToken = default)
+        where TRequest : IRequest
+        where TContext : IContext {
         Executed        = true;
         RequestExecuted = request;
         ExecutionCount++;
@@ -21,12 +22,13 @@ public sealed class TestRequestPipelineBehavior : IRequestPipelineBehavior {
         return next();
     }
 
-    public ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(IContext                          context,
-                                                                         TRequest                          request,
-                                                                         RequestHandlerDelegate<TResponse> next,
-                                                                         CancellationToken                 cancellationToken = default)
+    public ValueTask<Result<TResponse>> HandleAsync<TContext, TRequest, TResponse>(TContext                          context,
+                                                                                   TRequest                          request,
+                                                                                   RequestHandlerDelegate<TResponse> next,
+                                                                                   CancellationToken                 cancellationToken = default)
         where TRequest : IRequest<TResponse>
-        where TResponse : notnull {
+        where TResponse : notnull
+        where TContext : IContext {
         Executed        = true;
         RequestExecuted = request;
         ExecutionCount++;

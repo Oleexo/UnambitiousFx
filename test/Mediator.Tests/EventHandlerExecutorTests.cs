@@ -23,7 +23,7 @@ public sealed class EventHandlerExecutorTests {
         var proxy  = new EventHandlerExecutor<EventExample>([handler], [behavior], new SequentialEventOrchestrator());
         var @event = new EventExample();
 
-        var result = await proxy.HandleAsync(new Context(publisher), @event, CancellationToken.None);
+        var result = await proxy.HandleAsync(new DefaultContext(), @event, CancellationToken.None);
 
         Assert.True(result.IsSuccess);
         Assert.True(handler.Executed);
@@ -54,7 +54,7 @@ public sealed class EventHandlerExecutorTests {
         var proxy  = new EventHandlerExecutor<EventExample>([handler], behaviors, new SequentialEventOrchestrator());
         var @event = new EventExample();
 
-        var result = await proxy.HandleAsync(new Context(publisher), @event, CancellationToken.None);
+        var result = await proxy.HandleAsync(new DefaultContext(), @event, CancellationToken.None);
 
         Assert.True(result.IsSuccess);
         Assert.True(handler.Executed);

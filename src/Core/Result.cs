@@ -92,6 +92,31 @@ public abstract class Result : IResult {
         return new FailureResult(error);
     }
 
+    /// <summary>
+    ///     Creates a failure <see cref="Result" /> with the specified error message.
+    /// </summary>
+    /// <param name="message">The error message describing the reason for the failure.</param>
+    /// <returns>A new instance of <see cref="Result" /> that represents a failure state.</returns>
+    public static Result Failure(string message) {
+        return new FailureResult(message);
+    }
+
+    /// Creates a failure result with the specified error information.
+    /// <param name="error">
+    ///     The error details encapsulated in an instance of <c>IError</c>. This parameter cannot be null
+    ///     and provides information about the error that caused the failure.
+    /// </param>
+    /// <typeparam name="TValue">
+    ///     The type of value associated with the operation. This type parameter must be a non-nullable type.
+    /// </typeparam>
+    /// <return>
+    ///     A <c>Result</c> instance representing a failure case, containing the provided error details.
+    /// </return>
+    public static Result Failure<TValue>(IError error)
+        where TValue : notnull {
+        return new FailureResult<TValue>(error);
+    }
+
     /// Defines an implicit conversion operator that allows converting an instance of the
     /// <see cref="Error" />
     /// class to a
@@ -133,6 +158,20 @@ public abstract class Result<TValue> : Result, IResult<TValue>
 
     /// <inheritdoc />
     public abstract bool Ok([NotNullWhen(true)] out TValue? value);
+
+    /// <inheritdoc />
+    IResult<TOut> IResult<TValue>.Bind<TOut>(Func<TValue, IResult<TOut>> bind) {
+        return Bind(value => bind(value)
+                       .Match(Result<TOut>.Success,
+                              Result<TOut>.Failure));
+    }
+
+    /// <inheritdoc />
+    async ValueTask<IResult<TOut>> IResult<TValue>.Bind<TOut>(Func<TValue, ValueTask<IResult<TOut>>> bind) {
+        return await Bind(value => bind(value)
+                             .Match(Result<TOut>.Success,
+                                    Result<TOut>.Failure));
+    }
 
     /// <summary>
     ///     Binds the current result to a new operation. If the current result is a successful result,
