@@ -5,7 +5,7 @@ using UnambitiousFx.Mediator.Orchestrators;
 namespace UnambitiousFx.Mediator;
 
 internal sealed class EventHandlerExecutor<TEvent> : IEventHandlerExecutor<TEvent>
-    where TEvent : IEvent {
+    where TEvent : class, IEvent {
     private readonly IEnumerable<IEventPipelineBehavior> _behaviors;
     private readonly IEventOrchestrator                  _eventOrchestrator;
     private readonly IEnumerable<IEventHandler<TEvent>>  _handlers;

@@ -54,5 +54,5 @@ public interface IDependencyInjectionBuilder {
     /// </remarks>
     IDependencyInjectionBuilder RegisterEventHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TEventHandler, TEvent>()
         where TEventHandler : class, IEventHandler<TEvent>
-        where TEvent : IEvent;
+        where TEvent : class, IEvent;
 }

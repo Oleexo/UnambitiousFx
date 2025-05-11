@@ -53,7 +53,7 @@ public static class ServiceCollectionExtensions {
         this IServiceCollection services,
         ServiceLifetime         lifetime = ServiceLifetime.Scoped)
         where THandler : class, IEventHandler<TEvent>
-        where TEvent : IEvent {
+        where TEvent : class, IEvent {
         services.Add(new ServiceDescriptor(typeof(IEventHandler<TEvent>), typeof(THandler), lifetime));
         return services;
     }

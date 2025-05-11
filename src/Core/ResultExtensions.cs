@@ -23,4 +23,43 @@ public static class ResultExtensions {
                    ? Result.Failure(new AggregateError(errors))
                    : Result.Success();
     }
+
+    /// Matches the outcome of an asynchronous
+    /// <see cref="IResult{TValue}" />
+    /// instance and projects it into a value of type `TOut`.
+    /// Executes the provided `success` function if the
+    /// <see cref="IResult{TValue}" />
+    /// represents a successful state, or the `failure` function
+    /// if it represents a failure state.
+    /// <param name="awaitableResult">
+    ///     The `ValueTask` containing an <see cref="IResult{TValue}" /> representing the outcome of
+    ///     an operation.
+    /// </param>
+    /// <param name="success">
+    ///     A function to execute when the <see cref="IResult{TValue}" /> represents a successful outcome.
+    ///     Takes the success value as input and returns a `TOut` value.
+    /// </param>
+    /// <param name="failure">
+    ///     A function to execute when the <see cref="IResult{TValue}" /> represents a failure. Takes an
+    ///     `IError` as input and returns a `TOut` value.
+    /// </param>
+    /// <typeparam name="TOut">
+    ///     The type of the result returned by the `success` or `failure` function, which must be a
+    ///     non-nullable type.
+    /// </typeparam>
+    /// <typeparam name="TValue">
+    ///     The type of the value contained in the `IResult` when it succeeds, which must be a
+    ///     non-nullable type.
+    /// </typeparam>
+    /// <returns>
+    ///     A `TOut` value derived from either the `success` or `failure` function, depending on the state of the
+    ///     <see cref="IResult{TValue}" />.
+    /// </returns>
+    public static async ValueTask<TOut> Match<TOut, TValue>(this ValueTask<IResult<TValue>> awaitableResult,
+                                                            Func<TValue, TOut>              success,
+                                                            Func<IError, TOut>              failure)
+        where TOut : notnull
+        where TValue : notnull {
+        return (await awaitableResult).Match(success, failure);
+    }
 }

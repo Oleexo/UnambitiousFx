@@ -26,7 +26,7 @@ public sealed class UpdateTodoCommandHandler : IRequestHandler<UpdateTodoCommand
         todo.Name = request.Name;
 
         await _todoRepository.UpdateAsync(todo, cancellationToken);
-        await context.PublishAsync(new TodoUpdated {
+        await context.PublishEventAsync(new TodoUpdated {
             Todo = todo
         }, cancellationToken);
 

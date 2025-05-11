@@ -25,7 +25,7 @@ public sealed class CreateTodoCommandHandler : IRequestHandler<CreateTodoCommand
 
         await _todoRepository.CreateAsync(todo, cancellationToken);
 
-        await context.PublishAsync(new TodoCreated {
+        await context.PublishEventAsync(new TodoCreated {
             Todo = todo
         }, cancellationToken);
         return Result<Guid>.Success(todo.Id);

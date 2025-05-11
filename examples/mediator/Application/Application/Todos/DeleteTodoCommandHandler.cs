@@ -23,7 +23,7 @@ public sealed class DeleteTodoCommandHandler : IRequestHandler<DeleteTodoCommand
 
         await _todoRepository.DeleteAsync(todo.Id, cancellationToken);
 
-        await context.PublishAsync(new TodoDeleted {
+        await context.PublishEventAsync(new TodoDeleted {
             Todo = todo
         }, cancellationToken);
 

@@ -17,4 +17,9 @@ internal sealed class DefaultDependencyResolver : IDependencyResolver {
                    ? Option.Some(service)
                    : Option.None<TService>();
     }
+
+    public IEnumerable<TService> GetServices<TService>()
+        where TService : class {
+        return _serviceProvider.GetServices<TService>();
+    }
 }

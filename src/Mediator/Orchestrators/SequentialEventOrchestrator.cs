@@ -13,7 +13,7 @@ public sealed class SequentialEventOrchestrator : IEventOrchestrator {
                                                     IEnumerable<IEventHandler<TEvent>> handlers,
                                                     TEvent                             @event,
                                                     CancellationToken                  cancellationToken = default)
-        where TEvent : IEvent {
+        where TEvent : class, IEvent {
         var results = new List<Result>();
         foreach (var eventHandler in handlers) {
             var result = await eventHandler.HandleAsync(context, @event, cancellationToken);

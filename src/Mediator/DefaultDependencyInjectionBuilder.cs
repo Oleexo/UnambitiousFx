@@ -27,7 +27,7 @@ internal sealed class DefaultDependencyInjectionBuilder : IDependencyInjectionBu
 
     public IDependencyInjectionBuilder RegisterEventHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TEventHandler, TEvent>()
         where TEventHandler : class, IEventHandler<TEvent>
-        where TEvent : IEvent {
+        where TEvent : class, IEvent {
         _actions.Add((services,
                       lifetime) => services.RegisterEventHandler<TEventHandler, TEvent>(lifetime));
         return this;

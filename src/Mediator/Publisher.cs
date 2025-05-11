@@ -1,22 +1,51 @@
-﻿using UnambitiousFx.Core;
+﻿using Microsoft.Extensions.Options;
+using UnambitiousFx.Core;
 using UnambitiousFx.Mediator.Abstractions;
-using UnambitiousFx.Mediator.Resolvers;
 
 namespace UnambitiousFx.Mediator;
 
 internal sealed class Publisher : IPublisher {
-    private readonly IDependencyResolver _dependencyResolver;
+    private readonly PublishMode         _defaultMode;
+    private readonly IEventDispatcher    _eventDispatcher;
+    private readonly IEventOutboxStorage _outboxStorage;
 
-    public Publisher(IDependencyResolver dependencyResolver) {
-        _dependencyResolver = dependencyResolver;
+    public Publisher(IEventDispatcher           eventDispatcher,
+                     IEventOutboxStorage        outboxStorage,
+                     IOptions<PublisherOptions> options) {
+        _eventDispatcher = eventDispatcher;
+        _outboxStorage   = outboxStorage;
+        _defaultMode     = options.Value.DefaultMode;
     }
 
     public ValueTask<Result> PublishAsync<TEvent>(IContext          context,
                                                   TEvent            @event,
                                                   CancellationToken cancellationToken = default)
-        where TEvent : IEvent {
-        return _dependencyResolver.GetService<IEventHandlerExecutor<TEvent>>()
-                                  .Match(handler => handler.HandleAsync(context, @event, cancellationToken),
-                                         () => throw new MissingHandlerException(typeof(EventHandlerExecutor<TEvent>)));
+        where TEvent : class, IEvent {
+        return PublishAsync(context, @event, _defaultMode, cancellationToken);
+    }
+
+    public ValueTask<Result> PublishAsync<TEvent>(IContext          context,
+                                                  TEvent            @event,
+                                                  PublishMode       mode,
+                                                  CancellationToken cancellationToken = default)
+        where TEvent : class, IEvent {
+        return mode switch {
+            PublishMode.Now     => _eventDispatcher.DispatchAsync(context, @event, cancellationToken),
+            PublishMode.Outbox  => _outboxStorage.AddAsync(@event, cancellationToken),
+            PublishMode.Default => PublishAsync(context, @event, _defaultMode, cancellationToken),
+            _                   => throw new ArgumentOutOfRangeException(nameof(mode), mode, null)
+        };
+    }
+
+    public async ValueTask<Result> CommitAsync(IContext          context,
+                                               CancellationToken cancellationToken = default) {
+        var events  = await _outboxStorage.GetPendingEventsAsync(cancellationToken);
+        var results = new List<Result>();
+
+        foreach (var @event in events) {
+            results.Add(await _eventDispatcher.DispatchAsync(context, @event, cancellationToken));
+        }
+
+        return results.ToResult();
     }
 }

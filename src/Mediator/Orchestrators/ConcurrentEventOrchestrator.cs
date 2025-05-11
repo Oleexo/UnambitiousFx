@@ -16,7 +16,7 @@ public sealed class ConcurrentEventOrchestrator : IEventOrchestrator {
                                                     IEnumerable<IEventHandler<TEvent>> handlers,
                                                     TEvent                             @event,
                                                     CancellationToken                  cancellationToken = default)
-        where TEvent : IEvent {
+        where TEvent : class, IEvent {
         var tasks = handlers.Select(eventHandler => eventHandler.HandleAsync(context, @event, cancellationToken)
                                                                 .AsTask())
                             .ToList();

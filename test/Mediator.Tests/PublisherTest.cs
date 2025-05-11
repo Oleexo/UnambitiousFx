@@ -1,54 +1,53 @@
+using JetBrains.Annotations;
+using Microsoft.Extensions.Options;
 using NSubstitute;
 using UnambitiousFx.Core;
 using UnambitiousFx.Mediator.Abstractions;
-using UnambitiousFx.Mediator.Resolvers;
 using UnambitiousFx.Mediator.Tests.Definitions;
 
 namespace UnambitiousFx.Mediator.Tests;
 
+[TestSubject(typeof(Publisher))]
 public sealed class PublisherTest {
+    private readonly IEventDispatcher    _eventDispatcher;
+    private readonly IEventOutboxStorage _eventOutboxStorage;
     private readonly Publisher           _publisher;
-    private readonly IDependencyResolver _resolver;
 
     public PublisherTest() {
-        _resolver  = Substitute.For<IDependencyResolver>();
-        _publisher = new Publisher(_resolver);
+        _eventDispatcher    = Substitute.For<IEventDispatcher>();
+        _eventOutboxStorage = Substitute.For<IEventOutboxStorage>();
+
+        _publisher = new Publisher(
+            _eventDispatcher,
+            _eventOutboxStorage,
+            Options.Create(new PublisherOptions())
+        );
     }
 
     [Fact]
-    public async Task GivenValidEventHandler_WhenPublishAsync_ShouldSucceed() {
-        // Arrange
-        var eventData    = new EventExample();
-        var proxyHandler = Substitute.For<IEventHandlerExecutor<EventExample>>();
-        var context      = Substitute.For<IContext>();
+    public async Task GivenAnEvent_WhenPublish_ShouldDispatchEvent() {
+        var @event = new EventExample();
+        _eventDispatcher.DispatchAsync(Arg.Any<IContext>(), @event, Arg.Any<CancellationToken>())
+                        .Returns(Result.Success());
 
-        _resolver.GetService<IEventHandlerExecutor<EventExample>>()
-                 .Returns(Option.Some(proxyHandler));
+        var result = await _publisher.PublishAsync(Substitute.For<IContext>(),
+                                                   @event,
+                                                   CancellationToken.None);
 
-        proxyHandler.HandleAsync(context, eventData, CancellationToken.None)
-                    .Returns(Result.Success());
-
-        // Act
-        var result = await _publisher.PublishAsync(context, eventData, CancellationToken.None);
-
-        // Assert
         Assert.True(result.IsSuccess);
-        await proxyHandler.Received(1)
-                          .HandleAsync(context, eventData, CancellationToken.None);
     }
 
     [Fact]
-    public async Task GivenNoEventHandler_WhenPublishAsync_ShouldThrowException() {
-        // Arrange
-        var eventData = new EventExample();
-        var context   = Substitute.For<IContext>();
+    public async Task GivenAnEvent_WhenPublishWithOutbox_ShouldStoreTheEvent() {
+        var @event = new EventExample();
+        _eventOutboxStorage.AddAsync(@event, Arg.Any<CancellationToken>())
+                           .Returns(Result.Success());
 
-        _resolver.GetService<IEventHandlerExecutor<EventExample>>()
-                 .Returns(Option.None<IEventHandlerExecutor<EventExample>>());
+        var result = await _publisher.PublishAsync(Substitute.For<IContext>(),
+                                                   @event,
+                                                   PublishMode.Outbox,
+                                                   CancellationToken.None);
 
-        // Act & Assert
-        await Assert.ThrowsAsync<MissingHandlerException>(() =>
-                                                              _publisher.PublishAsync(context, eventData, CancellationToken.None)
-                                                                        .AsTask());
+        Assert.True(result.IsSuccess);
     }
 }

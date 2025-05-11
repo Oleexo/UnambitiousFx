@@ -21,5 +21,5 @@ public interface IEventOrchestrator {
                                        IEnumerable<IEventHandler<TEvent>> handlers,
                                        TEvent                             @event,
                                        CancellationToken                  cancellationToken = default)
-        where TEvent : IEvent;
+        where TEvent : class, IEvent;
 }

@@ -7,5 +7,5 @@ namespace UnambitiousFx.Mediator.Abstractions;
 ///     The type of event being handled. Must implement the <see cref="IEvent" /> interface.
 /// </typeparam>
 public interface IEventHandlerExecutor<in TEvent> : IEventHandler<TEvent>
-    where TEvent : IEvent {
+    where TEvent : class, IEvent {
 }
