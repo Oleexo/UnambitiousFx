@@ -25,7 +25,7 @@ var app = builder.Build();
 
 app.MapGet("/", () => "Hello World!");
 
-var todoEndpoints = app.MapGroup("/todo");
+var todoEndpoints = app.MapGroup("/todos");
 
 todoEndpoints.MapGet("/{id:guid}", async ([FromRoute]    Guid    id,
                                           [FromServices] ISender sender,
