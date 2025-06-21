@@ -14,7 +14,7 @@ public sealed class BasicHttpTests
     private async Task<Guid> CreateTodoOnServer() {
         var client = _factory.CreateClient();
 
-        var response = await client.PostAsJsonAsync("/todo", new {
+        var response = await client.PostAsJsonAsync("/todos", new {
             Name = "Test"
         }, TestContext.Current.CancellationToken);
 
@@ -33,7 +33,7 @@ public sealed class BasicHttpTests
         var client = _factory.CreateClient();
 
         // Act
-        var response = await client.PostAsJsonAsync("/todo", new {
+        var response = await client.PostAsJsonAsync("/todos", new {
             Name = "Test"
         }, TestContext.Current.CancellationToken);
 
@@ -49,7 +49,7 @@ public sealed class BasicHttpTests
         var client = _factory.CreateClient();
 
         // Act
-        var response = await client.GetAsync("/todo", TestContext.Current.CancellationToken);
+        var response = await client.GetAsync("/todos", TestContext.Current.CancellationToken);
 
         // Assert
         response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -62,7 +62,7 @@ public sealed class BasicHttpTests
         var client = _factory.CreateClient();
 
         // Act
-        var response = await client.GetAsync($"/todo/{id}", TestContext.Current.CancellationToken);
+        var response = await client.GetAsync($"/todos/{id}", TestContext.Current.CancellationToken);
 
         // Assert
         response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -75,7 +75,7 @@ public sealed class BasicHttpTests
         var client = _factory.CreateClient();
 
         // Act
-        var response = await client.PutAsJsonAsync($"/todo/{id}", new {
+        var response = await client.PutAsJsonAsync($"/todos/{id}", new {
             Name = "Updated"
         }, TestContext.Current.CancellationToken);
 
@@ -90,7 +90,7 @@ public sealed class BasicHttpTests
         var client = _factory.CreateClient();
 
         // Act
-        var response = await client.DeleteAsync($"/todo/{id}", TestContext.Current.CancellationToken);
+        var response = await client.DeleteAsync($"/todos/{id}", TestContext.Current.CancellationToken);
 
         // Assert
         response.EnsureSuccessStatusCode(); // Status Code 200-299
