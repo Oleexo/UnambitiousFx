@@ -22,5 +22,6 @@
     <File Path="Directory.Packages.props" />
     <File Path="LICENSE" />
     <File Path="README.md" />
+    <File Path="GitVersion.yml" />
   </Folder>
 </Solution>

@@ -1,7 +1,7 @@
 ﻿name: Build and Test
 
 on:
-  push: 
+  push:
     branches:
       - main
     paths:
@@ -20,6 +20,9 @@ on:
 
 jobs:
   build:
+    permissions:
+      packages: write
+      contents: write
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
     steps:
@@ -56,3 +59,9 @@ jobs:
 
       - name: Push Packages to GitHub Packages
         run: dotnet nuget push ./local_packages/*.nupkg --api-key ${{ secrets.MYGETS_TOKEN }} --source https://www.myget.org/F/unambitiousfx/api/v2/package --skip-duplicate
+
+      - name: Create Tag
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git tag v${{ steps.gitversion.outputs.SemVer }}
+          git push origin v${{ steps.gitversion.outputs.SemVer }}
