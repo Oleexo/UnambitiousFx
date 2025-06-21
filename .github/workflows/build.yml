@@ -1,6 +1,14 @@
 ﻿name: Build and Test
 
 on:
+  push: 
+    branches:
+      - main
+    paths:
+      - '**.cs'
+      - '**.csproj'
+      - '**.props'
+      - '.github/workflows/build.yml'
   pull_request:
     branches:
       - main
