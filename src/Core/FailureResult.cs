@@ -34,6 +34,10 @@ internal sealed class FailureResult : Result {
         return new FailureResult<TOut>(_error);
     }
 
+    public override ValueTask<Result<TOut>> Bind<TOut>(Func<ValueTask<Result<TOut>>> bind) {
+        return new ValueTask<Result<TOut>>(new FailureResult<TOut>(_error));
+    }
+
     public override void IfSuccess(Action action) {
     }
 
@@ -81,7 +85,11 @@ internal sealed class FailureResult<TValue> : Result<TValue>
     }
 
     public override Result<TOut> Bind<TOut>(Func<Result<TOut>> bind) {
-        return bind();
+        return new FailureResult<TOut>(_error);
+    }
+
+    public override ValueTask<Result<TOut>> Bind<TOut>(Func<ValueTask<Result<TOut>>> bind) {
+        return new ValueTask<Result<TOut>>(new FailureResult<TOut>(_error));
     }
 
     public override void IfSuccess(Action action) {

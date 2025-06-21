@@ -24,6 +24,10 @@ internal sealed class SuccessResult : Result {
         return bind();
     }
 
+    public override ValueTask<Result<TOut>> Bind<TOut>(Func<ValueTask<Result<TOut>>> bind) {
+        return bind();
+    }
+
     public override void IfSuccess(Action action) {
         action();
     }
@@ -71,6 +75,10 @@ internal sealed class SuccessResult<TValue> : Result<TValue>
     }
 
     public override Result<TOut> Bind<TOut>(Func<Result<TOut>> bind) {
+        return bind();
+    }
+
+    public override ValueTask<Result<TOut>> Bind<TOut>(Func<ValueTask<Result<TOut>>> bind) {
         return bind();
     }
 

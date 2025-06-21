@@ -64,6 +64,22 @@ public abstract class Result : IResult {
     public abstract Result<TOut> Bind<TOut>(Func<Result<TOut>> bind)
         where TOut : notnull;
 
+    /// Binds the current result to a provided function that returns a new `Result`.
+    /// This operation is typically used for chaining multiple operations where the output of one
+    /// operation becomes the input to the next.
+    /// If the current result is successful, the `bind` function is executed. If the current result is
+    /// faulted, it directly returns itself without executing the `bind` function.
+    /// <param name="bind">
+    ///     A function that takes no parameters and returns a new `Result`.
+    ///     This function represents the next operation to execute if the current result is successful.
+    /// </param>
+    /// <returns>
+    ///     A new `Result` created by the invocation of the `bind` function, or the current faulted result
+    ///     if the operation was not successful.
+    /// </returns>
+    public abstract ValueTask<Result<TOut>> Bind<TOut>(Func<ValueTask<Result<TOut>>> bind)
+        where TOut : notnull;
+
     /// Represents a successful result.
     /// <return>
     ///     A new instance of a successful result.
