@@ -7,6 +7,7 @@
     <Project Path="examples\mediator\WebApi\WebApi.csproj" Type="Classic C#" />
   </Folder>
   <Folder Name="/src/">
+    <Project Path="src\Core.Generator\Core.Generator.csproj" Type="Classic C#" />
     <Project Path="src\Core\Core.csproj" Type="Classic C#" />
     <Project Path="src\Mediator.Abstractions\Mediator.Abstractions.csproj" Type="Classic C#" />
     <Project Path="src\Mediator.Generator\Mediator.Generator.csproj" Type="Classic C#" />

@@ -1,7 +1,7 @@
 using JetBrains.Annotations;
 using Microsoft.Extensions.Options;
 using NSubstitute;
-using UnambitiousFx.Core;
+using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 using UnambitiousFx.Mediator.Tests.Definitions;
 

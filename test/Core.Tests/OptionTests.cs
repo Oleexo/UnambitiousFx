@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using UnambitiousFx.Core.Options;
 
 namespace UnambitiousFx.Core.Tests;
 

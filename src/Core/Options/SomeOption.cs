@@ -1,48 +1,54 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace UnambitiousFx.Core;
+namespace UnambitiousFx.Core.Options;
 
-internal sealed class NoneOption<TValue> : Option<TValue>
+internal sealed class SomeOption<TValue> : Option<TValue>
     where TValue : notnull {
-    public override bool    IsSome => false;
-    public override bool    IsNone => true;
-    public override object? Case   => null;
+    private readonly TValue _value;
+
+    public SomeOption(TValue value) {
+        _value = value;
+    }
+
+    public override bool   IsSome => true;
+    public override bool   IsNone => false;
+    public override object Case   => _value;
 
     public override void IfNone(Action none) {
-        none();
     }
 
     public override ValueTask IfNone(Func<ValueTask> none) {
-        return none();
-    }
-
-    public override void IfSome(Action<TValue> some) {
-    }
-
-    public override ValueTask IfSome(Func<TValue, ValueTask> some) {
         return new ValueTask();
     }
 
+    public override void IfSome(Action<TValue> some) {
+        some(_value);
+    }
+
+    public override ValueTask IfSome(Func<TValue, ValueTask> some) {
+        return some(_value);
+    }
+
     public override bool Some([NotNullWhen(true)] out TValue? value) {
-        value = default;
-        return false;
+        value = _value;
+        return true;
     }
 
     public override TOut Match<TOut>(Func<TValue, TOut> some,
                                      Func<TOut>         none) {
-        return none();
+        return some(_value);
     }
 
     public override void Match(Action<TValue> some,
                                Action         none) {
-        none();
+        some(_value);
     }
 
     public override Option<TOut> Bind<TOut>(Func<TValue, Option<TOut>> someFunc) {
-        return new NoneOption<TOut>();
+        return someFunc(_value);
     }
 
     public override ValueTask<Option<TOut>> Bind<TOut>(Func<TValue, ValueTask<Option<TOut>>> someFunc) {
-        return new ValueTask<Option<TOut>>();
+        return someFunc(_value);
     }
 }

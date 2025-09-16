@@ -1,5 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using UnambitiousFx.Core;
+using UnambitiousFx.Core.Options;
 
 namespace UnambitiousFx.Mediator.Resolvers;
 

@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace UnambitiousFx.Core;
+namespace UnambitiousFx.Core.Eithers;
 
 internal sealed class LeftEither<TLeft, TRight> : Either<TLeft, TRight>
     where TLeft : notnull

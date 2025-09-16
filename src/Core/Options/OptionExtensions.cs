@@ -1,4 +1,4 @@
-﻿namespace UnambitiousFx.Core;
+﻿namespace UnambitiousFx.Core.Options;
 
 /// Provides extension methods for working with asynchronous options in the context
 /// of the IOption interface and its implementations.
@@ -8,7 +8,7 @@ public static class OptionExtensions {
     /// <typeparam name="TOut">The type of the result returned by the invoked function.</typeparam>
     /// <typeparam name="TValue">The type of the value contained in the option.</typeparam>
     /// <param name="awaitableOption">
-    ///     A ValueTask that resolves to an instance of <see cref="IOption{TValue}" />, representing the asynchronous option to
+    ///     A ValueTask that resolves to an instance of <see cref="Option{TValue}" />, representing the asynchronous option to
     ///     be matched.
     /// </param>
     /// <param name="some">
@@ -21,9 +21,10 @@ public static class OptionExtensions {
     /// <returns>
     ///     The result of invoking either the "some" or "none" function based on the state of the matched option.
     /// </returns>
-    public static async ValueTask<TOut> Match<TOut, TValue>(this ValueTask<IOption<TValue>> awaitableOption,
-                                                            Func<TValue, TOut>              some,
-                                                            Func<TOut>                      none) {
+    public static async ValueTask<TOut> Match<TOut, TValue>(this ValueTask<Option<TValue>> awaitableOption,
+                                                            Func<TValue, TOut>             some,
+                                                            Func<TOut>                     none)
+        where TValue : notnull {
         return (await awaitableOption).Match(some, none);
     }
 }

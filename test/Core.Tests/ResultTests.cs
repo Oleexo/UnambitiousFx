@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using UnambitiousFx.Core.Results;
 
 namespace UnambitiousFx.Core.Tests;
 
@@ -6,16 +7,16 @@ namespace UnambitiousFx.Core.Tests;
 public sealed class ResultTests {
     [Fact]
     public void GivenASuccessResult_WhenCallingOk_ThenReturnsTrue() {
-        var result = Result<int>.Success(42);
+        var result = Result.Success(42);
 
-        var b = result.Ok(out _, out _);
+        var b = result.Ok(out int _, out _);
 
         Assert.True(b);
     }
 
     [Fact]
     public void GivenASuccessResult_WhenCallingOk_ThenReturnsTheValue() {
-        var result = Result<int>.Success(42);
+        var result = Result.Success(42);
 
         if (result.Ok(out var value, out _)) {
             Assert.Equal(42, value);
@@ -27,9 +28,9 @@ public sealed class ResultTests {
 
     [Fact]
     public void GivenASuccessResult_WhenCallingOk_ThenReturnsNullError() {
-        var result = Result<int>.Success(42);
+        var result = Result.Success(42);
 
-        if (result.Ok(out _, out var error)) {
+        if (result.Ok(out int _, out var error)) {
             Assert.Null(error);
         }
         else {
@@ -39,9 +40,9 @@ public sealed class ResultTests {
 
     [Fact]
     public void GivenAFailureResult_WhenCallingOk_ThenReturnsTheError() {
-        var result = Result<int>.Failure(new Error("error"));
+        var result = Result.Failure(new Exception("error"));
 
-        if (!result.Ok(out _, out var error)) {
+        if (!result.Ok(out var error)) {
             Assert.Equal("error", error.Message);
         }
         else {
@@ -51,36 +52,36 @@ public sealed class ResultTests {
 
     [Fact]
     public void GivenAFailureResult_WhenCallingOk_ThenReturnsFalse() {
-        var result = Result<int>.Failure(new Error("error"));
+        var result = Result.Failure(new Exception("error"));
 
-        var b = result.Ok(out _, out _);
+        var b = result.Ok(out _);
 
         Assert.False(b);
     }
 
     [Fact]
     public void GivenASuccessResult_WhenCallingIfSuccess_ThenCallsTheAction() {
-        var result = Result<int>.Success(42);
+        var result = Result.Success(42);
 
         var called = false;
-        result.IfSuccess(_ => called = true);
+        result.IfSuccess(() => called = true);
 
         Assert.True(called);
     }
 
     [Fact]
     public void GivenAFailureResult_WhenCallingIfSuccess_ThenDoesNotCallTheAction() {
-        var result = Result<int>.Failure(new Error("error"));
+        var result = Result.Failure(new Exception("error"));
 
         var called = false;
-        result.IfSuccess(_ => called = true);
+        result.IfSuccess(() => called = true);
 
         Assert.False(called);
     }
 
     [Fact]
     public void GivenASuccessResult_WhenCallingIfFailure_ThenDoesNotCallTheAction() {
-        var result = Result<int>.Success(42);
+        var result = Result.Success(42);
 
         var called = false;
         result.IfFailure(_ => called = true);
@@ -90,7 +91,7 @@ public sealed class ResultTests {
 
     [Fact]
     public void GivenAFailureResult_WhenCallingIfFailure_ThenCallsTheAction() {
-        var result = Result<int>.Failure(new Error("error"));
+        var result = Result.Failure(new Exception("error"));
 
         var called = false;
         result.IfFailure(_ => called = true);
@@ -100,20 +101,20 @@ public sealed class ResultTests {
 
     [Fact]
     public void GivenASuccessResult_WhenCallingMatch_ThenCallsTheSuccessAction() {
-        var result = Result<int>.Success(42);
+        var result = Result.Success(42);
 
         var called = false;
-        result.Match(_ => called = true, _ => called = false);
+        result.Match(() => called = true, _ => called = false);
 
         Assert.True(called);
     }
 
     [Fact]
     public void GivenAFailureResult_WhenCallingMatch_ThenCallsTheFailureAction() {
-        var result = Result<int>.Failure(new Error("error"));
+        var result = Result.Failure(new Exception("error"));
 
         var called = false;
-        result.Match(_ => called = false, _ => called = true);
+        result.Match(() => called = false, _ => called = true);
 
         Assert.True(called);
     }
@@ -134,20 +135,20 @@ public sealed class ResultTests {
         return;
 
         Result<string> GetShippingInfo((string order, int user) tuple) {
-            return $"Hello {tuple.user} from {tuple.order}";
+            return Result.Success($"Hello {tuple.user} from {tuple.order}");
         }
 
         Result<(string, int)> GetLatestOrder(int user) {
             return user == 42
-                       ? ("fx", 42)
-                       : ("fx", 24);
+                       ? Result.Success(("fx", 42))
+                       : Result.Success(("fx", 24));
         }
 
         // Example of chaining operations that might fail
         Result<int> GetUser(string userId) {
             return userId == "toto"
-                       ? 42
-                       : 24;
+                       ? Result.Success(42)
+                       : Result.Success(24);
         }
     }
 }

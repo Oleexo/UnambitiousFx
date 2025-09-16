@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace UnambitiousFx.Core;
+namespace UnambitiousFx.Core.Options;
 
 /// <summary>
 ///     Provides a static class to create and work with instances of <see cref="Option{TValue}" />,
@@ -29,7 +29,7 @@ public static class Option {
 /// <summary>
 ///     Provides a static class to create instances of <see cref="Option{TValue}" />, representing a value or no value.
 /// </summary>
-public abstract class Option<TValue> : IOption<TValue>
+public abstract class Option<TValue>
     where TValue : notnull {
     /// <summary>
     ///     Represents the singleton instance of <see cref="NoneOption{TValue}" />, used to indicate the absence of a value.
@@ -67,18 +67,6 @@ public abstract class Option<TValue> : IOption<TValue>
     /// <inheritdoc />
     public abstract void Match(Action<TValue> some,
                                Action         none);
-
-    /// <inheritdoc />
-    IOption<TOut> IOption<TValue>.Bind<TOut>(Func<TValue, IOption<TOut>> someFunc) {
-        return Bind(value => someFunc(value)
-                       .Match(Option<TOut>.Some, Option<TOut>.None));
-    }
-
-    /// <inheritdoc />
-    async ValueTask<IOption<TOut>> IOption<TValue>.Bind<TOut>(Func<TValue, ValueTask<IOption<TOut>>> someFunc) {
-        return await Bind(value => someFunc(value)
-                             .Match(Option<TOut>.Some, Option<TOut>.None));
-    }
 
     /// Transforms the value contained in the current Option instance using the specified function and returns a new Option instance.
     /// If the current instance is None, the function is not invoked, and None is returned.

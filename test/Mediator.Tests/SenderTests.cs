@@ -1,5 +1,6 @@
 using NSubstitute;
-using UnambitiousFx.Core;
+using UnambitiousFx.Core.Options;
+using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 using UnambitiousFx.Mediator.Resolvers;
 using UnambitiousFx.Mediator.Tests.Definitions;

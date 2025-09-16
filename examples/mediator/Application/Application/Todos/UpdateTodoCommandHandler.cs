@@ -1,6 +1,6 @@
 ﻿using Application.Domain.Events;
 using Application.Domain.Repositories;
-using UnambitiousFx.Core;
+using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator;
 using UnambitiousFx.Mediator.Abstractions;
 
@@ -20,7 +20,7 @@ public sealed class UpdateTodoCommandHandler : IRequestHandler<UpdateTodoCommand
         var todoOpt = await _todoRepository.GetAsync(request.Id, cancellationToken);
 
         if (!todoOpt.Some(out var todo)) {
-            return Result.Failure(new Error("Not found"));
+            return Result.Failure("Not found");
         }
 
         todo.Name = request.Name;

@@ -1,54 +1,48 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace UnambitiousFx.Core;
+namespace UnambitiousFx.Core.Options;
 
-internal sealed class SomeOption<TValue> : Option<TValue>
+internal sealed class NoneOption<TValue> : Option<TValue>
     where TValue : notnull {
-    private readonly TValue _value;
-
-    public SomeOption(TValue value) {
-        _value = value;
-    }
-
-    public override bool   IsSome => true;
-    public override bool   IsNone => false;
-    public override object Case   => _value;
+    public override bool    IsSome => false;
+    public override bool    IsNone => true;
+    public override object? Case   => null;
 
     public override void IfNone(Action none) {
+        none();
     }
 
     public override ValueTask IfNone(Func<ValueTask> none) {
-        return new ValueTask();
+        return none();
     }
 
     public override void IfSome(Action<TValue> some) {
-        some(_value);
     }
 
     public override ValueTask IfSome(Func<TValue, ValueTask> some) {
-        return some(_value);
+        return new ValueTask();
     }
 
     public override bool Some([NotNullWhen(true)] out TValue? value) {
-        value = _value;
-        return true;
+        value = default;
+        return false;
     }
 
     public override TOut Match<TOut>(Func<TValue, TOut> some,
                                      Func<TOut>         none) {
-        return some(_value);
+        return none();
     }
 
     public override void Match(Action<TValue> some,
                                Action         none) {
-        some(_value);
+        none();
     }
 
     public override Option<TOut> Bind<TOut>(Func<TValue, Option<TOut>> someFunc) {
-        return someFunc(_value);
+        return new NoneOption<TOut>();
     }
 
     public override ValueTask<Option<TOut>> Bind<TOut>(Func<TValue, ValueTask<Option<TOut>>> someFunc) {
-        return someFunc(_value);
+        return new ValueTask<Option<TOut>>();
     }
 }

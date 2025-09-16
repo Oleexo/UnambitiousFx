@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace UnambitiousFx.Core;
+namespace UnambitiousFx.Core.Eithers;
 
 /// <summary>
 ///     Represents a value that can hold one of two types, either <typeparamref name="TLeft" /> or
@@ -8,7 +8,7 @@ namespace UnambitiousFx.Core;
 /// </summary>
 /// <typeparam name="TLeft">The type of the value if this instance represents the 'Left' state.</typeparam>
 /// <typeparam name="TRight">The type of the value if this instance represents the 'Right' state.</typeparam>
-public abstract class Either<TLeft, TRight> : IEither<TLeft, TRight>
+public abstract class Either<TLeft, TRight>
     where TLeft : notnull
     where TRight : notnull {
     /// <inheritdoc />
