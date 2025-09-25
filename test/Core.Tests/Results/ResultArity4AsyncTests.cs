@@ -1,18 +1,16 @@
-using System;
-using System.Threading.Tasks;
 using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
 
-namespace UnambitiousFx.Core.Tests;
+namespace UnambitiousFx.Core.Tests.Results;
 
-[TestSubject(typeof(Result<>))]
-public sealed class ResultArity1AsyncTests {
+[TestSubject(typeof(Result<,,,>))]
+public sealed class ResultArity4AsyncTests {
     [Fact]
-    public async Task Task_Success_Ok_ReturnsValue() {
-        var r = await Task.FromResult(Result.Success(42));
+    public async Task Task_Success_Ok_ReturnsValues() {
+        var r = await Task.FromResult(Result.Success(1, "a", true, 2.5));
 
         if (r.Ok(out var value)) {
-            Assert.Equal(42, value);
+            Assert.Equal((1, "a", true, 2.5), value);
         }
         else {
             Assert.Fail("Expected success");
@@ -21,7 +19,7 @@ public sealed class ResultArity1AsyncTests {
 
     [Fact]
     public async Task Task_Failure_Ok_ReturnsErrorMessage() {
-        var r = await Task.FromResult(Result.Failure<int>(new Exception("boom")));
+        var r = await Task.FromResult(Result.Failure<int, string, bool, double>(new Exception("boom")));
 
         if (!r.Ok(out var _, out var err)) {
             Assert.Equal("boom", err.Message);
@@ -32,11 +30,11 @@ public sealed class ResultArity1AsyncTests {
     }
 
     [Fact]
-    public async Task ValueTask_Success_Ok_ReturnsValue() {
-        var r = await ValueTask.FromResult(Result.Success(42));
+    public async Task ValueTask_Success_Ok_ReturnsValues() {
+        var r = await ValueTask.FromResult(Result.Success(1, "a", true, 2.5));
 
         if (r.Ok(out var value)) {
-            Assert.Equal(42, value);
+            Assert.Equal((1, "a", true, 2.5), value);
         }
         else {
             Assert.Fail("Expected success");
@@ -45,7 +43,7 @@ public sealed class ResultArity1AsyncTests {
 
     [Fact]
     public async Task ValueTask_Failure_Ok_ReturnsErrorMessage() {
-        var r = await ValueTask.FromResult(Result.Failure<int>(new Exception("boom")));
+        var r = await ValueTask.FromResult(Result.Failure<int, string, bool, double>(new Exception("boom")));
 
         if (!r.Ok(out var _, out var err)) {
             Assert.Equal("boom", err.Message);
@@ -55,3 +53,4 @@ public sealed class ResultArity1AsyncTests {
         }
     }
 }
+

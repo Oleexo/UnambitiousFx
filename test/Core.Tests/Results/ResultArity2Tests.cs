@@ -1,16 +1,16 @@
 using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
 
-namespace UnambitiousFx.Core.Tests;
+namespace UnambitiousFx.Core.Tests.Results;
 
-[TestSubject(typeof(Result<,,,,,,>))]
-public sealed class ResultArity7Tests {
+[TestSubject(typeof(Result<,>))]
+public sealed class ResultArity2Tests {
     [Fact]
     public void Success_Ok_ReturnsValues() {
-        var r = Result.Success(1, "a", true, 2.5, 'x', 99L, (byte)7);
+        var r = Result.Success(1, "a");
 
         if (r.Ok(out var value)) {
-            Assert.Equal((1, "a", true, 2.5, 'x', 99L, (byte)7), value);
+            Assert.Equal((1, "a"), value);
         }
         else {
             Assert.Fail("Expected success");
@@ -19,7 +19,7 @@ public sealed class ResultArity7Tests {
 
     [Fact]
     public void Failure_Ok_ReturnsErrorMessage() {
-        var r = Result.Failure<int, string, bool, double, char, long, byte>(new Exception("boom"));
+        var r = Result.Failure<int, string>(new Exception("boom"));
 
         if (!r.Ok(out var _, out var err)) {
             Assert.Equal("boom", err.Message);

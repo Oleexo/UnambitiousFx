@@ -1,7 +1,7 @@
 using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
 
-namespace UnambitiousFx.Core.Tests;
+namespace UnambitiousFx.Core.Tests.Results;
 
 [TestSubject(typeof(Result))]
 public sealed class ResultArity0Tests {

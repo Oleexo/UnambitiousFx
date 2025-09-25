@@ -106,20 +106,19 @@ internal sealed class ResultArityClassFactory(string @namespace,
 
     private void GenerateFailureBindMethods(IndentedTextWriter tw,
                                             ushort             numberOfParameterInput) {
-
         foreach (ushort i in Enumerable.Range(1, maxOfParameters)) {
-            GenerateFailureBindMethod(tw,numberOfParameterInput, i, false);
-
+            GenerateFailureBindMethod(tw, numberOfParameterInput, i, false);
         }
 
         foreach (ushort i in Enumerable.Range(1, maxOfParameters)) {
-            GenerateFailureBindMethod(tw,numberOfParameterInput, i);
+            GenerateFailureBindMethod(tw, numberOfParameterInput, i);
         }
     }
+
     private void GenerateFailureBindMethod(IndentedTextWriter tw,
-                                             ushort numberOfParameterInput,
-                                             ushort             numberOfParameterOutput,
-                                             bool               withIncrementalInput = true) {
+                                           ushort             numberOfParameterInput,
+                                           ushort             numberOfParameterOutput,
+                                           bool               withIncrementalInput = true) {
         var input = string.Join(", ", Enumerable.Range(0, numberOfParameterInput)
                                                 .Select(i => $"TValue{i + 1}"));
         var output = string.Join(", ", Enumerable.Range(0, numberOfParameterOutput)
@@ -140,7 +139,6 @@ internal sealed class ResultArityClassFactory(string @namespace,
             tw.Indent--;
             tw.WriteLine("}");
         }
-
     }
 
     private void GenerateSuccessOkMethods(IndentedTextWriter tw,
@@ -204,21 +202,28 @@ internal sealed class ResultArityClassFactory(string @namespace,
 
         var genericParameters = string.Join(", ", Enumerable.Range(0, numberOfValues)
                                                             .Select(i => $"TValue{i + 1}"));
-        var genericConstraints = string.Join(" ", Enumerable.Range(0, numberOfValues)
-                                                            .Select(i => $"where TValue{i + 1} : notnull"));
 
         tw.WriteLine("#nullable enable");
         tw.WriteLine($"namespace {@namespace};");
         tw.WriteLine();
-        tw.WriteLine($"public abstract class Result<{genericParameters}> : Result {genericConstraints}");
+        tw.WriteLine($"public abstract class Result<{genericParameters}> : BaseResult");
+        tw.Indent++;
+        for (var i = 0; i < numberOfValues; i++) {
+            tw.WriteLine($"where TValue{i + 1} : notnull");
+        }
+        tw.Indent--;
         tw.WriteLine("{");
         tw.Indent++;
 
         tw.WriteLine($"public abstract void Match(Action<{genericParameters}> success, Action<Exception> failure);");
         tw.WriteLine($"public abstract TOut Match<TOut>(Func<{genericParameters}, TOut> success, Func<Exception, TOut> failure);");
         tw.WriteLine($"public abstract void IfSuccess(Action<{genericParameters}> action);");
+        tw.WriteLine($"public abstract Result<{genericParameters}> MapError(Func<Exception, Exception> mapError);");
+        tw.WriteLine($"public abstract Result<{genericParameters}> Tap(Action<{genericParameters}> action);");
+        tw.WriteLine($"public abstract Result<{genericParameters}> TapError(Action<Exception> action);");
+        tw.WriteLine($"public abstract Result<{genericParameters}> Ensure(Func<{genericParameters}, bool> predicate, Func<{genericParameters}, Exception> errorMessageFactory);");
 
-        GenerateAbstractBindMethods(tw, numberOfValues);
+        //GenerateAbstractBindMethods(tw, numberOfValues);
         GenerateAbstractOkMethods(tw, numberOfValues);
 
         tw.Indent--;
@@ -297,15 +302,43 @@ internal sealed class ResultArityClassFactory(string @namespace,
         tw.WriteLine("public override void IfFailure(Action<Exception> action)");
         tw.WriteLine("{");
         tw.WriteLine("}");
-
-        tw.WriteLine("public override Result Bind(Func<Result> bind)");
+        
+        tw.WriteLine($"public override Result<{genericParameters}> MapError(Func<Exception, Exception> mapError)");
         tw.WriteLine("{");
         tw.Indent++;
-        tw.WriteLine("return bind();");
+        tw.WriteLine($"return new SuccessResult<{genericParameters}>({callFieldParameters});");
+        tw.Indent--;
+        tw.WriteLine("}");
+        
+        tw.WriteLine($"public override Result<{genericParameters}> Tap(Action<{genericParameters}> action)");
+        tw.WriteLine("{");
+        tw.Indent++;
+        tw.WriteLine($"action({callFieldParameters});");
+        tw.WriteLine($"return new SuccessResult<{genericParameters}>({callFieldParameters});");
+        tw.Indent--;
+        tw.WriteLine("}");
+        
+        tw.WriteLine($"public override Result<{genericParameters}> TapError(Action<Exception> action)");
+        tw.WriteLine("{");
+        tw.Indent++;
+        tw.WriteLine($"return new SuccessResult<{genericParameters}>({callFieldParameters});");
+        tw.Indent--;
+        tw.WriteLine("}");
+        
+        tw.WriteLine($"public override Result<{genericParameters}> Ensure(Func<{genericParameters}, bool> predicate, Func<{genericParameters}, Exception> errorMessageFactory)");
+        tw.WriteLine("{");
+        tw.Indent++;
+        tw.WriteLine($"if(!predicate({callFieldParameters}))");
+        tw.WriteLine("{");
+        tw.Indent++;
+        tw.WriteLine($"return new FailureResult<{genericParameters}>(errorMessageFactory({callFieldParameters}));");
+        tw.Indent--;
+        tw.WriteLine("}");
+        tw.WriteLine($"return new SuccessResult<{genericParameters}>({callFieldParameters});");
         tw.Indent--;
         tw.WriteLine("}");
 
-        GenerateSuccessBindMethods(tw, numberOfValues);
+        //GenerateSuccessBindMethods(tw, numberOfValues);
         GenerateSuccessOkMethods(tw, numberOfValues);
 
         tw.Indent--;
@@ -385,15 +418,37 @@ internal sealed class ResultArityClassFactory(string @namespace,
         tw.WriteLine("action(_error);");
         tw.Indent--;
         tw.WriteLine("}");
-
-        tw.WriteLine("public override Result Bind(Func<Result> bind)");
+        
+        tw.WriteLine($"public override Result<{genericParameters}> MapError(Func<Exception, Exception> mapError)");
         tw.WriteLine("{");
         tw.Indent++;
-        tw.WriteLine("return new FailureResult(_error);");
+        tw.WriteLine($"return new FailureResult<{genericParameters}>(mapError(_error));");
+        tw.Indent--;
+        tw.WriteLine("}");
+        
+        tw.WriteLine($"public override Result<{genericParameters}> Tap(Action<{genericParameters}> action)");
+        tw.WriteLine("{");
+        tw.Indent++;
+        tw.WriteLine($"return new FailureResult<{genericParameters}>(_error);");
+        tw.Indent--;
+        tw.WriteLine("}");
+        
+        tw.WriteLine($"public override Result<{genericParameters}> TapError(Action<Exception> action)");
+        tw.WriteLine("{");
+        tw.Indent++;
+        tw.WriteLine("action(_error);");
+        tw.WriteLine($"return new FailureResult<{genericParameters}>(_error);");
+        tw.Indent--;
+        tw.WriteLine("}");
+        
+        tw.WriteLine($"public override Result<{genericParameters}> Ensure(Func<{genericParameters}, bool> predicate, Func<{genericParameters}, Exception> errorMessageFactory)");
+        tw.WriteLine("{");
+        tw.Indent++;
+        tw.WriteLine($"return new FailureResult<{genericParameters}>(_error);");
         tw.Indent--;
         tw.WriteLine("}");
 
-        GenerateFailureBindMethods(tw, numberOfValues);
+//        GenerateFailureBindMethods(tw, numberOfValues);
         GenerateFailureOkMethods(tw, numberOfValues);
 
         tw.Indent--;
@@ -413,7 +468,8 @@ internal sealed class ResultArityClassFactory(string @namespace,
         tw.WriteLine("}");
 
         if (numberOfParameter == 1) {
-            tw.WriteLine("public override bool Ok([global::System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out TValue1? value, [global::System.Diagnostics.CodeAnalysis.NotNullWhen(false)] out Exception? error)");
+            tw.WriteLine(
+                "public override bool Ok([global::System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out TValue1? value, [global::System.Diagnostics.CodeAnalysis.NotNullWhen(false)] out Exception? error)");
             tw.WriteLine("{");
             tw.Indent++;
             tw.WriteLine("value = default;");
@@ -421,7 +477,7 @@ internal sealed class ResultArityClassFactory(string @namespace,
             tw.WriteLine("return false;");
             tw.Indent--;
             tw.WriteLine("}");
-            
+
             tw.WriteLine("public override bool Ok([global::System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out TValue1? value)");
             tw.WriteLine("{");
             tw.Indent++;
@@ -434,7 +490,8 @@ internal sealed class ResultArityClassFactory(string @namespace,
             var methodParameters = string.Join(", ", Enumerable.Range(0, numberOfParameter)
                                                                .Select(i => $"TValue{i + 1} value{i + 1}"));
 
-            tw.WriteLine($"public override bool Ok([global::System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out ({methodParameters}) value, [global::System.Diagnostics.CodeAnalysis.NotNullWhen(false)] out Exception? error)");
+            tw.WriteLine(
+                $"public override bool Ok([global::System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out ({methodParameters}) value, [global::System.Diagnostics.CodeAnalysis.NotNullWhen(false)] out Exception? error)");
             tw.WriteLine("{");
             tw.Indent++;
             tw.WriteLine("value = default;");
@@ -442,7 +499,7 @@ internal sealed class ResultArityClassFactory(string @namespace,
             tw.WriteLine("return false;");
             tw.Indent--;
             tw.WriteLine("}");
-            
+
             tw.WriteLine($"public override bool Ok([global::System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out ({methodParameters}) value)");
             tw.WriteLine("{");
             tw.Indent++;
@@ -451,6 +508,5 @@ internal sealed class ResultArityClassFactory(string @namespace,
             tw.Indent--;
             tw.WriteLine("}");
         }
-
     }
 }

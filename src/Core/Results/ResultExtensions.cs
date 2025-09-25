@@ -1,7 +1,7 @@
 ﻿namespace UnambitiousFx.Core.Results;
 
 /// Provides extension methods for working with collections of `Result` instances.
-public static class ResultExtensions {
+public static partial class ResultExtensions {
     /// Converts a collection of `Result` objects into a single aggregated `Result`.
     /// If any of the `Result` objects in the collection contains an error, the returned `Result` will be
     /// a failure containing an `AggregateError` with all errors collected.
