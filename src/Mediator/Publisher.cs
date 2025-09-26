@@ -46,6 +46,6 @@ internal sealed class Publisher : IPublisher {
             results.Add(await _eventDispatcher.DispatchAsync(context, @event, cancellationToken));
         }
 
-        return results.ToResult();
+        return results.Combine();
     }
 }

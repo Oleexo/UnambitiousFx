@@ -20,6 +20,6 @@ public sealed class SequentialEventOrchestrator : IEventOrchestrator {
             results.Add(result);
         }
 
-        return results.ToResult();
+        return results.Combine();
     }
 }
