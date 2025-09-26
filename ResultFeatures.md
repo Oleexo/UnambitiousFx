@@ -146,14 +146,14 @@ Transform success values without changing the Result shape.
   ```
 
 ### 🔗 Phase 3: Composition & Collections
-- [ ] Traverse/Sequence - IEnumerable<Result<T>> -> Result<IEnumerable<T>>
-- [ ] TraverseAsync - Async traversal with Task/ValueTask
-- [ ] Apply/Zip - Apply Result<Func<...>> to Result<...> or zip multiple Results
-- [ ] Combine/Aggregate - Combine many Results; optionally accumulate errors
-- [ ] Partition - Split a collection of Results into successes and failures
-- [ ] Recover - Provide fallback value on failure
-- [ ] RecoverWith - Provide alternate Result on failure
-- [ ] RecoverAsync - Async error recovery
+- [x] Traverse/Sequence - IEnumerable<Result<T>> -> Result<IEnumerable<T>>
+- [x] TraverseAsync - Async traversal with Task/ValueTask
+- [x] Apply/Zip - Apply Result<Func<...>> to Result<...> or zip multiple Results
+- [x] Combine/Aggregate - Combine many Results; optionally accumulate errors
+- [x] Partition - Split a collection of Results into successes and failures
+- [x] Recover - Provide fallback value on failure
+- [x] RecoverWith - Provide alternate Result on failure
+- [x] RecoverAsync - Async error recovery
 
 #### Examples
 - Traverse/Sequence

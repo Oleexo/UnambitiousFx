@@ -1,7 +1,5 @@
-#nullable enable
 namespace UnambitiousFx.Core.Results;
 
-// Composition & Collections (Phase 3)
 public static partial class ResultExtensions
 {
     public static Result<List<TValue>> Sequence<TValue>(this IEnumerable<Result<TValue>> results)
@@ -63,5 +61,16 @@ public static partial class ResultExtensions
         return (oks, errors);
     }
 
-    public static Result Combine(this IEnumerable<Result> results) => results.ToResult();
+    public static Result Combine(this IEnumerable<Result> results) {
+        var errors = new List<Exception>();
+        foreach (var result in results) {
+            if (!result.Ok(out var error)) {
+                errors.Add(error);
+            }
+        }
+
+        return errors.Count != 0
+                   ? Result.Failure(new AggregateException(errors))
+                   : Result.Success();
+    }
 }

@@ -1,4 +1,3 @@
-#nullable enable
 namespace UnambitiousFx.Core.Results;
 
 public static partial class ResultExtensions

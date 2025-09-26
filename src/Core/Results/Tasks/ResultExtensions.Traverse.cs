@@ -1,9 +1,7 @@
-#nullable enable
 namespace UnambitiousFx.Core.Results.Tasks;
 
 public static partial class ResultExtensions
 {
-    // TraverseAsync: IEnumerable<T> with async selector returning Task<Result<U>>
     public static async Task<Result<List<TOut>>> TraverseAsync<TIn, TOut>(this IEnumerable<TIn> source, Func<TIn, Task<Result<TOut>>> selector)
         where TOut : notnull
     {
@@ -24,7 +22,6 @@ public static partial class ResultExtensions
         return Result.Success(list);
     }
 
-    // SequenceAsync: IEnumerable<Task<Result<T>>> -> Task<Result<List<T>>>
     public static async Task<Result<List<TValue>>> SequenceAsync<TValue>(this IEnumerable<Task<Result<TValue>>> tasks)
         where TValue : notnull
     {
