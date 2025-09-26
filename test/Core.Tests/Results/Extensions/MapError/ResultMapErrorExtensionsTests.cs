@@ -4,7 +4,7 @@ using UnambitiousFx.Core.Results;
 namespace UnambitiousFx.Core.Tests.Results;
 
 [TestSubject(typeof(Result))]
-public sealed class ResultMapErrorTests
+public sealed class ResultMapErrorExtensionsTests
 {
     // Arity 0
     [Fact]

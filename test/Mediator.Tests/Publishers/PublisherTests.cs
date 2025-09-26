@@ -8,12 +8,12 @@ using UnambitiousFx.Mediator.Tests.Definitions;
 namespace UnambitiousFx.Mediator.Tests;
 
 [TestSubject(typeof(Publisher))]
-public sealed class PublisherTest {
+public sealed class PublisherTests {
     private readonly IEventDispatcher    _eventDispatcher;
     private readonly IEventOutboxStorage _eventOutboxStorage;
     private readonly Publisher           _publisher;
 
-    public PublisherTest() {
+    public PublisherTests() {
         _eventDispatcher    = Substitute.For<IEventDispatcher>();
         _eventOutboxStorage = Substitute.For<IEventOutboxStorage>();
 

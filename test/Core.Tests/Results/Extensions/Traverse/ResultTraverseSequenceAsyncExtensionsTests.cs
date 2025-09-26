@@ -6,7 +6,7 @@ using ValueTasksExt = UnambitiousFx.Core.Results.ValueTasks.ResultExtensions;
 namespace UnambitiousFx.Core.Tests.Results;
 
 [TestSubject(typeof(ResultExtensions))]
-public sealed class ResultTraverseSequenceAsyncTests
+public sealed class ResultTraverseSequenceAsyncExtensionsTests
 {
     // Tasks - TraverseAsync
     [Fact]
