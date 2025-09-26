@@ -211,6 +211,7 @@ internal sealed class ResultArityClassFactory(string @namespace,
         for (var i = 0; i < numberOfValues; i++) {
             tw.WriteLine($"where TValue{i + 1} : notnull");
         }
+
         tw.Indent--;
         tw.WriteLine("{");
         tw.Indent++;
@@ -218,10 +219,6 @@ internal sealed class ResultArityClassFactory(string @namespace,
         tw.WriteLine($"public abstract void Match(Action<{genericParameters}> success, Action<Exception> failure);");
         tw.WriteLine($"public abstract TOut Match<TOut>(Func<{genericParameters}, TOut> success, Func<Exception, TOut> failure);");
         tw.WriteLine($"public abstract void IfSuccess(Action<{genericParameters}> action);");
-        tw.WriteLine($"public abstract Result<{genericParameters}> MapError(Func<Exception, Exception> mapError);");
-        tw.WriteLine($"public abstract Result<{genericParameters}> Tap(Action<{genericParameters}> action);");
-        tw.WriteLine($"public abstract Result<{genericParameters}> TapError(Action<Exception> action);");
-        tw.WriteLine($"public abstract Result<{genericParameters}> Ensure(Func<{genericParameters}, bool> predicate, Func<{genericParameters}, Exception> errorMessageFactory);");
 
         //GenerateAbstractBindMethods(tw, numberOfValues);
         GenerateAbstractOkMethods(tw, numberOfValues);
@@ -302,43 +299,7 @@ internal sealed class ResultArityClassFactory(string @namespace,
         tw.WriteLine("public override void IfFailure(Action<Exception> action)");
         tw.WriteLine("{");
         tw.WriteLine("}");
-        
-        tw.WriteLine($"public override Result<{genericParameters}> MapError(Func<Exception, Exception> mapError)");
-        tw.WriteLine("{");
-        tw.Indent++;
-        tw.WriteLine($"return new SuccessResult<{genericParameters}>({callFieldParameters});");
-        tw.Indent--;
-        tw.WriteLine("}");
-        
-        tw.WriteLine($"public override Result<{genericParameters}> Tap(Action<{genericParameters}> action)");
-        tw.WriteLine("{");
-        tw.Indent++;
-        tw.WriteLine($"action({callFieldParameters});");
-        tw.WriteLine($"return new SuccessResult<{genericParameters}>({callFieldParameters});");
-        tw.Indent--;
-        tw.WriteLine("}");
-        
-        tw.WriteLine($"public override Result<{genericParameters}> TapError(Action<Exception> action)");
-        tw.WriteLine("{");
-        tw.Indent++;
-        tw.WriteLine($"return new SuccessResult<{genericParameters}>({callFieldParameters});");
-        tw.Indent--;
-        tw.WriteLine("}");
-        
-        tw.WriteLine($"public override Result<{genericParameters}> Ensure(Func<{genericParameters}, bool> predicate, Func<{genericParameters}, Exception> errorMessageFactory)");
-        tw.WriteLine("{");
-        tw.Indent++;
-        tw.WriteLine($"if(!predicate({callFieldParameters}))");
-        tw.WriteLine("{");
-        tw.Indent++;
-        tw.WriteLine($"return new FailureResult<{genericParameters}>(errorMessageFactory({callFieldParameters}));");
-        tw.Indent--;
-        tw.WriteLine("}");
-        tw.WriteLine($"return new SuccessResult<{genericParameters}>({callFieldParameters});");
-        tw.Indent--;
-        tw.WriteLine("}");
 
-        //GenerateSuccessBindMethods(tw, numberOfValues);
         GenerateSuccessOkMethods(tw, numberOfValues);
 
         tw.Indent--;
@@ -418,37 +379,7 @@ internal sealed class ResultArityClassFactory(string @namespace,
         tw.WriteLine("action(_error);");
         tw.Indent--;
         tw.WriteLine("}");
-        
-        tw.WriteLine($"public override Result<{genericParameters}> MapError(Func<Exception, Exception> mapError)");
-        tw.WriteLine("{");
-        tw.Indent++;
-        tw.WriteLine($"return new FailureResult<{genericParameters}>(mapError(_error));");
-        tw.Indent--;
-        tw.WriteLine("}");
-        
-        tw.WriteLine($"public override Result<{genericParameters}> Tap(Action<{genericParameters}> action)");
-        tw.WriteLine("{");
-        tw.Indent++;
-        tw.WriteLine($"return new FailureResult<{genericParameters}>(_error);");
-        tw.Indent--;
-        tw.WriteLine("}");
-        
-        tw.WriteLine($"public override Result<{genericParameters}> TapError(Action<Exception> action)");
-        tw.WriteLine("{");
-        tw.Indent++;
-        tw.WriteLine("action(_error);");
-        tw.WriteLine($"return new FailureResult<{genericParameters}>(_error);");
-        tw.Indent--;
-        tw.WriteLine("}");
-        
-        tw.WriteLine($"public override Result<{genericParameters}> Ensure(Func<{genericParameters}, bool> predicate, Func<{genericParameters}, Exception> errorMessageFactory)");
-        tw.WriteLine("{");
-        tw.Indent++;
-        tw.WriteLine($"return new FailureResult<{genericParameters}>(_error);");
-        tw.Indent--;
-        tw.WriteLine("}");
 
-//        GenerateFailureBindMethods(tw, numberOfValues);
         GenerateFailureOkMethods(tw, numberOfValues);
 
         tw.Indent--;

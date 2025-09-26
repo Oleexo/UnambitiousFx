@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace UnambitiousFx.Core.Generator;
 
-internal sealed class ResultMapExtensionsFactory(string @namespace,
+internal sealed class ResultTapExtensionsFactory(string @namespace,
                                                  ushort maxOfParameters) {
     public SourceText GenerateTask() {
         return GenerateAsync("Task", "Tasks");
@@ -28,10 +28,9 @@ internal sealed class ResultMapExtensionsFactory(string @namespace,
 
         foreach (ushort i in Enumerable.Range(1, maxOfParameters)) {
             if (i == 1) {
-                tw.WriteLine($"public static {taskKeyWork}<Result<TOut>> MapAsync<TValue, TOut>(this Result<TValue> result, Func<TValue, {taskKeyWork}<TOut>> map)");
+                tw.WriteLine($"public static {taskKeyWork}<Result<TValue>> TapAsync<TValue>(this Result<TValue> result, Func<TValue, {taskKeyWork}> tap)");
                 tw.Indent++;
                 tw.WriteLine("where TValue : notnull");
-                tw.WriteLine("where TOut : notnull");
                 tw.Indent--;
                 tw.WriteLine("{");
                 tw.Indent++;
@@ -39,18 +38,17 @@ internal sealed class ResultMapExtensionsFactory(string @namespace,
                 tw.WriteLine("return result.BindAsync(async value =>");
                 tw.WriteLine("{");
                 tw.Indent++;
-                tw.WriteLine("var newValue = await map(value);");
-                tw.WriteLine("return Result.Success(newValue);");
+                tw.WriteLine("await tap(value);");
+                tw.WriteLine("return Result.Success(value);");
                 tw.Indent--;
                 tw.WriteLine("});");
                 tw.Indent--;
                 tw.WriteLine("}");
                 tw.WriteLine();
                 tw.WriteLine(
-                    $"public static {taskKeyWork}<Result<TOut>> MapAsync<TValue, TOut>(this {taskKeyWork}<Result<TValue>> awaitableResult, Func<TValue, {taskKeyWork}<TOut>> map)");
+                    $"public static {taskKeyWork}<Result<TValue>> TapAsync<TValue>(this {taskKeyWork}<Result<TValue>> awaitableResult, Func<TValue, {taskKeyWork}> tap)");
                 tw.Indent++;
                 tw.WriteLine("where TValue : notnull");
-                tw.WriteLine("where TOut : notnull");
                 tw.Indent--;
                 tw.WriteLine("{");
                 tw.Indent++;
@@ -58,8 +56,8 @@ internal sealed class ResultMapExtensionsFactory(string @namespace,
                 tw.WriteLine("return awaitableResult.BindAsync(async value =>");
                 tw.WriteLine("{");
                 tw.Indent++;
-                tw.WriteLine("var newValue = await map(value);");
-                tw.WriteLine("return Result.Success(newValue);");
+                tw.WriteLine("await tap(value);");
+                tw.WriteLine("return Result.Success(value);");
                 tw.Indent--;
                 tw.WriteLine("});");
 
@@ -69,17 +67,12 @@ internal sealed class ResultMapExtensionsFactory(string @namespace,
             else {
                 var genericInputParameters = string.Join(", ", Enumerable.Range(1, i)
                                                                          .Select(x => $"TValue{x}"));
-                var genericOutputParameters = string.Join(", ", Enumerable.Range(1, i)
-                                                                          .Select(x => $"TOut{x}"));
                 var callParameters = string.Join(", ", Enumerable.Range(1, i)
                                                                  .Select(x => $"value{x}"));
-                var callTupleParameters = string.Join(", ", Enumerable.Range(1, i)
-                                                                      .Select(x => $"items.Item{x}"));
                 tw.WriteLine(
-                    $"public static {taskKeyWork}<Result<{genericOutputParameters}>> Map<{genericInputParameters}, {genericOutputParameters}>(this Result<{genericInputParameters}> result, Func<{genericInputParameters}, {taskKeyWork}<({genericOutputParameters})>> map)");
+                    $"public static {taskKeyWork}<Result<{genericInputParameters}>> TapAsync<{genericInputParameters}>(this Result<{genericInputParameters}> result, Func<{genericInputParameters}, {taskKeyWork}> tap)");
                 tw.Indent++;
                 foreach (var genericInputParameter in genericInputParameters.Split(", ".ToCharArray())
-                                                                            .Concat(genericOutputParameters.Split(", ".ToCharArray()))
                                                                             .Where(x => !string.IsNullOrWhiteSpace(x))) {
                     tw.WriteLine($"where {genericInputParameter} : notnull");
                 }
@@ -90,19 +83,17 @@ internal sealed class ResultMapExtensionsFactory(string @namespace,
                 tw.WriteLine($"return result.BindAsync(async ({callParameters}) =>");
                 tw.WriteLine("{");
                 tw.Indent++;
-                tw.WriteLine($"var items = await map({callParameters});");
-                tw.WriteLine($"return Result.Success({callTupleParameters});");
+                tw.WriteLine($"await tap({callParameters});");
+                tw.WriteLine($"return Result.Success({callParameters});");
                 tw.Indent--;
                 tw.WriteLine("});");
-
                 tw.Indent--;
                 tw.WriteLine("}");
                 tw.WriteLine();
                 tw.WriteLine(
-                    $"public static {taskKeyWork}<Result<{genericOutputParameters}>> Map<{genericInputParameters}, {genericOutputParameters}>(this {taskKeyWork}<Result<{genericInputParameters}>> awaitableResult, Func<{genericInputParameters}, {taskKeyWork}<({genericOutputParameters})>> map)");
+                    $"public static {taskKeyWork}<Result<{genericInputParameters}>> TapAsync<{genericInputParameters}>(this {taskKeyWork}<Result<{genericInputParameters}>> awaitableResult, Func<{genericInputParameters}, {taskKeyWork}> tap)");
                 tw.Indent++;
                 foreach (var genericInputParameter in genericInputParameters.Split(", ".ToCharArray())
-                                                                            .Concat(genericOutputParameters.Split(", ".ToCharArray()))
                                                                             .Where(x => !string.IsNullOrWhiteSpace(x))) {
                     tw.WriteLine($"where {genericInputParameter} : notnull");
                 }
@@ -114,8 +105,8 @@ internal sealed class ResultMapExtensionsFactory(string @namespace,
                 tw.WriteLine("{");
                 tw.Indent++;
                 tw.WriteLine("var result = await awaitableResult;");
-                tw.WriteLine($"var items = await map({callParameters});");
-                tw.WriteLine($"return Result.Success({callTupleParameters});");
+                tw.WriteLine($"await tap({callParameters});");
+                tw.WriteLine($"return Result.Success({callParameters});");
                 tw.Indent--;
                 tw.WriteLine("});");
 
@@ -126,7 +117,6 @@ internal sealed class ResultMapExtensionsFactory(string @namespace,
 
         tw.Indent--;
         tw.WriteLine("}");
-
         return SourceText.From(sw.ToString(), Encoding.UTF8);
     }
 
@@ -140,34 +130,35 @@ internal sealed class ResultMapExtensionsFactory(string @namespace,
         tw.WriteLine("public static partial class ResultExtensions");
         tw.WriteLine("{");
         tw.Indent++;
-
         foreach (ushort i in Enumerable.Range(1, maxOfParameters)) {
             if (i == 1) {
-                tw.WriteLine("public static Result<TOut> Map<TValue, TOut>(this Result<TValue> result, Func<TValue, TOut> map)");
+                tw.WriteLine($"public static Result<TValue> Tap<TValue>(this Result<TValue> result, Action<TValue> tap)");
                 tw.Indent++;
                 tw.WriteLine("where TValue : notnull");
-                tw.WriteLine("where TOut : notnull");
                 tw.Indent--;
                 tw.WriteLine("{");
                 tw.Indent++;
-                tw.WriteLine("return result.Bind(value => Result.Success(map(value)));");
+                tw.WriteLine("");
+                tw.WriteLine("return result.Bind(value =>");
+                tw.WriteLine("{");
+                tw.Indent++;
+                tw.WriteLine("tap(value);");
+                tw.WriteLine("return Result.Success<TValue>(value);");
+                tw.Indent--;
+                tw.WriteLine("});");
                 tw.Indent--;
                 tw.WriteLine("}");
+                tw.WriteLine();
             }
             else {
                 var genericInputParameters = string.Join(", ", Enumerable.Range(1, i)
                                                                          .Select(x => $"TValue{x}"));
-                var genericOutputParameters = string.Join(", ", Enumerable.Range(1, i)
-                                                                          .Select(x => $"TOut{x}"));
                 var callParameters = string.Join(", ", Enumerable.Range(1, i)
                                                                  .Select(x => $"value{x}"));
-                var callTupleParameters = string.Join(", ", Enumerable.Range(1, i)
-                                                                      .Select(x => $"items.Item{x}"));
                 tw.WriteLine(
-                    $"public static Result<{genericOutputParameters}> Map<{genericInputParameters}, {genericOutputParameters}>(this Result<{genericInputParameters}> result, Func<{genericInputParameters}, ({genericOutputParameters})> map)");
+                    $"public static Result<{genericInputParameters}> Tap<{genericInputParameters}>(this Result<{genericInputParameters}> result, Action<{genericInputParameters}> tap)");
                 tw.Indent++;
                 foreach (var genericInputParameter in genericInputParameters.Split(", ".ToCharArray())
-                                                                            .Concat(genericOutputParameters.Split(", ".ToCharArray()))
                                                                             .Where(x => !string.IsNullOrWhiteSpace(x))) {
                     tw.WriteLine($"where {genericInputParameter} : notnull");
                 }
@@ -175,16 +166,16 @@ internal sealed class ResultMapExtensionsFactory(string @namespace,
                 tw.Indent--;
                 tw.WriteLine("{");
                 tw.Indent++;
-                tw.WriteLine($"return result.Bind<{genericInputParameters}, {genericOutputParameters}>(({callParameters}) =>");
+                tw.WriteLine($"return result.Bind(({callParameters}) =>");
                 tw.WriteLine("{");
                 tw.Indent++;
-                tw.WriteLine($"var items = map({callParameters});");
-                tw.WriteLine($"return Result.Success<{genericOutputParameters}>({callTupleParameters});");
+                tw.WriteLine($"tap({callParameters});");
+                tw.WriteLine($"return Result.Success<{genericInputParameters}>({callParameters});");
                 tw.Indent--;
                 tw.WriteLine("});");
-
                 tw.Indent--;
                 tw.WriteLine("}");
+                tw.WriteLine();
             }
         }
 

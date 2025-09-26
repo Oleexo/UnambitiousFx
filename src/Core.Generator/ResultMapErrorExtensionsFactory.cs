@@ -4,18 +4,23 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace UnambitiousFx.Core.Generator;
 
-internal sealed class ResultMapExtensionsFactory(string @namespace,
-                                                 ushort maxOfParameters) {
+internal sealed class ResultMapErrorExtensionsFactory(string @namespace,
+                                                      ushort maxOfParameters) {
     public SourceText GenerateTask() {
-        return GenerateAsync("Task", "Tasks");
+        return GenerateAsync("Task", "Tasks",
+                             (input,
+                              genericParameters) => $"Task.FromResult<Result<{genericParameters}>>({input})");
     }
 
     public SourceText GenerateValueTask() {
-        return GenerateAsync("ValueTask", "ValueTasks");
+        return GenerateAsync("ValueTask", "ValueTasks",
+                             (input,
+                              genericParameters) => $"new ValueTask<Result<{genericParameters}>>({input})");
     }
 
-    private SourceText GenerateAsync(string taskKeyWork,
-                                     string subNamespace) {
+    private SourceText GenerateAsync(string                       taskKeyWork,
+                                     string                       subNamespace,
+                                     Func<string, string, string> newFromResultFunc) {
         using var sw = new StringWriter();
         using var tw = new IndentedTextWriter(sw);
 
@@ -28,40 +33,36 @@ internal sealed class ResultMapExtensionsFactory(string @namespace,
 
         foreach (ushort i in Enumerable.Range(1, maxOfParameters)) {
             if (i == 1) {
-                tw.WriteLine($"public static {taskKeyWork}<Result<TOut>> MapAsync<TValue, TOut>(this Result<TValue> result, Func<TValue, {taskKeyWork}<TOut>> map)");
+                tw.WriteLine(
+                    $"public static {taskKeyWork}<Result<TValue>> MapErrorAsync<TValue>(this Result<TValue> result, Func<Exception, {taskKeyWork}<Exception>> mapError)");
                 tw.Indent++;
                 tw.WriteLine("where TValue : notnull");
-                tw.WriteLine("where TOut : notnull");
                 tw.Indent--;
                 tw.WriteLine("{");
                 tw.Indent++;
-                tw.WriteLine("");
-                tw.WriteLine("return result.BindAsync(async value =>");
-                tw.WriteLine("{");
+                tw.WriteLine($"return result.Match<{taskKeyWork}<Result<TValue>>>(");
                 tw.Indent++;
-                tw.WriteLine("var newValue = await map(value);");
-                tw.WriteLine("return Result.Success(newValue);");
+                tw.WriteLine($"value => {newFromResultFunc("Result.Success<TValue>(value)", "TValue")},");
+                tw.WriteLine("async ex => Result.Failure<TValue>(await mapError(ex))");
                 tw.Indent--;
-                tw.WriteLine("});");
+                tw.WriteLine(");");
                 tw.Indent--;
                 tw.WriteLine("}");
                 tw.WriteLine();
+
                 tw.WriteLine(
-                    $"public static {taskKeyWork}<Result<TOut>> MapAsync<TValue, TOut>(this {taskKeyWork}<Result<TValue>> awaitableResult, Func<TValue, {taskKeyWork}<TOut>> map)");
+                    $"public static {taskKeyWork}<Result<TValue>> MapErrorAsync<TValue>(this {taskKeyWork}<Result<TValue>> awaitableResult, Func<Exception, {taskKeyWork}<Exception>> mapError)");
                 tw.Indent++;
                 tw.WriteLine("where TValue : notnull");
-                tw.WriteLine("where TOut : notnull");
                 tw.Indent--;
                 tw.WriteLine("{");
                 tw.Indent++;
-
-                tw.WriteLine("return awaitableResult.BindAsync(async value =>");
-                tw.WriteLine("{");
+                tw.WriteLine($"return awaitableResult.MatchAsync<Result<TValue>, TValue>(");
                 tw.Indent++;
-                tw.WriteLine("var newValue = await map(value);");
-                tw.WriteLine("return Result.Success(newValue);");
+                tw.WriteLine($"value => {newFromResultFunc("Result.Success<TValue>(value)", "TValue")},");
+                tw.WriteLine("async ex => Result.Failure<TValue>(await mapError(ex))");
                 tw.Indent--;
-                tw.WriteLine("});");
+                tw.WriteLine(");");
 
                 tw.Indent--;
                 tw.WriteLine("}");
@@ -69,17 +70,13 @@ internal sealed class ResultMapExtensionsFactory(string @namespace,
             else {
                 var genericInputParameters = string.Join(", ", Enumerable.Range(1, i)
                                                                          .Select(x => $"TValue{x}"));
-                var genericOutputParameters = string.Join(", ", Enumerable.Range(1, i)
-                                                                          .Select(x => $"TOut{x}"));
                 var callParameters = string.Join(", ", Enumerable.Range(1, i)
                                                                  .Select(x => $"value{x}"));
-                var callTupleParameters = string.Join(", ", Enumerable.Range(1, i)
-                                                                      .Select(x => $"items.Item{x}"));
+
                 tw.WriteLine(
-                    $"public static {taskKeyWork}<Result<{genericOutputParameters}>> Map<{genericInputParameters}, {genericOutputParameters}>(this Result<{genericInputParameters}> result, Func<{genericInputParameters}, {taskKeyWork}<({genericOutputParameters})>> map)");
+                    $"public static {taskKeyWork}<Result<{genericInputParameters}>> MapErrorAsync<{genericInputParameters}>(this Result<{genericInputParameters}> result, Func<Exception, {taskKeyWork}<Exception>> mapError)");
                 tw.Indent++;
                 foreach (var genericInputParameter in genericInputParameters.Split(", ".ToCharArray())
-                                                                            .Concat(genericOutputParameters.Split(", ".ToCharArray()))
                                                                             .Where(x => !string.IsNullOrWhiteSpace(x))) {
                     tw.WriteLine($"where {genericInputParameter} : notnull");
                 }
@@ -87,22 +84,20 @@ internal sealed class ResultMapExtensionsFactory(string @namespace,
                 tw.Indent--;
                 tw.WriteLine("{");
                 tw.Indent++;
-                tw.WriteLine($"return result.BindAsync(async ({callParameters}) =>");
-                tw.WriteLine("{");
+                tw.WriteLine($"return result.Match<{taskKeyWork}<Result<{genericInputParameters}>>>(");
                 tw.Indent++;
-                tw.WriteLine($"var items = await map({callParameters});");
-                tw.WriteLine($"return Result.Success({callTupleParameters});");
+                tw.WriteLine($"({callParameters}) => {newFromResultFunc($"Result.Success<{genericInputParameters}>({callParameters})", genericInputParameters)},");
+                tw.WriteLine($"async (ex) => Result.Failure<{genericInputParameters}>(await mapError(ex))");
                 tw.Indent--;
-                tw.WriteLine("});");
-
+                tw.WriteLine(");");
                 tw.Indent--;
                 tw.WriteLine("}");
                 tw.WriteLine();
+
                 tw.WriteLine(
-                    $"public static {taskKeyWork}<Result<{genericOutputParameters}>> Map<{genericInputParameters}, {genericOutputParameters}>(this {taskKeyWork}<Result<{genericInputParameters}>> awaitableResult, Func<{genericInputParameters}, {taskKeyWork}<({genericOutputParameters})>> map)");
+                    $"public static  {taskKeyWork}<Result<{genericInputParameters}>> MapErrorAsync<{genericInputParameters}>(this {taskKeyWork}<Result<{genericInputParameters}>> awaitableResult, Func<Exception, {taskKeyWork}<Exception>> mapError)");
                 tw.Indent++;
                 foreach (var genericInputParameter in genericInputParameters.Split(", ".ToCharArray())
-                                                                            .Concat(genericOutputParameters.Split(", ".ToCharArray()))
                                                                             .Where(x => !string.IsNullOrWhiteSpace(x))) {
                     tw.WriteLine($"where {genericInputParameter} : notnull");
                 }
@@ -110,15 +105,12 @@ internal sealed class ResultMapExtensionsFactory(string @namespace,
                 tw.Indent--;
                 tw.WriteLine("{");
                 tw.Indent++;
-                tw.WriteLine($"return awaitableResult.BindAsync(async ({callParameters}) =>");
-                tw.WriteLine("{");
+                tw.WriteLine("return awaitableResult.MatchAsync(");
                 tw.Indent++;
-                tw.WriteLine("var result = await awaitableResult;");
-                tw.WriteLine($"var items = await map({callParameters});");
-                tw.WriteLine($"return Result.Success({callTupleParameters});");
+                tw.WriteLine($"({callParameters}) => {newFromResultFunc($"Result.Success<{genericInputParameters}>({callParameters})", genericInputParameters)},");
+                tw.WriteLine($"async (ex) => Result.Failure<{genericInputParameters}>(await mapError(ex))");
                 tw.Indent--;
-                tw.WriteLine("});");
-
+                tw.WriteLine(");");
                 tw.Indent--;
                 tw.WriteLine("}");
             }
@@ -143,31 +135,31 @@ internal sealed class ResultMapExtensionsFactory(string @namespace,
 
         foreach (ushort i in Enumerable.Range(1, maxOfParameters)) {
             if (i == 1) {
-                tw.WriteLine("public static Result<TOut> Map<TValue, TOut>(this Result<TValue> result, Func<TValue, TOut> map)");
+                tw.WriteLine("public static Result<TValue> MapError<TValue>(this Result<TValue> result, Func<Exception, Exception> mapError)");
                 tw.Indent++;
                 tw.WriteLine("where TValue : notnull");
-                tw.WriteLine("where TOut : notnull");
                 tw.Indent--;
                 tw.WriteLine("{");
                 tw.Indent++;
-                tw.WriteLine("return result.Bind(value => Result.Success(map(value)));");
+                tw.WriteLine("return result.Match(");
+                tw.Indent++;
+                tw.WriteLine("value => Result.Success<TValue>(value),");
+                tw.WriteLine("ex => Result.Failure<TValue>(mapError(ex))");
+                tw.Indent--;
+                tw.WriteLine(");");
                 tw.Indent--;
                 tw.WriteLine("}");
+                tw.WriteLine();
             }
             else {
                 var genericInputParameters = string.Join(", ", Enumerable.Range(1, i)
                                                                          .Select(x => $"TValue{x}"));
-                var genericOutputParameters = string.Join(", ", Enumerable.Range(1, i)
-                                                                          .Select(x => $"TOut{x}"));
                 var callParameters = string.Join(", ", Enumerable.Range(1, i)
                                                                  .Select(x => $"value{x}"));
-                var callTupleParameters = string.Join(", ", Enumerable.Range(1, i)
-                                                                      .Select(x => $"items.Item{x}"));
                 tw.WriteLine(
-                    $"public static Result<{genericOutputParameters}> Map<{genericInputParameters}, {genericOutputParameters}>(this Result<{genericInputParameters}> result, Func<{genericInputParameters}, ({genericOutputParameters})> map)");
+                    $"public static Result<{genericInputParameters}> MapError<{genericInputParameters}>(this Result<{genericInputParameters}> result, Func<Exception, Exception> mapError)");
                 tw.Indent++;
                 foreach (var genericInputParameter in genericInputParameters.Split(", ".ToCharArray())
-                                                                            .Concat(genericOutputParameters.Split(", ".ToCharArray()))
                                                                             .Where(x => !string.IsNullOrWhiteSpace(x))) {
                     tw.WriteLine($"where {genericInputParameter} : notnull");
                 }
@@ -175,16 +167,15 @@ internal sealed class ResultMapExtensionsFactory(string @namespace,
                 tw.Indent--;
                 tw.WriteLine("{");
                 tw.Indent++;
-                tw.WriteLine($"return result.Bind<{genericInputParameters}, {genericOutputParameters}>(({callParameters}) =>");
-                tw.WriteLine("{");
+                tw.WriteLine("return result.Match(");
                 tw.Indent++;
-                tw.WriteLine($"var items = map({callParameters});");
-                tw.WriteLine($"return Result.Success<{genericOutputParameters}>({callTupleParameters});");
+                tw.WriteLine($"({callParameters}) => Result.Success<{genericInputParameters}>({callParameters}),");
+                tw.WriteLine($"ex => Result.Failure<{genericInputParameters}>(mapError(ex))");
                 tw.Indent--;
-                tw.WriteLine("});");
-
+                tw.WriteLine(");");
                 tw.Indent--;
                 tw.WriteLine("}");
+                tw.WriteLine();
             }
         }
 

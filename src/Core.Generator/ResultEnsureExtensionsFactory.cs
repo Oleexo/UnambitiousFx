@@ -1,0 +1,173 @@
+using System.CodeDom.Compiler;
+using System.Text;
+using Microsoft.CodeAnalysis.Text;
+
+namespace UnambitiousFx.Core.Generator;
+
+internal sealed class ResultEnsureExtensionsFactory(string @namespace,
+                                                    ushort maxOfParameters) {
+    public SourceText GenerateTask() => GenerateAsync("Task", "Tasks");
+    public SourceText GenerateValueTask() => GenerateAsync("ValueTask", "ValueTasks");
+
+    private SourceText GenerateAsync(string taskKeyWork, string subNamespace) {
+        using var sw = new StringWriter();
+        using var tw = new IndentedTextWriter(sw);
+
+        tw.WriteLine("#nullable enable");
+        tw.WriteLine($"namespace {@namespace}.{subNamespace};");
+
+        tw.WriteLine("public static partial class ResultExtensions");
+        tw.WriteLine("{");
+        tw.Indent++;
+
+        foreach (ushort i in Enumerable.Range(1, maxOfParameters)) {
+            if (i == 1) {
+                // EnsureAsync for Result<T>
+                tw.WriteLine($"public static {taskKeyWork}<Result<TValue>> EnsureAsync<TValue>(this Result<TValue> result, Func<TValue, {taskKeyWork}<bool>> predicate, Func<TValue, {taskKeyWork}<Exception>> errorFactory)");
+                tw.Indent++;
+                tw.WriteLine("where TValue : notnull");
+                tw.Indent--;
+                tw.WriteLine("{");
+                tw.Indent++;
+                tw.WriteLine("return result.BindAsync(async value =>");
+                tw.WriteLine("{");
+                tw.Indent++;
+                tw.WriteLine("if (await predicate(value))");
+                tw.Indent++;
+                tw.WriteLine("return Result.Success<TValue>(value);");
+                tw.Indent--;
+                tw.WriteLine("var ex = await errorFactory(value);");
+                tw.WriteLine("return Result.Failure<TValue>(ex);");
+                tw.Indent--;
+                tw.WriteLine("});");
+                tw.Indent--;
+                tw.WriteLine("}");
+                tw.WriteLine();
+
+                // EnsureAsync for awaitable Result<T>
+                tw.WriteLine($"public static {taskKeyWork}<Result<TValue>> EnsureAsync<TValue>(this {taskKeyWork}<Result<TValue>> awaitableResult, Func<TValue, {taskKeyWork}<bool>> predicate, Func<TValue, {taskKeyWork}<Exception>> errorFactory)");
+                tw.Indent++;
+                tw.WriteLine("where TValue : notnull");
+                tw.Indent--;
+                tw.WriteLine("{");
+                tw.Indent++;
+                tw.WriteLine("return awaitableResult.BindAsync(async value =>");
+                tw.WriteLine("{");
+                tw.Indent++;
+                tw.WriteLine("if (await predicate(value))");
+                tw.Indent++;
+                tw.WriteLine("return Result.Success<TValue>(value);");
+                tw.Indent--;
+                tw.WriteLine("var ex = await errorFactory(value);");
+                tw.WriteLine("return Result.Failure<TValue>(ex);");
+                tw.Indent--;
+                tw.WriteLine("});");
+                tw.Indent--;
+                tw.WriteLine("}");
+            }
+            else {
+                var genericInputParameters = string.Join(", ", Enumerable.Range(1, i).Select(x => $"TValue{x}"));
+                var callParameters = string.Join(", ", Enumerable.Range(1, i).Select(x => $"value{x}"));
+
+                tw.WriteLine($"public static {taskKeyWork}<Result<{genericInputParameters}>> EnsureAsync<{genericInputParameters}>(this Result<{genericInputParameters}> result, Func<{genericInputParameters}, {taskKeyWork}<bool>> predicate, Func<{genericInputParameters}, {taskKeyWork}<Exception>> errorFactory)");
+                tw.Indent++;
+                foreach (var genericInputParameter in genericInputParameters.Split(", ".ToCharArray()).Where(x => !string.IsNullOrWhiteSpace(x))) {
+                    tw.WriteLine($"where {genericInputParameter} : notnull");
+                }
+                tw.Indent--;
+                tw.WriteLine("{");
+                tw.Indent++;
+                tw.WriteLine($"return result.BindAsync(async ({callParameters}) =>");
+                tw.WriteLine("{");
+                tw.Indent++;
+                tw.WriteLine($"if (await predicate({callParameters}))");
+                tw.Indent++;
+                tw.WriteLine($"return Result.Success<{genericInputParameters}>({callParameters});");
+                tw.Indent--;
+                tw.WriteLine($"var ex = await errorFactory({callParameters});");
+                tw.WriteLine($"return Result.Failure<{genericInputParameters}>(ex);");
+                tw.Indent--;
+                tw.WriteLine("});");
+                tw.Indent--;
+                tw.WriteLine("}");
+                tw.WriteLine();
+
+                tw.WriteLine($"public static {taskKeyWork}<Result<{genericInputParameters}>> EnsureAsync<{genericInputParameters}>(this {taskKeyWork}<Result<{genericInputParameters}>> awaitableResult, Func<{genericInputParameters}, {taskKeyWork}<bool>> predicate, Func<{genericInputParameters}, {taskKeyWork}<Exception>> errorFactory)");
+                tw.Indent++;
+                foreach (var genericInputParameter in genericInputParameters.Split(", ".ToCharArray()).Where(x => !string.IsNullOrWhiteSpace(x))) {
+                    tw.WriteLine($"where {genericInputParameter} : notnull");
+                }
+                tw.Indent--;
+                tw.WriteLine("{");
+                tw.Indent++;
+                tw.WriteLine($"return awaitableResult.BindAsync(async ({callParameters}) =>");
+                tw.WriteLine("{");
+                tw.Indent++;
+                tw.WriteLine($"if (await predicate({callParameters}))");
+                tw.Indent++;
+                tw.WriteLine($"return Result.Success<{genericInputParameters}>({callParameters});");
+                tw.Indent--;
+                tw.WriteLine($"var ex = await errorFactory({callParameters});");
+                tw.WriteLine($"return Result.Failure<{genericInputParameters}>(ex);");
+                tw.Indent--;
+                tw.WriteLine("});");
+                tw.Indent--;
+                tw.WriteLine("}");
+            }
+        }
+
+        tw.Indent--;
+        tw.WriteLine("}");
+
+        return SourceText.From(sw.ToString(), Encoding.UTF8);
+    }
+
+    public SourceText Generate() {
+        using var sw = new StringWriter();
+        using var tw = new IndentedTextWriter(sw);
+
+        tw.WriteLine("#nullable enable");
+        tw.WriteLine($"namespace {@namespace};");
+
+        tw.WriteLine("public static partial class ResultExtensions");
+        tw.WriteLine("{");
+        tw.Indent++;
+
+        foreach (ushort i in Enumerable.Range(1, maxOfParameters)) {
+            if (i == 1) {
+                tw.WriteLine("public static Result<TValue> Ensure<TValue>(this Result<TValue> result, Func<TValue, bool> predicate, Func<TValue, Exception> errorFactory)");
+                tw.Indent++;
+                tw.WriteLine("where TValue : notnull");
+                tw.Indent--;
+                tw.WriteLine("{");
+                tw.Indent++;
+                tw.WriteLine("return result.Bind(value => predicate(value) ? Result.Success<TValue>(value) : Result.Failure<TValue>(errorFactory(value))); ");
+                tw.Indent--;
+                tw.WriteLine("}");
+                tw.WriteLine();
+            }
+            else {
+                var genericInputParameters = string.Join(", ", Enumerable.Range(1, i).Select(x => $"TValue{x}"));
+                var callParameters = string.Join(", ", Enumerable.Range(1, i).Select(x => $"value{x}"));
+                tw.WriteLine($"public static Result<{genericInputParameters}> Ensure<{genericInputParameters}>(this Result<{genericInputParameters}> result, Func<{genericInputParameters}, bool> predicate, Func<{genericInputParameters}, Exception> errorFactory)");
+                tw.Indent++;
+                foreach (var genericInputParameter in genericInputParameters.Split(", ".ToCharArray()).Where(x => !string.IsNullOrWhiteSpace(x))) {
+                    tw.WriteLine($"where {genericInputParameter} : notnull");
+                }
+
+                tw.Indent--;
+                tw.WriteLine("{");
+                tw.Indent++;
+                tw.WriteLine($"return result.Bind(({callParameters}) => predicate({callParameters}) ? Result.Success<{genericInputParameters}>({callParameters}) : Result.Failure<{genericInputParameters}>(errorFactory({callParameters}))); ");
+                tw.Indent--;
+                tw.WriteLine("}");
+                tw.WriteLine();
+            }
+        }
+
+        tw.Indent--;
+        tw.WriteLine("}");
+
+        return SourceText.From(sw.ToString(), Encoding.UTF8);
+    }
+}

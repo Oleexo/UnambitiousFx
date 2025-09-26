@@ -82,12 +82,12 @@ Transform success values without changing the Result shape.
 ### ⚡ Phase 2: Async & Interoperability
 - [x] MapAsync - Async transformation of success values
 - [x] BindAsync - Async monadic bind operations
-- [ ] TapAsync - Async side effects with passthrough
-- [ ] EnsureAsync - Async validation with predicates
-- [ ] FromTask - Convert Task<T> to Task<Result<T>> (wrap exceptions)
-- [ ] ToTask - Convert Result<T> to Task<Result<T>>
-- [ ] FromTry - Wrap try/catch blocks into Result
-- [ ] FromTryAsync - Wrap async try/catch blocks
+- [x] TapAsync - Async side effects with passthrough
+- [x] EnsureAsync - Async validation with predicates
+- [x] FromTask - Convert Task<T> to Task<Result<T>> (wrap exceptions)
+- [x] ToTask - Convert Result<T> to Task<Result<T>>
+- [x] FromTry - Wrap try/catch blocks into Result
+- [x] FromTryAsync - Wrap async try/catch blocks
 
 #### Examples
 - MapAsync

@@ -96,8 +96,8 @@ internal sealed class ResultBindExtensionsFactory(string @namespace,
         tw.WriteLine("{");
         tw.Indent++;
 
-        foreach (ushort i in Enumerable.Range(0, maxOfParameters)) {
-            foreach (ushort j in Enumerable.Range(0, maxOfParameters)) {
+        foreach (ushort i in Enumerable.Range(0, maxOfParameters + 1)) {
+            foreach (ushort j in Enumerable.Range(0, maxOfParameters + 1)) {
                 var genericInputParameters = i == 0 ? string.Empty : string.Join(", ", Enumerable.Range(1, i)
                                                                          .Select(x => $"TValue{x}"));
                 var genericOutputParameters = j == 0 ? string.Empty : string.Join(", ", Enumerable.Range(1, j)
