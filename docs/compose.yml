@@ -1,0 +1,10 @@
+services:
+  app:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    volumes:
+      - "./:/app" # to allow livereload
+    ports:
+      - "4000:4000" # app
+      - "35729:35729" # livereload
