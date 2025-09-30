@@ -2,9 +2,10 @@
 title: Option
 parent: Core
 nav_order: 2
+has_children: true
 ---
 
-# Option
+# Option Overview
 
 ## What is an Option?
 

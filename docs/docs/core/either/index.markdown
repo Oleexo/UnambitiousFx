@@ -2,6 +2,7 @@
 title: Either
 parent: Core
 nav_order: 3
+has_children: true
 ---
 
 # Either
@@ -207,7 +208,7 @@ If any step had returned a `Left` value (e.g., an error), the chain would short-
 The three monoids in this library follow similar patterns but serve different purposes:
 
 | Type          | Left/None case  | Right/Some case    | Typical use case         |
-|---------------|-----------------|--------------------|--------------------------|
+| ------------- | --------------- | ------------------ | ------------------------ |
 | `Result<T>`   | Error           | Success with value | Operations that can fail |
 | `Option<T>`   | None (no value) | Some (has value)   | Optional values          |
 | `Either<L,R>` | Any left type   | Any right type     | Dual outcomes            |
