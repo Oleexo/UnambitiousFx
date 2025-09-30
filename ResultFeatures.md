@@ -58,8 +58,8 @@ Goal: Unlock richer ergonomics + structured errors without breaking later phases
 - ✅ Specialized Domain Errors (NotFound, Validation, Conflict, Unauthorized, ExceptionalError + SuccessReason)
 - ✅ ValueOr(default) / ValueOr(Func<T>) (all arities + async)
 - ✅ ValueOrThrow() / ValueOrThrow(factory) (all arities + async)
-- 📋 Error wrapping helper (wrap Exception → domain error)
-- 📋 Prepend/Append error transformers (message shaping)
+- ✅ Error wrapping helper (wrap Exception → domain error)
+- ✅ Prepend/Append error transformers (message shaping)
 
 Rationale: Improves developer ergonomics and sets the contract for inspection, formatting, and interop.
 
@@ -210,7 +210,7 @@ Milestone 5 (Resilience + Perf foundation): Retry/Timeout policies, Struct varia
 - EnsureAsync ✅
 - EnsureNotNull / EnsureNotEmpty 📋 (P2)
 - Error Base (Code/Message/Metadata) ✅
-- Error Wrapping Helper 📋 (P1)
+- Error Wrapping Helper ✅
 - Errors() / AllErrors() ⭐ (P4)
 - ExceptionalError ✅
 - Flatten ✅ (P1 – includes Task/ValueTask variants)
@@ -238,7 +238,7 @@ Milestone 5 (Resilience + Perf foundation): Retry/Timeout policies, Struct varia
 - Partition ✅
 - Policies: Retry / Timeout ⭐ (P6)
 - Policies: CircuitBreaker 📋 (P6)
-- Prepend/Append Error Messages 📋 (P1)
+- Prepend/Append Error Messages ✅
 - Recover / RecoverWith / RecoverAsync ✅
 - ResultPolicy Abstraction ⭐ (P6)
 - SelectMany (LINQ) ✅ (P1 – includes async variants)
@@ -269,7 +269,7 @@ Milestone 5 (Resilience + Perf foundation): Retry/Timeout policies, Struct varia
 
 ## Immediate Next Steps (Actionable)
 1. Implement value-fold Match<TOut> (sync + Task/ValueTask for generic results) exposing success values.
-2. Implement Error wrapping helper (Exception → ExceptionalError) + Prepend/Append error message transformers.
+2. (Done) Implement Error wrapping helper (Exception → ExceptionalError) + Prepend/Append error message transformers.
 3. Enhance ToString: include first error code (if any), total error count, compact metadata preview (first 2 keys) for both Result & generic variants.
 4. Add EnsureNotNull / EnsureNotEmpty utilities (lift null/empty to ValidationError) and associated tests.
 5. Draft design note for metadata propagation policy (document copyMetadata flag semantics).
