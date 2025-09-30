@@ -42,4 +42,12 @@ internal sealed partial class SuccessResult : Result {
     public override Result TapError(Action<Exception> tapError) {
         return new SuccessResult();
     }
+
+    public override void Deconstruct(out bool isSuccess, out Exception? error)
+    {
+        isSuccess = true;
+        error = null;
+    }
+
+    public override string ToString() => $"Success reasons={Reasons.Count}";
 }

@@ -1,5 +1,7 @@
 namespace UnambitiousFx.Core.Results;
 
+using UnambitiousFx.Core.Results.Reasons;
+
 public abstract partial class Result : BaseResult {
     public abstract Result Bind(Func<Result>                   bind);
     public abstract Result MapError(Func<Exception, Exception> mapError);
@@ -14,7 +16,17 @@ public abstract partial class Result : BaseResult {
         return new FailureResult(error);
     }
 
+    public static Result Failure(IError error) {
+        var r = new FailureResult(error.Exception ?? new Exception(error.Message));
+        r.AddReason(error);
+        foreach (var kv in error.Metadata) r.AddMetadata(kv.Key, kv.Value);
+        return r;
+    }
+
     public static Result Failure(string message) {
         return new FailureResult(message);
     }
+
+    public abstract void Deconstruct(out bool isSuccess, out Exception? error);
+    public override string ToString() => $"{(IsSuccess ? "Success" : "Failure")} reasons={Reasons.Count}";
 }

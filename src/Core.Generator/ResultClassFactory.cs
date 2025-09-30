@@ -41,6 +41,16 @@ internal sealed class ResultClassFactory(string @namespace,
             tw.WriteLine($"return new FailureResult<{genericParameters}>(error);");
             tw.Indent--;
             tw.WriteLine("}");
+            tw.WriteLine();
+            tw.WriteLine($"public static Result<{genericParameters}> Failure<{genericParameters}>(UnambitiousFx.Core.Results.Reasons.IError error) {whereConstraints}");
+            tw.WriteLine("{");
+            tw.Indent++;
+            tw.WriteLine($"var r = new FailureResult<{genericParameters}>(error.Exception ?? new System.Exception(error.Message));");
+            tw.WriteLine("r.AddReason(error);");
+            tw.WriteLine("foreach (var kv in error.Metadata) r.AddMetadata(kv.Key, kv.Value);");
+            tw.WriteLine("return r;");
+            tw.Indent--;
+            tw.WriteLine("}");
         }
     }
 

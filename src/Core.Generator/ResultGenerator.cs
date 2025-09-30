@@ -21,6 +21,11 @@ public class ResultGenerator : IIncrementalGenerator {
         var matchExtensionsFactory = new ResultMatchExtensionsFactory(DefaultNamespace, MaxOfParameters);
         var taskExtensionsFactory = new ResultTaskExtensionsFactory(DefaultNamespace, MaxOfParameters);
         var selectManyExtensionsFactory = new ResultSelectManyExtensionsFactory(DefaultNamespace, MaxOfParameters);
+        var flattenExtensionsFactory = new ResultFlattenExtensionsFactory(DefaultNamespace, MaxOfParameters);
+        var valueOrExtensionsFactory = new ResultValueOrExtensionsFactory(DefaultNamespace, MaxOfParameters);
+        var valueOrThrowExtensionsFactory = new ResultValueOrThrowExtensionsFactory(DefaultNamespace, MaxOfParameters);
+        var introspectionExtensionsFactory = new ResultIntrospectionExtensionsFactory(DefaultNamespace, MaxOfParameters);
+        var tryGetExtensionsFactory = new ResultTryGetExtensionsFactory(DefaultNamespace, MaxOfParameters);
         context.RegisterPostInitializationOutput(ctx => {
             var abstractClassSource = resultFactory.GenerateResult();
             ctx.AddSource("Result.g.cs", abstractClassSource);
@@ -86,6 +91,28 @@ public class ResultGenerator : IIncrementalGenerator {
             ctx.AddSource("ResultSelectManyExtensions.Task.g.cs", selectManyTaskExtensionsSource);
             var selectManyValueTaskExtensionsSource = selectManyExtensionsFactory.GenerateValueTask();
             ctx.AddSource("ResultSelectManyExtensions.ValueTask.g.cs", selectManyValueTaskExtensionsSource);
+            var flattenExtensionsSource = flattenExtensionsFactory.Generate();
+            ctx.AddSource("ResultFlattenExtensions.g.cs", flattenExtensionsSource);
+            var flattenTaskExtensionsSource = flattenExtensionsFactory.GenerateTask();
+            ctx.AddSource("ResultFlattenExtensions.Task.g.cs", flattenTaskExtensionsSource);
+            var flattenValueTaskExtensionsSource = flattenExtensionsFactory.GenerateValueTask();
+            ctx.AddSource("ResultFlattenExtensions.ValueTask.g.cs", flattenValueTaskExtensionsSource);
+            var valueOrExtensionsSource = valueOrExtensionsFactory.Generate();
+            ctx.AddSource("ResultValueOrExtensions.g.cs", valueOrExtensionsSource);
+            var valueOrTaskExtensionsSource = valueOrExtensionsFactory.GenerateTask();
+            ctx.AddSource("ResultValueOrExtensions.Task.g.cs", valueOrTaskExtensionsSource);
+            var valueOrValueTaskExtensionsSource = valueOrExtensionsFactory.GenerateValueTask();
+            ctx.AddSource("ResultValueOrExtensions.ValueTask.g.cs", valueOrValueTaskExtensionsSource);
+            var valueOrThrowExtensionsSource = valueOrThrowExtensionsFactory.Generate();
+            ctx.AddSource("ResultValueOrThrowExtensions.g.cs", valueOrThrowExtensionsSource);
+            var valueOrThrowTaskExtensionsSource = valueOrThrowExtensionsFactory.GenerateTask();
+            ctx.AddSource("ResultValueOrThrowExtensions.Task.g.cs", valueOrThrowTaskExtensionsSource);
+            var valueOrThrowValueTaskExtensionsSource = valueOrThrowExtensionsFactory.GenerateValueTask();
+            ctx.AddSource("ResultValueOrThrowExtensions.ValueTask.g.cs", valueOrThrowValueTaskExtensionsSource);
+            var introspectionExtensionsSource = introspectionExtensionsFactory.Generate();
+            ctx.AddSource("ResultIntrospectionExtensions.g.cs", introspectionExtensionsSource);
+            var tryGetExtensionsSource = tryGetExtensionsFactory.Generate();
+            ctx.AddSource("ResultTryGetExtensions.g.cs", tryGetExtensionsSource);
         });
         foreach (ushort i in Enumerable.Range(1, MaxOfParameters)) {
             context.RegisterPostInitializationOutput(ctx => {

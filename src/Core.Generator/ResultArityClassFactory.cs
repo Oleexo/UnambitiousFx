@@ -42,8 +42,6 @@ internal sealed class ResultArityClassFactory(string @namespace) {
         tw.WriteLine("}");
     }
 
-    
-
     private void GenerateSuccessOkMethods(IndentedTextWriter tw,
                                           ushort             numberOfParameter) {
         tw.WriteLine("public override bool Ok([global::System.Diagnostics.CodeAnalysis.NotNullWhen(false)] out Exception? error)");
@@ -124,11 +122,24 @@ internal sealed class ResultArityClassFactory(string @namespace) {
         tw.WriteLine($"public abstract void IfSuccess(Action<{genericParameters}> action);");
 
         GenerateAbstractOkMethods(tw, numberOfValues);
-
+        GenerateAbstractDeconstructMethod(tw, numberOfValues);
         tw.Indent--;
         tw.WriteLine("}");
 
         return SourceText.From(sw.ToString(), Encoding.UTF8);
+    }
+
+    private static void GenerateAbstractDeconstructMethod(IndentedTextWriter tw,
+                                                          ushort             numberOfValues) {
+        if (numberOfValues == 1) {
+            tw.WriteLine($"public abstract void Deconstruct(out bool isSuccess, out TValue1? value, out Exception? error);");
+        }
+        else {
+            var genericParameters = string.Join(", ", Enumerable.Range(0, numberOfValues)
+                                                                .Select(i => $"TValue{i + 1}"));
+
+            tw.WriteLine($"public abstract void Deconstruct(out bool isSuccess, out ({genericParameters})? value, out Exception? error);");
+        }
     }
 
     public SourceText GenerateSuccessResult(ushort numberOfValues) {
@@ -203,12 +214,50 @@ internal sealed class ResultArityClassFactory(string @namespace) {
         tw.WriteLine("{");
         tw.WriteLine("}");
 
+        GenerateSuccessDeconstructMethod(tw, numberOfValues);
+
         GenerateSuccessOkMethods(tw, numberOfValues);
+        
+        tw.WriteLine("public override string ToString()");
+        tw.WriteLine("{");
+        tw.Indent++;
+        tw.WriteLine($"return $\"Success<{genericParameters}>({callFieldParameters}) reasons={{Reasons.Count}}\";");
+        tw.Indent--;
+        tw.WriteLine("}");
 
         tw.Indent--;
         tw.WriteLine("}");
 
         return SourceText.From(sw.ToString(), Encoding.UTF8);
+    }
+
+    private static void GenerateSuccessDeconstructMethod(IndentedTextWriter tw,
+                                                         ushort             numberOfValues) {
+        if (numberOfValues == 1) {
+            tw.WriteLine($"public override void Deconstruct(out bool isSuccess, out TValue1? value, out Exception? error)");
+            tw.WriteLine("{");
+            tw.Indent++;
+            tw.WriteLine("isSuccess = true;");
+            tw.WriteLine($"value = _value1;");
+            tw.WriteLine("error = null;");
+            tw.Indent--;
+            tw.WriteLine("}");
+        }
+        else {
+            var genericParameters = string.Join(", ", Enumerable.Range(0, numberOfValues)
+                                                                .Select(i => $"TValue{i + 1}"));
+            var callFieldParameters = string.Join(", ", Enumerable.Range(0, numberOfValues)
+                                                                  .Select(i => $"_value{i + 1}"));
+
+            tw.WriteLine($"public override void Deconstruct(out bool isSuccess, out ({genericParameters})? value, out Exception? error)");
+            tw.WriteLine("{");
+            tw.Indent++;
+            tw.WriteLine("isSuccess = true;");
+            tw.WriteLine($"value = ({callFieldParameters});");
+            tw.WriteLine("error = null;");
+            tw.Indent--;
+            tw.WriteLine("}");
+        }
     }
 
     public SourceText GenerateFailureResult(ushort numberOfValues) {
@@ -283,13 +332,49 @@ internal sealed class ResultArityClassFactory(string @namespace) {
         tw.WriteLine("action(_error);");
         tw.Indent--;
         tw.WriteLine("}");
-
+        
+        GenerateFailureDeconstructMethod(tw, numberOfValues);
         GenerateFailureOkMethods(tw, numberOfValues);
+        
+        tw.WriteLine("public override string ToString()");
+        tw.WriteLine("{");
+        tw.Indent++;
+        tw.WriteLine($"return $\"Failure<{genericParameters}>({{_error.GetType().Name}}: {{_error.Message}}) reasons={{Reasons.Count}}\";");
+        tw.Indent--;
+        tw.WriteLine("}");
 
         tw.Indent--;
         tw.WriteLine("}");
 
         return SourceText.From(sw.ToString(), Encoding.UTF8);
+    }
+
+    private static void GenerateFailureDeconstructMethod(IndentedTextWriter tw,
+                                                         ushort             numberOfValues) {
+        if (numberOfValues == 1) {
+            tw.WriteLine("public override void Deconstruct(out bool isSuccess, out TValue1? value, out Exception? error)");
+            tw.WriteLine("{");
+            tw.Indent++;
+            tw.WriteLine("isSuccess = false;");
+            tw.WriteLine("value = default;");
+            tw.WriteLine("error = _error;");
+            tw.Indent--;
+            tw.WriteLine("}");
+
+        }
+        else {
+            var genericParameters = string.Join(", ", Enumerable.Range(0, numberOfValues)
+                                                                .Select(i => $"TValue{i + 1}"));
+
+            tw.WriteLine($"public override void Deconstruct(out bool isSuccess, out ({genericParameters})? value, out Exception? error)");
+            tw.WriteLine("{");
+            tw.Indent++;
+            tw.WriteLine("isSuccess = false;");
+            tw.WriteLine("value = default;");
+            tw.WriteLine("error = _error;");
+            tw.Indent--;
+            tw.WriteLine("}");
+        }
     }
 
     private void GenerateFailureOkMethods(IndentedTextWriter tw,

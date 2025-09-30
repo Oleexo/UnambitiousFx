@@ -176,92 +176,132 @@ var validated = inputResult
     .MapError(ex => ex is ValidationException ? ex : new ValidationException("Wrapped: " + ex.Message));
 ```
 
----
-## Async Composition
-All major operators have `*Async` counterparts supporting `Task` or `ValueTask` sources:
-- `BindAsync`
-- `MapAsync`
-- `TryAsync`
-- `TapAsync` / `TapErrorAsync`
-- `EnsureAsync`
-- `MapErrorAsync`
+## Structured Reasons & Metadata (New)
+The error model now supports attaching structured reasons (both successes and errors) to any `Result` via the `IReason` abstraction:
 
-You can mix sync and async seamlessly:
+- `IReason` : `{ string Message; IReadOnlyDictionary<string, object?> Metadata }`
+- `IError`  : extends `IReason` adding `{ string Code; Exception? Exception }`
+- `ISuccess`: marker for non-error enrichment reasons
+
+Each `Result` maintains:
+- `Reasons` (list of `IReason`) preserving attachment order
+- `Metadata` (case-insensitive bag) at the result level for quick inspection / logging
+
+### Domain Error Types
+Out of the box, several domain-oriented immutable error record types exist (all inherit `ErrorBase`):
+- `NotFoundError(resource, identifier, extra?)` (Code: `NOT_FOUND`)
+- `ValidationError(failures: IReadOnlyList<string>, extra?)` (Code: `VALIDATION`)
+- `ConflictError(message, extra?)` (Code: `CONFLICT`)
+- `UnauthorizedError(reason?, extra?)` (Code: `UNAUTHORIZED`)
+- `ExceptionalError(exception, messageOverride?, extra?)` (Code: `EXCEPTION`)
+- `SuccessReason(message, metadata)` (non-error enrichment)
+
+### Attaching Reasons
+Use fluent helpers to attach reasons and metadata *without* breaking existing chaining:
 ```csharp
-Task<Result<User>> GetUserAsync(UserId id) { /* ... */ }
-Task<Result<Account>> GetAccountAsync(User user) { /* ... */ }
+var r = Result.Success(42)
+    .WithSuccess("cache hit", new Dictionary<string, object?> { ["cache"] = true })
+    .WithMetadata("traceId", traceId)
+    .WithError("DERIVED", "Derived warning", metadata: new Dictionary<string, object?> { ["severity"] = "warn" }, copyMetadata: false);
 
-var invoiceResult = await GetUserAsync(id)
-    .BindAsync(GetAccountAsync)              // account
-    .EnsureAsync(a => Task.FromResult(a.Enabled), a => Task.FromResult<Exception>(new Exception("Disabled")))
-    .MapAsync(a => a.PrimaryInvoiceId)       // Guid
-    .TryAsync(id => FetchInvoiceAsync(id))   // may throw internally
-    .TapAsync(inv => audit.LogAccess(inv.Id));
+// Reasons count
+Console.WriteLine(r.Reasons.Count); // 2 (1 success, 1 error)
 ```
 
----
-## Multiple Values (Tuple Results)
-The library generates `Result<T1, T2, ...>` up to a configured arity. Helps compose parallel dependencies stepwise and keep structure.
+### Metadata Propagation
+`WithSuccess` / `WithError` (and multiple variants) accept a `copyMetadata` flag (default `true`). When `true`, the reason's metadata keys are merged into the parent `Result.Metadata` (last write wins). When `false`, metadata stays local to the reason.
 ```csharp
-Result<User>      userR = GetUser(id);
-Result<Account>   accR  = GetAccount(userId);
-Result<Settings>  setR  = GetSettings(userId);
+var r = Result.Success()
+    .WithSuccess("cache", new Dictionary<string, object?> { ["layer"] = 2 })    // copied
+    .WithError(new NotFoundError("User", "42", new Dictionary<string, object?> { ["shard"] = 3 }), copyMetadata: false);
 
-// Combine sequentially into a multi-value result
-var composed = userR
-    .Bind(u => accR.Map(a => (u, a)))               // Result<User, Account>
-    .Bind((u, a) => setR.Map(s => (u, a, s)));      // Result<User, Account, Settings>
-
-var proj = composed.Map((u, a, s) => new DashboardVm(u, a, s));
-```
-You still access with `.Ok(out (User u, Account a, Settings s), out var error)` or use further operators.
-
----
-## Collections
-### Sequence
-Turn `IEnumerable<Result<T>>` into `Result<List<T>>` (fails fast on first error).
-```csharp
-var collected = listOfResults.Sequence();
+bool hasLayer = r.Metadata.ContainsKey("layer");      // true
+bool hasShard = r.Metadata.ContainsKey("shard");      // false (not copied)
 ```
 
-### Traverse
-Map each element to a Result and collect successes (fails fast).
+### Inline Errors
+For quick ad‑hoc failures you can attach an inline error to a *successful* result (for enrichment / multi-reason scenarios):
 ```csharp
-Result<List<User>> loaded = userIds.Traverse(id => GetUser(id));
+var enriched = Result.Success()
+    .WithError("AUDIT", "Soft audit marker", metadata: new Dictionary<string, object?> { ["scope"] = "billing" });
+```
+This does **not** convert the success into a failure—reasons are orthogonal metadata; the failure state is determined by the core success/failure instance.
+
+### Creating Failure from Domain Error
+```csharp
+Result<User> user = Result.Failure<User>(new NotFoundError("User", userId));
+// FailureResult carries the original exception (if any), plus the error reason & metadata copied to Result.Metadata
 ```
 
-### Partition
-Collect successes and failures separately.
+### Inspecting Reasons
 ```csharp
-var (oks, errors) = listOfResults.Partition();
+foreach (var reason in result.Reasons) {
+    switch (reason) {
+        case IError err:
+            logger.LogError("[{Code}] {Message}", err.Code, err.Message);
+            break;
+        case ISuccess s:
+            logger.LogInformation("Success detail: {Msg}", s.Message);
+            break;
+    }
+}
+
+// Quick error filtering
+var validationErrors = result.Reasons.OfType<ValidationError>().ToList();
 ```
 
-### Combine (no values)
-Aggregate a set of `Result` (non generic). If any fail returns an `AggregateException`.
+### Multiple Reasons & Filtering Examples
+Attach a mix of success and error reasons, selectively propagating metadata:
 ```csharp
-var validations = new [] { rule1(), rule2(), rule3() };
-var combined = validations.Combine();
+var r = Result.Success(100)
+    .WithSuccess("cache hit", new Dictionary<string, object?> { ["layer"] = 2 })          // metadata copied (layer)
+    .WithError("WARN_QUOTA", "Approaching quota", metadata: new Dictionary<string, object?> { ["pct"] = 0.82 }, copyMetadata: false)
+    .WithError(new ValidationError(new [] { "email required" }))                           // metadata (failures list) copied
+    .WithSuccess("fallback used", new Dictionary<string, object?> { ["provider"] = "secondary" }, copyMetadata: false);
+
+// List all errors (IError)
+var errors = r.Reasons.OfType<IError>().ToList();
+// List only success enrichments
+var successes = r.Reasons.OfType<ISuccess>().ToList();
+// Pick specific domain error type
+var validation = r.Reasons.OfType<ValidationError>().FirstOrDefault();
+
+// Enumerate codes for logging/metrics
+foreach (var e in errors) metrics.Increment($"result.error.{e.Code.ToLowerInvariant()}");
+
+// Result-level metadata contains only keys from reasons where copyMetadata == true (layer + failures)
+bool hasLayer   = r.Metadata.ContainsKey("layer");        // true
+bool hasPct     = r.Metadata.ContainsKey("pct");          // false (copyMetadata:false)
+bool hasFailure = r.Metadata.ContainsKey("failures");     // true (from ValidationError)
+
+// Quick summarization example
+string summary = string.Join(", ", errors.Select(e => $"{e.Code}:{e.Message}"));
 ```
+Guidelines:
+- Use `copyMetadata: false` for verbose / large metadata you do not want in the aggregated result bag.
+- Filter by concrete error types (`ValidationError`) for domain-specific handling.
+- Keep success enrichments (ISuccess) lightweight—treat them as trace breadcrumbs.
 
----
-## Comparing Operators
+### Future Enhancements
+Planned (see roadmap) additions:
+- Value-fold `Match<TOut>` for all arities
+- Error discovery helpers (`FindError`, `Errors()`, grouping by code)
+- ToString enrichment (first error code + compact metadata excerpt)
 
-| Operator | Input Func Returns      | On Failure          | Purpose                          |
-|----------|-------------------------|---------------------|----------------------------------|
-| Bind     | Result                  | short‑circuits      | Chain dependent computations     |
-| Map      | Plain value             | short‑circuits      | Transform value shape            |
-| Try      | Plain value (may throw) | converts thrown     | Safely wrap throwing code        |
-| Ensure   | bool predicate          | converts to failure | Validate intermediate invariants |
-| Tap      | void (side effect)      | skipped on failure  | Observe success without altering |
-| TapError | void (side effect)      | runs only failure   | Observe failure without altering |
-| MapError | Exception               | stays failure       | Normalize / wrap errors          |
+## Reference: Helper API Summary
+| Helper | Purpose |
+|--------|---------|
+| `WithSuccess(message, metadata?, copyMetadata?)` | Attach success reason + optional metadata |
+| `WithSuccess(ISuccess, copyMetadata?)` | Attach existing success reason instance |
+| `WithError(IError, copyMetadata?)` | Attach an error reason |
+| `WithError(code, message, exception?, metadata?, copyMetadata?)` | Inline simple error definition |
+| `WithErrors(IEnumerable<IError>, copyMetadata?)` | Attach multiple error reasons |
+| `WithMetadata(key, value)` / `WithMetadata(dict)` / `WithMetadata(params (string,object?)[])` | Enrich result-level metadata bag |
 
----
-## Monoid Perspective
-`Result<T>` forms a monoid where:
-- Identity: `Result.Success(value)`
-- Associative operation: `Bind`
-Chaining is associative: `(r.Bind(f)).Bind(g)` == `r.Bind(v => f(v).Bind(g))`.
+## Roadmap
+A continuously updated roadmap for Result (and related functional types) now lives in its own page: [Result Roadmap](result-roadmap.markdown). The canonical, most detailed version is also stored at the repository root (`ResultFeatures.md`).
+
+> The roadmap tracks completed items (✅), in-progress (🔄), high-priority next steps (⭐), planned (📋), and exploratory (🤔). It helps consumers anticipate API stability and upcoming capabilities like async error transforms, aggregation utilities, interop, and performance variants.
 
 ---
 ## Full End‑to‑End Example
@@ -342,7 +382,34 @@ Takeaways:
 - Normalize heterogeneous exceptions early with `MapError` so callers handle a consistent set.
 - For batch operations use `Traverse` (map+sequence) or `Partition` when you want partial successes.
 
----
+## Troubleshooting
+| Scenario | Symptom | Explanation | Fix |
+|----------|---------|-------------|-----|
+| Using `WithError` on a success expecting it to become failure | `IsSuccess == true` even after adding error reason | The success/failure state is determined by the core Result instance, not the presence of error reasons | Use `Result.Failure(...)` or propagate a failure earlier with `Bind/Ensure` |
+| Metadata key overwritten unexpectedly | Final `result.Metadata["k"]` not what earlier reason added | Metadata bag is last-write-wins (case-insensitive) | Use distinct keys or namespace them (`validation:k`) |
+| Large reason metadata bloating logs | Log exporter shows many repeated keys | Reason metadata copied when `copyMetadata: true` | Pass `copyMetadata: false` then inspect reason.Metadata directly |
+| Confusing `MapError` vs `WithError` | Extra reason added but underlying exception unchanged (or vice versa) | `MapError` transforms the primary exception; `WithError` just attaches a supplemental reason | Use `MapError` to replace/wrap exception, `WithError` for auxiliary context |
+| Lost original stack trace after wrapping | New exception hides original stack | Custom wrapping created new Exception without inner | Preserve inner via `new DomainEx("msg", ex)` or only attach reason using `WithError` |
+| Validation logic throwing instead of failing | Unexpected exceptions in pipeline | Used `throw` inside predicate instead of returning failure | Use `Ensure` with error factory; reserve `throw` for exceptional conditions |
+| Multi-arity `ToNullable` surprise (single arity returns default on failure) | Single-value `ToNullable<T>()` returns `default(T)` instead of `null` | Design keeps return type as `T` (no allocation); multi-arity returns nullable tuple | Use explicit `result.Ok(out var v, out _)` when you need to distinguish default vs failure |
+
+### Quick Decision Flow
+1. Want to enrich without failing? -> `WithSuccess` / `WithError(code, message)` (stays success)
+2. Want to fail if predicate fails? -> `Ensure`
+3. Want to convert thrown code to failure? -> `Try` / `TryAsync`
+4. Need to rewrite underlying exception? -> `MapError`
+5. Need structured error info? -> Use domain error record (e.g., `ValidationError`)
+
+### Example: Converting a success-with-warnings into a failure
+If business logic later decides warnings should block processing:
+```csharp
+Result<int> r = GetAmount();
+if (r.Reasons.OfType<IError>().Any(e => e.Code == "WARN_QUOTA")) {
+    r = Result.Failure<int>(new Exception("Quota threshold exceeded"))
+        .WithErrors(r.Reasons.OfType<IError>()); // re-attach prior warnings as reasons
+}
+```
+
 ## Glossary
 - Bind: flatten result-producing functions
 - Map: transform contained value

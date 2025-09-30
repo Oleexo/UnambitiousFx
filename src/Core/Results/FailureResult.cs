@@ -52,4 +52,11 @@ internal sealed partial class FailureResult : Result {
         tapError(_error);
         return new FailureResult(_error);
     }
+
+    public override void Deconstruct(out bool isSuccess, out Exception? error) {
+        isSuccess = false;
+        error = _error;
+    }
+
+    public override string ToString() => $"Failure({_error.GetType().Name}: {_error.Message}) reasons={Reasons.Count}";
 }

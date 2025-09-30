@@ -1,7 +1,6 @@
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Options;
 using UnambitiousFx.Core.Eithers;
-using UnambitiousFx.Core.XUnit;
 using UnambitiousFx.Core.XUnit.Fluent;
 
 namespace UnambitiousFx.Core.Tests.Fluent;

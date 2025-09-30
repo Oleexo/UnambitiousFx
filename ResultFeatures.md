@@ -51,30 +51,30 @@ Goal: Unlock richer ergonomics + structured errors without breaking later phases
 - ✅ Bind / Then (monadic chaining — value to Result)
 - ✅ SelectMany (LINQ comprehension support – sync + Task + ValueTask variants)
 - ✅ Match (action-based variant implemented; value-return fold variant 📋)
-- ⭐ Flatten (Result<Result<T>> → Result<T>)
-- ⭐ IReason / IError / ISUCCESS abstractions (reason list pipeline)
-- ⭐ Standard Error Base (Code, Message, Metadata)
-- ⭐ Metadata attachment (Result & Error enrichment API)
-- ⭐ Specialized Domain Errors (NotFound, Validation, Conflict, Unauthorized, ExceptionalError)
-- ⭐ ValueOr(default) / ValueOr(Func<T>)
-- ⭐ ValueOrThrow() / ValueOrThrow(factory)
+- ✅ Flatten (Result<Result<T>> → Result<T> – sync + Task + ValueTask)
+- ✅ IReason / IError / ISuccess abstractions (interfaces + storage scaffold in place)
+- ✅ Metadata attachment (result-level dictionary + WithMetadata overloads + params tuple + WithSuccess / WithError / WithErrors helpers with optional metadata copy)
+- ✅ Standard Error Base (Code, Message, Metadata) – `ErrorBase`
+- ✅ Specialized Domain Errors (NotFound, Validation, Conflict, Unauthorized, ExceptionalError + SuccessReason)
+- ✅ ValueOr(default) / ValueOr(Func<T>) (all arities + async)
+- ✅ ValueOrThrow() / ValueOrThrow(factory) (all arities + async)
 - 📋 Error wrapping helper (wrap Exception → domain error)
 - 📋 Prepend/Append error transformers (message shaping)
 
 Rationale: Improves developer ergonomics and sets the contract for inspection, formatting, and interop.
 
-> Note: `Match` currently supports the side-effect (Action) pattern. A value-returning functional fold `(onSuccess, onFailure) => TOut` is still pending and tracked as part of the remaining Match enhancement (📋).
+> Note: `Match` currently supports the side-effect (Action) pattern. A value-returning functional fold `(onSuccess, onFailure) => TOut` (including generic success-value access) is still pending (📋).
 
 ---
 
 ## Phase 2 – Inspection & Value Access
 Visibility + safe extraction.
-- ⭐ HasError<TError>()
-- ⭐ HasException<TException>()
-- ⭐ TryGet(out T)
-- ⭐ ToNullable()
-- ⭐ Deconstruct (ok, value, error)
-- ⭐ ToString overhaul (aggregate reasons, codes, metadata excerpt)
+- ✅ HasError<TError>() (exception fallback; reason-based matching will expand once Error base lands)
+- ✅ HasException<TException>()
+- ✅ TryGet(out T) (all arities via source generation)
+- ✅ ToNullable() (all arities; returns nullable value/tuple)
+- ✅ Deconstruct (ok, value, error) (non-generic & all arities)
+- 🔄 ToString overhaul (basic form with reasons count implemented; codes/metadata excerpt pending)
 - 📋 FindError(predicate) / TryPickError
 - 📋 EnsureNotNull / EnsureNotEmpty helpers
 - 📋 MatchError / FilterError utilities
@@ -189,11 +189,11 @@ These items are intentionally deferred; revisit after core maturity.
 ---
 
 ## Milestone Suggestion (Example Slicing)
-Milestone 1 (Phase 1 subset): Bind, Match, SelectMany (DONE), Error base + Metadata, ValueOr/ValueOrThrow
-Milestone 2 (Remaining Phase 1 + Phase 2 core): HasError<T>, Deconstruct, ToString overhaul, TryGet
-Milestone 3 (Async Parity): TapErrorAsync, MapErrorAsync, MapErrors, TapBoth
-Milestone 4 (Interop & Aggregation): Factory helpers, Errors()/Merge(), GroupByErrorCode, ASP.NET Core mappers
-Milestone 5 (Resilience + Perf foundation): Retry/Timeout, Struct variant prototype, DebuggerDisplay, Assertions
+Milestone 1 (Phase 1 subset – DONE): Bind, Match (action), SelectMany, Flatten, Error base + Domain Errors + Metadata system & helpers, ValueOr/ValueOrThrow
+Milestone 2 (Phase 1 completion + Phase 2 core): Value-fold Match<TOut>, Error wrapping helper, Prepend/Append transformers, ToString enrichment (codes + metadata preview), HasError refinement (reason type matching), EnsureNotNull/EnsureNotEmpty
+Milestone 3 (Async Parity): TapErrorAsync, MapErrorAsync, MapErrors, TapBoth/TapEither, BindTryAsync
+Milestone 4 (Interop & Aggregation): Factory helpers (FromNullable/Condition/Validation), Errors()/Merge(), GroupByErrorCode, ASP.NET Core mappers
+Milestone 5 (Resilience + Perf foundation): Retry/Timeout policies, Struct variant prototype, DebuggerDisplay, Assertions
 
 ---
 
@@ -204,16 +204,16 @@ Milestone 5 (Resilience + Perf foundation): Retry/Timeout, Struct variant protot
 - BindAsync ✅
 - BindTryAsync 📋 (P3)
 - Combine / Aggregate ✅
-- Context Attachment ⭐ (part of Metadata in P1)
-- Deconstruct ⭐ (P2)
+- Context Attachment ✅ (Metadata + helpers + selective copy flag)
+- Deconstruct ✅
 - Ensure ✅
 - EnsureAsync ✅
 - EnsureNotNull / EnsureNotEmpty 📋 (P2)
-- Error Base (Code/Message/Metadata) ⭐ (P1)
+- Error Base (Code/Message/Metadata) ✅
 - Error Wrapping Helper 📋 (P1)
 - Errors() / AllErrors() ⭐ (P4)
-- ExceptionalError ⭐ (P1 specialized errors)
-- Flatten ⭐ (P1)
+- ExceptionalError ✅
+- Flatten ✅ (P1 – includes Task/ValueTask variants)
 - FlattenExceptions() 🤔 (P4)
 - FromCondition 📋 (P5)
 - FromNullable 📋 (P5)
@@ -221,9 +221,9 @@ Milestone 5 (Resilience + Perf foundation): Retry/Timeout, Struct variant protot
 - FromTry / FromTryAsync ✅
 - FromValidation 📋 (P5)
 - GroupByErrorCode ⭐ (P4)
-- HasError<TError>() ⭐ (P2)
-- HasException<TException>() ⭐ (P2)
-- IReason / IError / ISUCCESS ⭐ (P1)
+- HasError<TError>() ✅
+- HasException<TException>() ✅
+- IReason / IError / ISuccess ✅
 - Implicit Conversions (T → Result<T>) ⭐ (P5)
 - Implicit Error lift 📋 (P5)
 - Lazy Exception Creation 📋 (P7)
@@ -234,7 +234,7 @@ Milestone 5 (Resilience + Perf foundation): Retry/Timeout, Struct variant protot
 - MapErrorAsync ⭐ (P3)
 - MapErrors ⭐ (P3)
 - Merge ⭐ (P4)
-- Metadata Attachment ⭐ (P1)
+- Metadata Attachment ✅ (Result-level + reason-level + tuple overload + helper APIs)
 - Partition ✅
 - Policies: Retry / Timeout ⭐ (P6)
 - Policies: CircuitBreaker 📋 (P6)
@@ -248,19 +248,19 @@ Milestone 5 (Resilience + Perf foundation): Retry/Timeout, Struct variant protot
 - TapBoth / TapEither ⭐ (P3)
 - TapError ✅
 - TapErrorAsync ⭐ (P3)
-- ToNullable ⭐ (P2)
+- ToNullable ✅
 - ToOption / FromOption 📋 (P5)
-- ToString Overhaul ⭐ (P2)
+- ToString Overhaul 🔄 (basic reasons count; pending codes + metadata preview)
 - ToTask ✅
-- TryGet ⭐ (P2)
-- ValueOr / ValueOr(Func) ⭐ (P1)
-- ValueOrThrow ⭐ (P1)
+- TryGet ✅
+- ValueOr / ValueOr(Func) ✅
+- ValueOrThrow ✅
 
 ---
 
 ## Open Design Questions (Track in Issues)
-1. Should metadata live on Result root, each reason, or both? (Current plan: both.)
-2. Are specialized errors first-class types or factory helpers? (Bias: concrete types.)
+1. Should metadata live on Result root, each reason, or both? (Current: both implemented; helpers support optional propagation.)
+2. Are specialized errors first-class types or factory helpers? (Current: concrete types implemented.)
 3. Struct variant: generic or separate namespace to avoid accidental copying costs?
 4. Implicit conversions opt-in (via using static) or always enabled?
 5. Policy execution: integrate with Polly or standalone minimal layer?
@@ -268,12 +268,18 @@ Milestone 5 (Resilience + Perf foundation): Retry/Timeout, Struct variant protot
 ---
 
 ## Immediate Next Steps (Actionable)
-1. Define core interfaces: IReason, IError, ISuccess (issue + draft code)
-2. Introduce Error base (Code, Message, Metadata) + ExceptionalError wrapper
-3. Implement Bind / SelectMany / Match / Flatten
-4. Add ValueOr / ValueOrThrow + basic TryGet
-5. Draft ToString v1 (include code + message + count of reasons)
+1. Implement value-fold Match<TOut> (sync + Task/ValueTask for generic results) exposing success values.
+2. Implement Error wrapping helper (Exception → ExceptionalError) + Prepend/Append error message transformers.
+3. Enhance ToString: include first error code (if any), total error count, compact metadata preview (first 2 keys) for both Result & generic variants.
+4. Add EnsureNotNull / EnsureNotEmpty utilities (lift null/empty to ValidationError) and associated tests.
+5. Draft design note for metadata propagation policy (document copyMetadata flag semantics).
+
+### ToString Enhancement Plan (Upcoming)
+Format example (success with tuple & metadata sample):
+`Success<int,int>(1,2) reasons=0 meta=env:prod,trace:abc123`
+Failure example with codes:
+`Failure<int>(ValidationError: Required field) code=VALIDATION reasons=1 meta=userId:42`
 
 ---
 
-Feel free to request: (a) issue scaffolding, (b) Phase 1 implementation stubs, or (c) migration notes from existing usage.
+*Note:* Full error reason richness (aggregation formatting, nested propagation policy) deferred until additional formatting helpers land.
