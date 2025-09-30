@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace UnambitiousFx.Core.Results;
 
@@ -49,5 +50,8 @@ internal sealed partial class SuccessResult : Result {
         error = null;
     }
 
-    public override string ToString() => $"Success reasons={Reasons.Count}";
+    public override string ToString() {
+        var metaPart = Metadata.Count == 0 ? string.Empty : " meta=" + string.Join(",", Metadata.Take(2).Select(kv => kv.Key + ":" + (kv.Value ?? "null")));
+        return $"Success reasons={Reasons.Count}{metaPart}";
+    }
 }

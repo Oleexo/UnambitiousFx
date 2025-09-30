@@ -1,5 +1,8 @@
 namespace UnambitiousFx.Core.Results;
 
+using System.Linq;
+using UnambitiousFx.Core.Results.Reasons;
+
 internal sealed partial class FailureResult : Result {
     private readonly Exception _error;
 
@@ -58,5 +61,12 @@ internal sealed partial class FailureResult : Result {
         error = _error;
     }
 
-    public override string ToString() => $"Failure({_error.GetType().Name}: {_error.Message}) reasons={Reasons.Count}";
+    public override string ToString() {
+        var firstError = Reasons.OfType<IError>().FirstOrDefault();
+        var headerType = firstError?.GetType().Name ?? _error.GetType().Name;
+        var headerMessage = firstError?.Message ?? _error.Message;
+        var codePart = firstError is null ? string.Empty : " code=" + firstError.Code;
+        var metaPart = Metadata.Count == 0 ? string.Empty : " meta=" + string.Join(",", Metadata.Take(2).Select(kv => kv.Key + ":" + (kv.Value ?? "null")));
+        return $"Failure({headerType}: {headerMessage}){codePart} reasons={Reasons.Count}{metaPart}";
+    }
 }

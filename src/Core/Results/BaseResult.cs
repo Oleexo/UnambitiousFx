@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using System.Linq;
+using UnambitiousFx.Core.Results.Reasons;
 using System.Diagnostics.CodeAnalysis;
 using UnambitiousFx.Core.Results.Reasons;
 
@@ -37,5 +39,20 @@ public abstract partial class BaseResult {
     public abstract void IfFailure(Action<Exception>            action);
     public abstract bool Ok([NotNullWhen(false)] out Exception? error);
 
-    internal string DebuggerDisplay => ToString() ?? "Unknown";
+    private string DebuggerDisplay => BuildDebuggerDisplay();
+
+    private string BuildDebuggerDisplay() {
+        // Success summary: show status, reasons count, first 2 metadata keys.
+        if (IsSuccess) {
+            var meta = Metadata.Count == 0 ? string.Empty : " meta=" + string.Join(",", Metadata.Take(2).Select(kv => kv.Key + ":" + (kv.Value ?? "null")));
+            return $"Success reasons={Reasons.Count}{meta}";
+        }
+
+        // Failure summary: prefer first IError reason for code/message; fallback to first Exception reason or generic marker.
+        var firstError = Reasons.OfType<IError>().FirstOrDefault();
+        string codePart = firstError is null ? string.Empty : " code=" + firstError.Code;
+        string msg = firstError?.Message ?? "error";
+        var metaPart = Metadata.Count == 0 ? string.Empty : " meta=" + string.Join(",", Metadata.Take(2).Select(kv => kv.Key + ":" + (kv.Value ?? "null")));
+        return $"Failure({msg}){codePart} reasons={Reasons.Count}{metaPart}";
+    }
 }
