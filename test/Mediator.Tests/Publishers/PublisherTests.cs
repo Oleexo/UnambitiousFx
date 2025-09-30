@@ -5,7 +5,7 @@ using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 using UnambitiousFx.Mediator.Tests.Definitions;
 
-namespace UnambitiousFx.Mediator.Tests;
+namespace UnambitiousFx.Mediator.Tests.Publishers;
 
 [TestSubject(typeof(Publisher))]
 public sealed class PublisherTests {

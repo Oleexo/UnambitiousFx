@@ -2,7 +2,7 @@ using NSubstitute;
 using UnambitiousFx.Mediator.Abstractions;
 using UnambitiousFx.Mediator.Tests.Definitions;
 
-namespace UnambitiousFx.Mediator.Tests;
+namespace UnambitiousFx.Mediator.Tests.Proxy;
 
 public sealed class ProxyRequestHandlerTests {
     [Fact]

@@ -1,7 +1,7 @@
 using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
 
-namespace UnambitiousFx.Core.Tests.Results;
+namespace UnambitiousFx.Core.Tests.Results.Core;
 
 [TestSubject(typeof(Result<>))]
 public sealed class ResultTests {
@@ -190,7 +190,7 @@ public sealed class ResultTests {
     public async Task GivenResultWithArityOf1_ShouldBeAbleToBindToArityOf2Async() {
         var result = Result.Success(42);
 
-        var result2 = await Core.Results.Tasks.ResultExtensions.BindAsync(result, x => Task.FromResult(Result.Success(x, x + 1)));
+        var result2 = await UnambitiousFx.Core.Results.Tasks.ResultExtensions.BindAsync(result, x => Task.FromResult(Result.Success(x, x + 1)));
 
         if (result2.Ok(out var values, out _)) {
             var (a, b) = values;
@@ -206,9 +206,9 @@ public sealed class ResultTests {
     public async Task GivenResultWithArityOf3_ShouldBeAbleToBindToArityOf2Async() {
         var result = Result.Success(24, 42, 1337);
 
-        var result2 = await Core.Results.Tasks.ResultExtensions.BindAsync(result, (x,
-                                                                              y,
-                                                                              z) => Task.FromResult(Result.Success(x + y, y + z)));
+        var result2 = await UnambitiousFx.Core.Results.Tasks.ResultExtensions.BindAsync(result, (x,
+                                                                                                 y,
+                                                                                                 z) => Task.FromResult(Result.Success(x + y, y + z)));
 
         if (result2.Ok(out var values, out _)) {
             var (a, b) = values;

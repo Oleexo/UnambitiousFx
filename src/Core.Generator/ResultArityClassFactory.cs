@@ -4,28 +4,7 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace UnambitiousFx.Core.Generator;
 
-internal sealed class ResultArityClassFactory(string @namespace,
-                                              ushort maxOfParameters) {
-    private void GenerateAbstractBindMethods(IndentedTextWriter tw,
-                                             ushort             numberOfValues) {
-        foreach (ushort i in Enumerable.Range(1, maxOfParameters)) {
-            GenerateAbstractBindMethod(tw, numberOfValues, i);
-        }
-    }
-
-    private void GenerateAbstractBindMethod(IndentedTextWriter tw,
-                                            ushort             numberOfParameterInput,
-                                            ushort             numberOfParameterOutput) {
-        var input = string.Join(", ", Enumerable.Range(0, numberOfParameterInput)
-                                                .Select(i => $"TValue{i + 1}"));
-        var output = string.Join(", ", Enumerable.Range(0, numberOfParameterOutput)
-                                                 .Select(i => $"TOut{i + 1}"));
-        var where = string.Join(" ", Enumerable.Range(0, numberOfParameterOutput)
-                                               .Select(i => $"where TOut{i + 1} : notnull"));
-
-        tw.WriteLine($"public abstract Result<{output}> Bind<{output}>(Func<{input}, Result<{output}>> bind) {where};");
-    }
-
+internal sealed class ResultArityClassFactory(string @namespace) {
     private void GenerateAbstractOkMethods(IndentedTextWriter tw,
                                            ushort             numberOfParameter) {
         if (numberOfParameter == 1) {
@@ -63,83 +42,7 @@ internal sealed class ResultArityClassFactory(string @namespace,
         tw.WriteLine("}");
     }
 
-    private void GenerateSuccessBindMethod(IndentedTextWriter tw,
-                                           ushort             numberOfParameterInput,
-                                           ushort             numberOfParameterOutput,
-                                           bool               withIncrementalInput = true) {
-        var input = string.Join(", ", Enumerable.Range(0, numberOfParameterInput)
-                                                .Select(i => $"TValue{i + 1}"));
-        var output = string.Join(", ", Enumerable.Range(0, numberOfParameterOutput)
-                                                 .Select(i => $"TOut{i + 1}"));
-        var callParameters = string.Join(", ", Enumerable.Range(0, numberOfParameterInput)
-                                                         .Select(i => $"_value{i + 1}"));
-
-
-        if (withIncrementalInput) {
-            tw.WriteLine($"public override Result<{output}> Bind<{output}>(Func<{input}, Result<{output}>> bind)");
-            tw.WriteLine("{");
-            tw.Indent++;
-            tw.WriteLine($"return bind({callParameters});");
-            tw.Indent--;
-            tw.WriteLine("}");
-        }
-        else {
-            tw.WriteLine($"public override Result<{output}> Bind<{output}>(Func<Result<{output}>> bind)");
-            tw.WriteLine("{");
-            tw.Indent++;
-            tw.WriteLine("return bind();");
-            tw.Indent--;
-            tw.WriteLine("}");
-        }
-    }
-
-    private void GenerateSuccessBindMethods(IndentedTextWriter tw,
-                                            ushort             numberOfParameterInput) {
-        foreach (ushort i in Enumerable.Range(1, maxOfParameters)) {
-            GenerateSuccessBindMethod(tw, numberOfParameterInput, i, false);
-        }
-
-        foreach (ushort i in Enumerable.Range(1, maxOfParameters)) {
-            GenerateSuccessBindMethod(tw, numberOfParameterInput, i);
-        }
-    }
-
-    private void GenerateFailureBindMethods(IndentedTextWriter tw,
-                                            ushort             numberOfParameterInput) {
-        foreach (ushort i in Enumerable.Range(1, maxOfParameters)) {
-            GenerateFailureBindMethod(tw, numberOfParameterInput, i, false);
-        }
-
-        foreach (ushort i in Enumerable.Range(1, maxOfParameters)) {
-            GenerateFailureBindMethod(tw, numberOfParameterInput, i);
-        }
-    }
-
-    private void GenerateFailureBindMethod(IndentedTextWriter tw,
-                                           ushort             numberOfParameterInput,
-                                           ushort             numberOfParameterOutput,
-                                           bool               withIncrementalInput = true) {
-        var input = string.Join(", ", Enumerable.Range(0, numberOfParameterInput)
-                                                .Select(i => $"TValue{i + 1}"));
-        var output = string.Join(", ", Enumerable.Range(0, numberOfParameterOutput)
-                                                 .Select(i => $"TOut{i + 1}"));
-        if (!withIncrementalInput) {
-            tw.WriteLine($"public override Result<{output}> Bind<{output}>(Func<Result<{output}>> bind)");
-            tw.WriteLine("{");
-            tw.Indent++;
-            tw.WriteLine($"return new FailureResult<{output}>(_error);");
-            tw.Indent--;
-            tw.WriteLine("}");
-        }
-        else {
-            tw.WriteLine($"public override Result<{output}> Bind<{output}>(Func<{input}, Result<{output}>> bind)");
-            tw.WriteLine("{");
-            tw.Indent++;
-            tw.WriteLine($"return new FailureResult<{output}>(_error);");
-            tw.Indent--;
-            tw.WriteLine("}");
-        }
-    }
+    
 
     private void GenerateSuccessOkMethods(IndentedTextWriter tw,
                                           ushort             numberOfParameter) {
@@ -220,7 +123,6 @@ internal sealed class ResultArityClassFactory(string @namespace,
         tw.WriteLine($"public abstract TOut Match<TOut>(Func<{genericParameters}, TOut> success, Func<Exception, TOut> failure);");
         tw.WriteLine($"public abstract void IfSuccess(Action<{genericParameters}> action);");
 
-        //GenerateAbstractBindMethods(tw, numberOfValues);
         GenerateAbstractOkMethods(tw, numberOfValues);
 
         tw.Indent--;
@@ -240,6 +142,7 @@ internal sealed class ResultArityClassFactory(string @namespace,
         var genericConstraints = string.Join(" ", Enumerable.Range(0, numberOfValues)
                                                             .Select(i => $"where TValue{i + 1} : notnull"));
 
+        tw.WriteLine("// <auto-generated />");
         tw.WriteLine("#nullable enable");
         tw.WriteLine($"namespace {@namespace};");
         tw.WriteLine();
@@ -317,6 +220,7 @@ internal sealed class ResultArityClassFactory(string @namespace,
         var genericConstraints = string.Join(" ", Enumerable.Range(0, numberOfValues)
                                                             .Select(i => $"where TValue{i + 1} : notnull"));
 
+        tw.WriteLine("// <auto-generated />");
         tw.WriteLine("#nullable enable");
         tw.WriteLine($"namespace {@namespace};");
         tw.WriteLine();

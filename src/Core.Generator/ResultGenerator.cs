@@ -9,9 +9,10 @@ public class ResultGenerator : IIncrementalGenerator {
 
     public void Initialize(IncrementalGeneratorInitializationContext context) {
         var resultFactory = new ResultClassFactory(DefaultNamespace, MaxOfParameters);
-        var arityClassFactory = new ResultArityClassFactory(DefaultNamespace, MaxOfParameters);
+        var arityClassFactory = new ResultArityClassFactory(DefaultNamespace);
         var bindExtensionsFactory = new ResultBindExtensionsFactory(DefaultNamespace, MaxOfParameters);
         var mapExtensionsFactory = new ResultMapExtensionsFactory(DefaultNamespace, MaxOfParameters);
+        var selectExtensionsFactory = new ResultSelectExtensionsFactory(DefaultNamespace, MaxOfParameters);
         var tapExtensionsFactory = new ResultTapExtensionsFactory(DefaultNamespace, MaxOfParameters);
         var mapErrorExtensionsFactory = new ResultMapErrorExtensionsFactory(DefaultNamespace, MaxOfParameters);
         var tapErrorExtensionsFactory = new ResultTapErrorExtensionsFactory(DefaultNamespace, MaxOfParameters);
@@ -19,6 +20,7 @@ public class ResultGenerator : IIncrementalGenerator {
         var tryExtensionsFactory = new ResultTryExtensions(DefaultNamespace, MaxOfParameters);
         var matchExtensionsFactory = new ResultMatchExtensionsFactory(DefaultNamespace, MaxOfParameters);
         var taskExtensionsFactory = new ResultTaskExtensionsFactory(DefaultNamespace, MaxOfParameters);
+        var selectManyExtensionsFactory = new ResultSelectManyExtensionsFactory(DefaultNamespace, MaxOfParameters);
         context.RegisterPostInitializationOutput(ctx => {
             var abstractClassSource = resultFactory.GenerateResult();
             ctx.AddSource("Result.g.cs", abstractClassSource);
@@ -30,6 +32,12 @@ public class ResultGenerator : IIncrementalGenerator {
             ctx.AddSource("ResultBindExtensions.ValueTask.g.cs", valueTaskBindExtensionsSource);
             var mapExtensionsSource = mapExtensionsFactory.Generate();
             ctx.AddSource("ResultMapExtensions.g.cs", mapExtensionsSource);
+            var selectExtensionsSource = selectExtensionsFactory.Generate();
+            ctx.AddSource("ResultSelectExtensions.g.cs", selectExtensionsSource);
+            var selectTaskExtensionsSource = selectExtensionsFactory.GenerateTask();
+            ctx.AddSource("ResultSelectExtensions.Task.g.cs", selectTaskExtensionsSource);
+            var selectValueTaskExtensionsSource = selectExtensionsFactory.GenerateValueTask();
+            ctx.AddSource("ResultSelectExtensions.ValueTask.g.cs", selectValueTaskExtensionsSource);
             var mapTaskExtensionsSource = mapExtensionsFactory.GenerateTask();
             ctx.AddSource("ResultMapExtensions.Task.g.cs", mapTaskExtensionsSource);
             var mapValueTaskExtensionsSource = mapExtensionsFactory.GenerateValueTask();
@@ -72,6 +80,12 @@ public class ResultGenerator : IIncrementalGenerator {
             ctx.AddSource("ResultTaskExtensions.Task.g.cs", fromToTaskExtensionsTaskSource);
             var fromToTaskExtensionsValueTaskSource = taskExtensionsFactory.GenerateValueTask();
             ctx.AddSource("ResultTaskExtensions.ValueTask.g.cs", fromToTaskExtensionsValueTaskSource);
+            var selectManyExtensionsSource = selectManyExtensionsFactory.Generate();
+            ctx.AddSource("ResultSelectManyExtensions.g.cs", selectManyExtensionsSource);
+            var selectManyTaskExtensionsSource = selectManyExtensionsFactory.GenerateTask();
+            ctx.AddSource("ResultSelectManyExtensions.Task.g.cs", selectManyTaskExtensionsSource);
+            var selectManyValueTaskExtensionsSource = selectManyExtensionsFactory.GenerateValueTask();
+            ctx.AddSource("ResultSelectManyExtensions.ValueTask.g.cs", selectManyValueTaskExtensionsSource);
         });
         foreach (ushort i in Enumerable.Range(1, MaxOfParameters)) {
             context.RegisterPostInitializationOutput(ctx => {

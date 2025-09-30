@@ -1,7 +1,7 @@
 using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
 
-namespace UnambitiousFx.Core.Tests.Results;
+namespace UnambitiousFx.Core.Tests.Results.Extensions.Try;
 
 [TestSubject(typeof(ResultExtensions))]
 public sealed class ResultTryExtensionsTests {

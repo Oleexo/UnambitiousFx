@@ -5,7 +5,7 @@ using UnambitiousFx.Mediator.Abstractions;
 using UnambitiousFx.Mediator.Resolvers;
 using UnambitiousFx.Mediator.Tests.Definitions;
 
-namespace UnambitiousFx.Mediator.Tests;
+namespace UnambitiousFx.Mediator.Tests.Senders;
 
 public sealed class SenderTests {
     private readonly IContextFactory     _contextFactory;

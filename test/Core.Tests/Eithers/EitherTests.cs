@@ -1,7 +1,7 @@
 ﻿using JetBrains.Annotations;
 using UnambitiousFx.Core.Eithers;
 
-namespace UnambitiousFx.Core.Tests;
+namespace UnambitiousFx.Core.Tests.Eithers;
 
 [TestSubject(typeof(Either<,>))]
 public sealed class EitherTests {

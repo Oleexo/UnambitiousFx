@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using UnambitiousFx.Mediator.Abstractions;
 using UnambitiousFx.Mediator.Tests.Definitions;
 
-namespace UnambitiousFx.Mediator.Tests;
+namespace UnambitiousFx.Mediator.Tests.DependencyInjection;
 
 [TestSubject(typeof(DependencyInjectionExtensions))]
 public sealed class DependencyInjectionExtensionsTests {

@@ -1,7 +1,7 @@
 using JetBrains.Annotations;
 using UnambitiousFx.Core.Options;
 
-namespace UnambitiousFx.Core.Tests;
+namespace UnambitiousFx.Core.Tests.Options;
 
 [TestSubject(typeof(Option<>))]
 public sealed class OptionTests {

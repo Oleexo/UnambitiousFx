@@ -1,365 +1,279 @@
-# Result Class Features Roadmap
+# Result Roadmap (Reworked)
 
-A comprehensive checklist of features to implement for a robust, functional-style Result class in C#.
+A consolidated, prioritized roadmap for building a robust functional Result abstraction, merging existing implementation, parity gaps vs FluentResults, and future ambitions.
 
-## ✅ Implementation Status Legend
-- ✅ **Implemented** - Feature is complete and tested
-- 🔄 **In Progress** - Currently being worked on
-- ⭐ **High Priority** - Should be implemented next
-- 📋 **Planned** - On the roadmap
-- 🤔 **Considering** - Might be useful, needs evaluation
-
----
-
-## 🎯 Core Ergonomics
-
-### ✅ Basic Structure
-Already implemented: `Result`, `Result<T>`, `Result<T1,T2>`, etc. with Success/Failure factories.
-
-### 📋 Map/Select
-Transform success values without changing the Result shape.
+## Legend
+- ✅ Implemented
+- 🔄 In Progress
+- ⭐ High Priority (next 1–2 milestones)
+- 📋 Planned (accepted, not yet scheduled)
+- 🤔 Considering (needs validation / may be dropped)
 
 ---
 
-## 📈 Implementation Roadmap
+## Phase Overview (Strategic Order)
+1. (Done) Foundation
+2. Core Expansion & Error Model
+3. Inspection & Value Access
+4. Async Parity & Composition Refinement
+5. Collections & Aggregation Enhancements
+6. Interop & Language Integration
+7. Resilience & Policies
+8. Performance & Memory
+9. Domain & Tooling Extensions
+10. Documentation, Testing & Benchmarks
 
-### ✅ Completed Features
-- [x] Basic Result Structure (Success/Failure factories, generic arities)
-
-### 🔥 Phase 1: Core Ergonomics
-- [x] Map/Select - Transform success values without changing Result shape
-- [x] MapError - Transform error/exception values
-- [ ] SelectMany (LINQ) - Enable query expression syntax
-- [x] Tap - Side effects on success, return original Result
-- [x] TapError - Side effects on failure, return original Result
-- [x] Ensure - Validate success values with predicates
-
-#### Examples
-- Map/Select
-  ```csharp
-  var r = Result.Success(42);
-  var mapped = r.Map(x => x.ToString()); // Success("42")
-
-  // Multi-value (when supported)
-  var r2 = Result.Success(2, 3);
-  var sum = r2.Map((a, b) => a + b); // Success(5)
-  ```
-
-- MapError
-  ```csharp
-  var r = Result.Failure<int>(new ArgumentException("bad input"));
-  var mappedErr = r.MapError(ex => new InvalidOperationException($"wrapped: {ex.Message}", ex));
-  ```
-
-- SelectMany (LINQ)
-  ```csharp
-  var result =
-      from a in Result.Success(10)
-      from b in Result.Success(5)
-      select a / b; // Success(2)
-  ```
-
-- Tap
-  ```csharp
-  var r = Result.Success("john")
-      .Tap(name => Console.WriteLine($"Hello {name}"))
-      .Map(name => name.ToUpperInvariant()); // "JOHN"
-  ```
-
-- TapError
-  ```csharp
-  var r = Result.Failure<string>(new Exception("oops"))
-      .TapError(ex => Console.Error.WriteLine(ex.Message));
-  ```
-
-- Ensure
-  ```csharp
-  var r = Result.Success(42)
-      .Ensure(x => x > 0, x => new ArgumentOutOfRangeException(nameof(x), "Must be positive"))
-      .Ensure(x => x < 100, x => new ArgumentOutOfRangeException(nameof(x), "Must be < 100"));
-  ```
-
-### ⚡ Phase 2: Async & Interoperability
-- [x] MapAsync - Async transformation of success values
-- [x] BindAsync - Async monadic bind operations
-- [x] TapAsync - Async side effects with passthrough
-- [x] EnsureAsync - Async validation with predicates
-- [x] FromTask - Convert Task<T> to Task<Result<T>> (wrap exceptions)
-- [x] ToTask - Convert Result<T> to Task<Result<T>>
-- [x] FromTry - Wrap try/catch blocks into Result
-- [x] FromTryAsync - Wrap async try/catch blocks
-
-#### Examples
-- MapAsync
-  ```csharp
-  var r = Result.Success(21);
-  var doubled = await r.MapAsync(async x => {
-      await Task.Delay(10);
-      return x * 2;
-  }); // Success(42)
-  ```
-
-- BindAsync
-  ```csharp
-  async Task<Result<int>> GetScoreAsync(string id) => Result.Success(100);
-  async Task<Result<string>> GetBadgeAsync(int score) => Result.Success(score >= 100 ? "gold" : "silver");
-
-  var badge = await Result.Success("user-123")
-      .BindAsync(id => GetScoreAsync(id))
-      .BindAsync(score => GetBadgeAsync(score));
-  ```
-
-- TapAsync
-  ```csharp
-  var saved = await Result.Success("payload")
-      .TapAsync(async s => await logger.LogAsync($"Got: {s}"));
-  ```
-
-- EnsureAsync
-  ```csharp
-  var ok = await Result.Success("abc@example.com")
-      .EnsureAsync(async email => await EmailExistsAsync(email),
-                   email => new InvalidOperationException($"Email {email} not found"));
-  ```
-
-- FromTask
-  ```csharp
-  Task<string> raw = FetchAsync(); // may throw
-  Task<Result<string>> safe = Result.FromTask(raw); // wraps exceptions as Failure
-  ```
-
-- ToTask
-  ```csharp
-  Result<int> r = Result.Success(42);
-  Task<Result<int>> t = r.ToTask(); // convenience for async pipelines
-  ```
-
-- FromTry
-  ```csharp
-  var parsed = Result.FromTry(() => int.Parse("42")); // Success(42)
-  var failed = Result.FromTry(() => int.Parse("oops")); // Failure(FormatException)
-  ```
-
-- FromTryAsync
-  ```csharp
-  var data = await Result.FromTryAsync(async () => await GetDataAsync()); // wraps thrown exceptions
-  ```
-
-### 🔗 Phase 3: Composition & Collections
-- [x] Traverse/Sequence - IEnumerable<Result<T>> -> Result<IEnumerable<T>>
-- [x] TraverseAsync - Async traversal with Task/ValueTask
-- [x] Apply/Zip - Apply Result<Func<...>> to Result<...> or zip multiple Results
-- [x] Combine/Aggregate - Combine many Results; optionally accumulate errors
-- [x] Partition - Split a collection of Results into successes and failures
-- [x] Recover - Provide fallback value on failure
-- [x] RecoverWith - Provide alternate Result on failure
-- [x] RecoverAsync - Async error recovery
-
-#### Examples
-- Traverse/Sequence
-  ```csharp
-  var ids = new[] { "a", "b", "c" };
-  var results = ids.Select(id => Result.Success(id.ToUpperInvariant()));
-  var sequenced = results.Sequence(); // Result<IEnumerable<string>> -> Success(["A","B","C"])
-  ```
-
-- TraverseAsync
-  ```csharp
-  var ids = new[] { "a", "b", "c" };
-  var traversed = await ids.TraverseAsync(async id => await FetchUserResultAsync(id));
-  ```
-
-- Apply/Zip
-  ```csharp
-  var add = Result.Success<Func<int,int,int>>((x,y) => x + y);
-  var x = Result.Success(10);
-  var y = Result.Success(32);
-
-  var sum = add.Apply(x).Apply(y); // Success(42)
-  var sum2 = x.Zip(y, (a,b) => a + b); // Success(42)
-  ```
-
-- Combine/Aggregate
-  ```csharp
-  var r1 = ValidateName("john");
-  var r2 = ValidateEmail("john@example.com");
-  var r3 = ValidateAge(42);
-
-  var combined = Result.Combine(r1, r2, r3)
-      .Map((name, email, age) => new User(name, email, age));
-  ```
-
-- Partition
-  ```csharp
-  var list = new[] { "1", "x", "3" }.Select(s => Result.FromTry(() => int.Parse(s))).ToList();
-  var (oks, errs) = list.Partition(); // oks: [1,3], errs: [FormatException for "x"]
-  ```
-
-- Recover / RecoverWith
-  ```csharp
-  var r = Result.Failure<int>(new Exception("network"))
-      .Recover(_ => 0) // fallback value
-      .RecoverWith(_ => Result.Success(1)); // or fallback Result
-  ```
-
-- RecoverAsync
-  ```csharp
-  var r = await Result.Failure<int>(new Exception("db"))
-      .RecoverAsync(async _ => await GetCachedValueAsync());
-  ```
-
-### 🎯 Phase 4: Language Integration
-- [ ] Deconstruct - Deconstruct Result into (bool ok, T value, Exception? error)
-- [ ] Equality/GetHashCode - Value semantics for success; reasonable failure semantics
-- [ ] ToString - Meaningful representation (Success(value)/Failure(error))
-- [ ] ToNullable - Convert Result<T> to T?
-- [ ] TryGet - Try extracting value with bool return
-- [ ] ThrowIfFailure - Throw original error when needed
-- [ ] Factory Helpers - FromNullable, FromCondition, FromValidation
-
-#### Examples
-- Deconstruct
-  ```csharp
-  var r = Result.Success(42);
-  var (ok, value, error) = r;
-  if (ok) Console.WriteLine(value);
-  ```
-
-- Equality/GetHashCode
-  ```csharp
-  var r1 = Result.Success(42);
-  var r2 = Result.Success(42);
-  var eq = r1.Equals(r2); // true
-  var set = new HashSet<Result<int>> { r1, r2 }; // single element if equal/hash same
-  ```
-
-- ToString
-  ```csharp
-  Console.WriteLine(Result.Success(42)); // e.g., "Success(42)"
-  Console.WriteLine(Result.Failure<int>(new Exception("boom"))); // "Failure(Exception: boom)"
-  ```
-
-- ToNullable
-  ```csharp
-  int? n = Result.Success(42).ToNullable(); // 42
-  int? m = Result.Failure<int>(new Exception()).ToNullable(); // null
-  ```
-
-- TryGet
-  ```csharp
-  if (Result.Success(42).TryGet(out var v)) { /* v == 42 */ }
-  ```
-
-- ThrowIfFailure
-  ```csharp
-  var user = GetUser("id").ThrowIfFailure(); // throws if failure, else returns value
-  ```
-
-- Factory Helpers
-  ```csharp
-  var fromNullable = Result.FromNullable<string>(maybeNull, () => new ArgumentNullException());
-  var fromCondition = Result.FromCondition(x > 0, x, () => new ArgumentOutOfRangeException());
-  var fromValidation = Result.FromValidation(input, Parser.TryParse, () => new FormatException());
-  ```
-
-### 🧪 Phase 5: Testing & QoL
-- [ ] Test Assertion Extensions - ShouldBeSuccess/ShouldBeFailure helpers
-- [ ] Debugger Display - Improved debugging visualization
-- [ ] XML Documentation - Public API docs
-- [ ] Benchmark Suite - Performance tests and baselines
-- [ ] Usage Examples - In-repo examples and snippets
-- [ ] Error Aggregation Utilities - Collect and present multiple errors
-
-#### Examples
-- Test Assertion Extensions
-  ```csharp
-  Result<int> r = Result.Success(42);
-  r.ShouldBeSuccess(v => v == 42);
-
-  Result<int> e = Result.Failure<int>(new Exception("boom"));
-  e.ShouldBeFailure(ex => ex.Message.Contains("boom"));
-  ```
-
-- Debugger Display
-  ```csharp
-  // With [DebuggerDisplay("{DebuggerDisplay,nq}")]
-  var r = Result.Success(7); // Visualize as "Success(7)" in debugger
-  ```
-
-- XML Documentation
-  ```csharp
-  /// <summary> Maps the success value to another value. </summary>
-  /// <remarks> Does not change the Result shape. </remarks>
-  public Result<TOut> Map<TOut>(Func<T, TOut> mapper) { ... }
-  ```
-
-- Benchmark Suite
-  ```csharp
-  // Using BenchmarkDotNet
-  [Benchmark] public Result<int> Map_Chain() => Result.Success(1).Map(x => x + 1).Map(x => x + 1);
-  ```
-
-- Usage Examples
-  ```csharp
-  var r =
-      from user in GetUser("id")
-      from order in GetLatestOrder(user)
-      select (user, order);
-  ```
-
-- Error Aggregation Utilities
-  ```csharp
-  var results = new[] { r1, r2, r3 };
-  var errors = results.Errors(); // collect errors for reporting
-  ```
-
-### 🚀 Phase 6: Advanced Features
-- [ ] Generic Error Types - Result<T, TError> (not limited to Exception)
-- [ ] Rich Error Information - Codes, metadata, context/breadcrumbs
-- [ ] Context Attachment - Append contextual data to failures
-- [ ] Struct-Based Variants - Low-allocation, high-performance Results
-- [ ] Lazy Exception Creation - Defer expensive error object creation
-- [ ] Result Policies - Retry/timeout wrappers returning Result
-
-#### Examples
-- Generic Error Types
-  ```csharp
-  public enum ValidationError { Required, TooShort, Invalid }
-
-  Result<string, ValidationError> ValidateName(string s) =>
-      string.IsNullOrWhiteSpace(s)
-          ? Result.Failure<string, ValidationError>(ValidationError.Required)
-          : Result.Success<string, ValidationError>(s.Trim());
-  ```
-
-- Rich Error Information
-  ```csharp
-  var err = new ResultError(code: "USER_NOT_FOUND", message: "User not found", metadata: new() { ["id"] = "abc" });
-  var r = Result.Failure<User>(err);
-  ```
-
-- Context Attachment
-  ```csharp
-  var r = GetUser("abc")
-      .Attach("operation", "GetUser")
-      .Attach("userId", "abc");
-  ```
-
-- Struct-Based Variants
-  ```csharp
-  // For hot paths:
-  readonly struct ResultStruct<T> { /* value | error | isSuccess */ }
-  ```
-
-- Lazy Exception Creation
-  ```csharp
-  var r = Result.Failure<int>(() => new Exception("expensive message")); // created only if accessed
-  ```
-
-- Result Policies
-  ```csharp
-  var r = await ResultPolicy.Retry(3, TimeSpan.FromMilliseconds(50))
-      .ExecuteAsync(() => Result.FromTryAsync(() => MightFailAsync()));
-  ```
+Rough delivery batches group features that reinforce each other and minimize churn.
 
 ---
+
+## Phase 0 (Complete) – Foundation
+Core building blocks already in place.
+- ✅ Basic Result Types (`Result`, `Result<T>`, multi-arity variants) with Success/Failure factories
+- ✅ Map / Select (sync)
+- ✅ MapError (single error transform)
+- ✅ Tap (success side‑effects)
+- ✅ TapError (failure side‑effects)
+- ✅ Ensure (sync predicate validation)
+- ✅ Async: MapAsync, BindAsync, TapAsync, EnsureAsync
+- ✅ Exception Wrapping: FromTry, FromTryAsync, FromTask
+- ✅ Task Integration: ToTask
+- ✅ Composition: Apply / Zip
+- ✅ Collections: Traverse / Sequence / TraverseAsync
+- ✅ Aggregation: Combine / Aggregate
+- ✅ Partition (split successes vs failures)
+- ✅ Recovery: Recover / RecoverWith / RecoverAsync
+
+---
+
+## Phase 1 – Core Expansion & Error Model (Highest Impact Foundation Upgrade)
+Goal: Unlock richer ergonomics + structured errors without breaking later phases.
+- ✅ Bind / Then (monadic chaining — value to Result)
+- ✅ SelectMany (LINQ comprehension support – sync + Task + ValueTask variants)
+- ✅ Match (action-based variant implemented; value-return fold variant 📋)
+- ⭐ Flatten (Result<Result<T>> → Result<T>)
+- ⭐ IReason / IError / ISUCCESS abstractions (reason list pipeline)
+- ⭐ Standard Error Base (Code, Message, Metadata)
+- ⭐ Metadata attachment (Result & Error enrichment API)
+- ⭐ Specialized Domain Errors (NotFound, Validation, Conflict, Unauthorized, ExceptionalError)
+- ⭐ ValueOr(default) / ValueOr(Func<T>)
+- ⭐ ValueOrThrow() / ValueOrThrow(factory)
+- 📋 Error wrapping helper (wrap Exception → domain error)
+- 📋 Prepend/Append error transformers (message shaping)
+
+Rationale: Improves developer ergonomics and sets the contract for inspection, formatting, and interop.
+
+> Note: `Match` currently supports the side-effect (Action) pattern. A value-returning functional fold `(onSuccess, onFailure) => TOut` is still pending and tracked as part of the remaining Match enhancement (📋).
+
+---
+
+## Phase 2 – Inspection & Value Access
+Visibility + safe extraction.
+- ⭐ HasError<TError>()
+- ⭐ HasException<TException>()
+- ⭐ TryGet(out T)
+- ⭐ ToNullable()
+- ⭐ Deconstruct (ok, value, error)
+- ⭐ ToString overhaul (aggregate reasons, codes, metadata excerpt)
+- 📋 FindError(predicate) / TryPickError
+- 📋 EnsureNotNull / EnsureNotEmpty helpers
+- 📋 MatchError / FilterError utilities
+- 🤔 FlattenExceptions() (collect all underlying exceptions)
+
+---
+
+## Phase 3 – Async Parity & Composition Refinement
+Complete ergonomic symmetry between sync & async; extend error transforms.
+- ⭐ TapErrorAsync
+- ⭐ MapErrorAsync
+- ⭐ MapErrors (plural transform on aggregated errors)
+- ⭐ TapBoth / TapEither (side-effect branching)
+- 📋 FirstFailureOrSuccess helper
+- 📋 BindTryAsync (async value factory with exception capture)
+- 📋 MapError chain policies (short‑circuit or accumulate)
+- 🤔 Cancellation-aware variants (MapAsyncWithCancellation, etc.)
+
+---
+
+## Phase 4 – Collections & Aggregation Enhancements
+Batch operations + analytical utilities.
+- ⭐ Errors() / AllErrors() enumeration helpers
+- ⭐ Merge (preserve success reasons + combine errors)
+- ⭐ GroupByErrorCode / SummarizeErrors
+- 📋 Result matrix utilities (e.g., Lift2/Lift3 convenience)
+- 📋 CombineUpToN (efficient fixed-arity combinators) 
+- 📋 AccumulateWith(strategy) (configurable aggregation semantics)
+- 🤔 Streaming traversal (IAsyncEnumerable<Result<T>> → progressive aggregation)
+
+---
+
+## Phase 5 – Interop & Language Integration
+Bridge with standard patterns & ecosystem.
+- ⭐ Factory Helpers: FromNullable / FromCondition / FromValidation
+- ⭐ Implicit success lift (T → Result<T>)
+- 📋 Implicit failure lift (Error → Result / Result<T>)
+- 📋 ASP.NET Core mappers (Result → IActionResult)
+- 📋 ToOption / FromOption
+- 📋 ToValidation / FromValidation (e.g., FluentValidation adapter)
+- 📋 Domain-specific adapters (ProblemDetails integration)
+- 🤔 Polymorphic serialization guidelines (System.Text.Json converters)
+
+---
+
+## Phase 6 – Resilience & Policies
+Declarative execution policies returning Results.
+- ⭐ ResultPolicy: Retry, Timeout (core)
+- 📋 FallbackPolicy (alternate Result supplier)
+- 📋 CircuitBreakerPolicy (stateful; optional separate package)
+- 📋 Bulkhead / RateLimit wrappers
+- 🤔 Policy composition DSL (Retry.ThenTimeout())
+
+---
+
+## Phase 7 – Performance & Memory
+Optimize hot paths and allocations.
+- ⭐ Struct-based `Result<T>` variant (opt-in) 
+- ⭐ Shared static Success instance(s) (no metadata) when T is unit-like
+- 📋 Lazy exception creation (factory invoked only on access)
+- 📋 Pooled error object patterns (for high-frequency codes)
+- 📋 Avoid boxing for constraints (generic inlining strategies)
+- 🤔 Source-generated fast-path for common Bind/Map chains
+
+---
+
+## Phase 8 – Domain & Tooling Extensions
+Developer productivity & large-scale adoption.
+- ⭐ Analyzer: warn on ignored Result (unused expression)
+- ⭐ Analyzer: suggest Bind/Ensure chain simplification
+- 📋 Source generator: domain error boilerplate (code, message, template)
+- 📋 Analyzer: inconsistent error code usage detection
+- 📋 Template pack / project snippet (dotnet new result-api)
+- 🤔 VS / Rider plugin for quick action (Wrap in Result.Try)
+
+---
+
+## Phase 9 – Documentation, Testing & Benchmarks
+Confidence, clarity, credibility.
+- ⭐ Test Assertion Extensions (ShouldBeSuccess, ShouldHaveError<T>, etc.)
+- ⭐ Debugger Display (rich reason summary)
+- ⭐ XML Docs (public surface)
+- ⭐ Usage Cookbook (patterns: validation pipelines, HTTP mapping, async composition)
+- 📋 Benchmark Suite (Baseline vs FluentResults vs OneOf)
+- 📋 Performance scoreboard in README
+- 📋 Migration Guide (from FluentResults / OneOf / Either libs)
+- 🤔 Design Rationale Whitepaper
+
+---
+
+## Backlog (Unscheduled / Needs Validation)
+These items are intentionally deferred; revisit after core maturity.
+- 🤔 Message formatting policies (indentation, truncation)
+- 🤔 Error transformation pipelines (middleware-like abstraction)
+- 🤔 Result graph tracing (breadcrumb chain for distributed ops)
+- 🤔 Observability hooks (structured logging exporter)
+- 🤔 Telemetry: automatic Activity enrichment on failure
+- 🤔 Semantic versioning guidance doc for Result evolution
+
+---
+
+## Cross-Cutting Concerns & Order Justification
+- Error Model first (Phase 1) to avoid retrofitting metadata & codes later.
+- Inspection (Phase 2) depends on stable error abstractions.
+- Async parity (Phase 3) prevents fragmented APIs and user confusion.
+- Aggregation (Phase 4) becomes more valuable once errors are richer.
+- Interop (Phase 5) waits for stable core semantics to avoid breaking integrations.
+- Policies (Phase 6) leverage earlier Try/Async primitives.
+- Performance (Phase 7) only after API surface stabilizes.
+- Tooling & Docs follow to lock in adoption.
+
+---
+
+## Milestone Suggestion (Example Slicing)
+Milestone 1 (Phase 1 subset): Bind, Match, SelectMany (DONE), Error base + Metadata, ValueOr/ValueOrThrow
+Milestone 2 (Remaining Phase 1 + Phase 2 core): HasError<T>, Deconstruct, ToString overhaul, TryGet
+Milestone 3 (Async Parity): TapErrorAsync, MapErrorAsync, MapErrors, TapBoth
+Milestone 4 (Interop & Aggregation): Factory helpers, Errors()/Merge(), GroupByErrorCode, ASP.NET Core mappers
+Milestone 5 (Resilience + Perf foundation): Retry/Timeout, Struct variant prototype, DebuggerDisplay, Assertions
+
+---
+
+## Updated Global Feature Index
+(Alphabetical quick reference with status — see phases for grouping.)
+- Apply / Zip ✅
+- Bind / Then ✅ (Implemented – monadic chaining core)
+- BindAsync ✅
+- BindTryAsync 📋 (P3)
+- Combine / Aggregate ✅
+- Context Attachment ⭐ (part of Metadata in P1)
+- Deconstruct ⭐ (P2)
+- Ensure ✅
+- EnsureAsync ✅
+- EnsureNotNull / EnsureNotEmpty 📋 (P2)
+- Error Base (Code/Message/Metadata) ⭐ (P1)
+- Error Wrapping Helper 📋 (P1)
+- Errors() / AllErrors() ⭐ (P4)
+- ExceptionalError ⭐ (P1 specialized errors)
+- Flatten ⭐ (P1)
+- FlattenExceptions() 🤔 (P4)
+- FromCondition 📋 (P5)
+- FromNullable 📋 (P5)
+- FromTask ✅
+- FromTry / FromTryAsync ✅
+- FromValidation 📋 (P5)
+- GroupByErrorCode ⭐ (P4)
+- HasError<TError>() ⭐ (P2)
+- HasException<TException>() ⭐ (P2)
+- IReason / IError / ISUCCESS ⭐ (P1)
+- Implicit Conversions (T → Result<T>) ⭐ (P5)
+- Implicit Error lift 📋 (P5)
+- Lazy Exception Creation 📋 (P7)
+- Match ✅ (Action-based; value-fold enhancement 📋)
+- Map ✅
+- MapAsync ✅
+- MapError ✅
+- MapErrorAsync ⭐ (P3)
+- MapErrors ⭐ (P3)
+- Merge ⭐ (P4)
+- Metadata Attachment ⭐ (P1)
+- Partition ✅
+- Policies: Retry / Timeout ⭐ (P6)
+- Policies: CircuitBreaker 📋 (P6)
+- Prepend/Append Error Messages 📋 (P1)
+- Recover / RecoverWith / RecoverAsync ✅
+- ResultPolicy Abstraction ⭐ (P6)
+- SelectMany (LINQ) ✅ (P1 – includes async variants)
+- Sequence / Traverse ✅
+- Tap ✅
+- TapAsync ✅
+- TapBoth / TapEither ⭐ (P3)
+- TapError ✅
+- TapErrorAsync ⭐ (P3)
+- ToNullable ⭐ (P2)
+- ToOption / FromOption 📋 (P5)
+- ToString Overhaul ⭐ (P2)
+- ToTask ✅
+- TryGet ⭐ (P2)
+- ValueOr / ValueOr(Func) ⭐ (P1)
+- ValueOrThrow ⭐ (P1)
+
+---
+
+## Open Design Questions (Track in Issues)
+1. Should metadata live on Result root, each reason, or both? (Current plan: both.)
+2. Are specialized errors first-class types or factory helpers? (Bias: concrete types.)
+3. Struct variant: generic or separate namespace to avoid accidental copying costs?
+4. Implicit conversions opt-in (via using static) or always enabled?
+5. Policy execution: integrate with Polly or standalone minimal layer?
+
+---
+
+## Immediate Next Steps (Actionable)
+1. Define core interfaces: IReason, IError, ISuccess (issue + draft code)
+2. Introduce Error base (Code, Message, Metadata) + ExceptionalError wrapper
+3. Implement Bind / SelectMany / Match / Flatten
+4. Add ValueOr / ValueOrThrow + basic TryGet
+5. Draft ToString v1 (include code + message + count of reasons)
+
+---
+
+Feel free to request: (a) issue scaffolding, (b) Phase 1 implementation stubs, or (c) migration notes from existing usage.
