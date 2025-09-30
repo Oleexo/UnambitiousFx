@@ -26,6 +26,9 @@ public class ResultGenerator : IIncrementalGenerator {
         var valueOrThrowExtensionsFactory = new ResultValueOrThrowExtensionsFactory(DefaultNamespace, MaxOfParameters);
         var introspectionExtensionsFactory = new ResultIntrospectionExtensionsFactory(DefaultNamespace, MaxOfParameters);
         var tryGetExtensionsFactory = new ResultTryGetExtensionsFactory(DefaultNamespace, MaxOfParameters);
+        var mapErrorsExtensionsFactory = new ResultMapErrorsExtensionsFactory(DefaultNamespace, MaxOfParameters);
+        var tapBothExtensionsFactory = new ResultTapBothExtensionsFactory(DefaultNamespace, MaxOfParameters);
+        var nonGenericAsyncErrorExtensionsFactory = new ResultNonGenericAsyncErrorExtensionsFactory(DefaultNamespace);
         context.RegisterPostInitializationOutput(ctx => {
             var abstractClassSource = resultFactory.GenerateResult();
             ctx.AddSource("Result.g.cs", abstractClassSource);
@@ -113,6 +116,14 @@ public class ResultGenerator : IIncrementalGenerator {
             ctx.AddSource("ResultIntrospectionExtensions.g.cs", introspectionExtensionsSource);
             var tryGetExtensionsSource = tryGetExtensionsFactory.Generate();
             ctx.AddSource("ResultTryGetExtensions.g.cs", tryGetExtensionsSource);
+            var mapErrorsSource = mapErrorsExtensionsFactory.Generate();
+            ctx.AddSource("ResultMapErrorsExtensions.g.cs", mapErrorsSource);
+            var tapBothSource = tapBothExtensionsFactory.Generate();
+            ctx.AddSource("ResultTapBothExtensions.g.cs", tapBothSource);
+            var nonGenericAsyncTaskSource = nonGenericAsyncErrorExtensionsFactory.GenerateTask();
+            ctx.AddSource("ResultNonGenericAsyncErrorExtensions.Task.g.cs", nonGenericAsyncTaskSource);
+            var nonGenericAsyncValueTaskSource = nonGenericAsyncErrorExtensionsFactory.GenerateValueTask();
+            ctx.AddSource("ResultNonGenericAsyncErrorExtensions.ValueTask.g.cs", nonGenericAsyncValueTaskSource);
         });
         foreach (ushort i in Enumerable.Range(1, MaxOfParameters)) {
             context.RegisterPostInitializationOutput(ctx => {
