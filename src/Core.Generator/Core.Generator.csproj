@@ -7,6 +7,7 @@
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
         <NoWarn>$(NoWarn);CS1591</NoWarn>
         <IsAotCompatible>false</IsAotCompatible>
+        <IsPackable>false</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>
