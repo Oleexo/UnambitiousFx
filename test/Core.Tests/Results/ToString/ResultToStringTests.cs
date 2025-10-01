@@ -1,7 +1,7 @@
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Reasons;
 
-namespace UnambitiousFx.Core.Tests.Results.ToStringFormatting;
+namespace UnambitiousFx.Core.Tests.Results.ToString;
 
 public sealed class ResultToStringTests {
     [Fact]

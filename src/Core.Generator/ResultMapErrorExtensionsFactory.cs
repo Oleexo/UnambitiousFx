@@ -58,7 +58,7 @@ internal sealed class ResultMapErrorExtensionsFactory(string @namespace,
                 tw.Indent--;
                 tw.WriteLine("{");
                 tw.Indent++;
-                tw.WriteLine($"return awaitableResult.MatchAsync<Result<TValue>, TValue>(");
+                tw.WriteLine("return awaitableResult.MatchAsync<Result<TValue>, TValue>(");
                 tw.Indent++;
                 tw.WriteLine($"value => {newFromResultFunc("Result.Success<TValue>(value)", "TValue")},");
                 tw.WriteLine("async ex => Result.Failure<TValue>(await mapError(ex))");

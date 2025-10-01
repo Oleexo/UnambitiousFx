@@ -17,7 +17,8 @@ public abstract partial class Result : BaseResult {
     }
 
     public static Result Failure(IError error) {
-        var r = new FailureResult(error.Exception ?? new Exception(error.Message));
+        // Use internal constructor without attaching a primary ExceptionalError reason; caller-provided error becomes canonical.
+        var r = new FailureResult(error.Exception ?? new Exception(error.Message), attachPrimaryExceptionalReason: false);
         r.AddReason(error);
         foreach (var kv in error.Metadata) r.AddMetadata(kv.Key, kv.Value);
         return r;

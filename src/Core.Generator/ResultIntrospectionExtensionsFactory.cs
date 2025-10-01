@@ -71,7 +71,7 @@ internal sealed class ResultIntrospectionExtensionsFactory(string @namespace,
             tw.WriteLine("{");
             tw.Indent++;
             if (arity == 1) {
-                tw.WriteLine($"return result.Ok(out TValue1? value) ? value : default;");
+                tw.WriteLine("return result.Ok(out TValue1? value) ? value : default;");
             }
             else {
                 tw.WriteLine("if (!result.IsSuccess) return default;");

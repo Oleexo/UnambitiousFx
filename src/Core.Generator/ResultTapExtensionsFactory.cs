@@ -134,7 +134,7 @@ internal sealed class ResultTapExtensionsFactory(string @namespace,
         tw.Indent++;
         foreach (ushort i in Enumerable.Range(1, maxOfParameters)) {
             if (i == 1) {
-                tw.WriteLine($"public static Result<TValue> Tap<TValue>(this Result<TValue> result, Action<TValue> tap)");
+                tw.WriteLine("public static Result<TValue> Tap<TValue>(this Result<TValue> result, Action<TValue> tap)");
                 tw.Indent++;
                 tw.WriteLine("where TValue : notnull");
                 tw.Indent--;

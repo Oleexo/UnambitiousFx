@@ -5,11 +5,11 @@ using System.Diagnostics.CodeAnalysis;
 namespace UnambitiousFx.Core.Results;
 
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
-public abstract partial class BaseResult {
-    private readonly List<IReason> _reasons = new();
+public abstract class BaseResult : IResult {
+    private readonly List<IReason>               _reasons  = new();
     private readonly Dictionary<string, object?> _metadata = new(StringComparer.OrdinalIgnoreCase);
 
-    public IReadOnlyList<IReason> Reasons => _reasons;
+    public IReadOnlyList<IReason>               Reasons  => _reasons;
     public IReadOnlyDictionary<string, object?> Metadata => _metadata;
 
     internal void AddReason(IReason reason) {
@@ -20,7 +20,8 @@ public abstract partial class BaseResult {
         _reasons.AddRange(reasons);
     }
 
-    internal void AddMetadata(string key, object? value) {
+    internal void AddMetadata(string  key,
+                              object? value) {
         _metadata[key] = value;
     }
 
@@ -40,17 +41,23 @@ public abstract partial class BaseResult {
     private string DebuggerDisplay => BuildDebuggerDisplay();
 
     private string BuildDebuggerDisplay() {
-        // Success summary: show status, reasons count, first 2 metadata keys.
         if (IsSuccess) {
-            var meta = Metadata.Count == 0 ? string.Empty : " meta=" + string.Join(",", Metadata.Take(2).Select(kv => kv.Key + ":" + (kv.Value ?? "null")));
+            var meta = Metadata.Count == 0
+                           ? string.Empty
+                           : " meta=" + string.Join(",", Metadata.Select(kv => kv.Key + ":" + (kv.Value ?? "null")));
             return $"Success reasons={Reasons.Count}{meta}";
         }
 
-        // Failure summary: prefer first IError reason for code/message; fallback to first Exception reason or generic marker.
-        var firstError = Reasons.OfType<IError>().FirstOrDefault();
-        string codePart = firstError is null ? string.Empty : " code=" + firstError.Code;
-        string msg = firstError?.Message ?? "error";
-        var metaPart = Metadata.Count == 0 ? string.Empty : " meta=" + string.Join(",", Metadata.Take(2).Select(kv => kv.Key + ":" + (kv.Value ?? "null")));
+        // Prefer a non-ExceptionalError domain error if one exists; otherwise fallback to the first error (which may be the automatic ExceptionalError)
+        var firstNonExceptional = Reasons.OfType<IError>().FirstOrDefault(r => r is not ExceptionalError);
+        var firstErrorAny = Reasons.OfType<IError>().FirstOrDefault();
+        var chosen = firstNonExceptional ?? firstErrorAny;
+        var msg = chosen?.Message ?? "error";
+        var includeCode = chosen is not null && chosen is not ExceptionalError; // suppress code display for the primary ExceptionalError only
+        var codePart = includeCode ? " code=" + chosen!.Code : string.Empty;
+        var metaPart = Metadata.Count == 0
+                           ? string.Empty
+                           : " meta=" + string.Join(",", Metadata.Select(kv => kv.Key + ":" + (kv.Value ?? "null")));
         return $"Failure({msg}){codePart} reasons={Reasons.Count}{metaPart}";
     }
 }

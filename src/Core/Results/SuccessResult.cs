@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace UnambitiousFx.Core.Results;
 
-internal sealed partial class SuccessResult : Result {
+internal sealed partial class SuccessResult : Result, ISuccessResult {
     public override bool IsFaulted => false;
     public override bool IsSuccess => true;
     public override void Match(Action success, Action<Exception> failure)

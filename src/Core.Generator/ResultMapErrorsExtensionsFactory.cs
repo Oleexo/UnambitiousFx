@@ -20,14 +20,18 @@ internal sealed class ResultMapErrorsExtensionsFactory(string @namespace, ushort
         tw.WriteLine("if (result.Ok(out var _)) return result;");
         tw.WriteLine("result.Ok(out var primary);");
         tw.WriteLine("var errs = CollectErrors(result, primary);");
-        tw.WriteLine("var failure = Result.Failure(map(errs));");
-        tw.WriteLine("CopyReasonsAndMetadata(result,failure); return failure;");
+        // create failure WITHOUT auto primary exceptional reason so we can replace instead of append
+        tw.WriteLine("var newPrimary = map(errs);");
+        tw.WriteLine("var failure = new FailureResult(newPrimary, attachPrimaryExceptionalReason: false);");
+        tw.WriteLine("CopyReasonsAndMetadataReplacingPrimary(result, failure, primary, newPrimary); return failure;");
         tw.Indent--;
         tw.WriteLine("}");
         tw.WriteLine();
         // Helper (private) - emitted once here
         tw.WriteLine("private static System.Collections.Generic.List<System.Exception> CollectErrors(BaseResult r, System.Exception? primary){var list=new System.Collections.Generic.List<System.Exception>(); if(primary!=null) list.Add(primary); else if(!r.Ok(out var e)) list.Add(e!); foreach(var re in r.Reasons.OfType<UnambitiousFx.Core.Results.Reasons.IError>()){ if(re.Exception!=null && !list.Contains(re.Exception)) list.Add(re.Exception); else if(re.Exception==null) list.Add(new System.Exception(re.Message)); } return list; }");
         tw.WriteLine("private static void CopyReasonsAndMetadata(BaseResult from, BaseResult to){ foreach(var rs in from.Reasons) to.AddReason(rs); foreach(var kv in from.Metadata) to.AddMetadata(kv.Key, kv.Value);} ");
+        // New helper to preserve reason count by replacing existing primary ExceptionalError instead of adding another one
+        tw.WriteLine("private static void CopyReasonsAndMetadataReplacingPrimary(BaseResult from, BaseResult to, System.Exception? oldPrimary, System.Exception newPrimary){ bool replaced=false; foreach(var rs in from.Reasons){ if(!replaced && rs is UnambitiousFx.Core.Results.Reasons.ExceptionalError ex && oldPrimary!=null && object.ReferenceEquals(ex.Exception, oldPrimary)){ to.AddReason(new UnambitiousFx.Core.Results.Reasons.ExceptionalError(newPrimary)); replaced=true; continue; } to.AddReason(rs);} foreach(var kv in from.Metadata) to.AddMetadata(kv.Key, kv.Value); if(!replaced){ /* if there was no exceptional primary before, do not alter reason count by adding now */ } } ");
         tw.WriteLine();
         foreach(ushort i in Enumerable.Range(1,max)){
             var gen = string.Join(", ", Enumerable.Range(1,i).Select(x=>$"TValue{x}"));
@@ -40,7 +44,7 @@ internal sealed class ResultMapErrorsExtensionsFactory(string @namespace, ushort
             } else {
                 tw.WriteLine($"if (result.Ok(out ({tupleDecl}) _, out _)) return result; result.Ok(out ({tupleDecl}) _, out var primary);");
             }
-            tw.WriteLine("var errs = CollectErrors(result, primary); var failure = Result.Failure<"+gen+">(map(errs)); CopyReasonsAndMetadata(result,failure); return failure;");
+            tw.WriteLine("var errs = CollectErrors(result, primary); var newPrimary = map(errs); var failure = new FailureResult<"+gen+">(newPrimary, attachPrimaryExceptionalReason: false); CopyReasonsAndMetadataReplacingPrimary(result,failure, primary, newPrimary); return failure;");
             tw.Indent--; tw.WriteLine("}"); tw.WriteLine();
         }
         tw.Indent--;

@@ -3,16 +3,24 @@ namespace UnambitiousFx.Core.Results;
 using System.Linq;
 using UnambitiousFx.Core.Results.Reasons;
 
-internal sealed partial class FailureResult : Result {
+internal sealed partial class FailureResult : Result, IFailureResult {
     private readonly Exception _error;
 
-    public FailureResult(Exception error) {
+    /// <summary>
+    /// The primary causal exception for this failure.
+    /// </summary>
+    public Exception PrimaryException => _error;
+
+    internal FailureResult(Exception error, bool attachPrimaryExceptionalReason) {
         _error = error;
+        if (attachPrimaryExceptionalReason) {
+            AddReason(new ExceptionalError(error));
+        }
     }
 
-    public FailureResult(string message) {
-        _error = new Exception(message);
-    }
+    public FailureResult(Exception error) : this(error, true) { }
+
+    public FailureResult(string message) : this(new Exception(message), true) { }
 
     public override bool IsFaulted => true;
     public override bool IsSuccess => false;
@@ -40,7 +48,7 @@ internal sealed partial class FailureResult : Result {
     }
 
     public override Result Bind(Func<Result> bind) {
-        return new FailureResult(_error);
+        return new FailureResult(_error); // preserve primary exception and primary reason
     }
 
     public override Result MapError(Func<Exception, Exception> mapError) {
@@ -62,10 +70,16 @@ internal sealed partial class FailureResult : Result {
     }
 
     public override string ToString() {
-        var firstError = Reasons.OfType<IError>().FirstOrDefault();
-        var headerType = firstError?.GetType().Name ?? _error.GetType().Name;
-        var headerMessage = firstError?.Message ?? _error.Message;
-        var codePart = firstError is null ? string.Empty : " code=" + firstError.Code;
+        var firstNonExceptional = Reasons.OfType<IError>().FirstOrDefault(r => r is not ExceptionalError);
+        var firstAny = Reasons.OfType<IError>().FirstOrDefault();
+        var chosen = firstNonExceptional ?? firstAny; // always at least ExceptionalError now
+        var headerType = chosen switch {
+            ExceptionalError => _error.GetType().Name,
+            null => _error.GetType().Name,
+            _ => chosen.GetType().Name
+        };
+        var headerMessage = chosen?.Message ?? _error.Message;
+        var codePart = chosen is not null and not ExceptionalError ? " code=" + chosen.Code : string.Empty;
         var metaPart = Metadata.Count == 0 ? string.Empty : " meta=" + string.Join(",", Metadata.Take(2).Select(kv => kv.Key + ":" + (kv.Value ?? "null")));
         return $"Failure({headerType}: {headerMessage}){codePart} reasons={Reasons.Count}{metaPart}";
     }
