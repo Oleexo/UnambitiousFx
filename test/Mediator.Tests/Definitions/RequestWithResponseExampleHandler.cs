@@ -1,4 +1,4 @@
-using UnambitiousFx.Core;
+using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 
 namespace UnambitiousFx.Mediator.Tests.Definitions;
@@ -16,6 +16,6 @@ public sealed class RequestWithResponseExampleHandler : IRequestHandler<RequestW
         RequestExecuted = request;
         ExecutionCount++;
         OnExecuted?.Invoke();
-        return new ValueTask<Result<int>>(Result<int>.Success(0));
+        return new ValueTask<Result<int>>(Result.Success(0));
     }
 }

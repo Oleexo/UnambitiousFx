@@ -1,7 +1,7 @@
 ﻿using Application.Domain.Entities;
 using Application.Domain.Events;
 using Application.Domain.Repositories;
-using UnambitiousFx.Core;
+using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator;
 using UnambitiousFx.Mediator.Abstractions;
 
@@ -28,6 +28,6 @@ public sealed class CreateTodoCommandHandler : IRequestHandler<CreateTodoCommand
         await context.PublishEventAsync(new TodoCreated {
             Todo = todo
         }, cancellationToken);
-        return Result<Guid>.Success(todo.Id);
+        return Result.Success(todo.Id);
     }
 }

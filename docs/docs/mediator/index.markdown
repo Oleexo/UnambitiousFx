@@ -48,3 +48,4 @@ To get started with UnambitiousFx.Mediator, follow these guides:
 - [Creating an EventPipelineBehavior](./event-pipeline-behavior.html)
 - [Registering Mediator into dependency injection](./register-mediator.html)
 - [Use Mediator.Generator to facilitate the registering into dependency injection](./mediator-generator.html)
+- **[Mediator Roadmap](./roadmap.html)** - Current features and planned capabilities

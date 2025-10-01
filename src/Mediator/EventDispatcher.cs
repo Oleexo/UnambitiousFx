@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
-using UnambitiousFx.Core;
+using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 using UnambitiousFx.Mediator.Orchestrators;
 using UnambitiousFx.Mediator.Resolvers;

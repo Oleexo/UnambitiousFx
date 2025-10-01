@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
-using UnambitiousFx.Core;
+using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 
 namespace UnambitiousFx.Mediator;
@@ -46,6 +46,6 @@ internal sealed class Publisher : IPublisher {
             results.Add(await _eventDispatcher.DispatchAsync(context, @event, cancellationToken));
         }
 
-        return results.ToResult();
+        return results.Combine();
     }
 }

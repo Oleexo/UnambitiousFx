@@ -1,6 +1,6 @@
 ﻿using Application.Domain.Entities;
 using Application.Domain.Repositories;
-using UnambitiousFx.Core;
+using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 
 namespace Application.Application.Todos;
@@ -18,7 +18,7 @@ public sealed class TodoQueryHandler : IRequestHandler<TodoQuery, Todo> {
         var todoOpt = await _todoRepository.GetAsync(request.Id, cancellationToken);
 
         return todoOpt.Some(out var todo)
-                   ? Result<Todo>.Success(todo)
-                   : Result<Todo>.Failure(new Error("Not found"));
+                   ? Result.Success(todo)
+                   : Result.Failure<Todo>(new Exception("Not found"));
     }
 }

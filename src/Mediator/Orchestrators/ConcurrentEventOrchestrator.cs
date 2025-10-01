@@ -1,4 +1,4 @@
-﻿using UnambitiousFx.Core;
+﻿using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 
 namespace UnambitiousFx.Mediator.Orchestrators;
@@ -22,6 +22,6 @@ public sealed class ConcurrentEventOrchestrator : IEventOrchestrator {
                             .ToList();
 
         var results = await Task.WhenAll(tasks);
-        return results.ToResult();
+        return results.Combine();
     }
 }

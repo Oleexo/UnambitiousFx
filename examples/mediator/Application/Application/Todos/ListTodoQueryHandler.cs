@@ -1,6 +1,6 @@
 ﻿using Application.Domain.Entities;
 using Application.Domain.Repositories;
-using UnambitiousFx.Core;
+using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator;
 using UnambitiousFx.Mediator.Abstractions;
 
@@ -19,6 +19,6 @@ public sealed class ListTodoQueryHandler : IRequestHandler<ListTodoQuery, IEnume
                                                                   CancellationToken cancellationToken = default) {
         var todos = await _todoRepository.GetAllAsync(cancellationToken);
 
-        return Result<IEnumerable<Todo>>.Success(todos);
+        return Result.Success(todos);
     }
 }

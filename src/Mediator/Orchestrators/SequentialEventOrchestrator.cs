@@ -1,4 +1,4 @@
-﻿using UnambitiousFx.Core;
+﻿using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 
 namespace UnambitiousFx.Mediator.Orchestrators;
@@ -20,6 +20,6 @@ public sealed class SequentialEventOrchestrator : IEventOrchestrator {
             results.Add(result);
         }
 
-        return results.ToResult();
+        return results.Combine();
     }
 }

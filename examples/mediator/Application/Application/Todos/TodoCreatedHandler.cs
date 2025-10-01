@@ -1,6 +1,6 @@
 using Application.Domain.Events;
 using Microsoft.Extensions.Logging;
-using UnambitiousFx.Core;
+using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 
 namespace Application.Application.Todos;

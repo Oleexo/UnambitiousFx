@@ -1,5 +1,5 @@
 ﻿using Application.Domain.Entities;
-using UnambitiousFx.Core;
+using UnambitiousFx.Core.Options;
 
 namespace Application.Domain.Repositories;
 
