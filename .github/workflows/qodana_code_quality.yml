@@ -6,9 +6,17 @@ on:
     branches: # Specify your branches here
       - main # The 'main' branch
       - 'releases/*' # The release branches
+    paths:
+      - '**.cs'
+      - '**.csproj'
+      - '**.props'
+      - '**.sln'
+      - '**.slnx'
+      - '.github/workflows/qodana_code_quality.yml'
 
 jobs:
   qodana:
+    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     permissions:
       contents: write
