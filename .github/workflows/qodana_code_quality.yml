@@ -2,13 +2,35 @@ name: Qodana
 on:
   workflow_dispatch:
   pull_request:
+    branches:
+      - main
+      - 'releases/*'
+    paths:
+      - '**.cs'
+      - '**.csproj'
+      - '**.props'
+      - '**.sln'
+      - '**.slnx'
+      - '.github/workflows/qodana_code_quality.yml'
   push:
     branches: # Specify your branches here
       - main # The 'main' branch
       - 'releases/*' # The release branches
+    paths:
+      - '**.cs'
+      - '**.csproj'
+      - '**.props'
+      - '**.sln'
+      - '**.slnx'
+      - '.github/workflows/qodana_code_quality.yml'
+
+concurrency:
+  group: '${{ github.workflow }}-${{ github.ref || github.run_id }}'
+  cancel-in-progress: true
 
 jobs:
   qodana:
+    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     permissions:
       contents: write
