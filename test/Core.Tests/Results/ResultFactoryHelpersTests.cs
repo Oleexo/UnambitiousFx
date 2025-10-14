@@ -1,4 +1,3 @@
-using System;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Reasons;
 
@@ -7,10 +6,10 @@ namespace UnambitiousFx.Core.Tests.Results;
 public class ResultFactoryHelpersTests {
     [Fact]
     public void FromNullable_ValuePresent_Success() {
-        var r = Result.FromNullable("hello", () => new NotFoundError("res","id"));
+        var r = Result.FromNullable("hello", () => new NotFoundError("res", "id"));
         Assert.True(r.IsSuccess);
         string? captured = null;
-        bool failure = false;
+        var     failure  = false;
         r.Match(v => captured = v, _ => failure = true);
         Assert.False(failure);
         Assert.Equal("hello", captured);
@@ -19,7 +18,7 @@ public class ResultFactoryHelpersTests {
     [Fact]
     public void FromNullable_ValueMissing_NotFound() {
         string? missing = null;
-        var r = Result.FromNullable(missing, "user", "42");
+        var     r       = Result.FromNullable(missing, "user", "42");
         Assert.True(r.IsFaulted);
         Assert.Contains(r.Reasons, rr => rr is NotFoundError nf && nf.Identifier == "42");
     }
@@ -39,10 +38,10 @@ public class ResultFactoryHelpersTests {
 
     [Fact]
     public void FromCondition_Generic_PredicateTrue() {
-        var r = Result.FromCondition(10, v => v > 5, () => new ValidationError(new []{"too small"}));
+        var r = Result.FromCondition(10, v => v > 5, () => new ValidationError(new[] { "too small" }));
         Assert.True(r.IsSuccess);
-        int captured = 0;
-        bool failure = false;
+        var captured = 0;
+        var failure  = false;
         r.Match(v => captured = v, _ => failure = true);
         Assert.False(failure);
         Assert.Equal(10, captured);
@@ -50,7 +49,7 @@ public class ResultFactoryHelpersTests {
 
     [Fact]
     public void FromCondition_Generic_PredicateFalse() {
-        var r = Result.FromCondition(3, v => v > 5, () => new ValidationError(new []{"too small"}));
+        var r = Result.FromCondition(3, v => v > 5, () => new ValidationError(new[] { "too small" }));
         Assert.True(r.IsFaulted);
         Assert.Contains(r.Reasons, rr => rr is ValidationError ve && ve.Failures.Contains("too small"));
     }
@@ -63,7 +62,7 @@ public class ResultFactoryHelpersTests {
 
     [Fact]
     public void FromValidation_NonGeneric_Failure() {
-        var r = Result.FromValidation(new []{"bad"});
+        var r = Result.FromValidation(new[] { "bad" });
         Assert.True(r.IsFaulted);
         Assert.Contains(r.Reasons, rr => rr is ValidationError);
     }
@@ -72,8 +71,8 @@ public class ResultFactoryHelpersTests {
     public void FromValidation_Generic_Success() {
         var r = Result.FromValidation(5, Array.Empty<string>());
         Assert.True(r.IsSuccess);
-        int captured = 0;
-        bool failure = false;
+        var captured = 0;
+        var failure  = false;
         r.Match(v => captured = v, _ => failure = true);
         Assert.False(failure);
         Assert.Equal(5, captured);
@@ -81,7 +80,7 @@ public class ResultFactoryHelpersTests {
 
     [Fact]
     public void FromValidation_Generic_Failure() {
-        var r = Result.FromValidation(5, new []{"bad"});
+        var r = Result.FromValidation(5, new[] { "bad" });
         Assert.True(r.IsFaulted);
         Assert.Contains(r.Reasons, rr => rr is ValidationError);
     }
@@ -90,8 +89,8 @@ public class ResultFactoryHelpersTests {
     public void Implicit_Success_Lift_Works() {
         Result<int> r = 42; // implicit conversion
         Assert.True(r.IsSuccess);
-        int captured = 0;
-        bool failure = false;
+        var captured = 0;
+        var failure  = false;
         r.Match(v => captured = v, _ => failure = true);
         Assert.False(failure);
         Assert.Equal(42, captured);

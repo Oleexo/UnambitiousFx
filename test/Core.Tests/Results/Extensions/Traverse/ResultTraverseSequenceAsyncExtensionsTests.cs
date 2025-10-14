@@ -6,12 +6,10 @@ using ValueTasksExt = UnambitiousFx.Core.Results.ValueTasks.ResultExtensions;
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Traverse;
 
 [TestSubject(typeof(ResultExtensions))]
-public sealed class ResultTraverseSequenceAsyncExtensionsTests
-{
+public sealed class ResultTraverseSequenceAsyncExtensionsTests {
     // Tasks - TraverseAsync
     [Fact]
-    public async System.Threading.Tasks.Task Tasks_TraverseAsync_AllSuccess_ReturnsList()
-    {
+    public async System.Threading.Tasks.Task Tasks_TraverseAsync_AllSuccess_ReturnsList() {
         var items = new[] { 1, 2, 3 };
 
         var result = await TasksExt.TraverseAsync(items, i => System.Threading.Tasks.Task.FromResult(Result.Success(i * 10)));
@@ -21,23 +19,22 @@ public sealed class ResultTraverseSequenceAsyncExtensionsTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task Tasks_TraverseAsync_FirstFailure_Propagates()
-    {
+    public async System.Threading.Tasks.Task Tasks_TraverseAsync_FirstFailure_Propagates() {
         var items = new[] { 0, 1, 2 };
-        var ex = new Exception("boom");
+        var ex    = new Exception("boom");
 
-        var result = await TasksExt.TraverseAsync(items, i => i == 0 ? System.Threading.Tasks.Task.FromResult(Result.Failure<int>(ex)) : System.Threading.Tasks.Task.FromResult(Result.Success(i)));
+        var result = await TasksExt.TraverseAsync(items, i => i == 0
+                                                                  ? System.Threading.Tasks.Task.FromResult(Result.Failure<int>(ex))
+                                                                  : System.Threading.Tasks.Task.FromResult(Result.Success(i)));
 
-        Assert.False(result.Ok(out List<int>? _, out Exception? err));
-        Assert.Same(ex, err!);
+        Assert.False(result.Ok(out var _, out var err));
+        Assert.Same(ex, err);
     }
 
     // Tasks - SequenceAsync
     [Fact]
-    public async System.Threading.Tasks.Task Tasks_SequenceAsync_AllSuccess_ReturnsList()
-    {
-        var tasks = new[]
-        {
+    public async System.Threading.Tasks.Task Tasks_SequenceAsync_AllSuccess_ReturnsList() {
+        var tasks = new[] {
             System.Threading.Tasks.Task.FromResult(Result.Success(1)),
             System.Threading.Tasks.Task.FromResult(Result.Success(2)),
             System.Threading.Tasks.Task.FromResult(Result.Success(3))
@@ -50,25 +47,22 @@ public sealed class ResultTraverseSequenceAsyncExtensionsTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task Tasks_SequenceAsync_FirstFailure_Propagates()
-    {
+    public async System.Threading.Tasks.Task Tasks_SequenceAsync_FirstFailure_Propagates() {
         var ex = new Exception("seq");
-        var tasks = new[]
-        {
+        var tasks = new[] {
             System.Threading.Tasks.Task.FromResult(Result.Failure<int>(ex)),
             System.Threading.Tasks.Task.FromResult(Result.Success(2))
         };
 
         var result = await TasksExt.SequenceAsync(tasks);
 
-        Assert.False(result.Ok(out List<int>? _, out Exception? err));
-        Assert.Same(ex, err!);
+        Assert.False(result.Ok(out var _, out var err));
+        Assert.Same(ex, err);
     }
 
     // ValueTasks - TraverseAsync
     [Fact]
-    public async System.Threading.Tasks.Task ValueTasks_TraverseAsync_AllSuccess_ReturnsList()
-    {
+    public async System.Threading.Tasks.Task ValueTasks_TraverseAsync_AllSuccess_ReturnsList() {
         var items = new[] { 1, 2, 3 };
 
         var result = await ValueTasksExt.TraverseAsync(items, i => new ValueTask<Result<int>>(Result.Success(i + 1)));
@@ -78,25 +72,22 @@ public sealed class ResultTraverseSequenceAsyncExtensionsTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task ValueTasks_TraverseAsync_FirstFailure_Propagates()
-    {
+    public async System.Threading.Tasks.Task ValueTasks_TraverseAsync_FirstFailure_Propagates() {
         var items = new[] { 5, -1, 6 };
-        var ex = new Exception("vt");
+        var ex    = new Exception("vt");
 
         var result = await ValueTasksExt.TraverseAsync(items, i => i < 0
-            ? new ValueTask<Result<int>>(Result.Failure<int>(ex))
-            : new ValueTask<Result<int>>(Result.Success(i)));
+                                                                       ? new ValueTask<Result<int>>(Result.Failure<int>(ex))
+                                                                       : new ValueTask<Result<int>>(Result.Success(i)));
 
-        Assert.False(result.Ok(out List<int>? _, out Exception? err));
-        Assert.Same(ex, err!);
+        Assert.False(result.Ok(out var _, out var err));
+        Assert.Same(ex, err);
     }
 
     // ValueTasks - SequenceAsync
     [Fact]
-    public async System.Threading.Tasks.Task ValueTasks_SequenceAsync_AllSuccess_ReturnsList()
-    {
-        var vts = new ValueTask<Result<int>>[]
-        {
+    public async System.Threading.Tasks.Task ValueTasks_SequenceAsync_AllSuccess_ReturnsList() {
+        var vts = new ValueTask<Result<int>>[] {
             new(Result.Success(3)),
             new(Result.Success(4))
         };
@@ -108,18 +99,16 @@ public sealed class ResultTraverseSequenceAsyncExtensionsTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task ValueTasks_SequenceAsync_FirstFailure_Propagates()
-    {
+    public async System.Threading.Tasks.Task ValueTasks_SequenceAsync_FirstFailure_Propagates() {
         var ex = new Exception("svt");
-        var vts = new ValueTask<Result<int>>[]
-        {
+        var vts = new ValueTask<Result<int>>[] {
             new(Result.Failure<int>(ex)),
             new(Result.Success(1))
         };
 
         var result = await ValueTasksExt.SequenceAsync(vts);
 
-        Assert.False(result.Ok(out List<int>? _, out Exception? err));
-        Assert.Same(ex, err!);
+        Assert.False(result.Ok(out var _, out var err));
+        Assert.Same(ex, err);
     }
 }

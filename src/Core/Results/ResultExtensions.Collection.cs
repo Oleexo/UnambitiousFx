@@ -1,19 +1,14 @@
 namespace UnambitiousFx.Core.Results;
 
-public static partial class ResultExtensions
-{
+public static partial class ResultExtensions {
     public static Result<List<TValue>> Sequence<TValue>(this IEnumerable<Result<TValue>> results)
-        where TValue : notnull
-    {
+        where TValue : notnull {
         var list = new List<TValue>();
-        foreach (var r in results)
-        {
-            if (r.Ok(out var value, out var error))
-            {
+        foreach (var r in results) {
+            if (r.Ok(out var value, out var error)) {
                 list.Add(value);
             }
-            else
-            {
+            else {
                 return Result.Failure<List<TValue>>(error);
             }
         }
@@ -21,19 +16,16 @@ public static partial class ResultExtensions
         return Result.Success(list);
     }
 
-    public static Result<List<TOut>> Traverse<TIn, TOut>(this IEnumerable<TIn> source, Func<TIn, Result<TOut>> selector)
-        where TOut : notnull
-    {
+    public static Result<List<TOut>> Traverse<TIn, TOut>(this IEnumerable<TIn>   source,
+                                                         Func<TIn, Result<TOut>> selector)
+        where TOut : notnull {
         var list = new List<TOut>();
-        foreach (var item in source)
-        {
+        foreach (var item in source) {
             var r = selector(item);
-            if (r.Ok(out var value, out var error))
-            {
+            if (r.Ok(out var value, out var error)) {
                 list.Add(value);
             }
-            else
-            {
+            else {
                 return Result.Failure<List<TOut>>(error);
             }
         }
@@ -42,18 +34,14 @@ public static partial class ResultExtensions
     }
 
     public static (List<TValue> oks, List<Exception> errors) Partition<TValue>(this IEnumerable<Result<TValue>> results)
-        where TValue : notnull
-    {
-        var oks = new List<TValue>();
+        where TValue : notnull {
+        var oks    = new List<TValue>();
         var errors = new List<Exception>();
-        foreach (var r in results)
-        {
-            if (r.Ok(out var value, out var error))
-            {
+        foreach (var r in results) {
+            if (r.Ok(out var value, out var error)) {
                 oks.Add(value);
             }
-            else
-            {
+            else {
                 errors.Add(error);
             }
         }

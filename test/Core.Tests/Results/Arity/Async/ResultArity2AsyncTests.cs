@@ -21,7 +21,7 @@ public sealed class ResultArity2AsyncTests {
     public async Task Task_Failure_Ok_ReturnsErrorMessage() {
         var r = await Task.FromResult(Result.Failure<int, string>(new Exception("boom")));
 
-        if (!r.Ok(out var _, out var err)) {
+        if (!r.Ok(out _, out var err)) {
             Assert.Equal("boom", err.Message);
         }
         else {
@@ -45,7 +45,7 @@ public sealed class ResultArity2AsyncTests {
     public async Task ValueTask_Failure_Ok_ReturnsErrorMessage() {
         var r = await ValueTask.FromResult(Result.Failure<int, string>(new Exception("boom")));
 
-        if (!r.Ok(out var _, out var err)) {
+        if (!r.Ok(out _, out var err)) {
             Assert.Equal("boom", err.Message);
         }
         else {
@@ -53,4 +53,3 @@ public sealed class ResultArity2AsyncTests {
         }
     }
 }
-

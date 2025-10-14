@@ -42,27 +42,30 @@ public sealed class ResultFluentAssertionExtensionsTests {
 
     [Fact]
     public void MultiArityResult_EnsureSuccess_Deconstruct() {
-        var assertion = Result.Success(1, "a").EnsureSuccess();
+        var assertion = Result.Success(1, "a")
+                              .EnsureSuccess();
         assertion.Deconstruct(out var tuple);
         Assert.Equal((1, "a"), tuple);
     }
 
     [Fact]
     public void MultiArityResult_EnsureFailure() {
-        Result.Failure<int,string>(new Exception("err"))
+        Result.Failure<int, string>(new Exception("err"))
               .EnsureFailure()
               .AndMessage("err");
     }
 
     [Fact]
     public async Task Async_Task_Generic_EnsureSuccess() {
-        var assertion = await Task.FromResult(Result.Success(5)).EnsureSuccess();
+        var assertion = await Task.FromResult(Result.Success(5))
+                                  .EnsureSuccess();
         assertion.And(v => Assert.Equal(5, v));
     }
 
     [Fact]
     public async Task Async_Task_Generic_EnsureFailure() {
-        var failure = await Task.FromResult(Result.Failure<int>(new Exception("x"))).EnsureFailure();
+        var failure = await Task.FromResult(Result.Failure<int>(new Exception("x")))
+                                .EnsureFailure();
         failure.AndMessage("x");
     }
 
@@ -72,4 +75,3 @@ public sealed class ResultFluentAssertionExtensionsTests {
         assertion.And(v => Assert.Equal(9, v));
     }
 }
-

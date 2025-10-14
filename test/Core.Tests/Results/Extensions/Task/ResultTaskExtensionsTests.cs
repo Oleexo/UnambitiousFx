@@ -6,11 +6,9 @@ using ValueTasksExt = UnambitiousFx.Core.Results.ValueTasks.ResultExtensions;
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Task;
 
 [TestSubject(typeof(ResultExtensions))]
-public sealed class ResultTaskExtensionsTests
-{
+public sealed class ResultTaskExtensionsTests {
     [Fact]
-    public async System.Threading.Tasks.Task FromTask_NonGeneric_Success_ReturnsSuccess()
-    {
+    public async System.Threading.Tasks.Task FromTask_NonGeneric_Success_ReturnsSuccess() {
         var task = System.Threading.Tasks.Task.CompletedTask;
 
         var result = await TasksExt.FromTask(task);
@@ -19,9 +17,8 @@ public sealed class ResultTaskExtensionsTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task FromTask_NonGeneric_Failure_ReturnsFailure()
-    {
-        var ex = new InvalidOperationException("boom");
+    public async System.Threading.Tasks.Task FromTask_NonGeneric_Failure_ReturnsFailure() {
+        var ex   = new InvalidOperationException("boom");
         var task = System.Threading.Tasks.Task.FromException(ex);
 
         var result = await TasksExt.FromTask(task);
@@ -31,8 +28,7 @@ public sealed class ResultTaskExtensionsTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task FromTask_Generic_Success_WrapsValue()
-    {
+    public async System.Threading.Tasks.Task FromTask_Generic_Success_WrapsValue() {
         var task = System.Threading.Tasks.Task.FromResult(42);
 
         var result = await TasksExt.FromTask(task);
@@ -42,35 +38,32 @@ public sealed class ResultTaskExtensionsTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task FromTask_Generic_Exception_WrappedAsFailure()
-    {
-        var ex = new Exception("oops");
+    public async System.Threading.Tasks.Task FromTask_Generic_Exception_WrappedAsFailure() {
+        var ex   = new Exception("oops");
         var task = System.Threading.Tasks.Task.FromException<int>(ex);
 
         var result = await TasksExt.FromTask(task);
 
-        Assert.False(result.Ok(out int _, out var error));
+        Assert.False(result.Ok(out var _, out var error));
         Assert.Same(ex, error);
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task FromTask_MultiArity_Tuple_Success_WrapsValues()
-    {
+    public async System.Threading.Tasks.Task FromTask_MultiArity_Tuple_Success_WrapsValues() {
         var task = System.Threading.Tasks.Task.FromResult((1, "a"));
 
         var result = await TasksExt.FromTask(task);
 
         Assert.True(result.Ok(out (int, string) values, out _));
-        Assert.Equal(1, values.Item1);
+        Assert.Equal(1,   values.Item1);
         Assert.Equal("a", values.Item2);
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task ToTask_Generic_Success_ReturnsSameResult()
-    {
+    public async System.Threading.Tasks.Task ToTask_Generic_Success_ReturnsSameResult() {
         var r = Result.Success(99);
 
-        var t = TasksExt.ToTask(r);
+        var t      = TasksExt.ToTask(r);
         var result = await t;
 
         Assert.True(result.Ok(out var value, out _));
@@ -78,24 +71,22 @@ public sealed class ResultTaskExtensionsTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task ToTask_Generic_Failure_ReturnsSameError()
-    {
+    public async System.Threading.Tasks.Task ToTask_Generic_Failure_ReturnsSameError() {
         var ex = new Exception("fail");
-        var r = Result.Failure<int>(ex);
+        var r  = Result.Failure<int>(ex);
 
-        var t = TasksExt.ToTask(r);
+        var t      = TasksExt.ToTask(r);
         var result = await t;
 
-        Assert.False(result.Ok(out int _, out var error));
+        Assert.False(result.Ok(out var _, out var error));
         Assert.Same(ex, error);
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task ToTask_NonGeneric_Success_ReturnsSame()
-    {
+    public async System.Threading.Tasks.Task ToTask_NonGeneric_Success_ReturnsSame() {
         var r = Result.Success();
 
-        var t = TasksExt.ToTask(r);
+        var t      = TasksExt.ToTask(r);
         var result = await t;
 
         Assert.True(result.Ok(out _));
@@ -103,8 +94,7 @@ public sealed class ResultTaskExtensionsTests
 
     // ValueTask counterparts
     [Fact]
-    public async System.Threading.Tasks.Task FromTask_ValueTask_Generic_Success_WrapsValue()
-    {
+    public async System.Threading.Tasks.Task FromTask_ValueTask_Generic_Success_WrapsValue() {
         var task = new ValueTask<int>(21);
 
         var result = await ValueTasksExt.FromTask(task);
@@ -114,8 +104,7 @@ public sealed class ResultTaskExtensionsTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task ToTask_ValueTask_Generic_Success_ReturnsSame()
-    {
+    public async System.Threading.Tasks.Task ToTask_ValueTask_Generic_Success_ReturnsSame() {
         var r = Result.Success(7);
 
         var vt     = ValueTasksExt.ToTask(r);

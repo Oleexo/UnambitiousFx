@@ -48,7 +48,7 @@ public sealed class ResultArity0Tests {
         var r = Result.Success();
 
         var invoked = false;
-        var next    = r.Bind(() => {
+        var next = r.Bind(() => {
             invoked = true;
             return Result.Success();
         });
@@ -61,7 +61,7 @@ public sealed class ResultArity0Tests {
         var r = Result.Failure("boom");
 
         var invoked = false;
-        var next    = r.Bind(() => {
+        var next = r.Bind(() => {
             invoked = true;
             return Result.Success();
         });

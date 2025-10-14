@@ -21,7 +21,7 @@ public sealed class ResultArity6Tests {
     public void Failure_Ok_ReturnsErrorMessage() {
         var r = Result.Failure<int, string, bool, double, char, long>(new Exception("boom"));
 
-        if (!r.Ok(out var _, out var err)) {
+        if (!r.Ok(out _, out var err)) {
             Assert.Equal("boom", err.Message);
         }
         else {

@@ -81,9 +81,9 @@ Visibility + safe extraction.
 - ✅ ToNullable() (all arities; returns nullable value/tuple)
 - ✅ Deconstruct (ok, value, error) (non-generic & all arities)
 - ✅ ToString overhaul (includes first domain error code when present + compact metadata preview)
-- 📋 FindError(predicate) / TryPickError
-- 📋 EnsureNotNull / EnsureNotEmpty helpers
-- 📋 MatchError / FilterError utilities
+- ✅ FindError(predicate) / TryPickError
+- ✅ EnsureNotNull / EnsureNotEmpty helpers
+- ✅ MatchError / FilterError utilities
 - 🤔 FlattenExceptions() (collect all underlying exceptions)
 
 ---
@@ -94,9 +94,9 @@ Complete ergonomic symmetry between sync & async; extend error transforms.
 - ✅ MapErrorAsync
 - ✅ MapErrors (plural transform on aggregated errors)
 - ✅ TapBoth / TapEither (side-effect branching)
-- 📋 FirstFailureOrSuccess helper
-- 📋 BindTryAsync (async value factory with exception capture)
-- 📋 MapError chain policies (short‑circuit or accumulate)
+- ✅ FirstFailureOrSuccess helper
+- ✅ BindTryAsync (async value factory with exception capture)
+- ✅ MapError chain policies (short‑circuit or accumulate)
 - 🤔 Cancellation-aware variants (MapAsyncWithCancellation, etc.)
 
 ---
@@ -128,7 +128,7 @@ Bridge with standard patterns & ecosystem.
 
 ## Phase 6 – Resilience & Policies
 Declarative execution policies returning Results.
-- ⭐ ResultPolicy: Retry, Timeout (core)
+- ✅ ResultPolicy: Retry, Timeout (core)
 - 📋 FallbackPolicy (alternate Result supplier)
 - 📋 CircuitBreakerPolicy (stateful; optional separate package)
 - 📋 Bulkhead / RateLimit wrappers
@@ -180,14 +180,16 @@ Confidence, clarity, credibility.
 - Async error & branching utilities: TapErrorAsync, MapErrorAsync, MapErrors (plural transform), TapBoth/TapEither
 - Factory helpers (FromNullable, FromCondition, FromValidation)
 - Implicit success lift (value → Result<T>)
+- FindError / TryPickError inspection helpers
+- Retry / Timeout execution policies (ResultPolicy) ✅
 
 ## Active / Next (Short Horizon)
 
 | Item                              | Status | Notes                                           |
 |-----------------------------------|--------|-------------------------------------------------|
 | Value-fold `Match<TOut>`          | ⭐      | Complete symmetry with action-based `Match`     |
-| EnsureNotNull / EnsureNotEmpty    | 📋     | Convenience validation errors (ValidationError) |
-| FirstFailureOrSuccess helper      | 📋     | Short-circuit inspection helper                 |
+| EnsureNotNull / EnsureNotEmpty    | ✅     | Convenience validation errors (ValidationError) |
+| FirstFailureOrSuccess helper      | ✅     | Short-circuit inspection helper                 |
 
 ## Async Parity (Previously Planned Batch – Completed Core Items)
 
@@ -197,7 +199,7 @@ Confidence, clarity, credibility.
 | MapErrorAsync       | ✅      | Async error transformation                                       |
 | MapErrors           | ✅      | Aggregate plural errors into a single transformed error          |
 | TapBoth / TapEither | ✅      | Symmetric success/failure observation (side-effect branching)    |
-| BindTryAsync        | 📋     | Async factory with exception capture                             |
+| BindTryAsync        | ✅      | Async factory with exception capture                             |
 
 ## Aggregation & Analysis (Planned)
 
@@ -233,7 +235,7 @@ When merging results (Merge and Aggregate style operations):
 
 | Feature                  | Status | Purpose                                         |
 |--------------------------|--------|-------------------------------------------------|
-| Retry / Timeout policies | ⭐      | Declarative execution wrappers returning Result |
+| Retry / Timeout policies | ✅      | Declarative execution wrappers returning Result |
 | Struct Result<T> variant | 📋     | Allocation reduction for hot paths              |
 | Shared success instances | 📋     | Reuse zero-alloc sentinel successes             |
 | Lazy exception creation  | 📋     | Defer cost until inspected                      |
@@ -287,18 +289,19 @@ These items are intentionally deferred; revisit after core maturity.
 - Apply / Zip ✅
 - Bind / Then ✅ (Implemented – monadic chaining core)
 - BindAsync ✅
-- BindTryAsync 📋 (P3)
+- BindTryAsync ✅ (P3)
 - Combine / Aggregate ✅
 - Context Attachment ✅ (Metadata + helpers + selective copy flag)
 - Deconstruct ✅
 - Ensure ✅
 - EnsureAsync ✅
-- EnsureNotNull / EnsureNotEmpty 📋 (P2)
+- EnsureNotNull / EnsureNotEmpty ✅ (P2)
 - Error Base (Code/Message/Metadata) ✅
 - Error Wrapping Helper ✅
 - Errors() / AllErrors() ✅ (P4)
 - ExceptionalError ✅
 - Factory Helpers (FromNullable / FromCondition / FromValidation) ✅
+- FindError / TryPickError ✅ (P2)
 - Flatten ✅ (P1 – includes Task/ValueTask variants)
 - FlattenExceptions() 🤔 (P4)
 - FromCondition ✅ (P5)
@@ -317,12 +320,13 @@ These items are intentionally deferred; revisit after core maturity.
 - Map ✅
 - MapAsync ✅
 - MapError ✅
+- MapError chain policies ✅
 - MapErrorAsync ✅
 - MapErrors ✅
 - Merge ✅ (P4, strategies: AccumulateAll, FirstFailure)
 - Metadata Attachment ✅ (Result-level + reason-level + tuple overload + helper APIs)
 - Partition ✅
-- Policies: Retry / Timeout ⭐ (P6)
+- Policies: Retry / Timeout ✅ (P6)
 - Policies: CircuitBreaker 📋 (P6)
 - Prepend/Append Error Messages ✅
 - Recover / RecoverWith / RecoverAsync ✅
@@ -370,9 +374,8 @@ Issues / PRs welcome. When proposing a new operator, outline:
 
 ## Immediate Next Steps (Actionable)
 1. Implement value-fold Match<TOut> (sync + Task/ValueTask for generic results) exposing success values.
-2. Add EnsureNotNull / EnsureNotEmpty utilities (lift null/empty to ValidationError) and associated tests.
-3. Implement BindTryAsync capturing exceptions into domain errors.
-4. Draft design note for metadata propagation policy (document copyMetadata flag semantics).
+2. Draft design note for metadata propagation policy (document copyMetadata flag semantics).
+3. Add optional cancellation-aware async variants (MapAsyncWithCancellation, BindAsyncWithCancellation, etc.).
 
 ### ToString Enhancement Plan (Completed)
 Format example (success with tuple & metadata sample):

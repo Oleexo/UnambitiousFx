@@ -1,41 +1,52 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using UnambitiousFx.Core.OneOf;
 
 namespace UnambitiousFx.Core.Eithers;
 
 /// <summary>
 ///     Represents a value that can hold one of two types, either <typeparamref name="TLeft" /> or
 ///     <typeparamref name="TRight" />.
+///     This is a semantic specialization of <see cref="OneOf{TFirst,TSecond}" /> where the two cases are called
+///     <c>Left</c> and <c>Right</c>.
 /// </summary>
 /// <typeparam name="TLeft">The type of the value if this instance represents the 'Left' state.</typeparam>
 /// <typeparam name="TRight">The type of the value if this instance represents the 'Right' state.</typeparam>
-public abstract class Either<TLeft, TRight>
+public abstract class Either<TLeft, TRight> : OneOf<TLeft, TRight>
     where TLeft : notnull
     where TRight : notnull {
-    /// <inheritdoc />
+    /// <summary>Gets a value indicating whether the current instance contains a Left value.</summary>
     public abstract bool IsLeft { get; }
 
-    /// <inheritdoc />
+    /// <summary>Gets a value indicating whether the current instance contains a Right value.</summary>
     public abstract bool IsRight { get; }
 
     /// <inheritdoc />
+    public override bool IsFirst => IsLeft;
+
+    /// <inheritdoc />
+    public override bool IsSecond => IsRight;
+
+    /// <summary>
+    ///     Monadic bind transforming the contained value into another <see cref="Either{TLeft,TRight}" /> chain.
+    /// </summary>
     public abstract Either<TLeftOut, TRightOut> Bind<TLeftOut, TRightOut>(Func<TLeft, Either<TLeftOut, TRightOut>>  leftFunc,
                                                                           Func<TRight, Either<TLeftOut, TRightOut>> rightFunc)
         where TLeftOut : notnull
         where TRightOut : notnull;
 
-    /// <inheritdoc />
-    public abstract T Match<T>(Func<TLeft, T>  leftFunc,
-                               Func<TRight, T> rightFunc);
+    /// <summary>Pattern match returning a value.</summary>
+    public abstract override T Match<T>(Func<TLeft, T>  leftFunc,
+                                        Func<TRight, T> rightFunc);
 
-    /// <inheritdoc />
-    public abstract void Match(Action<TLeft>  leftAction,
-                               Action<TRight> rightAction);
+    /// <summary>Pattern match executing side-effect actions.</summary>
+    public abstract override void Match(Action<TLeft>  leftAction,
+                                        Action<TRight> rightAction);
 
-    /// <inheritdoc />
+    /// <summary>Attempts to extract the Left value.</summary>
     public abstract bool Left([NotNullWhen(true)] out  TLeft?  left,
                               [NotNullWhen(false)] out TRight? right);
 
-    /// <inheritdoc />
+    /// <summary>Attempts to extract the Right value.</summary>
     public abstract bool Right([NotNullWhen(false)] out TLeft?  left,
                                [NotNullWhen(true)] out  TRight? right);
 
@@ -77,5 +88,25 @@ public abstract class Either<TLeft, TRight>
     /// <returns>An Either instance containing the provided value as its right value.</returns>
     public static implicit operator Either<TLeft, TRight>(TRight right) {
         return FromRight(right);
+    }
+
+    public override bool First([NotNullWhen(true)] out TLeft? first) {
+        if (Left(out var l, out _)) {
+            first = l;
+            return true;
+        }
+
+        first = default;
+        return false;
+    }
+
+    public override bool Second([NotNullWhen(true)] out TRight? second) {
+        if (Right(out _, out var r)) {
+            second = r;
+            return true;
+        }
+
+        second = default;
+        return false;
     }
 }

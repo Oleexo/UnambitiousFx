@@ -19,13 +19,12 @@ public sealed class OptionAsyncPredicateAssertionExtensionsTests {
     [Fact]
     public async Task ValueTask_ShouldBeSomeWhereAsync() {
         await new ValueTask<Option<int>>(Option<int>.Some(5))
-            .ShouldBeSomeWhereAsync(v => v > 3);
+           .ShouldBeSomeWhereAsync(v => v > 3);
     }
 
     [Fact]
     public async Task ValueTask_ShouldBeNoneWhereAsync() {
         await new ValueTask<Option<int>>(Option<int>.None())
-            .ShouldBeNoneWhereAsync(() => true);
+           .ShouldBeNoneWhereAsync(() => true);
     }
 }
-

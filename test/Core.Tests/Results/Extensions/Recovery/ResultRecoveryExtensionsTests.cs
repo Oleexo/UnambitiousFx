@@ -6,15 +6,16 @@ using ValueTasksExt = UnambitiousFx.Core.Results.ValueTasks.ResultExtensions;
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Recovery;
 
 [TestSubject(typeof(ResultExtensions))]
-public sealed class ResultRecoveryExtensionsTests
-{
+public sealed class ResultRecoveryExtensionsTests {
     [Fact]
-    public void Recover_Success_DoesNotInvoke_ReturnsSameValue()
-    {
-        var r = Result.Success(5);
+    public void Recover_Success_DoesNotInvoke_ReturnsSameValue() {
+        var r      = Result.Success(5);
         var called = false;
 
-        var recovered = r.Recover(_ => { called = true; return 0; });
+        var recovered = r.Recover(_ => {
+            called = true;
+            return 0;
+        });
 
         Assert.True(recovered.Ok(out var value, out _));
         Assert.Equal(5, value);
@@ -22,13 +23,15 @@ public sealed class ResultRecoveryExtensionsTests
     }
 
     [Fact]
-    public void Recover_Failure_UsesFallbackValue()
-    {
-        var ex = new InvalidOperationException("boom");
-        var r = Result.Failure<int>(ex);
+    public void Recover_Failure_UsesFallbackValue() {
+        var ex              = new InvalidOperationException("boom");
+        var r               = Result.Failure<int>(ex);
         var passedSameError = false;
 
-        var recovered = r.Recover(err => { passedSameError = ReferenceEquals(err, ex); return 42; });
+        var recovered = r.Recover(err => {
+            passedSameError = ReferenceEquals(err, ex);
+            return 42;
+        });
 
         Assert.True(recovered.Ok(out var value, out _));
         Assert.Equal(42, value);
@@ -36,10 +39,9 @@ public sealed class ResultRecoveryExtensionsTests
     }
 
     [Fact]
-    public void Recover_WithConstantFallback_WhenFailure_UsesConstant()
-    {
+    public void Recover_WithConstantFallback_WhenFailure_UsesConstant() {
         var ex = new Exception("oops");
-        var r = Result.Failure<int>(ex);
+        var r  = Result.Failure<int>(ex);
 
         var recovered = r.Recover(99);
 
@@ -48,12 +50,14 @@ public sealed class ResultRecoveryExtensionsTests
     }
 
     [Fact]
-    public void RecoverWith_Success_DoesNotInvoke_ReturnsSame()
-    {
-        var r = Result.Success(7);
+    public void RecoverWith_Success_DoesNotInvoke_ReturnsSame() {
+        var r      = Result.Success(7);
         var called = false;
 
-        var recovered = r.RecoverWith(_ => { called = true; return Result.Success(0); });
+        var recovered = r.RecoverWith(_ => {
+            called = true;
+            return Result.Success(0);
+        });
 
         Assert.True(recovered.Ok(out var value, out _));
         Assert.Equal(7, value);
@@ -61,10 +65,9 @@ public sealed class ResultRecoveryExtensionsTests
     }
 
     [Fact]
-    public void RecoverWith_Failure_UsesAlternateResult()
-    {
+    public void RecoverWith_Failure_UsesAlternateResult() {
         var ex = new Exception("nope");
-        var r = Result.Failure<int>(ex);
+        var r  = Result.Failure<int>(ex);
 
         var recovered = r.RecoverWith(_ => Result.Success(123));
 
@@ -74,12 +77,14 @@ public sealed class ResultRecoveryExtensionsTests
 
     // Async (Task)
     [Fact]
-    public async System.Threading.Tasks.Task RecoverAsync_Task_Success_DoesNotInvoke_ReturnsSame()
-    {
-        var r = Result.Success(10);
+    public async System.Threading.Tasks.Task RecoverAsync_Task_Success_DoesNotInvoke_ReturnsSame() {
+        var r      = Result.Success(10);
         var called = false;
 
-        var recovered = await TasksExt.RecoverAsync(r, _ => { called = true; return System.Threading.Tasks.Task.FromResult(0); });
+        var recovered = await TasksExt.RecoverAsync(r, _ => {
+            called = true;
+            return System.Threading.Tasks.Task.FromResult(0);
+        });
 
         Assert.True(recovered.Ok(out var value, out _));
         Assert.Equal(10, value);
@@ -87,13 +92,15 @@ public sealed class ResultRecoveryExtensionsTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task RecoverAsync_Task_Failure_UsesFallback()
-    {
-        var ex = new Exception("tfail");
-        var r = Result.Failure<int>(ex);
+    public async System.Threading.Tasks.Task RecoverAsync_Task_Failure_UsesFallback() {
+        var ex       = new Exception("tfail");
+        var r        = Result.Failure<int>(ex);
         var observed = false;
 
-        var recovered = await TasksExt.RecoverAsync(r, err => { observed = ReferenceEquals(err, ex); return System.Threading.Tasks.Task.FromResult(77); });
+        var recovered = await TasksExt.RecoverAsync(r, err => {
+            observed = ReferenceEquals(err, ex);
+            return System.Threading.Tasks.Task.FromResult(77);
+        });
 
         Assert.True(recovered.Ok(out var value, out _));
         Assert.Equal(77, value);
@@ -101,10 +108,9 @@ public sealed class ResultRecoveryExtensionsTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task RecoverWithAsync_Task_Failure_UsesAlternateResult()
-    {
+    public async System.Threading.Tasks.Task RecoverWithAsync_Task_Failure_UsesAlternateResult() {
         var ex = new Exception("wf");
-        var r = Result.Failure<int>(ex);
+        var r  = Result.Failure<int>(ex);
 
         var recovered = await TasksExt.RecoverWithAsync(r, _ => System.Threading.Tasks.Task.FromResult(Result.Success(55)));
 
@@ -114,12 +120,14 @@ public sealed class ResultRecoveryExtensionsTests
 
     // Async (ValueTask)
     [Fact]
-    public async System.Threading.Tasks.Task RecoverAsync_ValueTask_Success_DoesNotInvoke_ReturnsSame()
-    {
-        var r = Result.Success(10);
+    public async System.Threading.Tasks.Task RecoverAsync_ValueTask_Success_DoesNotInvoke_ReturnsSame() {
+        var r      = Result.Success(10);
         var called = false;
 
-        var recovered = await ValueTasksExt.RecoverAsync(r, _ => { called = true; return new ValueTask<int>(0); });
+        var recovered = await ValueTasksExt.RecoverAsync(r, _ => {
+            called = true;
+            return new ValueTask<int>(0);
+        });
 
         Assert.True(recovered.Ok(out var value, out _));
         Assert.Equal(10, value);
@@ -127,13 +135,15 @@ public sealed class ResultRecoveryExtensionsTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task RecoverAsync_ValueTask_Failure_UsesFallback()
-    {
-        var ex = new Exception("vtfail");
-        var r = Result.Failure<int>(ex);
+    public async System.Threading.Tasks.Task RecoverAsync_ValueTask_Failure_UsesFallback() {
+        var ex       = new Exception("vtfail");
+        var r        = Result.Failure<int>(ex);
         var observed = false;
 
-        var recovered = await ValueTasksExt.RecoverAsync(r, err => { observed = ReferenceEquals(err, ex); return new ValueTask<int>(88); });
+        var recovered = await ValueTasksExt.RecoverAsync(r, err => {
+            observed = ReferenceEquals(err, ex);
+            return new ValueTask<int>(88);
+        });
 
         Assert.True(recovered.Ok(out var value, out _));
         Assert.Equal(88, value);
@@ -141,10 +151,9 @@ public sealed class ResultRecoveryExtensionsTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task RecoverWithAsync_ValueTask_Failure_UsesAlternateResult()
-    {
+    public async System.Threading.Tasks.Task RecoverWithAsync_ValueTask_Failure_UsesAlternateResult() {
         var ex = new Exception("wv");
-        var r = Result.Failure<int>(ex);
+        var r  = Result.Failure<int>(ex);
 
         var recovered = await ValueTasksExt.RecoverWithAsync(r, _ => new ValueTask<Result<int>>(Result.Success(66)));
 

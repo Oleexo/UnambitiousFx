@@ -1,4 +1,5 @@
 using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.XUnit.Results;
 
 namespace UnambitiousFx.Core.XUnit.Tests.Results;
 
@@ -17,14 +18,13 @@ public sealed class ResultAsyncPredicateAssertionExtensionsTests {
 
     [Fact]
     public async Task ValueTask_ShouldBeSuccessWhereAsync_Arity2() {
-        await new ValueTask<Result<int,int>>(Result.Success(1,2))
-            .ShouldBeSuccessWhereAsync(t => t.Item1 + t.Item2 == 3);
+        await new ValueTask<Result<int, int>>(Result.Success(1, 2))
+           .ShouldBeSuccessWhereAsync(t => t.Item1 + t.Item2 == 3);
     }
 
     [Fact]
     public async Task ValueTask_ShouldBeFailureWhereAsync_Arity2() {
-        await new ValueTask<Result<int,int>>(Result.Failure<int,int>(new InvalidOperationException("x")))
-            .ShouldBeFailureWhereAsync(ex => ex is InvalidOperationException);
+        await new ValueTask<Result<int, int>>(Result.Failure<int, int>(new InvalidOperationException("x")))
+           .ShouldBeFailureWhereAsync(ex => ex is InvalidOperationException);
     }
 }
-

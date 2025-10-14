@@ -19,11 +19,10 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Core\Core.csproj" />
-        <ProjectReference Include="..\Core.XUnit.Generator\Core.XUnit.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="README.md" />
+        <None Remove="README.md" />
     </ItemGroup>
 
 </Project>

@@ -6,13 +6,15 @@ namespace UnambitiousFx.Core.XUnit.Tests.Options;
 public sealed class OptionAsyncAssertionExtensionsTests {
     [Fact]
     public async Task Task_Option_ShouldBeSome() {
-        await Task.FromResult(Option.Some(10)).ShouldBeSome(out var v);
+        await Task.FromResult(Option.Some(10))
+                  .ShouldBeSome(out var v);
         Assert.Equal(10, v);
     }
 
     [Fact]
     public async Task Task_Option_ShouldBeNone() {
-        await Task.FromResult(Option<int>.None()).ShouldBeNone();
+        await Task.FromResult(Option<int>.None())
+                  .ShouldBeNone();
     }
 
     [Fact]
@@ -26,4 +28,3 @@ public sealed class OptionAsyncAssertionExtensionsTests {
         await new ValueTask<Option<int>>(Option<int>.None()).ShouldBeNone();
     }
 }
-

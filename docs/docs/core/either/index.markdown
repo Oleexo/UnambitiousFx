@@ -1,11 +1,13 @@
 ---
 title: Either
 parent: Core
-nav_order: 3
+nav_order: 4
 has_children: true
 ---
 
 # Either
+
+> NOTE: `Either<TLeft, TRight>` now inherits from the generic discriminated union base `OneOf<TLeft, TRight>`. Use `Either` for application code because it gives semantic meaning (`Left` / `Right`) and provides higher-level helpers like `Bind`. Use `OneOf` only when defining new semantic two-branch unions.
 
 ## What is an Either?
 

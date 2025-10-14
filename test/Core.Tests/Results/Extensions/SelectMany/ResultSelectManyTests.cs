@@ -1,5 +1,6 @@
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Tasks;
+using ResultExtensions = UnambitiousFx.Core.Results.ValueTasks.ResultExtensions;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.SelectMany;
 
@@ -11,7 +12,7 @@ public sealed class ResultSelectManyTests {
                                                                y) => x + y); // 5 + 10 = 15
 
         Assert.True(r.IsSuccess);
-        Assert.True(r.Ok(out int value));
+        Assert.True(r.Ok(out var value));
         Assert.Equal(15, value);
     }
 
@@ -23,7 +24,7 @@ public sealed class ResultSelectManyTests {
                                                                y) => x + y);
 
         Assert.True(r.IsFaulted);
-        Assert.False(r.Ok(out int _));
+        Assert.False(r.Ok(out var _));
     }
 
     [Fact]
@@ -34,7 +35,7 @@ public sealed class ResultSelectManyTests {
                                                                          y) => x + y);
 
         Assert.True(r.IsFaulted);
-        Assert.False(r.Ok(out int _));
+        Assert.False(r.Ok(out var _));
     }
 
     [Fact]
@@ -46,7 +47,7 @@ public sealed class ResultSelectManyTests {
                                                                  sum) => $"{a}+{b}={sum}");
 
         Assert.True(r.IsSuccess);
-        Assert.True(r.Ok(out string? value));
+        Assert.True(r.Ok(out var value));
         Assert.Equal("2+3=5", value);
     }
 
@@ -60,7 +61,7 @@ public sealed class ResultSelectManyTests {
                                  y) => x * y); // 4 * 12 = 48
 
         Assert.True(r.IsSuccess);
-        Assert.True(r.Ok(out int value));
+        Assert.True(r.Ok(out var value));
         Assert.Equal(48, value);
     }
 
@@ -72,16 +73,16 @@ public sealed class ResultSelectManyTests {
             select a + b; // 15
 
         Assert.True(result.IsSuccess);
-        Assert.True(result.Ok(out int sum));
+        Assert.True(result.Ok(out var sum));
         Assert.Equal(15, sum);
     }
 
     [Fact]
     public async System.Threading.Tasks.Task Select_Async_TaskSource() {
-        Task<Result<int>> source    = System.Threading.Tasks.Task.FromResult(Result.Success(21));
-        var               projected = await source.Select(x => x * 2); // 42
+        var source    = System.Threading.Tasks.Task.FromResult(Result.Success(21));
+        var projected = await source.Select(x => x * 2); // 42
         Assert.True(projected.IsSuccess);
-        Assert.True(projected.Ok(out int value));
+        Assert.True(projected.Ok(out var value));
         Assert.Equal(42, value);
     }
 
@@ -89,9 +90,9 @@ public sealed class ResultSelectManyTests {
     public async System.Threading.Tasks.Task Select_ValueTask_Source() {
         ValueTask<Result<int>> source = new(Result.Success(7));
 
-        var projected = await UnambitiousFx.Core.Results.ValueTasks.ResultExtensions.Select(source, x => x + 5); // 12
+        var projected = await ResultExtensions.Select(source, x => x + 5); // 12
         Assert.True(projected.IsSuccess);
-        Assert.True(projected.Ok(out int value));
+        Assert.True(projected.Ok(out var value));
         Assert.Equal(12, value);
     }
 }
