@@ -112,13 +112,26 @@ public static class ResultAssertExtensions {
     }
 
     /// <summary>
-    /// Asserts that the result is a failure with the specified message.
+    /// Asserts that the (non-generic) result is a failure with the specified message.
     /// </summary>
-    /// <param name="result">The result instance to assert against.</param>
-    /// <param name="expectedMessage">The expected failure message to compare with the result's message.</param>
-    /// <returns>The same result instance for further assertions or chaining.</returns>
     public static Result ShouldBeFailureWithMessage(this Result result,
                                                     string      expectedMessage) {
+        result.ShouldBeFailure(out var ex);
+        Assert.Equal(expectedMessage, ex.Message);
+        return result;
+    }
+
+    // Added generic overload for Result<T1> to assert failure message on generic results.
+    /// <summary>
+    /// Asserts that the generic result is a failure with the specified exception message.
+    /// </summary>
+    /// <typeparam name="T1">The success value type.</typeparam>
+    /// <param name="result">The result instance expected to be a failure.</param>
+    /// <param name="expectedMessage">The expected exception message.</param>
+    /// <returns>The original result for fluent chaining.</returns>
+    public static Result<T1> ShouldBeFailureWithMessage<T1>(this Result<T1> result,
+                                                            string          expectedMessage)
+        where T1 : notnull {
         result.ShouldBeFailure(out var ex);
         Assert.Equal(expectedMessage, ex.Message);
         return result;
@@ -383,6 +396,27 @@ public static class ResultAssertExtensions {
     }
 
     /// <summary>
+    /// Asserts that the result is a failure.
+    /// </summary>
+    /// <param name="result">The result instance to be evaluated.</param>
+    /// <param name="error">The exception output if the result is a failure.</param>
+    /// <param name="because">A custom message explaining the context of the assertion.</param>
+    /// <returns>The original result for further assertions or chaining.</returns>
+    public static Result<T1, T2> ShouldBeFailure<T1, T2>(this Result<T1, T2> result,
+                                                         out  Exception      error,
+                                                         string          because)
+        where T1 : notnull
+        where T2 : notnull {
+        if (result.Ok(out (T1, T2) _, out var tmpError)) {
+            Assert.Fail(because);
+            throw new UnreachableException();
+        }
+
+        error = tmpError;
+        return result;
+    }
+
+    /// <summary>
     /// Asserts that the result is a success.
     /// </summary>
     /// <param name="result">The result instance to be evaluated.</param>
@@ -405,7 +439,7 @@ public static class ResultAssertExtensions {
     /// <summary>
     /// Asserts that the result is a success.
     /// </summary>
-    /// <param name="result">The result instance to be asserted.</param>
+    /// <param name="result">The result instance to be evaluated.</param>
     /// <param name="assert">An action to perform additional assertions on the success values.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1, T2, T3> ShouldBeSuccess<T1, T2, T3>(this Result<T1, T2, T3> result,
@@ -439,6 +473,28 @@ public static class ResultAssertExtensions {
     }
 
     /// <summary>
+    /// Asserts that the result is a failure.
+    /// </summary>
+    /// <param name="result">The result instance to be evaluated.</param>
+    /// <param name="error">The exception output if the result is a failure.</param>
+    /// <param name="because">A custom message explaining the context of the assertion.</param>
+    /// <returns>The original result for further assertions or chaining.</returns>
+    public static Result<T1, T2, T3> ShouldBeFailure<T1, T2, T3>(this Result<T1, T2, T3> result,
+                                                                 out  Exception          error,
+                                                                 string          because)
+        where T1 : notnull
+        where T2 : notnull
+        where T3 : notnull {
+        if (result.Ok(out (T1, T2, T3) _, out var tmpError)) {
+            Assert.Fail(because);
+            throw new UnreachableException();
+        }
+
+        error = tmpError;
+        return result;
+    }
+
+    /// <summary>
     /// Asserts that the result is a success.
     /// </summary>
     /// <param name="result">The result instance to be evaluated.</param>
@@ -462,7 +518,7 @@ public static class ResultAssertExtensions {
     /// <summary>
     /// Asserts that the result is a success.
     /// </summary>
-    /// <param name="result">The result instance to validate.</param>
+    /// <param name="result">The result instance to be evaluated.</param>
     /// <param name="assert">An action to perform additional assertions on the success values.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1, T2, T3, T4> ShouldBeSuccess<T1, T2, T3, T4>(this Result<T1, T2, T3, T4> result,
@@ -490,6 +546,29 @@ public static class ResultAssertExtensions {
         where T4 : notnull {
         if (result.Ok(out (T1, T2, T3, T4) _, out var tmpError)) {
             Assert.Fail(FailureExpected);
+            throw new UnreachableException();
+        }
+
+        error = tmpError;
+        return result;
+    }
+
+    /// <summary>
+    /// Asserts that the result is a failure.
+    /// </summary>
+    /// <param name="result">The result instance to be evaluated.</param>
+    /// <param name="error">The exception output if the result is a failure.</param>
+    /// <param name="because">A custom message explaining the context of the assertion.</param>
+    /// <returns>The original result for further assertions or chaining.</returns>
+    public static Result<T1, T2, T3, T4> ShouldBeFailure<T1, T2, T3, T4>(this Result<T1, T2, T3, T4> result,
+                                                                         out  Exception              error,
+                                                                         string          because)
+        where T1 : notnull
+        where T2 : notnull
+        where T3 : notnull
+        where T4 : notnull {
+        if (result.Ok(out (T1, T2, T3, T4) _, out var tmpError)) {
+            Assert.Fail(because);
             throw new UnreachableException();
         }
 

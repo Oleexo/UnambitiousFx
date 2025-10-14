@@ -1,8 +1,6 @@
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.XUnit.Results;
 
-// assertion extensions
-
 namespace UnambitiousFx.Core.XUnit.Tests.Results;
 
 public sealed class ResultAssertionExtensionsTests {

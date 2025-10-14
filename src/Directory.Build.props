@@ -1,5 +1,5 @@
 <Project>
-    <Import Project="$([MSBuild]::GetPathOfFileAbove(&#39;build.props&#39;))"/>
+    <Import Project="$([MSBuild]::GetPathOfFileAbove(&#39;build.props&#39;))" />
     <PropertyGroup>
         <IsAotCompatible>true</IsAotCompatible>
 
@@ -20,13 +20,13 @@
     </PropertyGroup>
 
     <ItemGroup Condition="$(CI) == 'true'">
-        <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All"/>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
     </ItemGroup>
 
     <ItemGroup Condition="!Exists('README.md')">
-        <None Include="$(SolutionDir)README.md" Pack="true" PackagePath="\"/>
+        <None Include="$(SolutionDir)README.md" Pack="true" PackagePath="\" />
     </ItemGroup>
     <ItemGroup Condition="Exists('README.md')">
-        <None Include="README.md" Pack="true" PackagePath="\"/>
+        <None Include="README.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 </Project>
