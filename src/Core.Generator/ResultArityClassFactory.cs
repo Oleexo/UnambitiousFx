@@ -107,7 +107,7 @@ internal sealed class ResultArityClassFactory(string @namespace) {
         tw.WriteLine("#nullable enable");
         tw.WriteLine($"namespace {@namespace};");
         tw.WriteLine();
-        tw.WriteLine($"public abstract class Result<{genericParameters}> : BaseResult");
+        tw.WriteLine($"public abstract partial class Result<{genericParameters}> : BaseResult");
         tw.Indent++;
         for (var i = 0; i < numberOfValues; i++) {
             tw.WriteLine($"where TValue{i + 1} : notnull");
@@ -120,6 +120,12 @@ internal sealed class ResultArityClassFactory(string @namespace) {
         tw.WriteLine($"public abstract void Match(Action<{genericParameters}> success, Action<Exception> failure);");
         tw.WriteLine($"public abstract TOut Match<TOut>(Func<{genericParameters}, TOut> success, Func<Exception, TOut> failure);");
         tw.WriteLine($"public abstract void IfSuccess(Action<{genericParameters}> action);");
+
+        // Inject implicit success lift only for single arity generic Result<TValue1>
+        if (numberOfValues == 1) {
+            tw.WriteLine("/// <summary>Implicitly lifts a value into a successful Result&lt;T&gt;.</summary>");
+            tw.WriteLine("public static implicit operator Result<" + genericParameters + ">(TValue1 value) => Result.Success(value);");
+        }
 
         GenerateAbstractOkMethods(tw, numberOfValues);
         GenerateAbstractDeconstructMethod(tw, numberOfValues);

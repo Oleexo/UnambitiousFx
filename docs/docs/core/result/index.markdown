@@ -170,6 +170,7 @@ Explore Result features in depth:
 6. **[Collections & Aggregation](collections.html)** - Batch operations, Traverse, Combine
 7. **[Value Access & Interop](value-access.html)** - Extracting values safely
 8. **[Roadmap](roadmap.html)** - Full feature status and timeline
+9. **[Cookbook](cookbook.html)** - Chaining patterns & practical recipes (MapErrors + TapBoth, etc.)
 
 ---
 
