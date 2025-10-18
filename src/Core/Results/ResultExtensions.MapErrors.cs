@@ -40,17 +40,6 @@ public static partial class ResultExtensions {
         return list;
     }
 
-    private static void CopyReasonsAndMetadata(BaseResult from,
-                                               BaseResult to) {
-        foreach (var rs in from.Reasons) {
-            to.AddReason(rs);
-        }
-
-        foreach (var kv in from.Metadata) {
-            to.AddMetadata(kv.Key, kv.Value);
-        }
-    }
-
     private static void CopyReasonsAndMetadataReplacingPrimary(BaseResult from,
                                                                BaseResult to,
                                                                Exception? oldPrimary,

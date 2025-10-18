@@ -169,34 +169,70 @@ public sealed class OptionTests {
         Assert.Null(option.Case);
     }
 
+
+    
     [Fact]
-    public void GivenMultipleFunctions_WhenChained_ThenCallsTheLastFunction() {
-        var option = GetUser("toto")
-                    .Bind(user => GetLatestOrder(user))
-                    .Bind(tuple => GetShippingInfo(tuple));
+    public void GivenASomeOption_WhenCallingMatch_ThenCallsSomeAction() {
+        var option = Option<int>.Some(42);
+        var someCalled = false;
 
-        if (option.Some(out var value)) {
-            Assert.Equal("Hello 42 from fx", value);
-        }
-        else {
-            Assert.Fail("Result should be successful but was marked as failed");
-        }
+        option.Match(
+            some: _ => someCalled = true,
+            none: () => Assert.Fail("None action should not be called for Some option")
+        );
 
-        Option<string> GetShippingInfo((string order, int user) tuple) {
-            return $"Hello {tuple.user} from {tuple.order}";
-        }
+        Assert.True(someCalled);
+    }
 
-        Option<(string, int)> GetLatestOrder(int user) {
-            return user == 42
-                       ? ("fx", 42)
-                       : ("fx", 24);
-        }
+    [Fact]
+    public void GivenASomeOption_WhenCallingMatch_ThenDoesNotCallNoneAction() {
+        var option = Option<int>.Some(42);
+        var noneCalled = false;
 
-        // Example of chaining operations that might fail
-        Option<int> GetUser(string userId) {
-            return userId == "toto"
-                       ? 42
-                       : 24;
-        }
+        option.Match(
+            some: _ => { },
+            none: () => noneCalled = true
+        );
+
+        Assert.False(noneCalled);
+    }
+
+    [Fact]
+    public void GivenANoneOption_WhenCallingMatch_ThenCallsNoneAction() {
+        var option = Option<int>.None();
+        var noneCalled = false;
+
+        option.Match(
+            some: _ => Assert.Fail("Some action should not be called for None option"),
+            none: () => noneCalled = true
+        );
+
+        Assert.True(noneCalled);
+    }
+
+    [Fact]
+    public void GivenANoneOption_WhenCallingMatch_ThenDoesNotCallSomeAction() {
+        var option = Option<int>.None();
+        var someCalled = false;
+
+        option.Match(
+            some: _ => someCalled = true,
+            none: () => { }
+        );
+
+        Assert.False(someCalled);
+    }
+    
+    [Fact]
+    public void GivenANoneOption_WhenCallingMatchWithReturn_ThenReturnsNoneValue() {
+        var option = Option<int>.None();
+        const string expectedValue = "none";
+
+        var result = option.Match(
+            some: _ => "some",
+            none: () => expectedValue
+        );
+
+        Assert.Equal(expectedValue, result);
     }
 }

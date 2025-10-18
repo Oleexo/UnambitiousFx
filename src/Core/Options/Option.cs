@@ -21,7 +21,7 @@ public static class Option {
     /// <typeparam name="TValue">The type of the service represented by the option.</typeparam>
     /// <returns>An <see cref="Option{TValue}" /> instance that indicates no value.</returns>
     public static Option<TValue> None<TValue>()
-        where TValue : class {
+        where TValue : notnull {
         return Option<TValue>.None();
     }
 }
@@ -36,63 +36,57 @@ public abstract class Option<TValue>
     /// </summary>
     private static readonly Option<TValue> NoneInstance = new NoneOption<TValue>();
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Indicates whether the current <see cref="Option{TValue}" /> instance contains a value.
+    /// Returns <c>true</c> if the instance represents a value, otherwise <c>false</c>.
+    /// </summary>
     public abstract bool IsSome { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets a value indicating whether the current instance represents the absence of a value.
+    /// </summary>
     public abstract bool IsNone { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets the underlying value if the instance represents a value, or returns null if the instance represents no value.
+    /// </summary>
     public abstract object? Case { get; }
 
-    /// <inheritdoc />
+    /// Executes the specified action if this instance represents no value.
+    /// <param name="none">An action to execute when the option represents no value.</param>
     public abstract void IfNone(Action none);
 
-    /// <inheritdoc />
+    /// Executes the provided asynchronous function if the current Option instance represents no value.
+    /// <param name="none">The asynchronous function to be executed when the Option is a None instance.</param>
+    /// <returns>A <see cref="ValueTask"/> that completes when the function execution is complete.</returns>
     public abstract ValueTask IfNone(Func<ValueTask> none);
 
-    /// <inheritdoc />
+    /// Executes the provided action if the Option contains a value.
+    /// <param name="some">The action to execute if the Option contains a value.</param>
     public abstract void IfSome(Action<TValue> some);
 
-    /// <inheritdoc />
+    /// Executes the provided asynchronous action if the Option instance represents a value (Some).
+    /// <param name="some">The asynchronous action to execute if the instance is Some. The action receives the value as its parameter.</param>
+    /// <returns>A <see cref="ValueTask"/> that completes when the provided action has been executed or if the Option is None.</returns>
     public abstract ValueTask IfSome(Func<TValue, ValueTask> some);
 
-    /// <inheritdoc />
+    /// Determines whether the current instance represents a value and, if so, retrieves the wrapped value.
+    /// <param name="value">When the method returns, contains the value of type <typeparamref name="TValue"/> if the instance represents a value; otherwise, the default value for the type of the <typeparamref name="TValue"/> parameter. This parameter is passed uninitialized.</param>
+    /// <returns><see langword="true"/> if the instance represents a value; otherwise, <see langword="false"/>.</returns>
     public abstract bool Some([NotNullWhen(true)] out TValue? value);
 
-    /// <inheritdoc />
+    /// Evaluates the current Option instance and applies the corresponding function based on its state.
+    /// <param name="some">The function to invoke if the Option contains a value.</param>
+    /// <param name="none">The function to invoke if the Option does not contain a value.</param>
+    /// <returns>The result of invoking the appropriate function based on the Option's state.</returns>
     public abstract TOut Match<TOut>(Func<TValue, TOut> some,
                                      Func<TOut>         none);
 
-    /// <inheritdoc />
+    /// Executes one of the provided actions depending on whether the Option has a value or represents no value.
+    /// <param name="some">The action to execute if the Option contains a value. The value is passed as a parameter to the action.</param>
+    /// <param name="none">The action to execute if the Option represents no value.</param>
     public abstract void Match(Action<TValue> some,
                                Action         none);
-
-    /// Transforms the value contained in the current Option instance using the specified function and returns a new Option instance.
-    /// If the current instance is None, the function is not invoked, and None is returned.
-    /// <param name="someFunc">A function to transform the value of type TValue into an <see cref="Option{TOut}" /> instance.</param>
-    /// <typeparam name="TOut">The type of value contained in the resulting <see cref="Option{TOut}" />.</typeparam>
-    /// <returns>
-    ///     An <see cref="Option{TOut}" /> containing the transformed value if the current instance is Some; otherwise,
-    ///     None.
-    /// </returns>
-    public abstract Option<TOut> Bind<TOut>(Func<TValue, Option<TOut>> someFunc)
-        where TOut : notnull;
-
-    /// Transforms the value contained in the current Option instance asynchronously using the specified function
-    /// and returns a new Option instance wrapped in a ValueTask.
-    /// If the current instance is None, the function is not invoked, and None is returned.
-    /// <param name="someFunc">
-    ///     A function to transform the value of type TValue into a <see cref="ValueTask{TResult}" />
-    ///     containing an <see cref="Option{TOut}" /> instance.
-    /// </param>
-    /// <typeparam name="TOut">The type of value contained in the resulting <see cref="Option{TOut}" />.</typeparam>
-    /// <returns>
-    ///     A <see cref="ValueTask{TResult}" /> containing an <see cref="Option{TOut}" />
-    ///     if the current instance is Some; otherwise, an <see cref="Option{TOut}" /> representing None.
-    /// </returns>
-    public abstract ValueTask<Option<TOut>> Bind<TOut>(Func<TValue, ValueTask<Option<TOut>>> someFunc)
-        where TOut : notnull;
 
     /// Creates an Option instance that represents no value.
     /// <returns>An <see cref="Option{TValue}" /> instance representing no value.</returns>

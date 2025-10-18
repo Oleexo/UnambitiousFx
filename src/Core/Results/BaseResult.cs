@@ -30,6 +30,12 @@ public abstract class BaseResult : IResult {
         _metadata[key] = value;
     }
 
+    internal void AddMetadata(IReadOnlyDictionary<string, object?> metadata) {
+        foreach (var kv in metadata) {
+            _metadata[kv.Key] = kv.Value;
+        }
+    }
+
     public abstract void Match(Action            success,
                                Action<Exception> failure);
 
