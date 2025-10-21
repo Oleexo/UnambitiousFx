@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System;
+using Microsoft.Extensions.Options;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 
@@ -8,13 +9,16 @@ internal sealed class Publisher : IPublisher {
     private readonly PublishMode         _defaultMode;
     private readonly IEventDispatcher    _eventDispatcher;
     private readonly IEventOutboxStorage _outboxStorage;
+    private readonly OutboxOptions       _outboxOptions;
 
     public Publisher(IEventDispatcher           eventDispatcher,
                      IEventOutboxStorage        outboxStorage,
-                     IOptions<PublisherOptions> options) {
+                     IOptions<PublisherOptions> options,
+                     IOptions<OutboxOptions>?   outboxOptions = null) {
         _eventDispatcher = eventDispatcher;
         _outboxStorage   = outboxStorage;
         _defaultMode     = options.Value.DefaultMode;
+        _outboxOptions   = outboxOptions?.Value ?? new OutboxOptions();
     }
 
     public ValueTask<Result> PublishAsync<TEvent>(IContext          context,
@@ -39,11 +43,51 @@ internal sealed class Publisher : IPublisher {
 
     public async ValueTask<Result> CommitAsync(IContext          context,
                                                CancellationToken cancellationToken = default) {
-        var events  = await _outboxStorage.GetPendingEventsAsync(cancellationToken);
+        var          pendingEvents = await _outboxStorage.GetPendingEventsAsync(cancellationToken);
+        List<IEvent> events;
+        if (_outboxOptions.BatchSize.HasValue &&
+            _outboxOptions.BatchSize.Value > 0) {
+            events = pendingEvents.Take(_outboxOptions.BatchSize.Value)
+                                  .ToList();
+        }
+        else {
+            events = pendingEvents.ToList();
+        }
+
         var results = new List<Result>();
 
         foreach (var @event in events) {
-            results.Add(await _eventDispatcher.DispatchAsync(context, @event, cancellationToken));
+            var result = await _eventDispatcher.DispatchAsync(context, @event, cancellationToken);
+            if (result.IsSuccess) {
+                var processed = await _outboxStorage.MarkAsProcessedAsync(@event, cancellationToken);
+                results.Add(processed.IsSuccess
+                                ? result
+                                : processed);
+                continue;
+            }
+
+            var attemptCount      = await _outboxStorage.GetAttemptCountAsync(@event, cancellationToken) ?? 0;
+            var nextAttemptNumber = attemptCount + 1; // the attempt we are recording now
+            var shouldDeadLetter  = nextAttemptNumber >= _outboxOptions.MaxRetryAttempts;
+
+            DateTimeOffset? nextAttemptAt = null;
+            if (!shouldDeadLetter &&
+                _outboxOptions.InitialRetryDelay > TimeSpan.Zero) {
+                // exponential backoff like delay * (factor ^ (attemptCount))
+                var factorPower = Math.Pow(_outboxOptions.BackoffFactor <= 0
+                                               ? 1
+                                               : _outboxOptions.BackoffFactor, attemptCount);
+                var delay = TimeSpan.FromMilliseconds(_outboxOptions.InitialRetryDelay.TotalMilliseconds * factorPower);
+                nextAttemptAt = DateTimeOffset.UtcNow + delay;
+            }
+
+            var failureReason = "Dispatch failed"; // Minimal reason placeholder
+            await _outboxStorage.MarkAsFailedAsync(@event,
+                                                   failureReason,
+                                                   shouldDeadLetter,
+                                                   nextAttemptAt,
+                                                   cancellationToken);
+            results.Add(result);
         }
 
         return results.Combine();

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using UnambitiousFx.Mediator.Abstractions;
 using UnambitiousFx.Mediator.Orchestrators;
@@ -33,6 +34,112 @@ public interface IMediatorConfig {
     /// </returns>
     IMediatorConfig RegisterRequestPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TRequestPipelineBehavior>()
         where TRequestPipelineBehavior : class, IRequestPipelineBehavior;
+
+    /// <summary>
+    ///     Registers a request pipeline behavior to be included in the mediator's processing pipeline.
+    ///     This overload is for typed registrations that do not have a response.
+    /// </summary>
+    /// <typeparam name="TBehavior">
+    ///     The type of the behavior that implements <see cref="IRequestPipelineBehavior{TRequest}" />.
+    ///     This type must have a public constructor to be resolved at runtime.
+    /// </typeparam>
+    /// <typeparam name="TRequest">
+    ///     The type of the request that the behavior processes. Must implement <see cref="IRequest" />.
+    /// </typeparam>
+    /// <returns>
+    ///     The current instance of <see cref="IMediatorConfig" />, enabling further configuration chaining.
+    /// </returns>
+    IMediatorConfig RegisterRequestPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TBehavior, TRequest>()
+        where TBehavior : class, IRequestPipelineBehavior<TRequest>
+        where TRequest : IRequest;
+
+    /// <summary>
+    ///     Registers a request pipeline behavior to be included in the mediator's processing pipeline.
+    ///     This overload is for typed registrations that have a response.
+    /// </summary>
+    /// <typeparam name="TBehavior">
+    ///     The type of the behavior that implements <see cref="IRequestPipelineBehavior{TRequest, TResponse}" />.
+    ///     This type must have a public constructor to be resolved at runtime.
+    /// </typeparam>
+    /// <typeparam name="TRequest">
+    ///     The type of the request that the behavior processes. Must implement <see cref="IRequest{TResponse}" />.
+    /// </typeparam>
+    /// <typeparam name="TResponse">
+    ///     The type of the response that the behavior generates. Must be a non-nullable type.
+    /// </typeparam>
+    /// <returns>
+    ///     The current instance of <see cref="IMediatorConfig" />, enabling further configuration chaining.
+    /// </returns>
+    IMediatorConfig RegisterRequestPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TBehavior, TRequest, TResponse>()
+        where TBehavior : class, IRequestPipelineBehavior<TRequest, TResponse>
+        where TRequest : IRequest<TResponse>
+        where TResponse : notnull;
+
+    /// <summary>
+    ///     Registers a request pipeline behavior conditionally, based on a predicate.
+    ///     The behavior is registered only if the predicate evaluates to true.
+    /// </summary>
+    /// <typeparam name="TBehavior">
+    ///     The type of the behavior that implements <see cref="IRequestPipelineBehavior" />.
+    ///     This type must have a public constructor to be resolved at runtime.
+    /// </typeparam>
+    /// <param name="predicate">
+    ///     A function that determines whether the behavior should be applied, based on the context and request.
+    /// </param>
+    /// <returns>
+    ///     The current instance of <see cref="IMediatorConfig" />, enabling further configuration chaining.
+    /// </returns>
+    IMediatorConfig RegisterConditionalRequestPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TBehavior>(
+        Func<IContext, object, bool> predicate)
+        where TBehavior : class, IRequestPipelineBehavior;
+
+    /// <summary>
+    ///     Registers a request pipeline behavior conditionally, based on a predicate.
+    ///     This overload is for typed registrations that do not have a response.
+    /// </summary>
+    /// <typeparam name="TBehavior">
+    ///     The type of the behavior that implements <see cref="IRequestPipelineBehavior{TRequest}" />.
+    ///     This type must have a public constructor to be resolved at runtime.
+    /// </typeparam>
+    /// <typeparam name="TRequest">
+    ///     The type of the request that the behavior processes. Must implement <see cref="IRequest" />.
+    /// </typeparam>
+    /// <param name="predicate">
+    ///     A function that determines whether the behavior should be applied, based on the context and request.
+    /// </param>
+    /// <returns>
+    ///     The current instance of <see cref="IMediatorConfig" />, enabling further configuration chaining.
+    /// </returns>
+    IMediatorConfig RegisterConditionalRequestPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TBehavior, TRequest>(
+        Func<IContext, TRequest, bool> predicate)
+        where TBehavior : class, IRequestPipelineBehavior<TRequest>
+        where TRequest : IRequest;
+
+    /// <summary>
+    ///     Registers a request pipeline behavior conditionally, based on a predicate.
+    ///     This overload is for typed registrations that have a response.
+    /// </summary>
+    /// <typeparam name="TBehavior">
+    ///     The type of the behavior that implements <see cref="IRequestPipelineBehavior{TRequest, TResponse}" />.
+    ///     This type must have a public constructor to be resolved at runtime.
+    /// </typeparam>
+    /// <typeparam name="TRequest">
+    ///     The type of the request that the behavior processes. Must implement <see cref="IRequest{TResponse}" />.
+    /// </typeparam>
+    /// <typeparam name="TResponse">
+    ///     The type of the response that the behavior generates. Must be a non-nullable type.
+    /// </typeparam>
+    /// <param name="predicate">
+    ///     A function that determines whether the behavior should be applied, based on the context and request.
+    /// </param>
+    /// <returns>
+    ///     The current instance of <see cref="IMediatorConfig" />, enabling further configuration chaining.
+    /// </returns>
+    IMediatorConfig RegisterConditionalRequestPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TBehavior, TRequest, TResponse>(
+        Func<IContext, TRequest, bool> predicate)
+        where TBehavior : class, IRequestPipelineBehavior<TRequest, TResponse>
+        where TRequest : IRequest<TResponse>
+        where TResponse : notnull;
 
     /// <summary>
     ///     Registers a custom event pipeline behavior to be included in the mediator configuration.
@@ -146,6 +253,13 @@ public interface IMediatorConfig {
     /// <param name="mode">The <see cref="PublishMode" /> to set as the default publishing mode.</param>
     /// <returns>An instance of <see cref="IMediatorConfig" /> to allow for method chaining.</returns>
     IMediatorConfig SetDefaultPublishingMode(PublishMode mode);
+
+    /// <summary>
+    ///     Configures options for the outbox retry, dead-letter and batch processing features.
+    /// </summary>
+    /// <param name="configure">Delegate to mutate the <see cref="OutboxOptions"/> instance.</param>
+    /// <returns>The current config instance.</returns>
+    IMediatorConfig ConfigureOutbox(Action<OutboxOptions> configure);
 
     /// <summary>
     ///     Applies the current configuration to set up the mediator with the provided services and options.
