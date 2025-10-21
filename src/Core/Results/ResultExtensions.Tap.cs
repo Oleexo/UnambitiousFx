@@ -1,6 +1,12 @@
 ﻿namespace UnambitiousFx.Core.Results;
 
 public static partial class ResultExtensions {
+    public static Result Tap(this Result       result,
+                             Action tap) {
+        result.Match(tap,_ => { });
+        return result;
+    }
+    
     public static Result<TValue> Tap<TValue>(this Result<TValue> result,
                                              Action<TValue>      tap)
         where TValue : notnull {
@@ -12,8 +18,7 @@ public static partial class ResultExtensions {
                                                                  Action<TValue1, TValue2>      tap)
         where TValue1 : notnull
         where TValue2 : notnull {
-        result.Match((v1,
-                      v2) => tap(v1, v2), _ => { });
+        result.Match(tap, _ => { });
         return result;
     }
 
@@ -22,9 +27,7 @@ public static partial class ResultExtensions {
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull {
-        result.Match((value1,
-                      value2,
-                      value3) => tap(value1, value2, value3), _ => { });
+        result.Match(tap, _ => { });
         return result;
     }
 
@@ -34,10 +37,7 @@ public static partial class ResultExtensions {
         where TValue2 : notnull
         where TValue3 : notnull
         where TValue4 : notnull {
-        result.Match((value1,
-                      value2,
-                      value3,
-                      value4) => tap(value1, value2, value3, value4), _ => { });
+        result.Match(tap, _ => { });
         return result;
     }
 
@@ -66,12 +66,7 @@ public static partial class ResultExtensions {
         where TValue4 : notnull
         where TValue5 : notnull
         where TValue6 : notnull {
-        result.Match((value1,
-                      value2,
-                      value3,
-                      value4,
-                      value5,
-                      value6) => tap(value1, value2, value3, value4, value5, value6), _ => { });
+        result.Match(tap, _ => { });
         return result;
     }
 
@@ -85,13 +80,7 @@ public static partial class ResultExtensions {
         where TValue5 : notnull
         where TValue6 : notnull
         where TValue7 : notnull {
-        result.Match((value1,
-                      value2,
-                      value3,
-                      value4,
-                      value5,
-                      value6,
-                      value7) => tap(value1, value2, value3, value4, value5, value6, value7), _ => { });
+        result.Match(tap, _ => { });
         return result;
     }
 
@@ -106,14 +95,7 @@ public static partial class ResultExtensions {
         where TValue6 : notnull
         where TValue7 : notnull
         where TValue8 : notnull {
-        result.Match((value1,
-                      value2,
-                      value3,
-                      value4,
-                      value5,
-                      value6,
-                      value7,
-                      value8) => tap(value1, value2, value3, value4, value5, value6, value7, value8), _ => { });
+        result.Match(tap, _ => { });
         return result;
     }
 }

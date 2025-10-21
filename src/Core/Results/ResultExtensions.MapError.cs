@@ -1,11 +1,18 @@
 ﻿namespace UnambitiousFx.Core.Results;
 
 public static partial class ResultExtensions {
+    public static Result MapError(this Result                result,
+                                  Func<Exception, Exception> mapError) {
+        return result.Match(
+            Result.Success,
+            ex => Result.Failure(mapError(ex))
+        );
+    }
     public static Result<TValue> MapError<TValue>(this Result<TValue>        result,
                                                   Func<Exception, Exception> mapError)
         where TValue : notnull {
         return result.Match(
-            value => Result.Success<TValue>(value),
+            Result.Success,
             ex => Result.Failure<TValue>(mapError(ex))
         );
     }
@@ -15,8 +22,7 @@ public static partial class ResultExtensions {
         where TValue1 : notnull
         where TValue2 : notnull {
         return result.Match(
-            (value1,
-             value2) => Result.Success<TValue1, TValue2>(value1, value2),
+            Result.Success,
             ex => Result.Failure<TValue1, TValue2>(mapError(ex))
         );
     }
@@ -27,9 +33,7 @@ public static partial class ResultExtensions {
         where TValue2 : notnull
         where TValue3 : notnull {
         return result.Match(
-            (value1,
-             value2,
-             value3) => Result.Success<TValue1, TValue2, TValue3>(value1, value2, value3),
+            Result.Success,
             ex => Result.Failure<TValue1, TValue2, TValue3>(mapError(ex))
         );
     }
@@ -41,10 +45,7 @@ public static partial class ResultExtensions {
         where TValue3 : notnull
         where TValue4 : notnull {
         return result.Match(
-            (value1,
-             value2,
-             value3,
-             value4) => Result.Success<TValue1, TValue2, TValue3, TValue4>(value1, value2, value3, value4),
+            Result.Success,
             ex => Result.Failure<TValue1, TValue2, TValue3, TValue4>(mapError(ex))
         );
     }
@@ -58,11 +59,7 @@ public static partial class ResultExtensions {
         where TValue4 : notnull
         where TValue5 : notnull {
         return result.Match(
-            (value1,
-             value2,
-             value3,
-             value4,
-             value5) => Result.Success<TValue1, TValue2, TValue3, TValue4, TValue5>(value1, value2, value3, value4, value5),
+            Result.Success,
             ex => Result.Failure<TValue1, TValue2, TValue3, TValue4, TValue5>(mapError(ex))
         );
     }
@@ -77,12 +74,7 @@ public static partial class ResultExtensions {
         where TValue5 : notnull
         where TValue6 : notnull {
         return result.Match(
-            (value1,
-             value2,
-             value3,
-             value4,
-             value5,
-             value6) => Result.Success<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(value1, value2, value3, value4, value5, value6),
+            Result.Success,
             ex => Result.Failure<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(mapError(ex))
         );
     }
@@ -98,13 +90,7 @@ public static partial class ResultExtensions {
         where TValue6 : notnull
         where TValue7 : notnull {
         return result.Match(
-            (value1,
-             value2,
-             value3,
-             value4,
-             value5,
-             value6,
-             value7) => Result.Success<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(value1, value2, value3, value4, value5, value6, value7),
+            Result.Success,
             ex => Result.Failure<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(mapError(ex))
         );
     }
@@ -121,14 +107,7 @@ public static partial class ResultExtensions {
         where TValue7 : notnull
         where TValue8 : notnull {
         return result.Match(
-            (value1,
-             value2,
-             value3,
-             value4,
-             value5,
-             value6,
-             value7,
-             value8) => Result.Success<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(value1, value2, value3, value4, value5, value6, value7, value8),
+            Result.Success,
             ex => Result.Failure<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(mapError(ex))
         );
     }

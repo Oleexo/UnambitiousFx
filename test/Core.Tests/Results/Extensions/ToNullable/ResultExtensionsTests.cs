@@ -12,10 +12,10 @@ public sealed class ResultExtensionsTests {
     }
 
     [Fact]
-    public void ToNullable_Arity1_Failure_ReturnsNull() {
+    public void ToNullable_Arity1_Failure_ReturnsDefault() {
         var r = Result.Failure<int>(new Exception("boom"));
         var n = r.ToNullable();
-        Assert.Equal((int?)null, n);
+        Assert.Equal(0, n);
     }
 
     // Arity 2

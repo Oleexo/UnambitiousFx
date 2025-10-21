@@ -49,20 +49,7 @@ internal sealed class FailureResult : Result, IFailureResult {
         error = PrimaryException;
         return false;
     }
-
-    public override Result MapError(Func<Exception, Exception> mapError) {
-        return new FailureResult(mapError(PrimaryException));
-    }
-
-    public override Result Tap(Action action) {
-        return new FailureResult(PrimaryException);
-    }
-
-    public override Result TapError(Action<Exception> tapError) {
-        tapError(PrimaryException);
-        return new FailureResult(PrimaryException);
-    }
-
+    
     public override void Deconstruct(out bool       isSuccess,
                                      out Exception? error) {
         isSuccess = false;

@@ -4,9 +4,6 @@ using UnambitiousFx.Core.Results.Reasons;
 namespace UnambitiousFx.Core.Results;
 
 public abstract partial class Result : BaseResult {
-    public abstract Result MapError(Func<Exception, Exception> mapError);
-    public abstract Result Tap(Action                          action);
-    public abstract Result TapError(Action<Exception>          tapError);
 
     public static Result Success() {
         return new SuccessResult();

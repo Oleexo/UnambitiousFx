@@ -28,19 +28,6 @@ internal sealed class SuccessResult : Result, ISuccessResult {
         return true;
     }
 
-    public override Result MapError(Func<Exception, Exception> mapError) {
-        return new SuccessResult();
-    }
-
-    public override Result Tap(Action action) {
-        action();
-        return new SuccessResult();
-    }
-
-    public override Result TapError(Action<Exception> tapError) {
-        return new SuccessResult();
-    }
-
     public override void Deconstruct(out bool       isSuccess,
                                      out Exception? error) {
         isSuccess = true;

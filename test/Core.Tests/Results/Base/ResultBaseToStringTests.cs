@@ -41,9 +41,6 @@ public sealed class ResultBaseToStringTests {
         public override void IfFailure(Action<Exception> action) { if (!_isSuccess) action(new Exception("x")); }
         public override bool Ok([System.Diagnostics.CodeAnalysis.NotNullWhen(false)] out Exception? error) { error = _isSuccess ? null : new Exception("x"); return _isSuccess; }
 
-        public override Result MapError(Func<Exception, Exception> mapError) { return this; }
-        public override Result Tap(Action action) { if (_isSuccess) action(); return this; }
-        public override Result TapError(Action<Exception> tapError) { if (!_isSuccess) tapError(new Exception("x")); return this; }
         public override void Deconstruct(out bool isSuccess, out Exception? error) { isSuccess = _isSuccess; error = _isSuccess ? null : new Exception("x"); }
     }
 }
