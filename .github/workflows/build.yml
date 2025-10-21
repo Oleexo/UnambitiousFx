@@ -24,6 +24,7 @@ jobs:
       packages: write
       contents: write
       pull-requests: write
+      checks: write
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
     steps:
