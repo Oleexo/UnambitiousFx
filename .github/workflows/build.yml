@@ -23,6 +23,7 @@ jobs:
     permissions:
       packages: write
       contents: write
+      pull-requests: write
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
     steps:
@@ -51,8 +52,17 @@ jobs:
       - name: Build
         run: dotnet build --no-restore --configuration Release --property:Version=${{ steps.gitversion.outputs.SemVer }}
 
-      - name: Test
-        run: dotnet test --no-build --verbosity normal --configuration Release
+      - name: Tests
+        id: test
+        run: dotnet test --no-restore --no-build --verbosity normal --configuration Release --logger "trx" --results-directory "test-results/"
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: ${{ steps.test.outcome != 'skipped' && !cancelled() }}
+        with:
+          check_name: "Test Results (web)"
+          files: |
+            test-results/**/*.trx
 
       - name: Pack NuGet packages
         run: dotnet pack --configuration Release --no-build --property:Version=${{ steps.gitversion.outputs.SemVer }}
