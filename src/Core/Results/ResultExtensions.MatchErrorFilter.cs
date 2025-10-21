@@ -228,7 +228,6 @@ public static partial class ResultExtensions {
         return failure;
     }
 
-    // Generic arities FilterError
     public static Result<T1> FilterError<T1>(this Result<T1>    result,
                                              Func<IError, bool> predicate)
         where T1 : notnull {

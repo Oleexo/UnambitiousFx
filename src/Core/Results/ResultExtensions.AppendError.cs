@@ -2,7 +2,7 @@ namespace UnambitiousFx.Core.Results;
 
 public static partial class ResultExtensions {
     public static Result AppendError(this Result result, string suffix) {
-        if (result == null) throw new ArgumentNullException(nameof(result));
+        ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(suffix) || result.IsSuccess) return result; // no-op
         var mapped = result.MapError(e => new Exception(e.Message + suffix, e));
         return Preserve(result, mapped);
@@ -10,7 +10,7 @@ public static partial class ResultExtensions {
 
     public static Result<T1> AppendError<T1>(this Result<T1> result, string suffix)
         where T1 : notnull {
-        if (result == null) throw new ArgumentNullException(nameof(result));
+        ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(suffix) || result.IsSuccess) return result; // no-op
         var mapped = result.MapError(e => new Exception(e.Message + suffix, e));
         return Preserve(result, mapped);
@@ -20,7 +20,7 @@ public static partial class ResultExtensions {
                                                      string              suffix)
         where T1 : notnull
         where T2 : notnull {
-        if (result == null) throw new ArgumentNullException(nameof(result));
+        ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(suffix) ||
             result.IsSuccess) return result;
         return result.ShapeError(e => new Exception(e.Message + suffix, e));
@@ -31,7 +31,7 @@ public static partial class ResultExtensions {
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull {
-        if (result == null) throw new ArgumentNullException(nameof(result));
+        ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(suffix) ||
             result.IsSuccess) return result;
         return result.ShapeError(e => new Exception(e.Message + suffix, e));
@@ -43,7 +43,7 @@ public static partial class ResultExtensions {
         where T2 : notnull
         where T3 : notnull
         where T4 : notnull {
-        if (result == null) throw new ArgumentNullException(nameof(result));
+        ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(suffix) ||
             result.IsSuccess) return result;
         return result.ShapeError(e => new Exception(e.Message + suffix, e));
@@ -56,7 +56,7 @@ public static partial class ResultExtensions {
         where T3 : notnull
         where T4 : notnull
         where T5 : notnull {
-        if (result == null) throw new ArgumentNullException(nameof(result));
+        ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(suffix) ||
             result.IsSuccess) return result;
         return result.ShapeError(e => new Exception(e.Message + suffix, e));
@@ -70,7 +70,7 @@ public static partial class ResultExtensions {
         where T4 : notnull
         where T5 : notnull
         where T6 : notnull {
-        if (result == null) throw new ArgumentNullException(nameof(result));
+        ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(suffix) ||
             result.IsSuccess) return result;
         return result.ShapeError(e => new Exception(e.Message + suffix, e));
@@ -85,7 +85,7 @@ public static partial class ResultExtensions {
         where T5 : notnull
         where T6 : notnull
         where T7 : notnull {
-        if (result == null) throw new ArgumentNullException(nameof(result));
+        ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(suffix) ||
             result.IsSuccess) return result;
         return result.ShapeError(e => new Exception(e.Message + suffix, e));
@@ -101,7 +101,7 @@ public static partial class ResultExtensions {
         where T6 : notnull
         where T7 : notnull
         where T8 : notnull {
-        if (result == null) throw new ArgumentNullException(nameof(result));
+        ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(suffix) ||
             result.IsSuccess) return result;
         return result.ShapeError(e => new Exception(e.Message + suffix, e));

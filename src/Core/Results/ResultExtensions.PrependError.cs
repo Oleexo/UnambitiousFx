@@ -4,7 +4,7 @@ namespace UnambitiousFx.Core.Results;
 
 public static partial class ResultExtensions {
     public static Result PrependError(this Result result, string prefix) {
-        if (result == null) throw new ArgumentNullException(nameof(result));
+        ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(prefix) || result.IsSuccess) return result; // no-op
         var mapped = result.MapError(e => new Exception(prefix + e.Message, e));
         return Preserve(result, mapped);
@@ -12,50 +12,50 @@ public static partial class ResultExtensions {
     
     public static Result<T1> PrependError<T1>(this Result<T1> result, string prefix)
         where T1 : notnull {
-        if (result == null) throw new ArgumentNullException(nameof(result));
+        ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(prefix) || result.IsSuccess) return result; // no-op
         var mapped = result.MapError(e => new Exception(prefix + e.Message, e));
         return Preserve(result, mapped);
     }
     public static Result<T1, T2> PrependError<T1, T2>(this Result<T1, T2> result, string prefix)
         where T1 : notnull where T2 : notnull {
-        if (result == null) throw new ArgumentNullException(nameof(result));
+        ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(prefix) || result.IsSuccess) return result;
         return result.ShapeError(e => new Exception(prefix + e.Message, e));
     }
     public static Result<T1, T2, T3> PrependError<T1, T2, T3>(this Result<T1, T2, T3> result, string prefix)
         where T1 : notnull where T2 : notnull where T3 : notnull {
-        if (result == null) throw new ArgumentNullException(nameof(result));
+        ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(prefix) || result.IsSuccess) return result;
         return result.ShapeError(e => new Exception(prefix + e.Message, e));
     }
     public static Result<T1, T2, T3, T4> PrependError<T1, T2, T3, T4>(this Result<T1, T2, T3, T4> result, string prefix)
         where T1 : notnull where T2 : notnull where T3 : notnull where T4 : notnull {
-        if (result == null) throw new ArgumentNullException(nameof(result));
+        ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(prefix) || result.IsSuccess) return result;
         return result.ShapeError(e => new Exception(prefix + e.Message, e));
     }
     public static Result<T1, T2, T3, T4, T5> PrependError<T1, T2, T3, T4, T5>(this Result<T1, T2, T3, T4, T5> result, string prefix)
         where T1 : notnull where T2 : notnull where T3 : notnull where T4 : notnull where T5 : notnull {
-        if (result == null) throw new ArgumentNullException(nameof(result));
+        ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(prefix) || result.IsSuccess) return result;
         return result.ShapeError(e => new Exception(prefix + e.Message, e));
     }
     public static Result<T1, T2, T3, T4, T5, T6> PrependError<T1, T2, T3, T4, T5, T6>(this Result<T1, T2, T3, T4, T5, T6> result, string prefix)
         where T1 : notnull where T2 : notnull where T3 : notnull where T4 : notnull where T5 : notnull where T6 : notnull {
-        if (result == null) throw new ArgumentNullException(nameof(result));
+        ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(prefix) || result.IsSuccess) return result;
         return result.ShapeError(e => new Exception(prefix + e.Message, e));
     }
     public static Result<T1, T2, T3, T4, T5, T6, T7> PrependError<T1, T2, T3, T4, T5, T6, T7>(this Result<T1, T2, T3, T4, T5, T6, T7> result, string prefix)
         where T1 : notnull where T2 : notnull where T3 : notnull where T4 : notnull where T5 : notnull where T6 : notnull where T7 : notnull {
-        if (result == null) throw new ArgumentNullException(nameof(result));
+        ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(prefix) || result.IsSuccess) return result;
         return result.ShapeError(e => new Exception(prefix + e.Message, e));
     }
     public static Result<T1, T2, T3, T4, T5, T6, T7, T8> PrependError<T1, T2, T3, T4, T5, T6, T7, T8>(this Result<T1, T2, T3, T4, T5, T6, T7, T8> result, string prefix)
         where T1 : notnull where T2 : notnull where T3 : notnull where T4 : notnull where T5 : notnull where T6 : notnull where T7 : notnull where T8 : notnull {
-        if (result == null) throw new ArgumentNullException(nameof(result));
+        ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(prefix) || result.IsSuccess) return result;
         return result.ShapeError(e => new Exception(prefix + e.Message, e));
     }
