@@ -12,13 +12,9 @@ public static partial class ResultExtensions {
                                                 Func<TError, TOut> onMatch,
                                                 Func<TOut>         onElse)
         where TError : class, IError {
-        if (onMatch == null) {
-            throw new ArgumentNullException(nameof(onMatch));
-        }
+        ArgumentNullException.ThrowIfNull(onMatch);
 
-        if (onElse == null) {
-            throw new ArgumentNullException(nameof(onElse));
-        }
+        ArgumentNullException.ThrowIfNull(onElse);
 
         var match = result.Reasons.OfType<TError>()
                           .FirstOrDefault();
@@ -33,13 +29,8 @@ public static partial class ResultExtensions {
                                                          Func<TOut>           onElse)
         where TValue1 : notnull
         where TError : class, IError {
-        if (onMatch == null) {
-            throw new ArgumentNullException(nameof(onMatch));
-        }
-
-        if (onElse == null) {
-            throw new ArgumentNullException(nameof(onElse));
-        }
+        ArgumentNullException.ThrowIfNull(onMatch);
+        ArgumentNullException.ThrowIfNull(onElse);
 
         var match = result.Reasons.OfType<TError>()
                           .FirstOrDefault();
@@ -54,13 +45,8 @@ public static partial class ResultExtensions {
         where TValue1 : notnull
         where TValue2 : notnull
         where TError : class, IError {
-        if (onMatch == null) {
-            throw new ArgumentNullException(nameof(onMatch));
-        }
-
-        if (onElse == null) {
-            throw new ArgumentNullException(nameof(onElse));
-        }
+        ArgumentNullException.ThrowIfNull(onMatch);
+        ArgumentNullException.ThrowIfNull(onElse);
 
         var match = result.Reasons.OfType<TError>()
                           .FirstOrDefault();
@@ -76,13 +62,9 @@ public static partial class ResultExtensions {
         where TValue2 : notnull
         where TValue3 : notnull
         where TError : class, IError {
-        if (onMatch == null) {
-            throw new ArgumentNullException(nameof(onMatch));
-        }
+        ArgumentNullException.ThrowIfNull(onMatch);
 
-        if (onElse == null) {
-            throw new ArgumentNullException(nameof(onElse));
-        }
+        ArgumentNullException.ThrowIfNull(onElse);
 
         var match = result.Reasons.OfType<TError>()
                           .FirstOrDefault();
@@ -99,13 +81,9 @@ public static partial class ResultExtensions {
         where TValue3 : notnull
         where TValue4 : notnull
         where TError : class, IError {
-        if (onMatch == null) {
-            throw new ArgumentNullException(nameof(onMatch));
-        }
+        ArgumentNullException.ThrowIfNull(onMatch);
 
-        if (onElse == null) {
-            throw new ArgumentNullException(nameof(onElse));
-        }
+        ArgumentNullException.ThrowIfNull(onElse);
 
         var match = result.Reasons.OfType<TError>()
                           .FirstOrDefault();
@@ -123,13 +101,9 @@ public static partial class ResultExtensions {
         where TValue4 : notnull
         where TValue5 : notnull
         where TError : class, IError {
-        if (onMatch == null) {
-            throw new ArgumentNullException(nameof(onMatch));
-        }
+        ArgumentNullException.ThrowIfNull(onMatch);
 
-        if (onElse == null) {
-            throw new ArgumentNullException(nameof(onElse));
-        }
+        ArgumentNullException.ThrowIfNull(onElse);
 
         var match = result.Reasons.OfType<TError>()
                           .FirstOrDefault();
@@ -148,13 +122,9 @@ public static partial class ResultExtensions {
         where TValue5 : notnull
         where TValue6 : notnull
         where TError : class, IError {
-        if (onMatch == null) {
-            throw new ArgumentNullException(nameof(onMatch));
-        }
+        ArgumentNullException.ThrowIfNull(onMatch);
 
-        if (onElse == null) {
-            throw new ArgumentNullException(nameof(onElse));
-        }
+        ArgumentNullException.ThrowIfNull(onElse);
 
         var match = result.Reasons.OfType<TError>()
                           .FirstOrDefault();
@@ -175,13 +145,9 @@ public static partial class ResultExtensions {
         where TValue6 : notnull
         where TValue7 : notnull
         where TError : class, IError {
-        if (onMatch == null) {
-            throw new ArgumentNullException(nameof(onMatch));
-        }
+        ArgumentNullException.ThrowIfNull(onMatch);
 
-        if (onElse == null) {
-            throw new ArgumentNullException(nameof(onElse));
-        }
+        ArgumentNullException.ThrowIfNull(onElse);
 
         var match = result.Reasons.OfType<TError>()
                           .FirstOrDefault();
@@ -203,13 +169,9 @@ public static partial class ResultExtensions {
         where TValue7 : notnull
         where TValue8 : notnull
         where TError : class, IError {
-        if (onMatch == null) {
-            throw new ArgumentNullException(nameof(onMatch));
-        }
+        ArgumentNullException.ThrowIfNull(onMatch);
 
-        if (onElse == null) {
-            throw new ArgumentNullException(nameof(onElse));
-        }
+        ArgumentNullException.ThrowIfNull(onElse);
 
         var match = result.Reasons.OfType<TError>()
                           .FirstOrDefault();
@@ -221,9 +183,7 @@ public static partial class ResultExtensions {
     // -------------------- FilterError (retain matching error reasons) --------------------
     public static Result FilterError(this Result        result,
                                      Func<IError, bool> predicate) {
-        if (predicate == null) {
-            throw new ArgumentNullException(nameof(predicate));
-        }
+        ArgumentNullException.ThrowIfNull(predicate);
 
         if (result.IsSuccess) {
             return result; // nothing to filter
@@ -272,9 +232,7 @@ public static partial class ResultExtensions {
     public static Result<T1> FilterError<T1>(this Result<T1>    result,
                                              Func<IError, bool> predicate)
         where T1 : notnull {
-        if (predicate == null) {
-            throw new ArgumentNullException(nameof(predicate));
-        }
+        ArgumentNullException.ThrowIfNull(predicate);
 
         if (result.IsSuccess) {
             return result;
@@ -320,9 +278,7 @@ public static partial class ResultExtensions {
                                                      Func<IError, bool>  predicate)
         where T1 : notnull
         where T2 : notnull {
-        if (predicate == null) {
-            throw new ArgumentNullException(nameof(predicate));
-        }
+        ArgumentNullException.ThrowIfNull(predicate);
 
         if (result.IsSuccess) {
             return result;
@@ -369,9 +325,7 @@ public static partial class ResultExtensions {
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull {
-        if (predicate == null) {
-            throw new ArgumentNullException(nameof(predicate));
-        }
+        ArgumentNullException.ThrowIfNull(predicate);
 
         if (result.IsSuccess) {
             return result;
@@ -419,9 +373,7 @@ public static partial class ResultExtensions {
         where T2 : notnull
         where T3 : notnull
         where T4 : notnull {
-        if (predicate == null) {
-            throw new ArgumentNullException(nameof(predicate));
-        }
+        ArgumentNullException.ThrowIfNull(predicate);
 
         if (result.IsSuccess) {
             return result;
@@ -470,9 +422,7 @@ public static partial class ResultExtensions {
         where T3 : notnull
         where T4 : notnull
         where T5 : notnull {
-        if (predicate == null) {
-            throw new ArgumentNullException(nameof(predicate));
-        }
+        ArgumentNullException.ThrowIfNull(predicate);
 
         if (result.IsSuccess) {
             return result;
@@ -522,9 +472,7 @@ public static partial class ResultExtensions {
         where T4 : notnull
         where T5 : notnull
         where T6 : notnull {
-        if (predicate == null) {
-            throw new ArgumentNullException(nameof(predicate));
-        }
+        ArgumentNullException.ThrowIfNull(predicate);
 
         if (result.IsSuccess) {
             return result;
@@ -575,9 +523,7 @@ public static partial class ResultExtensions {
         where T5 : notnull
         where T6 : notnull
         where T7 : notnull {
-        if (predicate == null) {
-            throw new ArgumentNullException(nameof(predicate));
-        }
+        ArgumentNullException.ThrowIfNull(predicate);
 
         if (result.IsSuccess) {
             return result;
@@ -629,9 +575,7 @@ public static partial class ResultExtensions {
         where T6 : notnull
         where T7 : notnull
         where T8 : notnull {
-        if (predicate == null) {
-            throw new ArgumentNullException(nameof(predicate));
-        }
+        ArgumentNullException.ThrowIfNull(predicate);
 
         if (result.IsSuccess) {
             return result;

@@ -9,9 +9,7 @@ public static partial class ResultExtensions {
     public static TValue1 ValueOrThrow<TValue1>(this Result<TValue1>       result,
                                                 Func<Exception, Exception> exceptionFactory)
         where TValue1 : notnull {
-        if (exceptionFactory is null) {
-            throw new ArgumentNullException("exceptionFactory");
-        }
+        ArgumentNullException.ThrowIfNull(exceptionFactory);
 
         return result.Match<TValue1>(value1 => value1, e => throw exceptionFactory(e));
     }
@@ -27,9 +25,7 @@ public static partial class ResultExtensions {
                                                                     Func<Exception, Exception>    exceptionFactory)
         where TValue1 : notnull
         where TValue2 : notnull {
-        if (exceptionFactory is null) {
-            throw new ArgumentNullException("exceptionFactory");
-        }
+        ArgumentNullException.ThrowIfNull(exceptionFactory);
 
         return result.Match<(TValue1, TValue2)>((value1,
                                                  value2) => (value1, value2), e => throw exceptionFactory(e));
@@ -49,9 +45,7 @@ public static partial class ResultExtensions {
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull {
-        if (exceptionFactory is null) {
-            throw new ArgumentNullException("exceptionFactory");
-        }
+        ArgumentNullException.ThrowIfNull(exceptionFactory);
 
         return result.Match<(TValue1, TValue2, TValue3)>((value1,
                                                           value2,
@@ -75,9 +69,7 @@ public static partial class ResultExtensions {
         where TValue2 : notnull
         where TValue3 : notnull
         where TValue4 : notnull {
-        if (exceptionFactory is null) {
-            throw new ArgumentNullException("exceptionFactory");
-        }
+        ArgumentNullException.ThrowIfNull(exceptionFactory);
 
         return result.Match<(TValue1, TValue2, TValue3, TValue4)>((value1,
                                                                    value2,
@@ -107,9 +99,7 @@ public static partial class ResultExtensions {
         where TValue3 : notnull
         where TValue4 : notnull
         where TValue5 : notnull {
-        if (exceptionFactory is null) {
-            throw new ArgumentNullException("exceptionFactory");
-        }
+        ArgumentNullException.ThrowIfNull(exceptionFactory);
 
         return result.Match<(TValue1, TValue2, TValue3, TValue4, TValue5)>((value1,
                                                                             value2,
@@ -143,9 +133,7 @@ public static partial class ResultExtensions {
         where TValue4 : notnull
         where TValue5 : notnull
         where TValue6 : notnull {
-        if (exceptionFactory is null) {
-            throw new ArgumentNullException("exceptionFactory");
-        }
+        ArgumentNullException.ThrowIfNull(exceptionFactory);
 
         return result.Match<(TValue1, TValue2, TValue3, TValue4, TValue5, TValue6)>((value1,
                                                                                      value2,
@@ -183,9 +171,7 @@ public static partial class ResultExtensions {
         where TValue5 : notnull
         where TValue6 : notnull
         where TValue7 : notnull {
-        if (exceptionFactory is null) {
-            throw new ArgumentNullException("exceptionFactory");
-        }
+        ArgumentNullException.ThrowIfNull(exceptionFactory);
 
         return result.Match<(TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7)>((value1,
                                                                                               value2,
@@ -229,9 +215,7 @@ public static partial class ResultExtensions {
         where TValue6 : notnull
         where TValue7 : notnull
         where TValue8 : notnull {
-        if (exceptionFactory is null) {
-            throw new ArgumentNullException("exceptionFactory");
-        }
+        ArgumentNullException.ThrowIfNull(exceptionFactory);
 
         return result.Match<(TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8)>((value1,
                                                                                                        value2,

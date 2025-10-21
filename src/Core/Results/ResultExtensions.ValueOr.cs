@@ -10,9 +10,7 @@ public static partial class ResultExtensions {
     public static TValue1 ValueOr<TValue1>(this Result<TValue1> result,
                                            Func<TValue1>        fallbackFactory)
         where TValue1 : notnull {
-        if (fallbackFactory is null) {
-            throw new ArgumentNullException("fallbackFactory");
-        }
+        ArgumentNullException.ThrowIfNull(fallbackFactory);
 
         return result.Match<TValue1>(value1 => value1, _ => fallbackFactory());
     }
@@ -30,9 +28,7 @@ public static partial class ResultExtensions {
                                                                Func<(TValue1, TValue2)>      fallbackFactory)
         where TValue1 : notnull
         where TValue2 : notnull {
-        if (fallbackFactory is null) {
-            throw new ArgumentNullException("fallbackFactory");
-        }
+        ArgumentNullException.ThrowIfNull(fallbackFactory);
 
         return result.Match<(TValue1, TValue2)>((value1,
                                                  value2) => (value1, value2), _ => fallbackFactory());
@@ -55,9 +51,7 @@ public static partial class ResultExtensions {
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull {
-        if (fallbackFactory is null) {
-            throw new ArgumentNullException("fallbackFactory");
-        }
+        ArgumentNullException.ThrowIfNull(fallbackFactory);
 
         return result.Match<(TValue1, TValue2, TValue3)>((value1,
                                                           value2,
@@ -85,9 +79,7 @@ public static partial class ResultExtensions {
         where TValue2 : notnull
         where TValue3 : notnull
         where TValue4 : notnull {
-        if (fallbackFactory is null) {
-            throw new ArgumentNullException("fallbackFactory");
-        }
+        ArgumentNullException.ThrowIfNull(fallbackFactory);
 
         return result.Match<(TValue1, TValue2, TValue3, TValue4)>((value1,
                                                                    value2,
@@ -123,9 +115,7 @@ public static partial class ResultExtensions {
         where TValue3 : notnull
         where TValue4 : notnull
         where TValue5 : notnull {
-        if (fallbackFactory is null) {
-            throw new ArgumentNullException("fallbackFactory");
-        }
+        ArgumentNullException.ThrowIfNull(fallbackFactory);
 
         return result.Match<(TValue1, TValue2, TValue3, TValue4, TValue5)>((value1,
                                                                             value2,
@@ -166,9 +156,7 @@ public static partial class ResultExtensions {
         where TValue4 : notnull
         where TValue5 : notnull
         where TValue6 : notnull {
-        if (fallbackFactory is null) {
-            throw new ArgumentNullException("fallbackFactory");
-        }
+        ArgumentNullException.ThrowIfNull(fallbackFactory);
 
         return result.Match<(TValue1, TValue2, TValue3, TValue4, TValue5, TValue6)>((value1,
                                                                                      value2,
@@ -214,9 +202,7 @@ public static partial class ResultExtensions {
         where TValue5 : notnull
         where TValue6 : notnull
         where TValue7 : notnull {
-        if (fallbackFactory is null) {
-            throw new ArgumentNullException("fallbackFactory");
-        }
+        ArgumentNullException.ThrowIfNull(fallbackFactory);
 
         return result.Match<(TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7)>((value1,
                                                                                               value2,
@@ -269,9 +255,7 @@ public static partial class ResultExtensions {
         where TValue6 : notnull
         where TValue7 : notnull
         where TValue8 : notnull {
-        if (fallbackFactory is null) {
-            throw new ArgumentNullException("fallbackFactory");
-        }
+        ArgumentNullException.ThrowIfNull(fallbackFactory);
 
         return result.Match<(TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8)>((value1,
                                                                                                        value2,
