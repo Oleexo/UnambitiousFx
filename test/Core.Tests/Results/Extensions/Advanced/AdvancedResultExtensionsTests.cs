@@ -69,7 +69,7 @@ public sealed class AdvancedResultExtensionsTests {
         var        successCalls = 0;
         Exception? captured     = null;
         var        tapped       = r.TapBoth(_ => successCalls++, e => captured = e);
-        Assert.False(tapped.Ok(out var _, out var err));
+        Assert.False(tapped.Ok(out _, out var err));
         Assert.Equal(ex, err);
         Assert.Equal(0,  successCalls);
         Assert.Equal(ex, captured);
@@ -87,18 +87,6 @@ public sealed class AdvancedResultExtensionsTests {
         Assert.Equal(ex, err);
         Assert.Equal(0,  successCalls);
         Assert.Equal(ex, captured);
-    }
-
-    [Fact]
-    public void TapEither_Alias_Works_Arity2() {
-        var r         = Result.Success(1, 2);
-        var sum       = 0;
-        var failCalls = 0;
-        var tapped = r.TapEither((a,
-                                  b) => sum = a + b, _ => failCalls++);
-        Assert.True(tapped.Ok(out (int, int) t, out _));
-        Assert.Equal(3, sum);
-        Assert.Equal(0, failCalls);
     }
 
     // ---------------- TapErrorAsync / MapErrorAsync (non-generic) ----------------
@@ -179,7 +167,7 @@ public sealed class AdvancedResultExtensionsTests {
             await System.Threading.Tasks.Task.CompletedTask;
             return new Exception("e2", e);
         });
-        Assert.False(mapped.Ok(out var _, out var err));
+        Assert.False(mapped.Ok(out _, out var err));
         Assert.Equal("e2", err.Message);
         Assert.NotNull(err.InnerException);
     }

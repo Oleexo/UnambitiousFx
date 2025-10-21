@@ -4,8 +4,8 @@ namespace UnambitiousFx.Core.Results;
 
 public static partial class ResultExtensions {
     /// <summary>
-    /// Ensures a projected inner reference value is not null. If null, returns a Failure Result with a ValidationError.
-    /// Original failure results are passed through unchanged.
+    ///     Ensures a projected inner reference value is not null. If null, returns a Failure Result with a ValidationError.
+    ///     Original failure results are passed through unchanged.
     /// </summary>
     public static Result<T> EnsureNotNull<T, TInner>(this Result<T>   result,
                                                      Func<T, TInner?> selector,

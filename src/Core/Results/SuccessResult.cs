@@ -28,10 +28,6 @@ internal sealed class SuccessResult : Result, ISuccessResult {
         return true;
     }
 
-    public override Result Bind(Func<Result> bind) {
-        return bind();
-    }
-
     public override Result MapError(Func<Exception, Exception> mapError) {
         return new SuccessResult();
     }

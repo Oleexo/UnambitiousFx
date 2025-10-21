@@ -4,13 +4,10 @@ using UnambitiousFx.Core.Results.Reasons;
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Ensure;
 
 public class ResultEnsureNotNullTests {
-    private sealed record User(string?      Email,
-                               List<string> Roles);
-
     [Fact]
     public void EnsureNotNull_WhenInnerNull_FailsWithValidationError() {
         var r = Result.Success(new User(null, new List<string> { "admin" }))
-                      .EnsureNotNull(u => u.Email, "Email required", field: "email");
+                      .EnsureNotNull(u => u.Email, "Email required", "email");
         Assert.True(r.IsFaulted);
         Assert.Contains(r.Reasons, rr => rr is ValidationError ve && ve.Failures.Any(f => f.Contains("email: Email required")));
     }
@@ -28,4 +25,7 @@ public class ResultEnsureNotNullTests {
         var guarded = failure.EnsureNotNull(u => u.Email, "Email required");
         Assert.Contains(guarded.Reasons, rr => rr is ValidationError ve && ve.Failures.Contains("orig"));
     }
+
+    private sealed record User(string?      Email,
+                               List<string> Roles);
 }

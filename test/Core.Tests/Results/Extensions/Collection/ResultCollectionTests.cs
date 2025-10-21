@@ -22,7 +22,7 @@ public sealed class ResultCollectionTests {
 
         var sequenced = results.Sequence();
 
-        Assert.False(sequenced.Ok(out var _, out var err));
+        Assert.False(sequenced.Ok(out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -45,7 +45,7 @@ public sealed class ResultCollectionTests {
                                                 ? Result.Failure<string>(ex)
                                                 : Result.Success(s));
 
-        Assert.False(traversed.Ok(out var _, out var err));
+        Assert.False(traversed.Ok(out _, out var err));
         Assert.Same(ex, err);
     }
 

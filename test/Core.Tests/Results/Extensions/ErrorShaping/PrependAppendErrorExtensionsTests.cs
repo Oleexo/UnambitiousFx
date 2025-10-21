@@ -56,7 +56,7 @@ public sealed class PrependAppendErrorExtensionsTests {
         var ex     = new InvalidOperationException("bad");
         var r      = Result.Failure<int>(ex);
         var shaped = r.AppendError("!");
-        Assert.False(shaped.Ok(out var _, out var err));
+        Assert.False(shaped.Ok(out _, out var err));
         Assert.Equal("bad!", err.Message);
         Assert.Equal(ex,     err.InnerException);
     }

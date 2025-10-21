@@ -4,13 +4,10 @@ using UnambitiousFx.Core.Results.Reasons;
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Ensure;
 
 public class ResultEnsureNotEmptyTests {
-    private sealed record User(string?      Email,
-                               List<string> Roles);
-
     [Fact]
     public void EnsureNotEmpty_String_Empty_Fails() {
         var r = Result.Success("")
-                      .EnsureNotEmpty("Must not be empty", field: "name");
+                      .EnsureNotEmpty("Must not be empty", "name");
         Assert.True(r.IsFaulted);
         Assert.Contains(r.Reasons, rr => rr is ValidationError ve && ve.Failures.Any(f => f.Contains("name: Must not be empty")));
     }
@@ -36,4 +33,7 @@ public class ResultEnsureNotEmptyTests {
                       .EnsureNotEmpty<List<int>, int>();
         Assert.True(r.IsSuccess);
     }
+
+    private sealed record User(string?      Email,
+                               List<string> Roles);
 }

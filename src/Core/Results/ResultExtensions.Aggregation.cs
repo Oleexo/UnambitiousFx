@@ -185,13 +185,14 @@ public static class ResultAggregationExtensions {
 
         return mergedFailureAcc;
     }
-    
+
     public static Result FirstFailureOrSuccess(this IEnumerable<Result> results) {
         foreach (var r in results) {
             if (!r.Ok(out _)) {
                 return r; // return original failure instance
             }
         }
+
         return Result.Success();
     }
 }

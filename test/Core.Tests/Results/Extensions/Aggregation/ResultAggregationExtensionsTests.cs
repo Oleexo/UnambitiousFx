@@ -130,23 +130,31 @@ public sealed class ResultAggregationExtensionsTests {
 
     [Fact]
     public void FirstFailureOrSuccess_AllSuccess_ReturnsSuccess() {
-        var r1 = Result.Success().WithSuccess("a");
-        var r2 = Result.Success().WithSuccess("b");
+        var r1 = Result.Success()
+                       .WithSuccess("a");
+        var r2 = Result.Success()
+                       .WithSuccess("b");
         var ff = new[] { r1, r2 }.FirstFailureOrSuccess();
         Assert.True(ff.Ok(out _));
     }
 
     [Fact]
     public void FirstFailureOrSuccess_Empty_ReturnsSuccess() {
-        var ff = Array.Empty<Result>().FirstFailureOrSuccess();
+        var ff = Array.Empty<Result>()
+                      .FirstFailureOrSuccess();
         Assert.True(ff.Ok(out _));
     }
 
     [Fact]
     public void FirstFailureOrSuccess_ReturnsOriginalFailureWithoutAggregation() {
-        var success = Result.Success().WithSuccess("s1").WithMetadata("k","v");
-        var failure = Result.Failure(new ValidationError(new List<string>{"boom"})).WithMetadata("f","x");
-        var after = Result.Success().WithSuccess("s2").WithMetadata("ignored","y");
+        var success = Result.Success()
+                            .WithSuccess("s1")
+                            .WithMetadata("k", "v");
+        var failure = Result.Failure(new ValidationError(new List<string> { "boom" }))
+                            .WithMetadata("f", "x");
+        var after = Result.Success()
+                          .WithSuccess("s2")
+                          .WithMetadata("ignored", "y");
         var ff = new[] { success, failure, after }.FirstFailureOrSuccess();
         Assert.Same(failure, ff); // original instance
         // ensure we did not add success reasons from before or after (only original failure reasons remain)

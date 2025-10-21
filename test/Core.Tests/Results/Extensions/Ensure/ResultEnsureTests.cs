@@ -26,7 +26,7 @@ public sealed class ResultEnsureTests {
 
         var ensured = r.Ensure(x => x != 5, _ => new Exception("bad"));
 
-        if (!ensured.Ok(out var _, out var err)) {
+        if (!ensured.Ok(out _, out var err)) {
             Assert.Equal("bad", err.Message);
         }
         else {
@@ -45,7 +45,7 @@ public sealed class ResultEnsureTests {
             return true;
         }, _ => new Exception("bad"));
 
-        if (!ensured.Ok(out var _, out var err)) {
+        if (!ensured.Ok(out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.Equal(0,  called);
         }

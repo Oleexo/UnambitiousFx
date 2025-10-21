@@ -50,10 +50,6 @@ internal sealed class FailureResult : Result, IFailureResult {
         return false;
     }
 
-    public override Result Bind(Func<Result> bind) {
-        return new FailureResult(PrimaryException); // preserve primary exception and primary reason
-    }
-
     public override Result MapError(Func<Exception, Exception> mapError) {
         return new FailureResult(mapError(PrimaryException));
     }

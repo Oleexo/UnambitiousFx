@@ -16,7 +16,7 @@ public class ResultReasonExtensionsTests {
     public void WithSuccess_CopiesMetadata_WhenEnabled() {
         var meta = new Dictionary<string, object?> { { "source", "cache" } };
         var r = Result.Success()
-                      .WithSuccess("cache", meta, true);
+                      .WithSuccess("cache", meta);
         Assert.Equal("cache", ((SuccessReason)r.Reasons[0]).Message);
         Assert.Equal("cache", r.Metadata["source"]);
     }

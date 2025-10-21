@@ -22,6 +22,7 @@ public static partial class ResultExtensions {
         if (result.IsFaulted) {
             return result;
         }
+
         return result.Bind((value1,
                             value2) => predicate(value1, value2)
                                            ? Result.Success(value1, value2)
@@ -37,6 +38,7 @@ public static partial class ResultExtensions {
         if (result.IsFaulted) {
             return result;
         }
+
         return result.Bind((value1,
                             value2,
                             value3) => predicate(value1, value2, value3)
@@ -54,6 +56,7 @@ public static partial class ResultExtensions {
         if (result.IsFaulted) {
             return result;
         }
+
         return result.Bind((value1,
                             value2,
                             value3,
@@ -74,6 +77,7 @@ public static partial class ResultExtensions {
         if (result.IsFaulted) {
             return result;
         }
+
         return result.Bind((value1,
                             value2,
                             value3,
@@ -96,6 +100,7 @@ public static partial class ResultExtensions {
         if (result.IsFaulted) {
             return result;
         }
+
         return result.Bind((value1,
                             value2,
                             value3,
@@ -120,6 +125,7 @@ public static partial class ResultExtensions {
         if (result.IsFaulted) {
             return result;
         }
+
         return result.Bind((value1,
                             value2,
                             value3,
@@ -147,6 +153,7 @@ public static partial class ResultExtensions {
         if (result.IsFaulted) {
             return result;
         }
+
         return result.Bind((value1,
                             value2,
                             value3,

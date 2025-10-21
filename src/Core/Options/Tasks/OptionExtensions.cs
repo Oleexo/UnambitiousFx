@@ -22,8 +22,8 @@ public static partial class OptionExtensions {
     ///     The result of invoking either the "some" or "none" function based on the state of the matched option.
     /// </returns>
     public static async Task<TOut> MatchAsync<TOut, TValue>(this Task<Option<TValue>> awaitableOption,
-                                                       Func<TValue, TOut>        some,
-                                                       Func<TOut>                none)
+                                                            Func<TValue, TOut>        some,
+                                                            Func<TOut>                none)
         where TValue : notnull {
         return (await awaitableOption).Match(some, none);
     }

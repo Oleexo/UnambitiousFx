@@ -24,7 +24,7 @@ public sealed class ResultApplicativeExtensionsTests {
 
         var r = rf.Apply(ra);
 
-        Assert.False(r.Ok(out var _, out var err));
+        Assert.False(r.Ok(out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -36,7 +36,7 @@ public sealed class ResultApplicativeExtensionsTests {
 
         var r = rf.Apply(ra);
 
-        Assert.False(r.Ok(out var _, out var err));
+        Assert.False(r.Ok(out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -59,7 +59,7 @@ public sealed class ResultApplicativeExtensionsTests {
 
         var zipped = r1.Zip(r2);
 
-        Assert.False(zipped.Ok(out var _, out var err));
+        Assert.False(zipped.Ok(out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -71,7 +71,7 @@ public sealed class ResultApplicativeExtensionsTests {
 
         var zipped = r1.Zip(r2);
 
-        Assert.False(zipped.Ok(out var _, out var err));
+        Assert.False(zipped.Ok(out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -96,7 +96,7 @@ public sealed class ResultApplicativeExtensionsTests {
         var proj = r1.Zip(r2, (a,
                                b) => a + b);
 
-        Assert.False(proj.Ok(out var _, out var err));
+        Assert.False(proj.Ok(out _, out var err));
         Assert.Same(ex, err);
     }
 }

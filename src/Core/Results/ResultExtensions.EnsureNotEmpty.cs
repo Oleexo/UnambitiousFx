@@ -3,11 +3,12 @@ using UnambitiousFx.Core.Results.Reasons;
 namespace UnambitiousFx.Core.Results;
 
 /// <summary>
-/// Guard helpers that convert a successful Result into a failure (ValidationError) when invariants are violated.
+///     Guard helpers that convert a successful Result into a failure (ValidationError) when invariants are violated.
 /// </summary>
 public static partial class ResultExtensions {
     /// <summary>
-    /// Ensures a successful string result value is neither null nor empty. (Null is unlikely due to notnull constraint, but guarded defensively.)
+    ///     Ensures a successful string result value is neither null nor empty. (Null is unlikely due to notnull constraint,
+    ///     but guarded defensively.)
     /// </summary>
     public static Result<string> EnsureNotEmpty(this Result<string> result,
                                                 string              message = "Value must not be empty.",
@@ -15,6 +16,7 @@ public static partial class ResultExtensions {
         if (result.IsFaulted) {
             return result;
         }
+
         return result.Bind(value => {
             if (string.IsNullOrEmpty(value)) {
                 var finalMessage = field is null
@@ -28,7 +30,7 @@ public static partial class ResultExtensions {
     }
 
     /// <summary>
-    /// Ensures a successful enumerable result is not empty.
+    ///     Ensures a successful enumerable result is not empty.
     /// </summary>
     public static Result<TCollection> EnsureNotEmpty<TCollection, TItem>(this Result<TCollection> result,
                                                                          string                   message = "Collection must not be empty.",
@@ -37,6 +39,7 @@ public static partial class ResultExtensions {
         if (result.IsFaulted) {
             return result;
         }
+
         return result.Bind(collection => {
             if (!collection.Any()) {
                 var finalMessage = field is null
