@@ -1,6 +1,6 @@
-﻿using System;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.Results.Extensions.Collections;
 using UnambitiousFx.Mediator.Abstractions;
 
 namespace UnambitiousFx.Mediator;

@@ -13,10 +13,6 @@ public static class ExceptionWrappingExtensions {
     public static ExceptionalError Wrap(this Exception                        exception,
                                         string?                               messageOverride = null,
                                         IReadOnlyDictionary<string, object?>? extra           = null) {
-        if (exception == null) {
-            throw new ArgumentNullException(nameof(exception));
-        }
-
         return new ExceptionalError(exception, messageOverride, extra);
     }
 
@@ -40,10 +36,6 @@ public static class ExceptionWrappingExtensions {
                                                   string                                context,
                                                   string?                               messageOverride = null,
                                                   IReadOnlyDictionary<string, object?>? extra           = null) {
-        if (exception == null) {
-            throw new ArgumentNullException(nameof(exception));
-        }
-
         if (string.IsNullOrEmpty(context)) {
             return exception.Wrap(messageOverride, extra);
         }

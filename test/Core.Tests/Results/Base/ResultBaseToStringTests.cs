@@ -1,4 +1,3 @@
-using System;
 using UnambitiousFx.Core.Results;
 
 namespace UnambitiousFx.Core.Tests.Results.Base;

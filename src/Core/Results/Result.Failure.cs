@@ -20,6 +20,11 @@ public abstract partial class Result {
         return r;
     }
 
+    public static Result<TValue1> Failure<TValue1>(string message)
+        where TValue1 : notnull {
+        return new FailureResult<TValue1>(new Exception(message));
+    }
+
     public static Result<TValue1, TValue2> Failure<TValue1, TValue2>(Exception error)
         where TValue1 : notnull
         where TValue2 : notnull {
@@ -380,7 +385,7 @@ internal sealed class FailureResult<TValue1, TValue2> : Result<TValue1, TValue2>
                                      out (TValue1, TValue2)? value,
                                      out Exception?          error) {
         isSuccess = false;
-        value     = default;
+        value     = null;
         error     = PrimaryException;
     }
 
@@ -389,15 +394,19 @@ internal sealed class FailureResult<TValue1, TValue2> : Result<TValue1, TValue2>
         return false;
     }
 
-    public override bool Ok(out                      (TValue1 value1, TValue2 value2) value,
-                            [NotNullWhen(false)] out Exception?                       error) {
-        value = default;
-        error = PrimaryException;
+    public override bool Ok([NotNullWhen(true)] out  TValue1?   value1,
+                            [NotNullWhen(true)] out  TValue2?   value2,
+                            [NotNullWhen(false)] out Exception? error) {
+        value1 = default;
+        value2 = default;
+        error  = PrimaryException;
         return false;
     }
 
-    public override bool Ok(out (TValue1 value1, TValue2 value2) value) {
-        value = default;
+    public override bool Ok([NotNullWhen(true)] out TValue1? value1,
+                            [NotNullWhen(true)] out TValue2? value2) {
+        value1 = default;
+        value2 = default;
         return false;
     }
 
@@ -506,6 +515,26 @@ internal sealed class FailureResult<TValue1, TValue2, TValue3> : Result<TValue1,
     public override void IfSuccess(Action<TValue1, TValue2, TValue3> action) {
     }
 
+    public override bool Ok([NotNullWhen(true)] out  TValue1?   value1,
+                            [NotNullWhen(true)] out  TValue2?   value2,
+                            [NotNullWhen(true)] out  TValue3?   value3,
+                            [NotNullWhen(false)] out Exception? error) {
+        value1 = default;
+        value2 = default;
+        value3 = default;
+        error  = PrimaryException;
+        return false;
+    }
+
+    public override bool Ok([NotNullWhen(true)] out TValue1? value1,
+                            [NotNullWhen(true)] out TValue2? value2,
+                            [NotNullWhen(true)] out TValue3? value3) {
+        value1 = default;
+        value2 = default;
+        value3 = default;
+        return false;
+    }
+
     public override void IfFailure(Action<Exception> action) {
         action(PrimaryException);
     }
@@ -514,24 +543,12 @@ internal sealed class FailureResult<TValue1, TValue2, TValue3> : Result<TValue1,
                                      out (TValue1, TValue2, TValue3)? value,
                                      out Exception?                   error) {
         isSuccess = false;
-        value     = default;
+        value     = null;
         error     = PrimaryException;
     }
 
     public override bool Ok([NotNullWhen(false)] out Exception? error) {
         error = PrimaryException;
-        return false;
-    }
-
-    public override bool Ok(out                      (TValue1 value1, TValue2 value2, TValue3 value3) value,
-                            [NotNullWhen(false)] out Exception?                                       error) {
-        value = default;
-        error = PrimaryException;
-        return false;
-    }
-
-    public override bool Ok(out (TValue1 value1, TValue2 value2, TValue3 value3) value) {
-        value = default;
         return false;
     }
 
@@ -641,6 +658,30 @@ internal sealed class FailureResult<TValue1, TValue2, TValue3, TValue4> : Result
     public override void IfSuccess(Action<TValue1, TValue2, TValue3, TValue4> action) {
     }
 
+    public override bool Ok([NotNullWhen(true)] out  TValue1?   value1,
+                            [NotNullWhen(true)] out  TValue2?   value2,
+                            [NotNullWhen(true)] out  TValue3?   value3,
+                            [NotNullWhen(true)] out  TValue4?   value4,
+                            [NotNullWhen(false)] out Exception? error) {
+        value1 = default;
+        value2 = default;
+        value3 = default;
+        value4 = default;
+        error  = PrimaryException;
+        return false;
+    }
+
+    public override bool Ok([NotNullWhen(true)] out TValue1? value1,
+                            [NotNullWhen(true)] out TValue2? value2,
+                            [NotNullWhen(true)] out TValue3? value3,
+                            [NotNullWhen(true)] out TValue4? value4) {
+        value1 = default;
+        value2 = default;
+        value3 = default;
+        value4 = default;
+        return false;
+    }
+
     public override void IfFailure(Action<Exception> action) {
         action(PrimaryException);
     }
@@ -649,24 +690,12 @@ internal sealed class FailureResult<TValue1, TValue2, TValue3, TValue4> : Result
                                      out (TValue1, TValue2, TValue3, TValue4)? value,
                                      out Exception?                            error) {
         isSuccess = false;
-        value     = default;
+        value     = null;
         error     = PrimaryException;
     }
 
     public override bool Ok([NotNullWhen(false)] out Exception? error) {
         error = PrimaryException;
-        return false;
-    }
-
-    public override bool Ok(out                      (TValue1 value1, TValue2 value2, TValue3 value3, TValue4 value4) value,
-                            [NotNullWhen(false)] out Exception?                                                       error) {
-        value = default;
-        error = PrimaryException;
-        return false;
-    }
-
-    public override bool Ok(out (TValue1 value1, TValue2 value2, TValue3 value3, TValue4 value4) value) {
-        value = default;
         return false;
     }
 
@@ -777,6 +806,34 @@ internal sealed class FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5>
     public override void IfSuccess(Action<TValue1, TValue2, TValue3, TValue4, TValue5> action) {
     }
 
+    public override bool Ok([NotNullWhen(true)] out  TValue1?   value1,
+                            [NotNullWhen(true)] out  TValue2?   value2,
+                            [NotNullWhen(true)] out  TValue3?   value3,
+                            [NotNullWhen(true)] out  TValue4?   value4,
+                            [NotNullWhen(true)] out  TValue5?   value5,
+                            [NotNullWhen(false)] out Exception? error) {
+        value1 = default;
+        value2 = default;
+        value3 = default;
+        value4 = default;
+        value5 = default;
+        error  = PrimaryException;
+        return false;
+    }
+
+    public override bool Ok([NotNullWhen(true)] out TValue1? value1,
+                            [NotNullWhen(true)] out TValue2? value2,
+                            [NotNullWhen(true)] out TValue3? value3,
+                            [NotNullWhen(true)] out TValue4? value4,
+                            [NotNullWhen(true)] out TValue5? value5) {
+        value1 = default;
+        value2 = default;
+        value3 = default;
+        value4 = default;
+        value5 = default;
+        return false;
+    }
+
     public override void IfFailure(Action<Exception> action) {
         action(PrimaryException);
     }
@@ -785,24 +842,12 @@ internal sealed class FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5>
                                      out (TValue1, TValue2, TValue3, TValue4, TValue5)? value,
                                      out Exception?                                     error) {
         isSuccess = false;
-        value     = default;
+        value     = null;
         error     = PrimaryException;
     }
 
     public override bool Ok([NotNullWhen(false)] out Exception? error) {
         error = PrimaryException;
-        return false;
-    }
-
-    public override bool Ok(out                      (TValue1 value1, TValue2 value2, TValue3 value3, TValue4 value4, TValue5 value5) value,
-                            [NotNullWhen(false)] out Exception?                                                                       error) {
-        value = default;
-        error = PrimaryException;
-        return false;
-    }
-
-    public override bool Ok(out (TValue1 value1, TValue2 value2, TValue3 value3, TValue4 value4, TValue5 value5) value) {
-        value = default;
         return false;
     }
 
@@ -914,6 +959,38 @@ internal sealed class FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5,
     public override void IfSuccess(Action<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6> action) {
     }
 
+    public override bool Ok([NotNullWhen(true)] out  TValue1?   value1,
+                            [NotNullWhen(true)] out  TValue2?   value2,
+                            [NotNullWhen(true)] out  TValue3?   value3,
+                            [NotNullWhen(true)] out  TValue4?   value4,
+                            [NotNullWhen(true)] out  TValue5?   value5,
+                            [NotNullWhen(true)] out  TValue6?   value6,
+                            [NotNullWhen(false)] out Exception? error) {
+        value1 = default;
+        value2 = default;
+        value3 = default;
+        value4 = default;
+        value5 = default;
+        value6 = default;
+        error  = PrimaryException;
+        return false;
+    }
+
+    public override bool Ok([NotNullWhen(true)] out TValue1? value1,
+                            [NotNullWhen(true)] out TValue2? value2,
+                            [NotNullWhen(true)] out TValue3? value3,
+                            [NotNullWhen(true)] out TValue4? value4,
+                            [NotNullWhen(true)] out TValue5? value5,
+                            [NotNullWhen(true)] out TValue6? value6) {
+        value1 = default;
+        value2 = default;
+        value3 = default;
+        value4 = default;
+        value5 = default;
+        value6 = default;
+        return false;
+    }
+
     public override void IfFailure(Action<Exception> action) {
         action(PrimaryException);
     }
@@ -922,24 +999,12 @@ internal sealed class FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5,
                                      out (TValue1, TValue2, TValue3, TValue4, TValue5, TValue6)? value,
                                      out Exception?                                              error) {
         isSuccess = false;
-        value     = default;
+        value     = null;
         error     = PrimaryException;
     }
 
     public override bool Ok([NotNullWhen(false)] out Exception? error) {
         error = PrimaryException;
-        return false;
-    }
-
-    public override bool Ok(out                      (TValue1 value1, TValue2 value2, TValue3 value3, TValue4 value4, TValue5 value5, TValue6 value6) value,
-                            [NotNullWhen(false)] out Exception?                                                                                       error) {
-        value = default;
-        error = PrimaryException;
-        return false;
-    }
-
-    public override bool Ok(out (TValue1 value1, TValue2 value2, TValue3 value3, TValue4 value4, TValue5 value5, TValue6 value6) value) {
-        value = default;
         return false;
     }
 
@@ -1053,6 +1118,42 @@ internal sealed class FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5,
     public override void IfSuccess(Action<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> action) {
     }
 
+    public override bool Ok([NotNullWhen(true)] out  TValue1?   value1,
+                            [NotNullWhen(true)] out  TValue2?   value2,
+                            [NotNullWhen(true)] out  TValue3?   value3,
+                            [NotNullWhen(true)] out  TValue4?   value4,
+                            [NotNullWhen(true)] out  TValue5?   value5,
+                            [NotNullWhen(true)] out  TValue6?   value6,
+                            [NotNullWhen(true)] out  TValue7?   value7,
+                            [NotNullWhen(false)] out Exception? error) {
+        value1 = default;
+        value2 = default;
+        value3 = default;
+        value4 = default;
+        value5 = default;
+        value6 = default;
+        value7 = default;
+        error  = PrimaryException;
+        return false;
+    }
+
+    public override bool Ok([NotNullWhen(true)] out TValue1? value1,
+                            [NotNullWhen(true)] out TValue2? value2,
+                            [NotNullWhen(true)] out TValue3? value3,
+                            [NotNullWhen(true)] out TValue4? value4,
+                            [NotNullWhen(true)] out TValue5? value5,
+                            [NotNullWhen(true)] out TValue6? value6,
+                            [NotNullWhen(true)] out TValue7? value7) {
+        value1 = default;
+        value2 = default;
+        value3 = default;
+        value4 = default;
+        value5 = default;
+        value6 = default;
+        value7 = default;
+        return false;
+    }
+
     public override void IfFailure(Action<Exception> action) {
         action(PrimaryException);
     }
@@ -1061,24 +1162,12 @@ internal sealed class FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5,
                                      out (TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7)? value,
                                      out Exception?                                                       error) {
         isSuccess = false;
-        value     = default;
+        value     = null;
         error     = PrimaryException;
     }
 
     public override bool Ok([NotNullWhen(false)] out Exception? error) {
         error = PrimaryException;
-        return false;
-    }
-
-    public override bool Ok(out                      (TValue1 value1, TValue2 value2, TValue3 value3, TValue4 value4, TValue5 value5, TValue6 value6, TValue7 value7) value,
-                            [NotNullWhen(false)] out Exception?                                                                                                       error) {
-        value = default;
-        error = PrimaryException;
-        return false;
-    }
-
-    public override bool Ok(out (TValue1 value1, TValue2 value2, TValue3 value3, TValue4 value4, TValue5 value5, TValue6 value6, TValue7 value7) value) {
-        value = default;
         return false;
     }
 
@@ -1193,6 +1282,46 @@ internal sealed class FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5,
     public override void IfSuccess(Action<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8> action) {
     }
 
+    public override bool Ok([NotNullWhen(true)] out  TValue1?   value1,
+                            [NotNullWhen(true)] out  TValue2?   value2,
+                            [NotNullWhen(true)] out  TValue3?   value3,
+                            [NotNullWhen(true)] out  TValue4?   value4,
+                            [NotNullWhen(true)] out  TValue5?   value5,
+                            [NotNullWhen(true)] out  TValue6?   value6,
+                            [NotNullWhen(true)] out  TValue7?   value7,
+                            [NotNullWhen(true)] out  TValue8?   value8,
+                            [NotNullWhen(false)] out Exception? error) {
+        value1 = default;
+        value2 = default;
+        value3 = default;
+        value4 = default;
+        value5 = default;
+        value6 = default;
+        value7 = default;
+        value8 = default;
+        error  = PrimaryException;
+        return false;
+    }
+
+    public override bool Ok([NotNullWhen(true)] out TValue1? value1,
+                            [NotNullWhen(true)] out TValue2? value2,
+                            [NotNullWhen(true)] out TValue3? value3,
+                            [NotNullWhen(true)] out TValue4? value4,
+                            [NotNullWhen(true)] out TValue5? value5,
+                            [NotNullWhen(true)] out TValue6? value6,
+                            [NotNullWhen(true)] out TValue7? value7,
+                            [NotNullWhen(true)] out TValue8? value8) {
+        value1 = default;
+        value2 = default;
+        value3 = default;
+        value4 = default;
+        value5 = default;
+        value6 = default;
+        value7 = default;
+        value8 = default;
+        return false;
+    }
+
     public override void IfFailure(Action<Exception> action) {
         action(PrimaryException);
     }
@@ -1201,24 +1330,12 @@ internal sealed class FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5,
                                      out (TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8)? value,
                                      out Exception?                                                                error) {
         isSuccess = false;
-        value     = default;
+        value     = null;
         error     = PrimaryException;
     }
 
     public override bool Ok([NotNullWhen(false)] out Exception? error) {
         error = PrimaryException;
-        return false;
-    }
-
-    public override bool Ok(out (TValue1 value1, TValue2 value2, TValue3 value3, TValue4 value4, TValue5 value5, TValue6 value6, TValue7 value7, TValue8 value8) value,
-                            [NotNullWhen(false)] out Exception? error) {
-        value = default;
-        error = PrimaryException;
-        return false;
-    }
-
-    public override bool Ok(out (TValue1 value1, TValue2 value2, TValue3 value3, TValue4 value4, TValue5 value5, TValue6 value6, TValue7 value7, TValue8 value8) value) {
-        value = default;
         return false;
     }
 

@@ -1,4 +1,3 @@
-using UnambitiousFx.Core.Eithers;
 using UnambitiousFx.Core.Options;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.XUnit.Fluent;
@@ -32,26 +31,6 @@ public sealed class FluentWhereAssertionExtensionsTests {
               .Map(v => v * 2)
               .Where(v => v == 10)
               .And(v => Assert.Equal(10, v));
-    }
-
-    [Fact]
-    public void EitherLeft_WhereLeft_Chains() {
-        Either<int, string>.FromLeft(7)
-                           .EnsureLeft()
-                           .WhereLeft(l => l == 7)
-                           .Map(l => l + 3)
-                           .WhereLeft(l => l == 10)
-                           .And(l => Assert.Equal(10, l));
-    }
-
-    [Fact]
-    public void EitherRight_WhereRight_Chains() {
-        Either<int, string>.FromRight("abc")
-                           .EnsureRight()
-                           .WhereRight(r => r.StartsWith("a"))
-                           .Map(r => r + "!")
-                           .WhereRight(r => r.EndsWith("!"))
-                           .And(r => Assert.Equal("abc!", r));
     }
 
     [Fact]

@@ -1,5 +1,3 @@
-using System;
-
 namespace UnambitiousFx.Mediator;
 
 /// <summary>

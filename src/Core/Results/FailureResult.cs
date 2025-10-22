@@ -5,19 +5,15 @@ namespace UnambitiousFx.Core.Results;
 
 internal sealed class FailureResult : Result, IFailureResult {
     internal FailureResult(Exception error,
-                           bool      attachPrimaryExceptionalReason) {
+                           bool      attachPrimaryExceptionalReason = true) {
         PrimaryException = error;
         if (attachPrimaryExceptionalReason) {
             AddReason(new ExceptionalError(error));
         }
     }
 
-    public FailureResult(Exception error)
-        : this(error, true) {
-    }
-
     public FailureResult(string message)
-        : this(new Exception(message), true) {
+        : this(new Exception(message)) {
     }
 
     /// <summary>

@@ -127,10 +127,11 @@ public static class ResultPredicateExtensions {
         where T1 : notnull
         where T2 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (!result.Ok(out (T1, T2) value)) {
+        if (!result.Ok(out var v1, out var v2)) {
             Assert.Fail(because ?? "Expected success but was failure.");
         }
 
+        var value = (v1, v2);
         if (!predicate(value)) {
             Assert.Fail(because ?? $"Value '{value}' does not satisfy predicate.");
         }
@@ -147,12 +148,12 @@ public static class ResultPredicateExtensions {
         where T1 : notnull
         where T2 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (result.Ok(out (T1, T2) _, out var err)) {
+        if (result.Ok(out _, out _, out var err)) {
             Assert.Fail(because ?? "Expected failure but was success.");
         }
 
-        if (!predicate(err)) {
-            Assert.Fail(because ?? $"Error '{err.Message}' does not satisfy predicate.");
+        if (!predicate(err!)) {
+            Assert.Fail(because ?? $"Error '{err!.Message}' does not satisfy predicate.");
         }
 
         return result;
@@ -220,10 +221,11 @@ public static class ResultPredicateExtensions {
         where T2 : notnull
         where T3 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (!result.Ok(out (T1, T2, T3) value)) {
+        if (!result.Ok(out var v1, out var v2, out var v3)) {
             Assert.Fail(because ?? "Expected success but was failure.");
         }
 
+        var value = (v1, v2, v3);
         if (!predicate(value)) {
             Assert.Fail(because ?? $"Value '{value}' does not satisfy predicate.");
         }
@@ -241,12 +243,12 @@ public static class ResultPredicateExtensions {
         where T2 : notnull
         where T3 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (result.Ok(out (T1, T2, T3) _, out var err)) {
+        if (result.Ok(out _, out _, out _, out var err)) {
             Assert.Fail(because ?? "Expected failure but was success.");
         }
 
-        if (!predicate(err)) {
-            Assert.Fail(because ?? $"Error '{err.Message}' does not satisfy predicate.");
+        if (!predicate(err!)) {
+            Assert.Fail(because ?? $"Error '{err!.Message}' does not satisfy predicate.");
         }
 
         return result;
@@ -319,10 +321,11 @@ public static class ResultPredicateExtensions {
         where T3 : notnull
         where T4 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (!result.Ok(out (T1, T2, T3, T4) value)) {
+        if (!result.Ok(out var v1, out var v2, out var v3, out var v4)) {
             Assert.Fail(because ?? "Expected success but was failure.");
         }
 
+        var value = (v1, v2, v3, v4);
         if (!predicate(value)) {
             Assert.Fail(because ?? $"Value '{value}' does not satisfy predicate.");
         }
@@ -341,12 +344,12 @@ public static class ResultPredicateExtensions {
         where T3 : notnull
         where T4 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (result.Ok(out (T1, T2, T3, T4) _, out var err)) {
+        if (result.Ok(out _, out _, out _, out _, out var err)) {
             Assert.Fail(because ?? "Expected failure but was success.");
         }
 
-        if (!predicate(err)) {
-            Assert.Fail(because ?? $"Error '{err.Message}' does not satisfy predicate.");
+        if (!predicate(err!)) {
+            Assert.Fail(because ?? $"Error '{err!.Message}' does not satisfy predicate.");
         }
 
         return result;
@@ -424,10 +427,11 @@ public static class ResultPredicateExtensions {
         where T4 : notnull
         where T5 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (!result.Ok(out (T1, T2, T3, T4, T5) value)) {
+        if (!result.Ok(out var v1, out var v2, out var v3, out var v4, out var v5)) {
             Assert.Fail(because ?? "Expected success but was failure.");
         }
 
+        var value = (v1, v2, v3, v4, v5);
         if (!predicate(value)) {
             Assert.Fail(because ?? $"Value '{value}' does not satisfy predicate.");
         }
@@ -447,12 +451,12 @@ public static class ResultPredicateExtensions {
         where T4 : notnull
         where T5 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (result.Ok(out (T1, T2, T3, T4, T5) _, out var err)) {
+        if (result.Ok(out _, out _, out _, out _, out _, out var err)) {
             Assert.Fail(because ?? "Expected failure but was success.");
         }
 
-        if (!predicate(err)) {
-            Assert.Fail(because ?? $"Error '{err.Message}' does not satisfy predicate.");
+        if (!predicate(err!)) {
+            Assert.Fail(because ?? $"Error '{err!.Message}' does not satisfy predicate.");
         }
 
         return result;
@@ -571,10 +575,11 @@ public static class ResultPredicateExtensions {
         where T5 : notnull
         where T6 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (!result.Ok(out (T1, T2, T3, T4, T5, T6) value)) {
+        if (!result.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6)) {
             Assert.Fail(because ?? "Expected success but was failure.");
         }
 
+        var value = (v1, v2, v3, v4, v5, v6);
         if (!predicate(value)) {
             Assert.Fail(because ?? $"Value '{value}' does not satisfy predicate.");
         }
@@ -595,12 +600,12 @@ public static class ResultPredicateExtensions {
         where T5 : notnull
         where T6 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (result.Ok(out (T1, T2, T3, T4, T5, T6) _, out var err)) {
+        if (result.Ok(out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Fail(because ?? "Expected failure but was success.");
         }
 
-        if (!predicate(err)) {
-            Assert.Fail(because ?? $"Error '{err.Message}' does not satisfy predicate.");
+        if (!predicate(err!)) {
+            Assert.Fail(because ?? $"Error '{err!.Message}' does not satisfy predicate.");
         }
 
         return result;
@@ -688,10 +693,11 @@ public static class ResultPredicateExtensions {
         where T6 : notnull
         where T7 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (!result.Ok(out (T1, T2, T3, T4, T5, T6, T7) value)) {
+        if (!result.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7)) {
             Assert.Fail(because ?? "Expected success but was failure.");
         }
 
+        var value = (v1, v2, v3, v4, v5, v6, v7);
         if (!predicate(value)) {
             Assert.Fail(because ?? $"Value '{value}' does not satisfy predicate.");
         }
@@ -713,12 +719,12 @@ public static class ResultPredicateExtensions {
         where T6 : notnull
         where T7 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (result.Ok(out (T1, T2, T3, T4, T5, T6, T7) _, out var err)) {
+        if (result.Ok(out _, out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Fail(because ?? "Expected failure but was success.");
         }
 
-        if (!predicate(err)) {
-            Assert.Fail(because ?? $"Error '{err.Message}' does not satisfy predicate.");
+        if (!predicate(err!)) {
+            Assert.Fail(because ?? $"Error '{err!.Message}' does not satisfy predicate.");
         }
 
         return result;
@@ -811,10 +817,11 @@ public static class ResultPredicateExtensions {
         where T7 : notnull
         where T8 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (!result.Ok(out (T1, T2, T3, T4, T5, T6, T7, T8) value)) {
+        if (!result.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7, out var v8)) {
             Assert.Fail(because ?? "Expected success but was failure.");
         }
 
+        var value = (v1, v2, v3, v4, v5, v6, v7, v8);
         if (!predicate(value)) {
             Assert.Fail(because ?? $"Value '{value}' does not satisfy predicate.");
         }
@@ -837,12 +844,12 @@ public static class ResultPredicateExtensions {
         where T7 : notnull
         where T8 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (result.Ok(out (T1, T2, T3, T4, T5, T6, T7, T8) _, out var err)) {
+        if (result.Ok(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Fail(because ?? "Expected failure but was success.");
         }
 
-        if (!predicate(err)) {
-            Assert.Fail(because ?? $"Error '{err.Message}' does not satisfy predicate.");
+        if (!predicate(err!)) {
+            Assert.Fail(because ?? $"Error '{err!.Message}' does not satisfy predicate.");
         }
 
         return result;

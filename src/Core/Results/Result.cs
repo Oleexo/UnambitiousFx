@@ -4,7 +4,6 @@ using UnambitiousFx.Core.Results.Reasons;
 namespace UnambitiousFx.Core.Results;
 
 public abstract partial class Result : BaseResult {
-
     public static Result Success() {
         return new SuccessResult();
     }
@@ -91,11 +90,6 @@ public abstract class Result<TValue1> : BaseResult
 
     public abstract void IfSuccess(Action<TValue1> action);
 
-    /// <summary>Implicitly lifts a value into a successful Result&lt;T&gt;.</summary>
-    public static implicit operator Result<TValue1>(TValue1 value) {
-        return Result.Success(value);
-    }
-
     public abstract bool Ok([NotNullWhen(true)] out  TValue1?   value,
                             [NotNullWhen(false)] out Exception? error);
 
@@ -117,10 +111,12 @@ public abstract class Result<TValue1, TValue2> : BaseResult
 
     public abstract void IfSuccess(Action<TValue1, TValue2> action);
 
-    public abstract bool Ok(out                      (TValue1 value1, TValue2 value2) value,
-                            [NotNullWhen(false)] out Exception?                       error);
+    public abstract bool Ok([NotNullWhen(true)] out  TValue1?   value1,
+                            [NotNullWhen(true)] out  TValue2?   value2,
+                            [NotNullWhen(false)] out Exception? error);
 
-    public abstract bool Ok(out (TValue1 value1, TValue2 value2) value);
+    public abstract bool Ok([NotNullWhen(true)] out TValue1? value1,
+                            [NotNullWhen(true)] out TValue2? value2);
 
     public abstract void Deconstruct(out bool                isSuccess,
                                      out (TValue1, TValue2)? value,
@@ -139,10 +135,14 @@ public abstract class Result<TValue1, TValue2, TValue3> : BaseResult
 
     public abstract void IfSuccess(Action<TValue1, TValue2, TValue3> action);
 
-    public abstract bool Ok(out                      (TValue1 value1, TValue2 value2, TValue3 value3) value,
-                            [NotNullWhen(false)] out Exception?                                       error);
+    public abstract bool Ok([NotNullWhen(true)] out  TValue1?   value1,
+                            [NotNullWhen(true)] out  TValue2?   value2,
+                            [NotNullWhen(true)] out  TValue3?   value3,
+                            [NotNullWhen(false)] out Exception? error);
 
-    public abstract bool Ok(out (TValue1 value1, TValue2 value2, TValue3 value3) value);
+    public abstract bool Ok([NotNullWhen(true)] out TValue1? value1,
+                            [NotNullWhen(true)] out TValue2? value2,
+                            [NotNullWhen(true)] out TValue3? value3);
 
     public abstract void Deconstruct(out bool                         isSuccess,
                                      out (TValue1, TValue2, TValue3)? value,
@@ -162,10 +162,16 @@ public abstract class Result<TValue1, TValue2, TValue3, TValue4> : BaseResult
 
     public abstract void IfSuccess(Action<TValue1, TValue2, TValue3, TValue4> action);
 
-    public abstract bool Ok(out                      (TValue1 value1, TValue2 value2, TValue3 value3, TValue4 value4) value,
-                            [NotNullWhen(false)] out Exception?                                                       error);
+    public abstract bool Ok([NotNullWhen(true)] out  TValue1?   value1,
+                            [NotNullWhen(true)] out  TValue2?   value2,
+                            [NotNullWhen(true)] out  TValue3?   value3,
+                            [NotNullWhen(true)] out  TValue4?   value4,
+                            [NotNullWhen(false)] out Exception? error);
 
-    public abstract bool Ok(out (TValue1 value1, TValue2 value2, TValue3 value3, TValue4 value4) value);
+    public abstract bool Ok([NotNullWhen(true)] out TValue1? value1,
+                            [NotNullWhen(true)] out TValue2? value2,
+                            [NotNullWhen(true)] out TValue3? value3,
+                            [NotNullWhen(true)] out TValue4? value4);
 
     public abstract void Deconstruct(out bool                                  isSuccess,
                                      out (TValue1, TValue2, TValue3, TValue4)? value,
@@ -186,10 +192,18 @@ public abstract class Result<TValue1, TValue2, TValue3, TValue4, TValue5> : Base
 
     public abstract void IfSuccess(Action<TValue1, TValue2, TValue3, TValue4, TValue5> action);
 
-    public abstract bool Ok(out                      (TValue1 value1, TValue2 value2, TValue3 value3, TValue4 value4, TValue5 value5) value,
-                            [NotNullWhen(false)] out Exception?                                                                       error);
+    public abstract bool Ok([NotNullWhen(true)] out  TValue1?   value1,
+                            [NotNullWhen(true)] out  TValue2?   value2,
+                            [NotNullWhen(true)] out  TValue3?   value3,
+                            [NotNullWhen(true)] out  TValue4?   value4,
+                            [NotNullWhen(true)] out  TValue5?   value5,
+                            [NotNullWhen(false)] out Exception? error);
 
-    public abstract bool Ok(out (TValue1 value1, TValue2 value2, TValue3 value3, TValue4 value4, TValue5 value5) value);
+    public abstract bool Ok([NotNullWhen(true)] out TValue1? value1,
+                            [NotNullWhen(true)] out TValue2? value2,
+                            [NotNullWhen(true)] out TValue3? value3,
+                            [NotNullWhen(true)] out TValue4? value4,
+                            [NotNullWhen(true)] out TValue5? value5);
 
     public abstract void Deconstruct(out bool                                           isSuccess,
                                      out (TValue1, TValue2, TValue3, TValue4, TValue5)? value,
@@ -211,10 +225,20 @@ public abstract class Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue
 
     public abstract void IfSuccess(Action<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6> action);
 
-    public abstract bool Ok(out                      (TValue1 value1, TValue2 value2, TValue3 value3, TValue4 value4, TValue5 value5, TValue6 value6) value,
-                            [NotNullWhen(false)] out Exception?                                                                                       error);
+    public abstract bool Ok([NotNullWhen(true)] out  TValue1?   value1,
+                            [NotNullWhen(true)] out  TValue2?   value2,
+                            [NotNullWhen(true)] out  TValue3?   value3,
+                            [NotNullWhen(true)] out  TValue4?   value4,
+                            [NotNullWhen(true)] out  TValue5?   value5,
+                            [NotNullWhen(true)] out  TValue6?   value6,
+                            [NotNullWhen(false)] out Exception? error);
 
-    public abstract bool Ok(out (TValue1 value1, TValue2 value2, TValue3 value3, TValue4 value4, TValue5 value5, TValue6 value6) value);
+    public abstract bool Ok([NotNullWhen(true)] out TValue1? value1,
+                            [NotNullWhen(true)] out TValue2? value2,
+                            [NotNullWhen(true)] out TValue3? value3,
+                            [NotNullWhen(true)] out TValue4? value4,
+                            [NotNullWhen(true)] out TValue5? value5,
+                            [NotNullWhen(true)] out TValue6? value6);
 
     public abstract void Deconstruct(out bool                                                    isSuccess,
                                      out (TValue1, TValue2, TValue3, TValue4, TValue5, TValue6)? value,
@@ -237,10 +261,22 @@ public abstract class Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue
 
     public abstract void IfSuccess(Action<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> action);
 
-    public abstract bool Ok(out                      (TValue1 value1, TValue2 value2, TValue3 value3, TValue4 value4, TValue5 value5, TValue6 value6, TValue7 value7) value,
-                            [NotNullWhen(false)] out Exception?                                                                                                       error);
+    public abstract bool Ok([NotNullWhen(true)] out  TValue1?   value1,
+                            [NotNullWhen(true)] out  TValue2?   value2,
+                            [NotNullWhen(true)] out  TValue3?   value3,
+                            [NotNullWhen(true)] out  TValue4?   value4,
+                            [NotNullWhen(true)] out  TValue5?   value5,
+                            [NotNullWhen(true)] out  TValue6?   value6,
+                            [NotNullWhen(true)] out  TValue7?   value7,
+                            [NotNullWhen(false)] out Exception? error);
 
-    public abstract bool Ok(out (TValue1 value1, TValue2 value2, TValue3 value3, TValue4 value4, TValue5 value5, TValue6 value6, TValue7 value7) value);
+    public abstract bool Ok([NotNullWhen(true)] out TValue1? value1,
+                            [NotNullWhen(true)] out TValue2? value2,
+                            [NotNullWhen(true)] out TValue3? value3,
+                            [NotNullWhen(true)] out TValue4? value4,
+                            [NotNullWhen(true)] out TValue5? value5,
+                            [NotNullWhen(true)] out TValue6? value6,
+                            [NotNullWhen(true)] out TValue7? value7);
 
     public abstract void Deconstruct(out bool                                                             isSuccess,
                                      out (TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7)? value,
@@ -264,10 +300,24 @@ public abstract class Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue
 
     public abstract void IfSuccess(Action<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8> action);
 
-    public abstract bool Ok(out (TValue1 value1, TValue2 value2, TValue3 value3, TValue4 value4, TValue5 value5, TValue6 value6, TValue7 value7, TValue8 value8) value,
+    public abstract bool Ok([NotNullWhen(true)] out  TValue1?   value1,
+                            [NotNullWhen(true)] out  TValue2?   value2,
+                            [NotNullWhen(true)] out  TValue3?   value3,
+                            [NotNullWhen(true)] out  TValue4?   value4,
+                            [NotNullWhen(true)] out  TValue5?   value5,
+                            [NotNullWhen(true)] out  TValue6?   value6,
+                            [NotNullWhen(true)] out  TValue7?   value7,
+                            [NotNullWhen(true)] out  TValue8?   value8,
                             [NotNullWhen(false)] out Exception? error);
 
-    public abstract bool Ok(out (TValue1 value1, TValue2 value2, TValue3 value3, TValue4 value4, TValue5 value5, TValue6 value6, TValue7 value7, TValue8 value8) value);
+    public abstract bool Ok([NotNullWhen(true)] out TValue1? value1,
+                            [NotNullWhen(true)] out TValue2? value2,
+                            [NotNullWhen(true)] out TValue3? value3,
+                            [NotNullWhen(true)] out TValue4? value4,
+                            [NotNullWhen(true)] out TValue5? value5,
+                            [NotNullWhen(true)] out TValue6? value6,
+                            [NotNullWhen(true)] out TValue7? value7,
+                            [NotNullWhen(true)] out TValue8? value8);
 
     public abstract void Deconstruct(out bool                                                                      isSuccess,
                                      out (TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8)? value,

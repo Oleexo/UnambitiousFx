@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using UnambitiousFx.Mediator.Abstractions;
 using UnambitiousFx.Mediator.Orchestrators;

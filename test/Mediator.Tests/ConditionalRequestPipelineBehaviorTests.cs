@@ -1,7 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using UnambitiousFx.Mediator.Abstractions;
 using UnambitiousFx.Mediator.Tests.Definitions;
-using Xunit;
 
 namespace UnambitiousFx.Mediator.Tests;
 

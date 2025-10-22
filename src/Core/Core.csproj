@@ -5,4 +5,8 @@
         <NoWarn>$(NoWarn);1591</NoWarn>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Folder Include="Results\Extensions\Transformations\ValueTasks\" />
+    </ItemGroup>
+
 </Project>

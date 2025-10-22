@@ -352,12 +352,12 @@ public static class ResultAssertExtensions {
                                                          out  (T1, T2)       values)
         where T1 : notnull
         where T2 : notnull {
-        if (!result.Ok(out var tmp)) {
+        if (!result.Ok(out var value1, out var value2)) {
             Assert.Fail(SuccessExpected);
             throw new UnreachableException();
         }
 
-        values = tmp;
+        values = (value1, value2);
         return result;
     }
 
@@ -386,7 +386,7 @@ public static class ResultAssertExtensions {
                                                          out  Exception      error)
         where T1 : notnull
         where T2 : notnull {
-        if (result.Ok(out (T1, T2) _, out var tmpError)) {
+        if (result.Ok(out _, out _, out var tmpError)) {
             Assert.Fail(FailureExpected);
             throw new UnreachableException();
         }
@@ -407,7 +407,7 @@ public static class ResultAssertExtensions {
                                                          string          because)
         where T1 : notnull
         where T2 : notnull {
-        if (result.Ok(out (T1, T2) _, out var tmpError)) {
+        if (result.Ok(out _, out _, out var tmpError)) {
             Assert.Fail(because);
             throw new UnreachableException();
         }
@@ -427,12 +427,12 @@ public static class ResultAssertExtensions {
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull {
-        if (!result.Ok(out var tmp)) {
+        if (!result.Ok(out var v1, out var v2, out var v3)) {
             Assert.Fail(SuccessExpected);
             throw new UnreachableException();
         }
 
-        values = tmp;
+        values = (v1, v2, v3);
         return result;
     }
 
@@ -463,7 +463,7 @@ public static class ResultAssertExtensions {
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull {
-        if (result.Ok(out (T1, T2, T3) _, out var tmpError)) {
+        if (result.Ok(out _, out _, out _, out var tmpError)) {
             Assert.Fail(FailureExpected);
             throw new UnreachableException();
         }
@@ -485,7 +485,7 @@ public static class ResultAssertExtensions {
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull {
-        if (result.Ok(out (T1, T2, T3) _, out var tmpError)) {
+        if (result.Ok(out _, out _, out _, out var tmpError)) {
             Assert.Fail(because);
             throw new UnreachableException();
         }
@@ -506,12 +506,12 @@ public static class ResultAssertExtensions {
         where T2 : notnull
         where T3 : notnull
         where T4 : notnull {
-        if (!result.Ok(out var tmp)) {
+        if (!result.Ok(out var v1, out var v2, out var v3, out var v4)) {
             Assert.Fail(SuccessExpected);
             throw new UnreachableException();
         }
 
-        values = tmp;
+        values = (v1, v2, v3, v4);
         return result;
     }
 
@@ -544,7 +544,7 @@ public static class ResultAssertExtensions {
         where T2 : notnull
         where T3 : notnull
         where T4 : notnull {
-        if (result.Ok(out (T1, T2, T3, T4) _, out var tmpError)) {
+        if (result.Ok(out _, out _, out _, out _, out var tmpError)) {
             Assert.Fail(FailureExpected);
             throw new UnreachableException();
         }
@@ -567,7 +567,7 @@ public static class ResultAssertExtensions {
         where T2 : notnull
         where T3 : notnull
         where T4 : notnull {
-        if (result.Ok(out (T1, T2, T3, T4) _, out var tmpError)) {
+        if (result.Ok(out _, out _, out _, out _, out var tmpError)) {
             Assert.Fail(because);
             throw new UnreachableException();
         }
@@ -589,12 +589,12 @@ public static class ResultAssertExtensions {
         where T3 : notnull
         where T4 : notnull
         where T5 : notnull {
-        if (!result.Ok(out var tmp)) {
+        if (!result.Ok(out var v1, out var v2, out var v3, out var v4, out var v5)) {
             Assert.Fail(SuccessExpected);
             throw new UnreachableException();
         }
 
-        values = tmp;
+        values = (v1, v2, v3, v4, v5);
         return result;
     }
 
@@ -629,7 +629,7 @@ public static class ResultAssertExtensions {
         where T3 : notnull
         where T4 : notnull
         where T5 : notnull {
-        if (result.Ok(out (T1, T2, T3, T4, T5) _, out var tmpError)) {
+        if (result.Ok(out _, out _, out _, out _, out _, out var tmpError)) {
             Assert.Fail(FailureExpected);
             throw new UnreachableException();
         }
@@ -652,12 +652,12 @@ public static class ResultAssertExtensions {
         where T4 : notnull
         where T5 : notnull
         where T6 : notnull {
-        if (!result.Ok(out var tmp)) {
+        if (!result.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6)) {
             Assert.Fail(SuccessExpected);
             throw new UnreachableException();
         }
 
-        values = tmp;
+        values = (v1, v2, v3, v4, v5, v6);
         return result;
     }
 
@@ -694,7 +694,7 @@ public static class ResultAssertExtensions {
         where T4 : notnull
         where T5 : notnull
         where T6 : notnull {
-        if (result.Ok(out (T1, T2, T3, T4, T5, T6) _, out var tmpError)) {
+        if (result.Ok(out _, out _, out _, out _, out _, out _, out var tmpError)) {
             Assert.Fail(FailureExpected);
             throw new UnreachableException();
         }
@@ -718,12 +718,12 @@ public static class ResultAssertExtensions {
         where T5 : notnull
         where T6 : notnull
         where T7 : notnull {
-        if (!result.Ok(out var tmp)) {
+        if (!result.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7)) {
             Assert.Fail(SuccessExpected);
             throw new UnreachableException();
         }
 
-        values = tmp;
+        values = (v1, v2, v3, v4, v5, v6, v7);
         return result;
     }
 
@@ -762,7 +762,7 @@ public static class ResultAssertExtensions {
         where T5 : notnull
         where T6 : notnull
         where T7 : notnull {
-        if (result.Ok(out (T1, T2, T3, T4, T5, T6, T7) _, out var tmpError)) {
+        if (result.Ok(out _, out _, out _, out _, out _, out _, out _, out var tmpError)) {
             Assert.Fail(FailureExpected);
             throw new UnreachableException();
         }
@@ -787,12 +787,12 @@ public static class ResultAssertExtensions {
         where T6 : notnull
         where T7 : notnull
         where T8 : notnull {
-        if (!result.Ok(out var tmp)) {
+        if (!result.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7, out var v8)) {
             Assert.Fail(SuccessExpected);
             throw new UnreachableException();
         }
 
-        values = tmp;
+        values = (v1, v2, v3, v4, v5, v6, v7, v8);
         return result;
     }
 
@@ -833,7 +833,7 @@ public static class ResultAssertExtensions {
         where T6 : notnull
         where T7 : notnull
         where T8 : notnull {
-        if (result.Ok(out (T1, T2, T3, T4, T5, T6, T7, T8) _, out var tmpError)) {
+        if (result.Ok(out _, out _, out _, out _, out _, out _, out _, out _, out var tmpError)) {
             Assert.Fail(FailureExpected);
             throw new UnreachableException();
         }

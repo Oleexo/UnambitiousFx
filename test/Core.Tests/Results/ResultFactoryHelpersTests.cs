@@ -87,7 +87,7 @@ public class ResultFactoryHelpersTests {
 
     [Fact]
     public void Implicit_Success_Lift_Works() {
-        Result<int> r = 42; // implicit conversion
+        var r = Result.Success(42);
         Assert.True(r.IsSuccess);
         var captured = 0;
         var failure  = false;

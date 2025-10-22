@@ -253,8 +253,15 @@ public sealed class ResultArity8Tests {
     public void Success_Ok_ReturnsValue() {
         var r = Result.Success(42, "foo", true, 7, "bar", true, 2, "baz");
 
-        if (r.Ok(out var value)) {
-            Assert.Equal((42, "foo", true, 7, "bar", true, 2, "baz"), value);
+        if (r.Ok(out var value1, out var value2,out var value3,out var value4,out var value5,out var value6,out var value7,out var value8)) {
+            Assert.Equal(42,    value1);
+            Assert.Equal("foo", value2);
+            Assert.True(value3);
+            Assert.Equal(7,     value4);
+            Assert.Equal("bar", value5);
+            Assert.True(value6);
+            Assert.Equal(2,     value7);
+            Assert.Equal("baz", value8);
         }
         else {
             Assert.Fail("Expected success");
@@ -265,7 +272,7 @@ public sealed class ResultArity8Tests {
     public void Failure_Ok_ReturnsErrorMessage() {
         var r = Result.Failure<int, string, bool, int, string, bool, int, string>(new Exception("boom"));
 
-        if (!r.Ok(out _, out var err)) {
+        if (!r.Ok(out _, out _,out _,out _,out _,out _,out _,out _,out var err)) {
             Assert.Equal("boom", err.Message);
         }
         else {

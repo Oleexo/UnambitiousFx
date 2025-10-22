@@ -225,6 +225,159 @@ Task<Result<User>> ValidateUniqueEmail(User user)
 }
 ```
 
+### EnsureNotNull - Validate Non-Null Properties
+
+`EnsureNotNull` validates that a projected property or value is not null. It's useful for ensuring required related objects exist.
+
+**Signature**:
+```csharp
+Result<T> EnsureNotNull<T, TInner>(
+    this Result<T> result,
+    Func<T, TInner?> selector,
+    string message,
+    string? field = null) where TInner : class
+```
+
+**Example**:
+```csharp
+public Result<Order> ValidateOrder(Order order)
+{
+    return Result.Success(order)
+        .EnsureNotNull(
+            o => o.Customer,
+            "Customer is required",
+            field: "Customer"
+        )
+        .EnsureNotNull(
+            o => o.ShippingAddress,
+            "Shipping address is required",
+            field: "ShippingAddress"
+        )
+        .EnsureNotNull(
+            o => o.BillingAddress,
+            "Billing address is required",
+            field: "BillingAddress"
+        );
+}
+
+// Usage
+var order = new Order 
+{ 
+    Customer = null,  // Invalid!
+    ShippingAddress = new Address()
+};
+
+var result = ValidateOrder(order);
+// Failure: ValidationError("Customer: Customer is required")
+```
+
+**Practical Examples**:
+```csharp
+// Validate navigation properties
+Result<User> ValidateUserProfile(User user)
+{
+    return Result.Success(user)
+        .EnsureNotNull(u => u.Profile, "User must have a profile")
+        .EnsureNotNull(u => u.Profile?.Avatar, "Profile must have an avatar")
+        .EnsureNotNull(u => u.Settings, "User must have settings");
+}
+
+// Validate required relationships
+Result<Post> ValidatePost(Post post)
+{
+    return Result.Success(post)
+        .EnsureNotNull(p => p.Author, "Post must have an author", field: "Author")
+        .EnsureNotNull(p => p.Category, "Post must have a category", field: "Category");
+}
+```
+
+---
+
+### EnsureNotEmpty - Validate Non-Empty Values
+
+`EnsureNotEmpty` validates that strings or collections are not empty. Provides specific validation for common empty-check scenarios.
+
+**Signatures**:
+```csharp
+// For strings
+Result<string> EnsureNotEmpty(
+    this Result<string> result,
+    string message = "Value must not be empty.",
+    string? field = null)
+
+// For collections
+Result<TCollection> EnsureNotEmpty<TCollection, TItem>(
+    this Result<TCollection> result,
+    string message = "Collection must not be empty.",
+    string? field = null) where TCollection : IEnumerable<TItem>
+```
+
+**String Example**:
+```csharp
+Result<string> ValidateName(string name)
+{
+    return Result.Success(name)
+        .EnsureNotEmpty("Name cannot be empty", field: "name");
+}
+
+ValidateName("Alice");  // Success: "Alice"
+ValidateName("");       // Failure: ValidationError("name: Name cannot be empty")
+ValidateName(null);     // Failure: ValidationError("name: Name cannot be empty")
+```
+
+**Collection Example**:
+```csharp
+Result<List<string>> ValidateItems(List<string> items)
+{
+    return Result.Success(items)
+        .EnsureNotEmpty<List<string>, string>(
+            "Order must contain at least one item",
+            field: "items"
+        );
+}
+
+ValidateItems(new List<string> { "item1" });  // Success
+ValidateItems(new List<string>());            // Failure
+```
+
+**Practical Examples**:
+```csharp
+// Form validation
+public Result<ContactForm> ValidateContactForm(ContactForm form)
+{
+    return Result.Success(form.Name)
+        .EnsureNotEmpty("Name is required", field: "name")
+        .Bind(_ => Result.Success(form.Email)
+            .EnsureNotEmpty("Email is required", field: "email"))
+        .Bind(_ => Result.Success(form.Message)
+            .EnsureNotEmpty("Message is required", field: "message"))
+        .Map(_ => form);
+}
+
+// Collection validation
+public Result<Order> ValidateOrderItems(Order order)
+{
+    return Result.Success(order.Items)
+        .EnsureNotEmpty<List<OrderItem>, OrderItem>(
+            "Order must have at least one item",
+            field: "items"
+        )
+        .Map(_ => order);
+}
+
+// Combined with other validations
+Result<SearchQuery> ValidateSearchQuery(SearchQuery query)
+{
+    return Result.Success(query.Keywords)
+        .EnsureNotEmpty("Search keywords cannot be empty", field: "keywords")
+        .Ensure(
+            k => k.Length >= 3,
+            _ => new ValidationError(new[] { "Keywords must be at least 3 characters" })
+        )
+        .Map(_ => query);
+}
+```
+
 ---
 
 ## Tap - Side Effects on Success
@@ -403,6 +556,264 @@ Task<Result<Data>> LoadData(string id)
             })
         );
 }
+```
+
+---
+
+## TapBoth - Side Effects for Success and Failure
+
+`TapBoth` executes different side effects based on whether the Result is successful or failed. It combines `Tap` and `TapError` into a single operation.
+
+### Basic TapBoth
+
+```csharp
+Result<Order> result = ProcessOrder(order)
+    .TapBoth(
+        onSuccess: o => _logger.LogInfo($"Order {o.Id} processed"),
+        onFailure: error => _logger.LogError($"Processing failed: {error.Message}")
+    );
+
+// Value or error passes through unchanged
+// Appropriate action executes based on success/failure
+```
+
+### TapBoth Signature
+
+```csharp
+Result<T> TapBoth<T>(
+    this Result<T> result,
+    Action<T> onSuccess,
+    Action<Exception> onFailure)
+```
+
+### Common TapBoth Use Cases
+
+**Logging Both Outcomes:**
+```csharp
+return GetUser(userId)
+    .TapBoth(
+        onSuccess: user => _logger.LogInfo($"User {user.Id} loaded successfully"),
+        onFailure: error => _logger.LogError($"Failed to load user: {error.Message}")
+    );
+```
+
+**Metrics Collection:**
+```csharp
+return ProcessPayment(payment)
+    .TapBoth(
+        onSuccess: result => 
+        {
+            _metrics.RecordPaymentSuccess();
+            _metrics.RecordPaymentAmount(result.Amount);
+        },
+        onFailure: error => 
+        {
+            _metrics.RecordPaymentFailure();
+            _metrics.RecordErrorCode(error.Message);
+        }
+    );
+```
+
+**Audit Trail:**
+```csharp
+return UpdateUserProfile(userId, profile)
+    .TapBoth(
+        onSuccess: updated => _audit.Log($"Profile updated for user {userId}"),
+        onFailure: error => _audit.Log($"Profile update failed for user {userId}: {error.Message}")
+    );
+```
+
+**Notification:**
+```csharp
+return CreateOrder(orderData)
+    .TapBoth(
+        onSuccess: order => _notifications.SendSuccess($"Order {order.Id} created"),
+        onFailure: error => _notifications.SendFailure($"Order creation failed: {error.Message}")
+    );
+```
+
+### Chaining TapBoth
+
+```csharp
+Result<User> result = RegisterUser(userData)
+    .TapBoth(
+        onSuccess: user => _logger.LogInfo($"User {user.Id} registered"),
+        onFailure: error => _logger.LogError($"Registration failed: {error.Message}")
+    )
+    .TapBoth(
+        onSuccess: user => _metrics.IncrementRegistrations(),
+        onFailure: error => _metrics.IncrementRegistrationFailures()
+    )
+    .TapBoth(
+        onSuccess: user => _cache.Set(user.Id, user),
+        onFailure: _ => { /* No cache on failure */ }
+    );
+```
+
+### Practical TapBoth Examples
+
+**Example 1: Complete Order Processing with Tracking**
+
+```csharp
+public async Task<Result<Order>> ProcessOrderAsync(OrderRequest request)
+{
+    var sw = Stopwatch.StartNew();
+    
+    return await ValidateOrder(request)
+        .TapBoth(
+            onSuccess: _ => _logger.LogDebug("Order validation passed"),
+            onFailure: error => _logger.LogWarning($"Order validation failed: {error.Message}")
+        )
+        .BindAsync(async _ => await ReserveInventoryAsync(request.Items))
+        .TapBoth(
+            onSuccess: _ => _logger.LogDebug("Inventory reserved"),
+            onFailure: error => 
+            {
+                _logger.LogError($"Inventory reservation failed: {error.Message}");
+                _alerting.NotifyInventoryIssue(request.Items);
+            }
+        )
+        .BindAsync(async _ => await ProcessPaymentAsync(request.Payment))
+        .TapBoth(
+            onSuccess: payment => 
+            {
+                _logger.LogInfo($"Payment processed: {payment.Id}");
+                _metrics.RecordPaymentSuccess(payment.Amount);
+            },
+            onFailure: error => 
+            {
+                _logger.LogError($"Payment failed: {error.Message}");
+                _metrics.RecordPaymentFailure();
+                _alerting.NotifyPaymentFailure(request);
+            }
+        )
+        .BindAsync(async payment => await CreateOrderAsync(request, payment))
+        .TapBoth(
+            onSuccess: order => 
+            {
+                sw.Stop();
+                _logger.LogInfo($"Order {order.Id} created in {sw.ElapsedMilliseconds}ms");
+                _metrics.RecordOrderProcessingTime(sw.ElapsedMilliseconds);
+            },
+            onFailure: error => 
+            {
+                sw.Stop();
+                _logger.LogError($"Order creation failed after {sw.ElapsedMilliseconds}ms");
+                _metrics.RecordOrderFailure();
+            }
+        );
+}
+```
+
+**Example 2: User Authentication with Comprehensive Logging**
+
+```csharp
+public Result<AuthToken> Authenticate(LoginRequest request)
+{
+    return ValidateCredentials(request)
+        .TapBoth(
+            onSuccess: _ => _audit.Log($"Credentials validated for {request.Username}"),
+            onFailure: _ => _audit.Log($"Invalid credentials for {request.Username}")
+        )
+        .Bind(user => CheckAccountStatus(user))
+        .TapBoth(
+            onSuccess: user => _audit.Log($"Account {user.Id} is active"),
+            onFailure: error => 
+            {
+                _audit.Log($"Account check failed for {request.Username}");
+                if (error.Message.Contains("locked"))
+                    _security.NotifyAccountLocked(request.Username);
+            }
+        )
+        .Bind(user => GenerateToken(user))
+        .TapBoth(
+            onSuccess: token => 
+            {
+                _logger.LogInfo($"User {request.Username} authenticated successfully");
+                _metrics.RecordSuccessfulLogin();
+                _cache.Set($"token:{token.Value}", token, token.ExpiresAt);
+            },
+            onFailure: error =>
+            {
+                _logger.LogWarning($"Authentication failed for {request.Username}");
+                _metrics.RecordFailedLogin();
+                _security.RecordFailedAttempt(request.Username);
+            }
+        );
+}
+```
+
+**Example 3: Data Synchronization with Status Updates**
+
+```csharp
+public async Task<Result> SyncDataAsync(string sourceId, string targetId)
+{
+    var progress = new SyncProgress();
+    
+    return await LoadSourceDataAsync(sourceId)
+        .TapBoth(
+            onSuccess: data => 
+            {
+                progress.SourceLoaded = true;
+                _events.Publish(new SyncProgress { Stage = "Source loaded" });
+            },
+            onFailure: error => 
+            {
+                progress.Failed = true;
+                _events.Publish(new SyncProgress { Stage = "Source load failed", Error = error.Message });
+            }
+        )
+        .BindAsync(async data => await ValidateDataAsync(data))
+        .TapBoth(
+            onSuccess: _ => 
+            {
+                progress.Validated = true;
+                _events.Publish(new SyncProgress { Stage = "Data validated" });
+            },
+            onFailure: error => _events.Publish(new SyncProgress { Stage = "Validation failed", Error = error.Message })
+        )
+        .BindAsync(async data => await TransformDataAsync(data))
+        .TapBoth(
+            onSuccess: transformed => 
+            {
+                progress.Transformed = true;
+                _events.Publish(new SyncProgress { Stage = "Data transformed", RecordCount = transformed.Count });
+            },
+            onFailure: error => _events.Publish(new SyncProgress { Stage = "Transform failed", Error = error.Message })
+        )
+        .BindAsync(async data => await SaveToTargetAsync(targetId, data))
+        .TapBoth(
+            onSuccess: _ => 
+            {
+                progress.Complete = true;
+                _logger.LogInfo($"Sync completed: {sourceId} -> {targetId}");
+                _events.Publish(new SyncProgress { Stage = "Complete" });
+            },
+            onFailure: error => 
+            {
+                _logger.LogError($"Sync failed: {sourceId} -> {targetId}: {error.Message}");
+                _events.Publish(new SyncProgress { Stage = "Failed", Error = error.Message });
+            }
+        );
+}
+```
+
+### TapBoth vs Tap + TapError
+
+```csharp
+// Using TapBoth - single call
+result.TapBoth(
+    onSuccess: value => LogSuccess(value),
+    onFailure: error => LogError(error)
+);
+
+// Equivalent using Tap + TapError
+result
+    .Tap(value => LogSuccess(value))
+    .TapError(error => LogError(error));
+
+// TapBoth is more concise when you need both
+// Tap + TapError is better when you only need one or want to chain differently
 ```
 
 ---

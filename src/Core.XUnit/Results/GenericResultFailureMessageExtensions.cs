@@ -1,5 +1,3 @@
-using UnambitiousFx.Core.Results;
-
 namespace UnambitiousFx.Core.XUnit.Results;
 
 // This file previously held a duplicate ShouldBeFailureWithMessage generic extension.

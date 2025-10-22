@@ -1,0 +1,44 @@
+using JetBrains.Annotations;
+using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.Results.Extensions.Collections;
+using ResultExtensions = UnambitiousFx.Core.Results.Extensions.ValueAccess.Tasks.ResultExtensions;
+
+namespace UnambitiousFx.Core.Tests.Results.Extensions.Collections.Apply;
+
+[TestSubject(typeof(ResultExtensions))]
+public sealed class ResultExtensionsTests {
+    [Fact]
+    public void Apply_FunctionAndArgSuccess_Applies() {
+        var rf = Result.Success<Func<int, int>>(x => x * 2);
+        var ra = Result.Success(21);
+
+        var r = rf.Apply(ra);
+
+        Assert.True(r.Ok(out var value, out _));
+        Assert.Equal(42, value);
+    }
+
+    [Fact]
+    public void Apply_FunctionFailure_PropagatesError() {
+        var ex = new Exception("ferr");
+        var rf = Result.Failure<Func<int, int>>(ex);
+        var ra = Result.Success(1);
+
+        var r = rf.Apply(ra);
+
+        Assert.False(r.Ok(out _, out var err));
+        Assert.Same(ex, err);
+    }
+
+    [Fact]
+    public void Apply_ArgFailure_PropagatesError() {
+        var ex = new Exception("aerr");
+        var rf = Result.Success<Func<int, int>>(x => x + 1);
+        var ra = Result.Failure<int>(ex);
+
+        var r = rf.Apply(ra);
+
+        Assert.False(r.Ok(out _, out var err));
+        Assert.Same(ex, err);
+    }
+}

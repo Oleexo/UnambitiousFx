@@ -1,4 +1,3 @@
-using UnambitiousFx.Core.Eithers;
 using UnambitiousFx.Core.Options;
 using UnambitiousFx.Core.Results;
 using Xunit;
@@ -75,11 +74,11 @@ public static class FluentAssertionExtensions {
     public static SuccessAssertion<(T1, T2)> EnsureSuccess<T1, T2>(this Result<T1, T2> result)
         where T1 : notnull
         where T2 : notnull {
-        if (!result.Ok(out (T1, T2) tuple)) {
+        if (!result.Ok(out var v1, out var v2)) {
             Assert.Fail("Expected success result but was failure.");
         }
 
-        return new SuccessAssertion<(T1, T2)>(tuple);
+        return new SuccessAssertion<(T1, T2)>((v1, v2));
     }
 
     /// <summary>
@@ -93,11 +92,11 @@ public static class FluentAssertionExtensions {
     public static FailureAssertion EnsureFailure<T1, T2>(this Result<T1, T2> result)
         where T1 : notnull
         where T2 : notnull {
-        if (result.Ok(out (T1, T2) _, out var error)) {
+        if (result.Ok(out _, out _, out var error)) {
             Assert.Fail("Expected failure result but was success.");
         }
 
-        return new FailureAssertion(error);
+        return new FailureAssertion(error!);
     }
 
     /// <summary>
@@ -110,11 +109,11 @@ public static class FluentAssertionExtensions {
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull {
-        if (!result.Ok(out (T1, T2, T3) tuple)) {
+        if (!result.Ok(out var v1, out var v2, out var v3)) {
             Assert.Fail("Expected success result but was failure.");
         }
 
-        return new SuccessAssertion<(T1, T2, T3)>(tuple);
+        return new SuccessAssertion<(T1, T2, T3)>((v1, v2, v3));
     }
 
     /// <summary>
@@ -126,11 +125,11 @@ public static class FluentAssertionExtensions {
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull {
-        if (result.Ok(out (T1, T2, T3) _, out var error)) {
+        if (result.Ok(out _, out _, out _, out var error)) {
             Assert.Fail("Expected failure result but was success.");
         }
 
-        return new FailureAssertion(error);
+        return new FailureAssertion(error!);
     }
 
     /// <summary>
@@ -144,11 +143,11 @@ public static class FluentAssertionExtensions {
         where T2 : notnull
         where T3 : notnull
         where T4 : notnull {
-        if (!result.Ok(out (T1, T2, T3, T4) tuple)) {
+        if (!result.Ok(out var v1, out var v2, out var v3, out var v4)) {
             Assert.Fail("Expected success result but was failure.");
         }
 
-        return new SuccessAssertion<(T1, T2, T3, T4)>(tuple);
+        return new SuccessAssertion<(T1, T2, T3, T4)>((v1, v2, v3, v4));
     }
 
     /// <summary>
@@ -163,11 +162,11 @@ public static class FluentAssertionExtensions {
         where T2 : notnull
         where T3 : notnull
         where T4 : notnull {
-        if (result.Ok(out (T1, T2, T3, T4) _, out var error)) {
+        if (result.Ok(out _, out _, out _, out _, out var error)) {
             Assert.Fail("Expected failure result but was success.");
         }
 
-        return new FailureAssertion(error);
+        return new FailureAssertion(error!);
     }
 
     /// <summary>
@@ -181,11 +180,11 @@ public static class FluentAssertionExtensions {
         where T3 : notnull
         where T4 : notnull
         where T5 : notnull {
-        if (!result.Ok(out (T1, T2, T3, T4, T5) tuple)) {
+        if (!result.Ok(out var v1, out var v2, out var v3, out var v4, out var v5)) {
             Assert.Fail("Expected success result but was failure.");
         }
 
-        return new SuccessAssertion<(T1, T2, T3, T4, T5)>(tuple);
+        return new SuccessAssertion<(T1, T2, T3, T4, T5)>((v1, v2, v3, v4, v5));
     }
 
     /// Ensures that the provided result represents a failure state.
@@ -198,11 +197,11 @@ public static class FluentAssertionExtensions {
         where T3 : notnull
         where T4 : notnull
         where T5 : notnull {
-        if (result.Ok(out (T1, T2, T3, T4, T5) _, out var error)) {
+        if (result.Ok(out _, out _, out _, out _, out _, out var error)) {
             Assert.Fail("Expected failure result but was success.");
         }
 
-        return new FailureAssertion(error);
+        return new FailureAssertion(error!);
     }
 
     /// <summary>
@@ -217,11 +216,11 @@ public static class FluentAssertionExtensions {
         where T4 : notnull
         where T5 : notnull
         where T6 : notnull {
-        if (!result.Ok(out (T1, T2, T3, T4, T5, T6) tuple)) {
+        if (!result.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6)) {
             Assert.Fail("Expected success result but was failure.");
         }
 
-        return new SuccessAssertion<(T1, T2, T3, T4, T5, T6)>(tuple);
+        return new SuccessAssertion<(T1, T2, T3, T4, T5, T6)>((v1, v2, v3, v4, v5, v6));
     }
 
     /// Ensures that the given result represents a failure state.
@@ -235,11 +234,11 @@ public static class FluentAssertionExtensions {
         where T4 : notnull
         where T5 : notnull
         where T6 : notnull {
-        if (result.Ok(out (T1, T2, T3, T4, T5, T6) _, out var error)) {
+        if (result.Ok(out _, out _, out _, out _, out _, out _, out var error)) {
             Assert.Fail("Expected failure result but was success.");
         }
 
-        return new FailureAssertion(error);
+        return new FailureAssertion(error!);
     }
 
     /// <summary>
@@ -262,11 +261,11 @@ public static class FluentAssertionExtensions {
         where T5 : notnull
         where T6 : notnull
         where T7 : notnull {
-        if (!result.Ok(out (T1, T2, T3, T4, T5, T6, T7) tuple)) {
+        if (!result.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7)) {
             Assert.Fail("Expected success result but was failure.");
         }
 
-        return new SuccessAssertion<(T1, T2, T3, T4, T5, T6, T7)>(tuple);
+        return new SuccessAssertion<(T1, T2, T3, T4, T5, T6, T7)>((v1, v2, v3, v4, v5, v6, v7));
     }
 
     /// Ensures that the specified result represents a failure. If the result is a success, this method will throw an assertion failure.
@@ -281,11 +280,11 @@ public static class FluentAssertionExtensions {
         where T5 : notnull
         where T6 : notnull
         where T7 : notnull {
-        if (result.Ok(out (T1, T2, T3, T4, T5, T6, T7) _, out var error)) {
+        if (result.Ok(out _, out _, out _, out _, out _, out _, out _, out var error)) {
             Assert.Fail("Expected failure result but was success.");
         }
 
-        return new FailureAssertion(error);
+        return new FailureAssertion(error!);
     }
 
     /// <summary>
@@ -310,11 +309,11 @@ public static class FluentAssertionExtensions {
         where T6 : notnull
         where T7 : notnull
         where T8 : notnull {
-        if (!result.Ok(out (T1, T2, T3, T4, T5, T6, T7, T8) tuple)) {
+        if (!result.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7, out var v8)) {
             Assert.Fail("Expected success result but was failure.");
         }
 
-        return new SuccessAssertion<(T1, T2, T3, T4, T5, T6, T7, T8)>(tuple);
+        return new SuccessAssertion<(T1, T2, T3, T4, T5, T6, T7, T8)>((v1, v2, v3, v4, v5, v6, v7, v8));
     }
 
     /// <summary>
@@ -339,11 +338,11 @@ public static class FluentAssertionExtensions {
         where T6 : notnull
         where T7 : notnull
         where T8 : notnull {
-        if (result.Ok(out (T1, T2, T3, T4, T5, T6, T7, T8) _, out var error)) {
+        if (result.Ok(out _, out _, out _, out _, out _, out _, out _, out _, out var error)) {
             Assert.Fail("Expected failure result but was success.");
         }
 
-        return new FailureAssertion(error);
+        return new FailureAssertion(error!);
     }
 
     // Option
@@ -375,40 +374,6 @@ public static class FluentAssertionExtensions {
         }
 
         return new NoneAssertion();
-    }
-
-    /// <summary>
-    ///     Asserts that the Either is Left and returns a LeftAssertion for its value.
-    /// </summary>
-    /// <typeparam name="TLeft">The left type.</typeparam>
-    /// <typeparam name="TRight">The right type.</typeparam>
-    /// <param name="either">The either to assert.</param>
-    /// <returns>A LeftAssertion over the Left value.</returns>
-    public static LeftAssertion<TLeft, TRight> EnsureLeft<TLeft, TRight>(this Either<TLeft, TRight> either)
-        where TLeft : notnull
-        where TRight : notnull {
-        if (!either.Left(out var left, out _)) {
-            Assert.Fail("Expected Either.Left but was Right.");
-        }
-
-        return new LeftAssertion<TLeft, TRight>(left);
-    }
-
-    /// <summary>
-    ///     Asserts that the Either is Right and returns a RightAssertion for its value.
-    /// </summary>
-    /// <typeparam name="TLeft">The left type.</typeparam>
-    /// <typeparam name="TRight">The right type.</typeparam>
-    /// <param name="either">The either to assert.</param>
-    /// <returns>A RightAssertion over the Right value.</returns>
-    public static RightAssertion<TLeft, TRight> EnsureRight<TLeft, TRight>(this Either<TLeft, TRight> either)
-        where TLeft : notnull
-        where TRight : notnull {
-        if (!either.Right(out _, out var right)) {
-            Assert.Fail("Expected Either.Right but was Left.");
-        }
-
-        return new RightAssertion<TLeft, TRight>(right);
     }
 
     /// <summary>
@@ -473,32 +438,7 @@ public static class FluentAssertionExtensions {
         return (await task.ConfigureAwait(false)).EnsureNone();
     }
 
-    /// <summary>
-    ///     Asserts that the task resolves to an Either in the Left variant and returns a LeftAssertion for further checks.
-    /// </summary>
-    /// <typeparam name="TLeft">The left type.</typeparam>
-    /// <typeparam name="TRight">The right type.</typeparam>
-    /// <param name="task">The task that produces the Either.</param>
-    /// <returns>A LeftAssertion over the Left value.</returns>
-    public static async Task<LeftAssertion<TLeft, TRight>> EnsureLeft<TLeft, TRight>(this Task<Either<TLeft, TRight>> task)
-        where TLeft : notnull
-        where TRight : notnull {
-        return (await task.ConfigureAwait(false)).EnsureLeft();
-    }
-
-    /// <summary>
-    ///     Ensures that an Either task resolves to the Right variant and returns an assertion object to further affirm the
-    ///     Right value.
-    /// </summary>
-    /// <typeparam name="TLeft">The type of the Left variant.</typeparam>
-    /// <typeparam name="TRight">The type of the Right variant.</typeparam>
-    /// <param name="task">The Task producing an Either to validate as Right.</param>
-    /// <returns>A RightAssertion instance encapsulating the Right value for further verification or assertions.</returns>
-    public static async Task<RightAssertion<TLeft, TRight>> EnsureRight<TLeft, TRight>(this Task<Either<TLeft, TRight>> task)
-        where TLeft : notnull
-        where TRight : notnull {
-        return (await task.ConfigureAwait(false)).EnsureRight();
-    }
+   
 
     /// <summary>
     ///     Asserts that the ValueTask of Result resolves to a successful outcome.
@@ -562,33 +502,7 @@ public static class FluentAssertionExtensions {
         return (await vt.ConfigureAwait(false)).EnsureNone();
     }
 
-    /// <summary>
-    ///     Asserts that the ValueTask resolves to an Either in the Left variant and returns a LeftAssertion for further
-    ///     checks.
-    /// </summary>
-    /// <typeparam name="TLeft">The left type.</typeparam>
-    /// <typeparam name="TRight">The right type.</typeparam>
-    /// <param name="vt">The ValueTask to await.</param>
-    /// <returns>A LeftAssertion over the Left value.</returns>
-    public static async ValueTask<LeftAssertion<TLeft, TRight>> EnsureLeft<TLeft, TRight>(this ValueTask<Either<TLeft, TRight>> vt)
-        where TLeft : notnull
-        where TRight : notnull {
-        return (await vt.ConfigureAwait(false)).EnsureLeft();
-    }
-
-    /// <summary>
-    ///     Asserts that the ValueTask resolves to an Either in the Right variant and returns an assertion object for the Right
-    ///     value.
-    /// </summary>
-    /// <typeparam name="TLeft">The type of the Left variant.</typeparam>
-    /// <typeparam name="TRight">The type of the Right variant.</typeparam>
-    /// <param name="vt">The ValueTask to await.</param>
-    /// <returns>A RightAssertion instance encapsulating the Right value for further verification or assertions.</returns>
-    public static async ValueTask<RightAssertion<TLeft, TRight>> EnsureRight<TLeft, TRight>(this ValueTask<Either<TLeft, TRight>> vt)
-        where TLeft : notnull
-        where TRight : notnull {
-        return (await vt.ConfigureAwait(false)).EnsureRight();
-    }
+  
 
     /// <summary>
     ///     Applies a predicate to the success value, failing the assertion if the predicate is not satisfied.

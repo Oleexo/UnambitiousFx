@@ -77,8 +77,9 @@ public sealed class ResultArity2Tests {
         var r = Result.Success(42, "foo");
 
         r.Match(
-            success: (v1, v2) => {
-                Assert.Equal(42, v1);
+            success: (v1,
+                      v2) => {
+                Assert.Equal(42,    v1);
                 Assert.Equal("foo", v2);
                 Assert.True(true);
             },
@@ -91,7 +92,8 @@ public sealed class ResultArity2Tests {
         var r = Result.Failure<int, string>(new Exception("boom"));
 
         r.Match(
-            success: (_, _) => Assert.Fail("Expected failure"),
+            success: (_,
+                      _) => Assert.Fail("Expected failure"),
             failure: e => Assert.Equal("boom", e.Message)
         );
     }
@@ -101,7 +103,8 @@ public sealed class ResultArity2Tests {
         var r = Result.Success(42, "foo");
 
         var e = r.Match(
-            success: (v1, v2) => v1 + v2.Length,
+            success: (v1,
+                      v2) => v1 + v2.Length,
             failure: _ => {
                 Assert.Fail("Expected success");
                 return 0;
@@ -115,7 +118,8 @@ public sealed class ResultArity2Tests {
         var r = Result.Failure<int, string>(new Exception("boom"));
 
         var e = r.Match(
-            success: (_, _) => {
+            success: (_,
+                      _) => {
                 Assert.Fail("Expected failure");
                 return "";
             },
@@ -129,8 +133,9 @@ public sealed class ResultArity2Tests {
         var r = Result.Success(42, "foo");
 
         var isCalled = false;
-        r.IfSuccess((v1, v2) => {
-            Assert.Equal(42, v1);
+        r.IfSuccess((v1,
+                     v2) => {
+            Assert.Equal(42,    v1);
             Assert.Equal("foo", v2);
             isCalled = true;
         });
@@ -145,8 +150,9 @@ public sealed class ResultArity2Tests {
     public void Failure_IfSuccess_DoesNotCallSuccessAction() {
         var r = Result.Failure<int, string>(new Exception("boom"));
 
-        r.IfSuccess((_, _) => Assert.Fail("Expected failure"));
-        
+        r.IfSuccess((_,
+                     _) => Assert.Fail("Expected failure"));
+
         r.IfSuccess(() => Assert.Fail("Expected failure"));
     }
 
@@ -189,8 +195,9 @@ public sealed class ResultArity2Tests {
     public void Success_Ok_ReturnsValue() {
         var r = Result.Success(42, "foo");
 
-        if (r.Ok(out var value)) {
-            Assert.Equal((42, "foo"), value);
+        if (r.Ok(out var value1, out var value2)) {
+            Assert.Equal(42,    value1);
+            Assert.Equal("foo", value2);
         }
         else {
             Assert.Fail("Expected success");
@@ -201,17 +208,17 @@ public sealed class ResultArity2Tests {
     public void Failure_Ok_ReturnsErrorMessage() {
         var r = Result.Failure<int, string>(new Exception("boom"));
 
-        if (!r.Ok(out _, out var err)) {
+        if (!r.Ok(out _, out _, out var err)) {
             Assert.Equal("boom", err.Message);
         }
         else {
             Assert.Fail("Expected failure");
         }
-        
+
         if (r.Ok(out _)) {
             Assert.Fail("Expected failure");
         }
-        
+
         if (!r.Ok(out Exception? err2)) {
             Assert.Equal("boom", err2.Message);
         }

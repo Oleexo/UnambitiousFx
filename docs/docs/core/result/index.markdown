@@ -163,14 +163,15 @@ var display = result.ValueOr("Balance unavailable");
 Explore Result features in depth:
 
 1. **[Result Creation & Basics](creation.html)** - Start here to learn Result fundamentals
-2. **[Transformations](transformations.html)** - Map, Bind, SelectMany, Flatten
-3. **[Error Handling](error-handling.html)** - Error model, domain errors, recovery
-4. **[Validation & Side Effects](validation.html)** - Ensure, Tap, TapError
+2. **[Transformations](transformations.html)** - Map, Bind, SelectMany, Flatten, Zip
+3. **[Error Handling](error-handling.html)** - Error model, domain errors, recovery, advanced error operations
+4. **[Validation & Side Effects](validation.html)** - Ensure, EnsureNotNull, EnsureNotEmpty, Tap, TapError, TapBoth
 5. **[Async Operations](async.html)** - Working with Task and ValueTask
 6. **[Collections & Aggregation](collections.html)** - Batch operations, Traverse, Combine
 7. **[Value Access & Interop](value-access.html)** - Extracting values safely
-8. **[Roadmap](roadmap.html)** - Full feature status and timeline
-9. **[Cookbook](cookbook.html)** - Chaining patterns & practical recipes (MapErrors + TapBoth, etc.)
+8. **[Extensions Reference](extensions-reference.html)** - Complete reference for all Result extensions
+9. **[Roadmap](roadmap.html)** - Full feature status and timeline
+10. **[Cookbook](cookbook.html)** - Chaining patterns & practical recipes
 
 ---
 

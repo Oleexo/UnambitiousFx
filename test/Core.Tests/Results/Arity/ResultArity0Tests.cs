@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.Results.Extensions.Transformations;
 
 namespace UnambitiousFx.Core.Tests.Results.Arity;
 
