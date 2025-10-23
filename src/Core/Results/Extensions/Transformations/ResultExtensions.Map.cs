@@ -1,6 +1,6 @@
 ﻿namespace UnambitiousFx.Core.Results.Extensions.Transformations;
 
-public static partial class ResultExtensions {
+public static partial class ResultMapExtensions {
     public static Result<TOut> Map<TValue, TOut>(this Result<TValue> result,
                                                  Func<TValue, TOut>  map)
         where TValue : notnull

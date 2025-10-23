@@ -1,4 +1,5 @@
 using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.Results.Extensions;
 using UnambitiousFx.Core.Results.Reasons;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Reason;

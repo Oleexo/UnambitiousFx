@@ -1,6 +1,6 @@
 ﻿namespace UnambitiousFx.Core.Results.Extensions.Transformations;
 
-public static partial class ResultExtensions {
+public static class ResultFlattenExtensions {
     public static Result<TValue1> Flatten<TValue1>(this Result<Result<TValue1>> result)
         where TValue1 : notnull {
         return result.Bind(inner => inner);

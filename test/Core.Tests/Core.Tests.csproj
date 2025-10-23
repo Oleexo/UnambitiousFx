@@ -11,8 +11,8 @@
     <ItemGroup>
       <Folder Include="Results\Extensions\ErrorHandling\" />
       <Folder Include="Results\Extensions\SideEffects\" />
-      <Folder Include="Results\Extensions\Transformations\" />
       <Folder Include="Results\Extensions\Validations\" />
+      <Folder Include="Results\Extensions\Validations\Ensure\ValueTasks\" />
       <Folder Include="Results\Extensions\ValueAccess\" />
     </ItemGroup>
 

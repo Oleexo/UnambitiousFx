@@ -5,8 +5,10 @@ using ResultExtensions = UnambitiousFx.Core.Results.Extensions.ValueAccess.Tasks
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Transformations.Zip;
 
-[TestSubject(typeof(ResultExtensions))]
+[TestSubject(typeof(ResultZipExtensions))]
 public sealed class ResultExtensionsTests {
+    #region Arity 2
+
     [Fact]
     public void Zip_Arity2_BothSuccess_ReturnsTuple() {
         var r1 = Result.Success(10);
@@ -27,7 +29,7 @@ public sealed class ResultExtensionsTests {
 
         var zipped = r1.Zip(r2);
 
-        Assert.False(zipped.Ok(out _, out var err));
+        Assert.False(zipped.Ok(out _, out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -39,7 +41,7 @@ public sealed class ResultExtensionsTests {
 
         var zipped = r1.Zip(r2);
 
-        Assert.False(zipped.Ok(out _, out var err));
+        Assert.False(zipped.Ok(out _, out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -80,6 +82,10 @@ public sealed class ResultExtensionsTests {
         Assert.False(proj.Ok(out _, out var err));
         Assert.Same(ex, err);
     }
+
+    #endregion
+
+    #region Arity 3
 
     [Fact]
     public void Zip_Arity3_AllSuccess_ReturnsTuple() {
@@ -165,6 +171,10 @@ public sealed class ResultExtensionsTests {
         Assert.Same(ex, err);
     }
 
+    #endregion
+
+    #region Arity 4
+
     [Fact]
     public void Zip_Arity4_AllSuccess_ReturnsTuple() {
         var r1 = Result.Success(1);
@@ -175,10 +185,10 @@ public sealed class ResultExtensionsTests {
         var zipped = r1.Zip(r2, r3, r4);
 
         Assert.True(zipped.Ok(out var value1, out var value2, out var value3, out var value4, out _));
-        Assert.Equal(10, value1);
-        Assert.Equal(20, value2);
-        Assert.Equal(30, value3);
-        Assert.Equal(40, value4);
+        Assert.Equal(1, value1);
+        Assert.Equal(2, value2);
+        Assert.Equal(3, value3);
+        Assert.Equal(4, value4);
     }
 
     [Fact]
@@ -259,6 +269,10 @@ public sealed class ResultExtensionsTests {
         Assert.Same(ex, err);
     }
 
+    #endregion
+
+    #region Arity 5
+
     [Fact]
     public void Zip_Arity5_AllSuccess_ReturnsTuple() {
         var r1 = Result.Success(1);
@@ -270,11 +284,11 @@ public sealed class ResultExtensionsTests {
         var zipped = r1.Zip(r2, r3, r4, r5);
 
         Assert.True(zipped.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out _));
-        Assert.Equal(10, value1);
-        Assert.Equal(20, value2);
-        Assert.Equal(30, value3);
-        Assert.Equal(40, value4);
-        Assert.Equal(50, value5);   
+        Assert.Equal(1, value1);
+        Assert.Equal(2, value2);
+        Assert.Equal(3, value3);
+        Assert.Equal(4, value4);
+        Assert.Equal(5, value5);
     }
 
     [Fact]
@@ -363,6 +377,10 @@ public sealed class ResultExtensionsTests {
         Assert.Same(ex, err);
     }
 
+    #endregion
+
+    #region Arity 6
+
     [Fact]
     public void Zip_Arity6_AllSuccess_ReturnsTuple() {
         var r1 = Result.Success(1);
@@ -375,12 +393,12 @@ public sealed class ResultExtensionsTests {
         var zipped = r1.Zip(r2, r3, r4, r5, r6);
 
         Assert.True(zipped.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out _));
-        Assert.Equal(10, value1);
-        Assert.Equal(20, value2);
-        Assert.Equal(30, value3);
-        Assert.Equal(40, value4);
-        Assert.Equal(50, value5);
-        Assert.Equal(60, value6);  
+        Assert.Equal(1, value1);
+        Assert.Equal(2, value2);
+        Assert.Equal(3, value3);
+        Assert.Equal(4, value4);
+        Assert.Equal(5, value5);
+        Assert.Equal(6, value6);
     }
 
     [Fact]
@@ -477,6 +495,10 @@ public sealed class ResultExtensionsTests {
         Assert.Same(ex, err);
     }
 
+    #endregion
+
+    #region Arity 7
+
     [Fact]
     public void Zip_Arity7_AllSuccess_ReturnsTuple() {
         var r1 = Result.Success(1);
@@ -490,13 +512,13 @@ public sealed class ResultExtensionsTests {
         var zipped = r1.Zip(r2, r3, r4, r5, r6, r7);
 
         Assert.True(zipped.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out _));
-        Assert.Equal(10, value1);
-        Assert.Equal(20, value2);
-        Assert.Equal(30, value3);
-        Assert.Equal(40, value4);
-        Assert.Equal(50, value5);
-        Assert.Equal(60, value6);
-        Assert.Equal(70, value7);
+        Assert.Equal(1, value1);
+        Assert.Equal(2, value2);
+        Assert.Equal(3, value3);
+        Assert.Equal(4, value4);
+        Assert.Equal(5, value5);
+        Assert.Equal(6, value6);
+        Assert.Equal(7, value7);
     }
 
     [Fact]
@@ -601,6 +623,10 @@ public sealed class ResultExtensionsTests {
         Assert.Same(ex, err);
     }
 
+    #endregion
+
+    #region Arity 8
+
     [Fact]
     public void Zip_Arity8_AllSuccess_ReturnsTuple() {
         var r1 = Result.Success(1);
@@ -615,14 +641,14 @@ public sealed class ResultExtensionsTests {
         var zipped = r1.Zip(r2, r3, r4, r5, r6, r7, r8);
 
         Assert.True(zipped.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out var value8, out _));
-        Assert.Equal(10, value1);
-        Assert.Equal(20, value2);
-        Assert.Equal(30, value3);
-        Assert.Equal(40, value4);
-        Assert.Equal(50, value5);
-        Assert.Equal(60, value6);
-        Assert.Equal(70, value7);
-        Assert.Equal(80, value8);
+        Assert.Equal(1, value1);
+        Assert.Equal(2, value2);
+        Assert.Equal(3, value3);
+        Assert.Equal(4, value4);
+        Assert.Equal(5, value5);
+        Assert.Equal(6, value6);
+        Assert.Equal(7, value7);
+        Assert.Equal(8, value8);
     }
 
     [Fact]
@@ -734,4 +760,6 @@ public sealed class ResultExtensionsTests {
         Assert.False(proj.Ok(out _, out var err));
         Assert.Same(ex, err);
     }
+
+    #endregion
 }

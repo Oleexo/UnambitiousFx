@@ -1,30 +1,12 @@
 using UnambitiousFx.Core.Results.Reasons;
+using UnambitiousFx.Core.Results.Types;
 
-namespace UnambitiousFx.Core.Results;
+namespace UnambitiousFx.Core.Results.Extensions;
 
 /// <summary>
 ///     Aggregation and analytical helpers for collections of Result instances.
 /// </summary>
-public static class ResultAggregationExtensions {
-    /// <summary>
-    ///     Strategy controlling how failures are merged.
-    /// </summary>
-    public enum MergeFailureStrategy {
-        /// <summary>
-        ///     Accumulate all results, collecting every failure (default – previous behavior).
-        /// </summary>
-        AccumulateAll,
-
-        /// <summary>
-        ///     Stop at first failure encountered; subsequent results are ignored.
-        /// </summary>
-        FirstFailure
-    }
-
-    /// <summary>
-    ///     Enumerates all error reasons (IError) attached to a single result (alias to
-    ///     <see cref="ResultErrorEnumerationExtensions.Errors" />).
-    /// </summary>
+public static partial class ResultExtensions {
     public static IEnumerable<IError> Errors(this Result result) {
         return ((BaseResult)result).Errors();
     }

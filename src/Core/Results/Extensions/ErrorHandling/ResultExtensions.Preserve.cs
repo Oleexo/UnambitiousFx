@@ -18,9 +18,9 @@ public static partial class ResultExtensions {
                 if (mappedPrimaryExceptional is not null) {
                     var skipped = false;
                     foreach (var r in original.Reasons) {
-                        if (!skipped                                                    &&
+                        if (!skipped                         &&
                             r is Reasons.ExceptionalError ex &&
-                            originalPrimaryEx != null                                   &&
+                            originalPrimaryEx != null        &&
                             ReferenceEquals(ex.Exception, originalPrimaryEx)) {
                             skipped = true; // skip copying original primary exceptional reason
                             continue;
@@ -31,15 +31,21 @@ public static partial class ResultExtensions {
                 }
                 else {
                     // No primary exceptional in mapped; copy all reasons.
-                    foreach (var r in original.Reasons) mapped.AddReason(r);
+                    foreach (var r in original.Reasons) {
+                        mapped.AddReason(r);
+                    }
                 }
             }
             else {
                 // Success shaping (shouldn't generally happen) or mixed states: just copy reasons.
-                foreach (var r in original.Reasons) mapped.AddReason(r);
+                foreach (var r in original.Reasons) {
+                    mapped.AddReason(r);
+                }
             }
 
-            foreach (var kv in original.Metadata) mapped.AddMetadata(kv.Key, kv.Value);
+            foreach (var kv in original.Metadata) {
+                mapped.AddMetadata(kv.Key, kv.Value);
+            }
         }
 
         return mapped;

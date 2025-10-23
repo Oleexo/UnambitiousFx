@@ -7,7 +7,7 @@ public static partial class ResultExtensions {
                                                            Func<TValue, ValueTask<bool>>      predicate,
                                                            Func<TValue, ValueTask<Exception>> errorFactory)
         where TValue : notnull {
-        return result.BindAsync(async value => {
+        return result.ThenAsync(async value => {
             if (await predicate(value)) {
                 return Result.Success(value);
             }
@@ -30,7 +30,7 @@ public static partial class ResultExtensions {
                                                                                Func<TValue1, TValue2, ValueTask<Exception>> errorFactory)
         where TValue1 : notnull
         where TValue2 : notnull {
-        return result.BindAsync(async (value1,
+        return result.ThenAsync(async (value1,
                                        value2) => {
             if (await predicate(value1, value2)) {
                 return Result.Success(value1, value2);
@@ -56,7 +56,7 @@ public static partial class ResultExtensions {
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull {
-        return result.BindAsync(async (value1,
+        return result.ThenAsync(async (value1,
                                        value2,
                                        value3) => {
             if (await predicate(value1, value2, value3)) {
@@ -86,7 +86,7 @@ public static partial class ResultExtensions {
         where TValue2 : notnull
         where TValue3 : notnull
         where TValue4 : notnull {
-        return result.BindAsync(async (value1,
+        return result.ThenAsync(async (value1,
                                        value2,
                                        value3,
                                        value4) => {
@@ -120,7 +120,7 @@ public static partial class ResultExtensions {
         where TValue3 : notnull
         where TValue4 : notnull
         where TValue5 : notnull {
-        return result.BindAsync(async (value1,
+        return result.ThenAsync(async (value1,
                                        value2,
                                        value3,
                                        value4,
@@ -157,7 +157,7 @@ public static partial class ResultExtensions {
         where TValue4 : notnull
         where TValue5 : notnull
         where TValue6 : notnull {
-        return result.BindAsync(async (value1,
+        return result.ThenAsync(async (value1,
                                        value2,
                                        value3,
                                        value4,
@@ -197,7 +197,7 @@ public static partial class ResultExtensions {
         where TValue5 : notnull
         where TValue6 : notnull
         where TValue7 : notnull {
-        return result.BindAsync(async (value1,
+        return result.ThenAsync(async (value1,
                                        value2,
                                        value3,
                                        value4,
@@ -241,7 +241,7 @@ public static partial class ResultExtensions {
         where TValue6 : notnull
         where TValue7 : notnull
         where TValue8 : notnull {
-        return result.BindAsync(async (value1,
+        return result.ThenAsync(async (value1,
                                        value2,
                                        value3,
                                        value4,

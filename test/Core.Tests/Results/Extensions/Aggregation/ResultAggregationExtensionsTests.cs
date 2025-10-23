@@ -1,11 +1,13 @@
 using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.Results.Extensions;
 using UnambitiousFx.Core.Results.Reasons;
+using UnambitiousFx.Core.Results.Types;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Aggregation;
 
-[TestSubject(typeof(ResultAggregationExtensions))]
-public sealed class ResultAggregationExtensionsTests {
+[TestSubject(typeof(ResultExtensions))]
+public sealed class ResultExtensionsTests {
     [Fact]
     public void AllErrors_MixedResults_EnumeratesAllDomainErrors() {
         var r1 = Result.Success()
@@ -101,7 +103,7 @@ public sealed class ResultAggregationExtensionsTests {
                           .WithSuccess("s2")
                           .WithMetadata("c", 3); // should be ignored
 
-        var merged = new[] { first, failing, after }.Merge(ResultAggregationExtensions.MergeFailureStrategy.FirstFailure);
+        var merged = new[] { first, failing, after }.Merge(MergeFailureStrategy.FirstFailure);
 
         Assert.False(merged.Ok(out var primary));
         Assert.IsType<ValidationError>(merged.Errors()
@@ -122,7 +124,7 @@ public sealed class ResultAggregationExtensionsTests {
         var r3 = Result.Success()
                        .WithMetadata("k", 3); // final
 
-        var merged = new[] { r1, r2, r3 }.Merge(ResultAggregationExtensions.MergeFailureStrategy.AccumulateAll);
+        var merged = new[] { r1, r2, r3 }.Merge(MergeFailureStrategy.AccumulateAll);
 
         Assert.True(merged.Ok(out _));
         Assert.Equal(3, merged.Metadata["k"]);

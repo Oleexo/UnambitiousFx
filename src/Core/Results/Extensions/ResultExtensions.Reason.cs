@@ -1,6 +1,6 @@
 using UnambitiousFx.Core.Results.Reasons;
 
-namespace UnambitiousFx.Core.Results;
+namespace UnambitiousFx.Core.Results.Extensions;
 
 public static class ResultReasonExtensions {
     public static T WithReason<T>(this T  result,

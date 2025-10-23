@@ -1,8 +1,8 @@
 using UnambitiousFx.Core.Results.Reasons;
 
-namespace UnambitiousFx.Core.Results;
+namespace UnambitiousFx.Core.Results.Extensions;
 
-public static class ResultErrorEnumerationExtensions {
+public static partial class ResultExtensions {
     /// <summary>
     ///     Returns all attached error reasons (IError) in order.
     /// </summary>

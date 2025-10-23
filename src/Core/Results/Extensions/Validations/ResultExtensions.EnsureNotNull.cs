@@ -14,11 +14,7 @@ public static partial class ResultExtensions {
                                                      string?          field = null)
         where T : notnull
         where TInner : class {
-        if (result.IsFaulted) {
-            return result;
-        }
-
-        return result.Bind(value => {
+        return result.Then(value => {
             var inner = selector(value);
             if (inner is not null) {
                 return Result.Success(value);

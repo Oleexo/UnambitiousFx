@@ -1,20 +1,20 @@
 ﻿namespace UnambitiousFx.Core.Results.Extensions.Transformations.Tasks;
 
-public static partial class ResultExtensions {
-    public static async Task<Result<TValue1>> Flatten<TValue1>(this Task<Result<Result<TValue1>>> awaitable)
+public static partial class ResultFlattenExtensions {
+    public static async Task<Result<TValue1>> FlattenAsync<TValue1>(this Task<Result<Result<TValue1>>> awaitable)
         where TValue1 : notnull {
         var outer = await awaitable;
         return outer.Flatten();
     }
 
-    public static async Task<Result<TValue1, TValue2>> Flatten<TValue1, TValue2>(this Task<Result<Result<TValue1, TValue2>>> awaitable)
+    public static async Task<Result<TValue1, TValue2>> FlattenAsync<TValue1, TValue2>(this Task<Result<Result<TValue1, TValue2>>> awaitable)
         where TValue1 : notnull
         where TValue2 : notnull {
         var outer = await awaitable;
         return outer.Flatten();
     }
 
-    public static async Task<Result<TValue1, TValue2, TValue3>> Flatten<TValue1, TValue2, TValue3>(this Task<Result<Result<TValue1, TValue2, TValue3>>> awaitable)
+    public static async Task<Result<TValue1, TValue2, TValue3>> FlattenAsync<TValue1, TValue2, TValue3>(this Task<Result<Result<TValue1, TValue2, TValue3>>> awaitable)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull {
@@ -22,7 +22,7 @@ public static partial class ResultExtensions {
         return outer.Flatten();
     }
 
-    public static async Task<Result<TValue1, TValue2, TValue3, TValue4>> Flatten<TValue1, TValue2, TValue3, TValue4>(
+    public static async Task<Result<TValue1, TValue2, TValue3, TValue4>> FlattenAsync<TValue1, TValue2, TValue3, TValue4>(
         this Task<Result<Result<TValue1, TValue2, TValue3, TValue4>>> awaitable)
         where TValue1 : notnull
         where TValue2 : notnull
@@ -32,7 +32,7 @@ public static partial class ResultExtensions {
         return outer.Flatten();
     }
 
-    public static async Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5>> Flatten<TValue1, TValue2, TValue3, TValue4, TValue5>(
+    public static async Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5>> FlattenAsync<TValue1, TValue2, TValue3, TValue4, TValue5>(
         this Task<Result<Result<TValue1, TValue2, TValue3, TValue4, TValue5>>> awaitable)
         where TValue1 : notnull
         where TValue2 : notnull
@@ -43,7 +43,7 @@ public static partial class ResultExtensions {
         return outer.Flatten();
     }
 
-    public static async Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>> Flatten<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(
+    public static async Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>> FlattenAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(
         this Task<Result<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>>> awaitable)
         where TValue1 : notnull
         where TValue2 : notnull
@@ -55,7 +55,7 @@ public static partial class ResultExtensions {
         return outer.Flatten();
     }
 
-    public static async Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>> Flatten<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(
+    public static async Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>> FlattenAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(
         this Task<Result<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>>> awaitable)
         where TValue1 : notnull
         where TValue2 : notnull
@@ -69,7 +69,7 @@ public static partial class ResultExtensions {
     }
 
     public static async Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>>
-        Flatten<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(
+        FlattenAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(
             this Task<Result<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>>> awaitable)
         where TValue1 : notnull
         where TValue2 : notnull

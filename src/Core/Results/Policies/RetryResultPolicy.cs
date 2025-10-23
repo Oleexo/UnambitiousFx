@@ -1,5 +1,7 @@
 // access Result/BaseResult
 
+using UnambitiousFx.Core.Results.Extensions;
+
 namespace UnambitiousFx.Core.Results.Policies;
 
 /// <summary>

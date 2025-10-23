@@ -1,10 +1,13 @@
+using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Extensions.Transformations;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Transformations.Flatten;
 
-public sealed class ResultExtensionsTests {
-    // Arity 1
+[TestSubject(typeof(ResultFlattenExtensions))]
+public sealed class ResultFlattenExtensionsTests {
+    #region Arity 1
+
     [Fact]
     public void Flatten_Arity1_Success_ProjectsInner() {
         var inner = Result.Success(42);
@@ -34,7 +37,10 @@ public sealed class ResultExtensionsTests {
         Assert.True(flat.IsFaulted);
     }
 
-    // Arity 2
+    #endregion
+
+    #region Arity 2
+
     [Fact]
     public void Flatten_Arity2_Success_ProjectsInner() {
         var inner = Result.Success(1, 2);
@@ -65,7 +71,10 @@ public sealed class ResultExtensionsTests {
         Assert.True(flat.IsFaulted);
     }
 
-    // Arity 3
+    #endregion
+
+    #region Arity 3
+
     [Fact]
     public void Flatten_Arity3_Success_ProjectsInner() {
         var inner = Result.Success(1, 2, 3);
@@ -97,7 +106,10 @@ public sealed class ResultExtensionsTests {
         Assert.True(flat.IsFaulted);
     }
 
-    // Arity 4
+    #endregion
+
+    #region Arity 4
+
     [Fact]
     public void Flatten_Arity4_Success_ProjectsInner() {
         var inner = Result.Success(1, 2, 3, 4);
@@ -130,7 +142,10 @@ public sealed class ResultExtensionsTests {
         Assert.True(flat.IsFaulted);
     }
 
-    // Arity 5
+    #endregion
+
+    #region Arity 5
+
     [Fact]
     public void Flatten_Arity5_Success_ProjectsInner() {
         var inner = Result.Success(1, 2, 3, 4, 5);
@@ -142,7 +157,7 @@ public sealed class ResultExtensionsTests {
         Assert.Equal(2, b);
         Assert.Equal(3, c);
         Assert.Equal(4, d);
-        Assert.Equal(5, e);       
+        Assert.Equal(5, e);
     }
 
     [Fact]
@@ -164,20 +179,23 @@ public sealed class ResultExtensionsTests {
         Assert.True(flat.IsFaulted);
     }
 
-    // Arity 6
+    #endregion
+
+    #region Arity 6
+
     [Fact]
     public void Flatten_Arity6_Success_ProjectsInner() {
         var inner = Result.Success(1, 2, 3, 4, 5, 6);
         var outer = Result.Success(inner);
         var flat  = outer.Flatten();
 
-        flat.Ok(out var a, out var b, out var c, out var d, out var e, out var f );
+        flat.Ok(out var a, out var b, out var c, out var d, out var e, out var f);
         Assert.Equal(1, a);
         Assert.Equal(2, b);
         Assert.Equal(3, c);
         Assert.Equal(4, d);
         Assert.Equal(5, e);
-        Assert.Equal(6, f);       
+        Assert.Equal(6, f);
     }
 
     [Fact]
@@ -199,7 +217,10 @@ public sealed class ResultExtensionsTests {
         Assert.True(flat.IsFaulted);
     }
 
-    // Arity 7
+    #endregion
+
+    #region Arity 7
+
     [Fact]
     public void Flatten_Arity7_Success_ProjectsInner() {
         var inner = Result.Success(1, 2, 3, 4, 5, 6, 7);
@@ -235,7 +256,10 @@ public sealed class ResultExtensionsTests {
         Assert.True(flat.IsFaulted);
     }
 
-    // Arity 8
+    #endregion
+
+    #region Arity 8
+
     [Fact]
     public void Flatten_Arity8_Success_ProjectsInner() {
         var inner = Result.Success(1, 2, 3, 4, 5, 6, 7, 8);
@@ -250,7 +274,7 @@ public sealed class ResultExtensionsTests {
         Assert.Equal(5, e);
         Assert.Equal(6, f);
         Assert.Equal(7, g);
-        Assert.Equal(8, h);       
+        Assert.Equal(8, h);
     }
 
     [Fact]
@@ -271,4 +295,6 @@ public sealed class ResultExtensionsTests {
 
         Assert.True(flat.IsFaulted);
     }
+
+    #endregion
 }

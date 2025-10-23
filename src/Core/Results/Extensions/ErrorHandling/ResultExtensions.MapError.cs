@@ -1,4 +1,6 @@
-﻿namespace UnambitiousFx.Core.Results.Extensions.ErrorHandling;
+﻿using UnambitiousFx.Core.Results.Types;
+
+namespace UnambitiousFx.Core.Results.Extensions.ErrorHandling;
 
 public static partial class ResultExtensions {
     public static Result MapError(this Result                result,

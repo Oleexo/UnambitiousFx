@@ -7,11 +7,7 @@ public static partial class ResultExtensions {
                                                 Func<TValue, bool>      predicate,
                                                 Func<TValue, Exception> errorFactory)
         where TValue : notnull {
-        if (result.IsFaulted) {
-            return result;
-        }
-
-        return result.Bind(value => predicate(value)
+        return result.Then(value => predicate(value)
                                         ? Result.Success(value)
                                         : Result.Failure<TValue>(errorFactory(value)));
     }
@@ -21,11 +17,7 @@ public static partial class ResultExtensions {
                                                                     Func<TValue1, TValue2, Exception> errorFactory)
         where TValue1 : notnull
         where TValue2 : notnull {
-        if (result.IsFaulted) {
-            return result;
-        }
-
-        return result.Bind((value1,
+        return result.Then((value1,
                             value2) => predicate(value1, value2)
                                            ? Result.Success(value1, value2)
                                            : Result.Failure<TValue1, TValue2>(errorFactory(value1, value2)));
@@ -37,11 +29,7 @@ public static partial class ResultExtensions {
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull {
-        if (result.IsFaulted) {
-            return result;
-        }
-
-        return result.Bind((value1,
+        return result.Then((value1,
                             value2,
                             value3) => predicate(value1, value2, value3)
                                            ? Result.Success(value1, value2, value3)
@@ -55,11 +43,7 @@ public static partial class ResultExtensions {
         where TValue2 : notnull
         where TValue3 : notnull
         where TValue4 : notnull {
-        if (result.IsFaulted) {
-            return result;
-        }
-
-        return result.Bind((value1,
+        return result.Then((value1,
                             value2,
                             value3,
                             value4) => predicate(value1, value2, value3, value4)
@@ -76,11 +60,7 @@ public static partial class ResultExtensions {
         where TValue3 : notnull
         where TValue4 : notnull
         where TValue5 : notnull {
-        if (result.IsFaulted) {
-            return result;
-        }
-
-        return result.Bind((value1,
+        return result.Then((value1,
                             value2,
                             value3,
                             value4,
@@ -99,11 +79,7 @@ public static partial class ResultExtensions {
         where TValue4 : notnull
         where TValue5 : notnull
         where TValue6 : notnull {
-        if (result.IsFaulted) {
-            return result;
-        }
-
-        return result.Bind((value1,
+        return result.Then((value1,
                             value2,
                             value3,
                             value4,
@@ -124,11 +100,7 @@ public static partial class ResultExtensions {
         where TValue5 : notnull
         where TValue6 : notnull
         where TValue7 : notnull {
-        if (result.IsFaulted) {
-            return result;
-        }
-
-        return result.Bind((value1,
+        return result.Then((value1,
                             value2,
                             value3,
                             value4,
@@ -152,11 +124,7 @@ public static partial class ResultExtensions {
         where TValue6 : notnull
         where TValue7 : notnull
         where TValue8 : notnull {
-        if (result.IsFaulted) {
-            return result;
-        }
-
-        return result.Bind((value1,
+        return result.Then((value1,
                             value2,
                             value3,
                             value4,

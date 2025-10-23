@@ -5,9 +5,10 @@ using ResultExtensions = UnambitiousFx.Core.Results.Extensions.ValueAccess.Tasks
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Transformations.Try;
 
-[TestSubject(typeof(ResultExtensions))]
+[TestSubject(typeof(ResultTryExtensions))]
 public sealed class ResultExtensionsTests {
-    // Arity 1
+    #region Arity 1
+
     [Fact]
     public void Try_Arity1_Success_ReturnsMapped() {
         var r = Result.Success(1);
@@ -57,7 +58,10 @@ public sealed class ResultExtensionsTests {
         }
     }
 
-    // Arity 2
+    #endregion
+
+    #region Arity 2
+
     [Fact]
     public void Try_Arity2_Success_ReturnsMapped() {
         var r = Result.Success(1, 2);
@@ -111,7 +115,10 @@ public sealed class ResultExtensionsTests {
         }
     }
 
-    // Arity 3
+    #endregion
+
+    #region Arity 3
+
     [Fact]
     public void Try_Arity3_Success_ReturnsMapped() {
         var r = Result.Success(1, 2, 3);
@@ -169,7 +176,10 @@ public sealed class ResultExtensionsTests {
         }
     }
 
-    // Arity 4
+    #endregion
+
+    #region Arity 4
+
     [Fact]
     public void Try_Arity4_Success_ReturnsMapped() {
         var r = Result.Success(1, 2, 3, 4);
@@ -231,7 +241,10 @@ public sealed class ResultExtensionsTests {
         }
     }
 
-    // Arity 5
+    #endregion
+
+    #region Arity 5
+
     [Fact]
     public void Try_Arity5_Success_ReturnsMapped() {
         var r = Result.Success(1, 2, 3, 4, 5);
@@ -297,7 +310,10 @@ public sealed class ResultExtensionsTests {
         }
     }
 
-    // Arity 6
+    #endregion
+
+    #region Arity 6
+
     [Fact]
     public void Try_Arity6_Success_ReturnsMapped() {
         var r = Result.Success(1, 2, 3, 4, 5, 6);
@@ -367,7 +383,10 @@ public sealed class ResultExtensionsTests {
         }
     }
 
-    // Arity 7
+    #endregion
+
+    #region Arity 7
+
     [Fact]
     public void Try_Arity7_Success_ReturnsMapped() {
         var r = Result.Success(1, 2, 3, 4, 5, 6, 7);
@@ -380,7 +399,7 @@ public sealed class ResultExtensionsTests {
                             f,
                             g) => (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1, g + 1));
 
-        if (mapped.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7,  out _)) {
+        if (mapped.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out _)) {
             Assert.Equal(2, value1);
             Assert.Equal(3, value2);
             Assert.Equal(4, value3);
@@ -441,7 +460,10 @@ public sealed class ResultExtensionsTests {
         }
     }
 
-    // Arity 8
+    #endregion
+
+    #region Arity 8
+
     [Fact]
     public void Try_Arity8_Success_ReturnsMapped() {
         var r = Result.Success(1, 2, 3, 4, 5, 6, 7, 8);
@@ -517,4 +539,6 @@ public sealed class ResultExtensionsTests {
             Assert.Fail("Expected failure");
         }
     }
+
+    #endregion
 }

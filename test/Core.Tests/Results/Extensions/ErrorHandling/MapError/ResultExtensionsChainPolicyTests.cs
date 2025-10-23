@@ -1,6 +1,8 @@
 using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.Results.Extensions;
 using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
+using UnambitiousFx.Core.Results.Types;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.ErrorHandling.MapError;
 

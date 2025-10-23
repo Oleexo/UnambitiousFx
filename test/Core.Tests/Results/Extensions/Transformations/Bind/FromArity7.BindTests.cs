@@ -1,9 +1,11 @@
+using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Extensions.Transformations;
 using UnambitiousFx.Core.XUnit.Results;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Transformations.Bind;
 
+[TestSubject(typeof(ResultBindExtensions))]
 public sealed class FromArity7BindTests {
     [Fact]
     public void Bind_7_To_0_Success() {

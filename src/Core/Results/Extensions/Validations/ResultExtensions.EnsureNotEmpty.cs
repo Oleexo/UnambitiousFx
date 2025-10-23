@@ -14,11 +14,7 @@ public static partial class ResultExtensions {
     public static Result<string> EnsureNotEmpty(this Result<string> result,
                                                 string              message = "Value must not be empty.",
                                                 string?             field   = null) {
-        if (result.IsFaulted) {
-            return result;
-        }
-
-        return result.Bind(value => {
+        return result.Then(value => {
             if (string.IsNullOrEmpty(value)) {
                 var finalMessage = field is null
                                        ? message
@@ -37,11 +33,7 @@ public static partial class ResultExtensions {
                                                                          string                   message = "Collection must not be empty.",
                                                                          string?                  field   = null)
         where TCollection : IEnumerable<TItem> {
-        if (result.IsFaulted) {
-            return result;
-        }
-
-        return result.Bind(collection => {
+        return result.Then(collection => {
             if (!collection.Any()) {
                 var finalMessage = field is null
                                        ? message

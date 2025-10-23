@@ -1,4 +1,4 @@
-namespace UnambitiousFx.Core.Results;
+namespace UnambitiousFx.Core.Results.Types;
 
 /// <summary>
 ///     Policy controlling how successive MapError operations behave in a chain.
