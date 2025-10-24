@@ -1,6 +1,6 @@
 ﻿namespace UnambitiousFx.Core.Results.Extensions.Transformations.ValueTasks;
 
-public static partial class ResultMapExtensions {
+public static class ResultMapExtensions {
     public static ValueTask<Result<TOut>> MapAsync<TValue, TOut>(this Result<TValue>      result,
                                                             Func<TValue, ValueTask<TOut>> map)
         where TValue : notnull

@@ -219,7 +219,7 @@ public sealed class ResultArity2Tests {
             Assert.Fail("Expected failure");
         }
 
-        if (!r.Ok(out Exception? err2)) {
+        if (!r.Ok(out var err2)) {
             Assert.Equal("boom", err2.Message);
         }
         else {

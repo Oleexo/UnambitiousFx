@@ -1,6 +1,6 @@
 namespace UnambitiousFx.Core.Results.Extensions.Transformations.ValueTasks;
 
-public static partial class ResultZipExtensions {
+public static class ResultZipExtensions {
     public static async ValueTask<Result<T1, T2>> ZipAsync<T1, T2>(this ValueTask<Result<T1>> awaitableR1,
                                                               ValueTask<Result<T2>>      awaitableR2)
         where T1 : notnull

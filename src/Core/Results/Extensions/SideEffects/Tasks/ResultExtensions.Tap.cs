@@ -1,8 +1,6 @@
-﻿using UnambitiousFx.Core.Results.Extensions.Transformations.Tasks;
+﻿namespace UnambitiousFx.Core.Results.Extensions.SideEffects.Tasks;
 
-namespace UnambitiousFx.Core.Results.Extensions.SideEffects.Tasks;
-
-public static partial class ResultExtensions {
+public static class ResultTapExtensions {
     public static async Task<Result<TValue>> TapAsync<TValue>(this Result<TValue> result,
                                                               Func<TValue, Task>  tap)
         where TValue : notnull {

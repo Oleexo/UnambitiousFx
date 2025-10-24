@@ -1,9 +1,11 @@
+using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Extensions.ValueAccess;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.ValueAccess.ToNullable;
 
-public sealed class ResultExtensionsTests {
+[TestSubject(typeof(ResultToNullableExtensions))]
+public sealed class ResultToNullableExtensionsTests {
     // Arity 1
     [Fact]
     public void ToNullable_Arity1_Success_ReturnsValue() {
@@ -24,7 +26,7 @@ public sealed class ResultExtensionsTests {
     public void ToNullable_Arity2_Success_ReturnsTuple() {
         var r = Result.Success(2, 3);
         var n = r.ToNullable();
-        Assert.Equal(((int, int)?)(2, 3), n);
+        Assert.Equal((2, 3), n);
     }
 
     [Fact]
@@ -39,7 +41,7 @@ public sealed class ResultExtensionsTests {
     public void ToNullable_Arity3_Success_ReturnsTuple() {
         var r = Result.Success(1, 2, 3);
         var n = r.ToNullable();
-        Assert.Equal(((int, int, int)?)(1, 2, 3), n);
+        Assert.Equal((1, 2, 3), n);
     }
 
     [Fact]
@@ -54,7 +56,7 @@ public sealed class ResultExtensionsTests {
     public void ToNullable_Arity4_Success_ReturnsTuple() {
         var r = Result.Success(1, 2, 3, 4);
         var n = r.ToNullable();
-        Assert.Equal(((int, int, int, int)?)(1, 2, 3, 4), n);
+        Assert.Equal((1, 2, 3, 4), n);
     }
 
     [Fact]
@@ -84,7 +86,7 @@ public sealed class ResultExtensionsTests {
     public void ToNullable_Arity6_Success_ReturnsTuple() {
         var r = Result.Success(1, 2, 3, 4, 5, 6);
         var n = r.ToNullable();
-        Assert.Equal(((int, int, int, int, int, int)?)(1, 2, 3, 4, 5, 6), n);
+        Assert.Equal((1, 2, 3, 4, 5, 6), n);
     }
 
     [Fact]
@@ -99,7 +101,7 @@ public sealed class ResultExtensionsTests {
     public void ToNullable_Arity7_Success_ReturnsTuple() {
         var r = Result.Success(1, 2, 3, 4, 5, 6, 7);
         var n = r.ToNullable();
-        Assert.Equal(((int, int, int, int, int, int, int)?)(1, 2, 3, 4, 5, 6, 7), n);
+        Assert.Equal((1, 2, 3, 4, 5, 6, 7), n);
     }
 
     [Fact]
@@ -114,7 +116,7 @@ public sealed class ResultExtensionsTests {
     public void ToNullable_Arity8_Success_ReturnsTuple() {
         var r = Result.Success(1, 2, 3, 4, 5, 6, 7, 8);
         var n = r.ToNullable();
-        Assert.Equal(((int, int, int, int, int, int, int, int)?)(1, 2, 3, 4, 5, 6, 7, 8), n);
+        Assert.Equal((1, 2, 3, 4, 5, 6, 7, 8), n);
     }
 
     [Fact]

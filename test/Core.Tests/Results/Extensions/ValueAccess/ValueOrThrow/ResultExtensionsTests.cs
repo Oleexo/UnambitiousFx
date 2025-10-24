@@ -1,8 +1,10 @@
+using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Extensions.ValueAccess;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.ValueAccess.ValueOrThrow;
 
+[TestSubject(typeof(ResultValueOrThrowExtensions))]
 public sealed class ResultExtensionsTests {
     [Fact]
     public void ValueOrThrow_Arity1_Success_ReturnsValue() {
@@ -31,7 +33,7 @@ public sealed class ResultExtensionsTests {
     public void ValueOrThrow_Arity1_Success_FactoryNotInvoked() {
         var r      = Result.Success(5);
         var called = false;
-        var _ = r.ValueOrThrow(e => {
+        var _ = r.ValueOrThrow(_ => {
             called = true;
             return new Exception();
         });
@@ -66,7 +68,7 @@ public sealed class ResultExtensionsTests {
     public void ValueOrThrow_Arity2_Success_FactoryNotInvoked() {
         var r      = Result.Success(1, 2);
         var called = false;
-        var _ = r.ValueOrThrow(e => {
+        var _ = r.ValueOrThrow(_ => {
             called = true;
             return new Exception();
         });
@@ -102,7 +104,7 @@ public sealed class ResultExtensionsTests {
     public void ValueOrThrow_Arity3_Success_FactoryNotInvoked() {
         var r      = Result.Success(1, 2, 3);
         var called = false;
-        var _ = r.ValueOrThrow(e => {
+        var _ = r.ValueOrThrow(_ => {
             called = true;
             return new Exception();
         });
@@ -139,7 +141,7 @@ public sealed class ResultExtensionsTests {
     public void ValueOrThrow_Arity4_Success_FactoryNotInvoked() {
         var r      = Result.Success(1, 2, 3, 4);
         var called = false;
-        var _ = r.ValueOrThrow(e => {
+        var _ = r.ValueOrThrow(_ => {
             called = true;
             return new Exception();
         });
@@ -177,7 +179,7 @@ public sealed class ResultExtensionsTests {
     public void ValueOrThrow_Arity5_Success_FactoryNotInvoked() {
         var r      = Result.Success(1, 2, 3, 4, 5);
         var called = false;
-        var _ = r.ValueOrThrow(e => {
+        var _ = r.ValueOrThrow(_ => {
             called = true;
             return new Exception();
         });
@@ -216,7 +218,7 @@ public sealed class ResultExtensionsTests {
     public void ValueOrThrow_Arity6_Success_FactoryNotInvoked() {
         var r      = Result.Success(1, 2, 3, 4, 5, 6);
         var called = false;
-        var _ = r.ValueOrThrow(e => {
+        var _ = r.ValueOrThrow(_ => {
             called = true;
             return new Exception();
         });
@@ -256,7 +258,7 @@ public sealed class ResultExtensionsTests {
     public void ValueOrThrow_Arity7_Success_FactoryNotInvoked() {
         var r      = Result.Success(1, 2, 3, 4, 5, 6, 7);
         var called = false;
-        var _ = r.ValueOrThrow(e => {
+        var _ = r.ValueOrThrow(_ => {
             called = true;
             return new Exception();
         });
@@ -297,7 +299,7 @@ public sealed class ResultExtensionsTests {
     public void ValueOrThrow_Arity8_Success_FactoryNotInvoked() {
         var r      = Result.Success(1, 2, 3, 4, 5, 6, 7, 8);
         var called = false;
-        var _ = r.ValueOrThrow(e => {
+        var _ = r.ValueOrThrow(_ => {
             called = true;
             return new Exception();
         });

@@ -1,6 +1,6 @@
 ﻿namespace UnambitiousFx.Core.Results.Extensions.ValueAccess.Tasks;
 
-public static partial class ResultExtensions {
+public static class ResultValueOrExtensions {
     public static async Task<TValue1> ValueOrAsync<TValue1>(this Task<Result<TValue1>> awaitableResult,
                                                             TValue1                    fallback)
         where TValue1 : notnull {

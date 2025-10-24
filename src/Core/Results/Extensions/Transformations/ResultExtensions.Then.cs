@@ -1,6 +1,6 @@
 namespace UnambitiousFx.Core.Results.Extensions.Transformations;
 
-public static partial class ResultThenExtensions {
+public static class ResultThenExtensions {
     public static Result<T1> Then<T1>(this Result<T1>      result,
                                       Func<T1, Result<T1>> then,
                                       bool                 copyReasonsAndMetadata = true)

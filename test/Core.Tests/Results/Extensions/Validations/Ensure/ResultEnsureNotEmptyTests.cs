@@ -1,9 +1,11 @@
+using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Extensions.Validations;
 using UnambitiousFx.Core.Results.Reasons;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Validations.Ensure;
 
+[TestSubject(typeof(ResultEnsureNotEmptyExtensions))]
 public sealed class ResultEnsureNotEmptyTests {
     [Fact]
     public void EnsureNotEmpty_String_Empty_Fails() {

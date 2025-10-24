@@ -31,6 +31,12 @@ public abstract partial class Result {
         return new FailureResult<TValue1, TValue2>(error);
     }
 
+    public static Result<TValue1, TValue2> Failure<TValue1, TValue2>(string message)
+        where TValue1 : notnull
+        where TValue2 : notnull {
+        return new FailureResult<TValue1, TValue2>(new Exception(message));
+    }
+
     public static Result<TValue1, TValue2> Failure<TValue1, TValue2>(IError error)
         where TValue1 : notnull
         where TValue2 : notnull {
@@ -63,12 +69,27 @@ public abstract partial class Result {
         return r;
     }
 
+    public static Result<TValue1, TValue2, TValue3> Failure<TValue1, TValue2, TValue3>(string message)
+        where TValue1 : notnull
+        where TValue2 : notnull
+        where TValue3 : notnull {
+        return new FailureResult<TValue1, TValue2, TValue3>(new Exception(message));
+    }
+
     public static Result<TValue1, TValue2, TValue3, TValue4> Failure<TValue1, TValue2, TValue3, TValue4>(Exception error)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
         where TValue4 : notnull {
         return new FailureResult<TValue1, TValue2, TValue3, TValue4>(error);
+    }
+
+    public static Result<TValue1, TValue2, TValue3, TValue4> Failure<TValue1, TValue2, TValue3, TValue4>(string message)
+        where TValue1 : notnull
+        where TValue2 : notnull
+        where TValue3 : notnull
+        where TValue4 : notnull {
+        return new FailureResult<TValue1, TValue2, TValue3, TValue4>(new Exception(message));
     }
 
     public static Result<TValue1, TValue2, TValue3, TValue4> Failure<TValue1, TValue2, TValue3, TValue4>(IError error)
@@ -94,6 +115,15 @@ public abstract partial class Result {
         return new FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5>(error);
     }
 
+    public static Result<TValue1, TValue2, TValue3, TValue4, TValue5> Failure<TValue1, TValue2, TValue3, TValue4, TValue5>(string message)
+        where TValue1 : notnull
+        where TValue2 : notnull
+        where TValue3 : notnull
+        where TValue4 : notnull
+        where TValue5 : notnull {
+        return new FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5>(new Exception(message));
+    }
+
     public static Result<TValue1, TValue2, TValue3, TValue4, TValue5> Failure<TValue1, TValue2, TValue3, TValue4, TValue5>(IError error)
         where TValue1 : notnull
         where TValue2 : notnull
@@ -117,6 +147,16 @@ public abstract partial class Result {
         where TValue5 : notnull
         where TValue6 : notnull {
         return new FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(error);
+    }
+
+    public static Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6> Failure<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(string message)
+        where TValue1 : notnull
+        where TValue2 : notnull
+        where TValue3 : notnull
+        where TValue4 : notnull
+        where TValue5 : notnull
+        where TValue6 : notnull {
+        return new FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(new Exception(message));
     }
 
     public static Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6> Failure<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(IError error)
@@ -145,6 +185,17 @@ public abstract partial class Result {
         where TValue6 : notnull
         where TValue7 : notnull {
         return new FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(error);
+    }
+
+    public static Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> Failure<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(string message)
+        where TValue1 : notnull
+        where TValue2 : notnull
+        where TValue3 : notnull
+        where TValue4 : notnull
+        where TValue5 : notnull
+        where TValue6 : notnull
+        where TValue7 : notnull {
+        return new FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(new Exception(message));
     }
 
     public static Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> Failure<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(IError error)
@@ -176,6 +227,19 @@ public abstract partial class Result {
         where TValue7 : notnull
         where TValue8 : notnull {
         return new FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(error);
+    }
+
+    public static Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>
+        Failure<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(string message)
+        where TValue1 : notnull
+        where TValue2 : notnull
+        where TValue3 : notnull
+        where TValue4 : notnull
+        where TValue5 : notnull
+        where TValue6 : notnull
+        where TValue7 : notnull
+        where TValue8 : notnull {
+        return new FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(new Exception(message));
     }
 
     public static Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8> Failure<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(

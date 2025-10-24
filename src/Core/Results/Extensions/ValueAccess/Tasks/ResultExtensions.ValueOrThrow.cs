@@ -1,6 +1,6 @@
 ﻿namespace UnambitiousFx.Core.Results.Extensions.ValueAccess.Tasks;
 
-public static partial class ResultExtensions {
+public static class ResultValueOrThrowExtensions {
     public static async Task<TValue1> ValueOrThrowAsync<TValue1>(this Task<Result<TValue1>> awaitable)
         where TValue1 : notnull {
         var result = await awaitable.ConfigureAwait(false);
@@ -8,7 +8,7 @@ public static partial class ResultExtensions {
     }
 
     public static async Task<TValue1> ValueOrThrowAsync<TValue1>(this Task<Result<TValue1>> awaitable,
-                                                            Func<Exception, Exception> exceptionFactory)
+                                                                 Func<Exception, Exception> exceptionFactory)
         where TValue1 : notnull {
         var result = await awaitable.ConfigureAwait(false);
         return result.ValueOrThrow(exceptionFactory);
@@ -22,7 +22,7 @@ public static partial class ResultExtensions {
     }
 
     public static async Task<(TValue1, TValue2)> ValueOrThrowAsync<TValue1, TValue2>(this Task<Result<TValue1, TValue2>> awaitable,
-                                                                                Func<Exception, Exception>          exceptionFactory)
+                                                                                     Func<Exception, Exception>          exceptionFactory)
         where TValue1 : notnull
         where TValue2 : notnull {
         var result = await awaitable.ConfigureAwait(false);
@@ -38,7 +38,7 @@ public static partial class ResultExtensions {
     }
 
     public static async Task<(TValue1, TValue2, TValue3)> ValueOrThrowAsync<TValue1, TValue2, TValue3>(this Task<Result<TValue1, TValue2, TValue3>> awaitable,
-                                                                                                  Func<Exception, Exception>                   exceptionFactory)
+                                                                                                       Func<Exception, Exception>                   exceptionFactory)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull {
@@ -46,7 +46,8 @@ public static partial class ResultExtensions {
         return result.ValueOrThrow(exceptionFactory);
     }
 
-    public static async Task<(TValue1, TValue2, TValue3, TValue4)> ValueOrThrowAsync<TValue1, TValue2, TValue3, TValue4>(this Task<Result<TValue1, TValue2, TValue3, TValue4>> awaitable)
+    public static async Task<(TValue1, TValue2, TValue3, TValue4)> ValueOrThrowAsync<TValue1, TValue2, TValue3, TValue4>(
+        this Task<Result<TValue1, TValue2, TValue3, TValue4>> awaitable)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -55,8 +56,9 @@ public static partial class ResultExtensions {
         return result.ValueOrThrow();
     }
 
-    public static async Task<(TValue1, TValue2, TValue3, TValue4)> ValueOrThrowAsync<TValue1, TValue2, TValue3, TValue4>(this Task<Result<TValue1, TValue2, TValue3, TValue4>> awaitable,
-                                                                                                                    Func<Exception, Exception> exceptionFactory)
+    public static async Task<(TValue1, TValue2, TValue3, TValue4)> ValueOrThrowAsync<TValue1, TValue2, TValue3, TValue4>(
+        this Task<Result<TValue1, TValue2, TValue3, TValue4>> awaitable,
+        Func<Exception, Exception>                            exceptionFactory)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull

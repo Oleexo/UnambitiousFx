@@ -4,7 +4,7 @@ using UnambitiousFx.Core.Results.Extensions.SideEffects;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.SideEffects.TapError;
 
-[TestSubject(typeof(Result))]
+[TestSubject(typeof(ResultTapErrorExtensions))]
 public sealed class ResultExtensionsTests {
     [Fact]
     public void TapError_Arity0_Success_DoesNotInvoke() {

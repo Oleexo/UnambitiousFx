@@ -1,6 +1,6 @@
 ﻿namespace UnambitiousFx.Core.Results.Extensions.Transformations.ValueTasks;
 
-public static partial class ResultTryExtensions {
+public static class ResultTryExtensions {
     public static ValueTask<Result<TOut>> TryAsync<TValue, TOut>(this Result<TValue>      result,
                                                             Func<TValue, ValueTask<TOut>> func)
         where TValue : notnull

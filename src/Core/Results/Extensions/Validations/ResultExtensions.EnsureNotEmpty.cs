@@ -6,7 +6,7 @@ namespace UnambitiousFx.Core.Results.Extensions.Validations;
 /// <summary>
 ///     Guard helpers that convert a successful Result into a failure (ValidationError) when invariants are violated.
 /// </summary>
-public static partial class ResultExtensions {
+public static class ResultEnsureNotEmptyExtensions {
     /// <summary>
     ///     Ensures a successful string result value is neither null nor empty. (Null is unlikely due to notnull constraint,
     ///     but guarded defensively.)

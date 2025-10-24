@@ -1,6 +1,6 @@
 ﻿namespace UnambitiousFx.Core.Results.Extensions.Transformations;
 
-public static partial class ResultTryExtensions {
+public static class ResultTryExtensions {
     public static Result<TOut> Try<TValue, TOut>(this Result<TValue> result,
                                                  Func<TValue, TOut>  func)
         where TValue : notnull

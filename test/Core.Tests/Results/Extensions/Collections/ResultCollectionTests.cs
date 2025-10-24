@@ -1,7 +1,6 @@
 using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Extensions.Collections;
-using ResultExtensions = UnambitiousFx.Core.Results.Extensions.ValueAccess.Tasks.ResultExtensions;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Collections;
 

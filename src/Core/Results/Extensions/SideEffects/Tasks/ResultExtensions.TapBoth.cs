@@ -1,6 +1,6 @@
 namespace UnambitiousFx.Core.Results.Extensions.SideEffects.Tasks;
 
-public static partial class ResultExtensions {
+public static class ResultTapBothExtensions {
     public static async Task<Result<TValue>> TapBothAsync<TValue>(this Result<TValue>   result,
                                                                   Func<TValue, Task>    onSuccess,
                                                                   Func<Exception, Task> onFailure)

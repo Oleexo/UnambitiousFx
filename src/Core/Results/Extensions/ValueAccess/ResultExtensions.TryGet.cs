@@ -1,6 +1,6 @@
 ﻿namespace UnambitiousFx.Core.Results.Extensions.ValueAccess;
 
-public static partial class ResultExtensions {
+public static class ResultTryGetExtensions {
     public static bool TryGet<TValue1>(this Result<TValue1> result,
                                        out  TValue1?        value)
         where TValue1 : notnull {

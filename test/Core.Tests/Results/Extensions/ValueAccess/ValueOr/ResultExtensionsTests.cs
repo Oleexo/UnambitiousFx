@@ -1,8 +1,10 @@
+using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Extensions.ValueAccess;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.ValueAccess.ValueOr;
 
+[TestSubject(typeof(ResultValueOrExtensions))]
 public sealed class ResultExtensionsTests {
     [Fact]
     public void ValueOr_Arity1_Success_ReturnsOriginal() {

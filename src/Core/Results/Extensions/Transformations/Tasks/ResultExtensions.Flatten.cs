@@ -1,6 +1,6 @@
 ﻿namespace UnambitiousFx.Core.Results.Extensions.Transformations.Tasks;
 
-public static partial class ResultFlattenExtensions {
+public static class ResultFlattenExtensions {
     public static async Task<Result<TValue1>> FlattenAsync<TValue1>(this Task<Result<Result<TValue1>>> awaitable)
         where TValue1 : notnull {
         var outer = await awaitable;

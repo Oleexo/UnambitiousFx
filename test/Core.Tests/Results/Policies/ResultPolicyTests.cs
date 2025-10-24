@@ -16,7 +16,7 @@ public sealed class ResultPolicyTests {
 
     [Fact]
     public async Task Retry_Retries_OnFailure_ResultPredicate() {
-        int attempts = 0;
+        var attempts = 0;
         var policy = ResultPolicies.Retry(5, resultFilter: _ => true);
         var r = await policy.ExecuteAsync(() => {
             attempts++;
@@ -29,7 +29,7 @@ public sealed class ResultPolicyTests {
 
     [Fact]
     public async Task Retry_StopsEarly_WhenPredicateBlocks() {
-        int attempts = 0;
+        var attempts = 0;
         var policy = ResultPolicies.Retry(5, resultFilter: _ => false); // never retry failures
         var r = await policy.ExecuteAsync(() => { attempts++; return Result.Failure(new Exception("fail")); });
         Assert.True(r.IsFaulted);
@@ -38,7 +38,7 @@ public sealed class ResultPolicyTests {
 
     [Fact]
     public async Task Retry_Generic_SucceedsAfterRetries() {
-        int attempts = 0;
+        var attempts = 0;
         var policy = ResultPolicies.Retry(4, resultFilter: _ => true);
         var r = await policy.ExecuteAsync(() => {
             attempts++;
@@ -52,7 +52,7 @@ public sealed class ResultPolicyTests {
 
     [Fact]
     public async Task Retry_StopsOnUnhandledException() {
-        int attempts = 0;
+        var attempts = 0;
         var policy = ResultPolicies.Retry(5, exceptionFilter: ex => ex is InvalidOperationException);
         var r = await policy.ExecuteAsync(() => {
             attempts++;

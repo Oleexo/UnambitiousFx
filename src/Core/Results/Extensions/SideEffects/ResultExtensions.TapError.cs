@@ -1,6 +1,6 @@
 ﻿namespace UnambitiousFx.Core.Results.Extensions.SideEffects;
 
-public static partial class ResultExtensions {
+public static class ResultTapErrorExtensions {
     public static Result TapError(this Result       result,
                                   Action<Exception> tap) {
         result.IfFailure(tap);

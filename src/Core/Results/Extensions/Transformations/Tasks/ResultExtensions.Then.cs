@@ -1,6 +1,6 @@
 namespace UnambitiousFx.Core.Results.Extensions.Transformations.Tasks;
 
-public static partial class ResultThenExtensions {
+public static class ResultThenExtensions {
     public static async Task<Result<T1>> ThenAsync<T1>(this Result<T1>            result,
                                                        Func<T1, Task<Result<T1>>> then,
                                                        bool                       copyReasonsAndMetadata = true)

@@ -4,7 +4,7 @@ using UnambitiousFx.Core.Results.Extensions.SideEffects;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.SideEffects.TapBoth;
 
-[TestSubject(typeof(Result))]
+[TestSubject(typeof(ResultTapBothExtensions))]
 public sealed class ResultExtensionsTests {
     [Fact]
     public void TapBoth_Arity0_Success_InvokesOnce() {
@@ -42,6 +42,26 @@ public sealed class ResultExtensionsTests {
         var called = 0;
 
         r.TapBoth(_ => Assert.Fail("Should not be called"), _ => called++);
+
+        Assert.Equal(1, called);
+    }
+    
+    [Fact]
+    public void TapBoth_Arity2_Success_InvokesOnce() {
+        var r      = Result.Success(42, "test");
+        var called = 0;
+
+        r.TapBoth((_, _) => called++, _ => Assert.Fail("Should not be called"));
+
+        Assert.Equal(1, called);
+    }
+
+    [Fact]
+    public void TapBoth_Arity2_Failure_DoesNotInvoke() {
+        var r      = Result.Failure<int, string>(new Exception("boom"));
+        var called = 0;
+
+        r.TapBoth((_, _) => Assert.Fail("Should not be called"), _ => called++);
 
         Assert.Equal(1, called);
     }

@@ -1,6 +1,6 @@
 namespace UnambitiousFx.Core.Results.Extensions.Transformations;
 
-public static partial class ResultZipExtensions {
+public static class ResultZipExtensions {
     public static Result<T1, T2> Zip<T1, T2>(this Result<T1> r1,
                                              Result<T2>      r2)
         where T1 : notnull

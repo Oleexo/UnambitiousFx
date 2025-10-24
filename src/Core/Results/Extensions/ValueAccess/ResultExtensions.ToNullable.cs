@@ -1,6 +1,6 @@
 ﻿namespace UnambitiousFx.Core.Results.Extensions.ValueAccess;
 
-public static partial class ResultExtensions {
+public static class ResultToNullableExtensions {
     public static TValue1? ToNullable<TValue1>(this Result<TValue1> result)
         where TValue1 : notnull {
         return result.Ok(out var value)

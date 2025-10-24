@@ -1,11 +1,9 @@
 using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
-using TasksExt = UnambitiousFx.Core.Results.Extensions.ValueAccess.Tasks.ResultExtensions;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.ErrorHandling.Recovery;
 
-[TestSubject(typeof(TasksExt))]
 public sealed class ResultRecoveryExtensionsTests {
     [Fact]
     public void Recover_Success_DoesNotInvoke_ReturnsSameValue() {

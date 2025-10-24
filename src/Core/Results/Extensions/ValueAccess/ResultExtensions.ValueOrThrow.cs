@@ -1,6 +1,6 @@
 ﻿namespace UnambitiousFx.Core.Results.Extensions.ValueAccess;
 
-public static partial class ResultExtensions {
+public static class ResultValueOrThrowExtensions {
     public static TValue1 ValueOrThrow<TValue1>(this Result<TValue1> result)
         where TValue1 : notnull {
         return result.Match<TValue1>(value1 => value1, e => throw e);

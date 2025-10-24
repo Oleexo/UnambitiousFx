@@ -4,7 +4,7 @@ using UnambitiousFx.Core.Results.Extensions.Validations;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Validations.Ensure;
 
-[TestSubject(typeof(Result<>))]
+[TestSubject(typeof(ResultEnsureExtensions))]
 public sealed class ResultEnsureTests {
     // Arity 1
     [Fact]

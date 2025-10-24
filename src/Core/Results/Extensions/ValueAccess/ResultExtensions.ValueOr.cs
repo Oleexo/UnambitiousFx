@@ -1,6 +1,6 @@
 ﻿namespace UnambitiousFx.Core.Results.Extensions.ValueAccess;
 
-public static partial class ResultExtensions {
+public static class ResultValueOrExtensions {
     public static TValue1 ValueOr<TValue1>(this Result<TValue1> result,
                                            TValue1              fallback)
         where TValue1 : notnull {

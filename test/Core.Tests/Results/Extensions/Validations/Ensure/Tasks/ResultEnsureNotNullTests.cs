@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Extensions.Validations;
 using UnambitiousFx.Core.Results.Extensions.Validations.Tasks;
@@ -6,7 +6,8 @@ using UnambitiousFx.Core.Results.Reasons;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Validations.Ensure.Tasks;
 
-public class ResultEnsureNotNullTests {
+[TestSubject(typeof(ResultEnsureNotNullExtensions))]
+public sealed class ResultEnsureNotNullTests {
     private sealed class User {
         public string? Name { get; init; }
     }
@@ -14,7 +15,7 @@ public class ResultEnsureNotNullTests {
     [Fact]
     public async Task EnsureNotNullAsync_NullInner_Fails_WithFieldPrefixedMessage() {
         var user = new User { Name = null };
-        Task<Result<User>> awaitable = Task.FromResult(Result.Success(user));
+        var awaitable = Task.FromResult(Result.Success(user));
 
         var r = await awaitable.EnsureNotNullAsync(u => u.Name, "is required", field: "Name");
 
@@ -25,7 +26,7 @@ public class ResultEnsureNotNullTests {
     [Fact]
     public async Task EnsureNotNullAsync_NullInner_Fails_WithoutField_UsesMessage() {
         var user = new User { Name = null };
-        Task<Result<User>> awaitable = Task.FromResult(Result.Success(user));
+        var awaitable = Task.FromResult(Result.Success(user));
 
         var r = await awaitable.EnsureNotNullAsync(u => u.Name, "value must exist");
 
@@ -36,7 +37,7 @@ public class ResultEnsureNotNullTests {
     [Fact]
     public async Task EnsureNotNullAsync_NonNull_PassesThrough() {
         var user = new User { Name = "Jane" };
-        Task<Result<User>> awaitable = Task.FromResult(Result.Success(user));
+        var awaitable = Task.FromResult(Result.Success(user));
 
         var r = await awaitable.EnsureNotNullAsync(u => u.Name, "is required");
 

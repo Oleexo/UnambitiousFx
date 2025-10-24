@@ -1,6 +1,6 @@
 namespace UnambitiousFx.Core.Results.Extensions.ValueAccess.ValueTasks;
 
-public static partial class ResultExtensions {
+public static class ResultTryGetExtensions {
     public static async ValueTask<(bool ok, TValue1? value)> TryGetAsync<TValue1>(this ValueTask<Result<TValue1>> awaitable)
         where TValue1 : notnull {
         var result = await awaitable.ConfigureAwait(false);
@@ -26,7 +26,8 @@ public static partial class ResultExtensions {
                    : (false, default);
     }
 
-    public static async ValueTask<(bool ok, (TValue1, TValue2, TValue3, TValue4) value)> TryGetAsync<TValue1, TValue2, TValue3, TValue4>(this ValueTask<Result<TValue1, TValue2, TValue3, TValue4>> awaitable)
+    public static async ValueTask<(bool ok, (TValue1, TValue2, TValue3, TValue4) value)> TryGetAsync<TValue1, TValue2, TValue3, TValue4>(
+        this ValueTask<Result<TValue1, TValue2, TValue3, TValue4>> awaitable)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -37,7 +38,8 @@ public static partial class ResultExtensions {
                    : (false, default);
     }
 
-    public static async ValueTask<(bool ok, (TValue1, TValue2, TValue3, TValue4, TValue5) value)> TryGetAsync<TValue1, TValue2, TValue3, TValue4, TValue5>(this ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5>> awaitable)
+    public static async ValueTask<(bool ok, (TValue1, TValue2, TValue3, TValue4, TValue5) value)> TryGetAsync<TValue1, TValue2, TValue3, TValue4, TValue5>(
+        this ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5>> awaitable)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -49,7 +51,8 @@ public static partial class ResultExtensions {
                    : (false, default);
     }
 
-    public static async ValueTask<(bool ok, (TValue1, TValue2, TValue3, TValue4, TValue5, TValue6) value)> TryGetAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(this ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>> awaitable)
+    public static async ValueTask<(bool ok, (TValue1, TValue2, TValue3, TValue4, TValue5, TValue6) value)> TryGetAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(
+        this ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>> awaitable)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -62,7 +65,8 @@ public static partial class ResultExtensions {
                    : (false, default);
     }
 
-    public static async ValueTask<(bool ok, (TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7) value)> TryGetAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(this ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>> awaitable)
+    public static async ValueTask<(bool ok, (TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7) value)>
+        TryGetAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(this ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>> awaitable)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -76,7 +80,9 @@ public static partial class ResultExtensions {
                    : (false, default);
     }
 
-    public static async ValueTask<(bool ok, (TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8) value)> TryGetAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(this ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>> awaitable)
+    public static async ValueTask<(bool ok, (TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8) value)>
+        TryGetAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(
+            this ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>> awaitable)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull

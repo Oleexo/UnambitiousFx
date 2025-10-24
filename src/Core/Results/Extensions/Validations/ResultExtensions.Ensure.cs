@@ -2,7 +2,7 @@ using UnambitiousFx.Core.Results.Extensions.Transformations;
 
 namespace UnambitiousFx.Core.Results.Extensions.Validations;
 
-public static partial class ResultExtensions {
+public static class ResultEnsureExtensions {
     public static Result<TValue> Ensure<TValue>(this Result<TValue>     result,
                                                 Func<TValue, bool>      predicate,
                                                 Func<TValue, Exception> errorFactory)

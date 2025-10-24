@@ -1,10 +1,12 @@
+using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Extensions.Validations;
 using UnambitiousFx.Core.Results.Reasons;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Validations.Ensure;
 
-public class ResultEnsureNotNullTests {
+[TestSubject(typeof(ResultEnsureNotNullExtensions))]
+public sealed class ResultEnsureNotNullTests {
     [Fact]
     public void EnsureNotNull_WhenInnerNull_FailsWithValidationError() {
         var r = Result.Success(new User(null, new List<string> { "admin" }))

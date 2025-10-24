@@ -3,7 +3,7 @@ using UnambitiousFx.Core.Results.Reasons;
 
 namespace UnambitiousFx.Core.Results.Extensions.Validations;
 
-public static partial class ResultExtensions {
+public static class ResultEnsureNotNullExtensions {
     /// <summary>
     ///     Ensures a projected inner reference value is not null. If null, returns a Failure Result with a ValidationError.
     ///     Original failure results are passed through unchanged.

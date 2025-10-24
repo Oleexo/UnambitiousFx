@@ -4,7 +4,7 @@ using UnambitiousFx.Core.Results.Extensions.SideEffects;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.SideEffects.Tap;
 
-[TestSubject(typeof(Result))]
+[TestSubject(typeof(ResultTapExtensions))]
 public sealed class ResultExtensionsTests {
     [Fact]
     public void Tap_Arity0_Success_InvokesOnce() {

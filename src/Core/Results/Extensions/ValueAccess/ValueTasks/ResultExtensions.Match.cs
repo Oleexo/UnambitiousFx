@@ -1,6 +1,6 @@
 ﻿namespace UnambitiousFx.Core.Results.Extensions.ValueAccess.ValueTasks;
 
-public static partial class ResultExtensions {
+public static class ResultMatchExtensions {
     public static async ValueTask<TOut> MatchAsync<TOut, TValue>(this ValueTask<Result<TValue>>   awaitableResult,
                                                                  Func<TValue, ValueTask<TOut>>    success,
                                                                  Func<Exception, ValueTask<TOut>> failure)

@@ -1,6 +1,6 @@
 ﻿namespace UnambitiousFx.Core.Results.Extensions.SideEffects.ValueTasks;
 
-public static partial class ResultExtensions {
+public static class ResultTapErrorExtensions {
     public static async ValueTask<Result<TValue>> TapErrorAsync<TValue>(this Result<TValue>        result,
                                                                         Func<Exception, ValueTask> tap)
         where TValue : notnull {

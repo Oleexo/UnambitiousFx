@@ -1,6 +1,6 @@
 namespace UnambitiousFx.Core.Results.Extensions.ValueAccess.ValueTasks;
 
-public static partial class ResultExtensions {
+public static class ResultToNullableExtensions {
     public static async ValueTask<TValue1?> ToNullableAsync<TValue1>(this ValueTask<Result<TValue1>> awaitable)
         where TValue1 : notnull {
         var result = await awaitable.ConfigureAwait(false);

@@ -1,6 +1,6 @@
 namespace UnambitiousFx.Core.Results.Extensions.ValueAccess.Tasks;
 
-public static partial class ResultExtensions {
+public static class ResultTryGetExtensions {
     public static async Task<(bool ok, TValue1? value)> TryGetAsync<TValue1>(this Task<Result<TValue1>> awaitable)
         where TValue1 : notnull {
         var result = await awaitable.ConfigureAwait(false);
