@@ -592,6 +592,436 @@ public class CacheService<T>
 
 ---
 
+## Advanced Error Operations
+
+### FindError - Locate Specific Errors
+
+`FindError` searches for errors matching a predicate within a Result's reasons.
+
+**Signature**:
+```csharp
+IError? FindError(this Result result, Func<IError, bool> predicate)
+```
+
+**Example**:
+```csharp
+Result<User> result = GetUser(userId);
+
+// Find by error code
+IError? validationError = result.FindError(e => e.Code == "VALIDATION");
+
+if (validationError is ValidationError ve)
+{
+    foreach (var failure in ve.Failures)
+    {
+        Console.WriteLine($"Validation error: {failure}");
+    }
+}
+
+// Find by metadata
+IError? fieldError = result.FindError(e => 
+    e.Metadata.ContainsKey("field") && 
+    e.Metadata["field"]?.ToString() == "email"
+);
+
+if (fieldError != null)
+{
+    Console.WriteLine($"Email field error: {fieldError.Message}");
+}
+
+// Find by error type
+IError? notFound = result.FindError(e => e is NotFoundError);
+```
+
+**Practical Examples**:
+```csharp
+// Extract specific validation failures
+public List<string> GetValidationErrors(Result result)
+{
+    var validationError = result.FindError(e => e is ValidationError);
+    
+    if (validationError is ValidationError ve)
+    {
+        return ve.Failures.ToList();
+    }
+    
+    return new List<string>();
+}
+
+// Check for specific error conditions
+public bool IsResourceNotFound(Result result)
+{
+    return result.FindError(e => e is NotFoundError) != null;
+}
+
+// Find errors with specific metadata
+public IError? FindErrorByField(Result result, string fieldName)
+{
+    return result.FindError(e => 
+        e.Metadata.TryGetValue("field", out var field) && 
+        field?.ToString() == fieldName
+    );
+}
+```
+
+---
+
+### TryPickError - Safe Error Extraction
+
+`TryPickError` attempts to find an error using an out parameter, following the .NET `TryXxx` pattern.
+
+**Signature**:
+```csharp
+bool TryPickError(
+    this Result result,
+    Func<IError, bool> predicate,
+    out IError? error)
+```
+
+**Example**:
+```csharp
+Result<User> result = GetUser(userId);
+
+// Pattern matching style
+if (result.TryPickError(e => e is ValidationError, out var error))
+{
+    var validationError = (ValidationError)error!;
+    return BadRequest(new { errors = validationError.Failures });
+}
+
+if (result.TryPickError(e => e.Code == "NOT_FOUND", out var notFound))
+{
+    _logger.LogWarning($"Resource not found: {notFound.Message}");
+    return NotFound();
+}
+
+// Complex predicates
+if (result.TryPickError(
+    e => e is ExceptionalError ee && ee.Exception is SqlException,
+    out var dbError))
+{
+    _logger.LogError("Database error", dbError.Exception);
+    return StatusCode(503, "Database unavailable");
+}
+```
+
+**Practical Examples**:
+```csharp
+// ASP.NET Core error handling
+public IActionResult HandleResult<T>(Result<T> result)
+{
+    if (result.TryPickError(e => e is NotFoundError, out var notFound))
+    {
+        return NotFound(notFound.Message);
+    }
+    
+    if (result.TryPickError(e => e is ValidationError, out var validation))
+    {
+        var ve = (ValidationError)validation!;
+        return BadRequest(new { errors = ve.Failures });
+    }
+    
+    if (result.TryPickError(e => e is UnauthorizedError, out var unauthorized))
+    {
+        return Unauthorized(unauthorized.Message);
+    }
+    
+    return result.Match(
+        success: value => Ok(value),
+        failure: error => StatusCode(500, error.Message)
+    );
+}
+
+// Conditional error handling
+public async Task ProcessWithRetry<T>(Result<T> result)
+{
+    if (result.TryPickError(e => e is TimeoutError, out var timeout))
+    {
+        _logger.LogWarning("Operation timed out, retrying...");
+        await Task.Delay(1000);
+        // Retry logic
+    }
+    else if (result.TryPickError(e => e is ExceptionalError, out var exception))
+    {
+        _logger.LogError("Fatal error", exception.Exception);
+        throw exception.Exception!;
+    }
+}
+```
+
+---
+
+### MatchError - Pattern Match on Error Types
+
+`MatchError` transforms a Result by pattern matching on specific error types.
+
+**Signature**:
+```csharp
+TOut MatchError<TError, TOut>(
+    this Result result,
+    Func<TError, TOut> onMatch,
+    Func<TOut> onElse) where TError : class, IError
+```
+
+**Example**:
+```csharp
+// Single error type matching
+string message = result.MatchError<ValidationError, string>(
+    onMatch: ve => $"Validation failed: {string.Join(", ", ve.Failures)}",
+    onElse: () => result.Match(
+        success: _ => "Success",
+        failure: e => $"Error: {e.Message}"
+    )
+);
+
+// ASP.NET Core response
+IActionResult response = result.MatchError<NotFoundError, IActionResult>(
+    onMatch: notFound => NotFound(notFound.Message),
+    onElse: () => result.Match(
+        success: value => Ok(value),
+        failure: error => StatusCode(500, error.Message)
+    )
+);
+```
+
+**Cascading Error Matches**:
+```csharp
+public IActionResult HandleUserResult(Result<User> result)
+{
+    return result.MatchError<NotFoundError, IActionResult>(
+        onMatch: notFound => NotFound(new 
+        { 
+            error = "User not found",
+            resource = notFound.Resource,
+            identifier = notFound.Identifier
+        }),
+        onElse: () => result.MatchError<ValidationError, IActionResult>(
+            onMatch: validation => BadRequest(new 
+            { 
+                error = "Validation failed",
+                failures = validation.Failures
+            }),
+            onElse: () => result.MatchError<UnauthorizedError, IActionResult>(
+                onMatch: unauthorized => Unauthorized(new 
+                { 
+                    error = unauthorized.Reason ?? "Unauthorized access"
+                }),
+                onElse: () => result.Match(
+                    success: user => Ok(user),
+                    failure: error => StatusCode(500, new 
+                    { 
+                        error = "Internal server error",
+                        message = error.Message
+                    })
+                )
+            )
+        )
+    );
+}
+```
+
+**Practical Examples**:
+```csharp
+// HTTP status code mapping
+public int GetHttpStatusCode(Result result)
+{
+    return result.MatchError<NotFoundError, int>(
+        onMatch: _ => 404,
+        onElse: () => result.MatchError<ValidationError, int>(
+            onMatch: _ => 400,
+            onElse: () => result.MatchError<UnauthorizedError, int>(
+                onMatch: _ => 401,
+                onElse: () => result.MatchError<ConflictError, int>(
+                    onMatch: _ => 409,
+                    onElse: () => result.IsSuccess ? 200 : 500
+                )
+            )
+        )
+    );
+}
+
+// Error-specific logging
+public void LogResult(Result result)
+{
+    result.MatchError<ExceptionalError, Unit>(
+        onMatch: exceptional => 
+        {
+            _logger.LogError(exceptional.Exception, "Exceptional error occurred");
+            _sentry.CaptureException(exceptional.Exception);
+            return Unit.Value;
+        },
+        onElse: () => 
+        {
+            result.MatchError<ValidationError, Unit>(
+                onMatch: validation => 
+                {
+                    _logger.LogWarning("Validation failed: {Failures}", validation.Failures);
+                    return Unit.Value;
+                },
+                onElse: () => 
+                {
+                    if (result.IsFaulted)
+                        _logger.LogInformation("Operation failed: {Message}", result.Match(_ => "", e => e.Message));
+                    return Unit.Value;
+                }
+            );
+            return Unit.Value;
+        }
+    );
+}
+```
+
+---
+
+### FilterError - Remove Specific Errors
+
+`FilterError` filters errors based on a predicate, removing errors that don't match. If all errors are filtered out, the Result becomes successful.
+
+**Signature**:
+```csharp
+Result FilterError(this Result result, Func<IError, bool> predicate)
+```
+
+**Example**:
+```csharp
+// Keep only critical errors
+Result result = Operation()
+    .FilterError(e => e.Code == "CRITICAL" || e is ExceptionalError);
+
+// Remove temporary/retriable errors
+Result<Data> data = LoadData()
+    .FilterError(e => e.Code != "TIMEOUT" && e.Code != "RETRY");
+
+// Filter by metadata
+Result<User> user = GetUser(userId)
+    .FilterError(e => 
+        !e.Metadata.TryGetValue("temporary", out var temp) || 
+        temp?.ToString() != "true"
+    );
+```
+
+**Practical Examples**:
+```csharp
+// Remove non-critical warnings, keep only errors
+public Result<T> OnlyCriticalErrors<T>(Result<T> result)
+{
+    return result.FilterError(e => 
+        e.Code == "CRITICAL" || 
+        e is ExceptionalError ||
+        e is UnauthorizedError
+    );
+}
+
+// Remove specific error types for retry logic
+public Result<Data> RemoveRetriableErrors(Result<Data> result)
+{
+    return result.FilterError(e => 
+        e is not TimeoutError && 
+        e is not ConflictError &&
+        e.Code != "TEMPORARY_UNAVAILABLE"
+    );
+}
+
+// Keep only validation errors
+public Result ValidationsOnly(Result result)
+{
+    return result.FilterError(e => e is ValidationError);
+}
+```
+
+**Important Note**: FilterError can convert a failure Result to success if all errors are filtered out. Use with caution.
+
+```csharp
+// Original result has warnings (non-critical errors)
+Result result = Operation()
+    .WithError(new CustomWarning("This is just a warning"));
+
+// Filter out warnings - becomes Success!
+Result filtered = result.FilterError(e => e is not CustomWarning);
+// filtered.IsSuccess == true
+```
+
+---
+
+### WithContext - Add Error Context
+
+`WithContext` is an alias for `PrependError` that adds contextual information to error messages.
+
+**Signature**:
+```csharp
+Result<T> WithContext<T>(this Result<T> result, string context)
+```
+
+**Example**:
+```csharp
+public Result<User> GetUserWithContext(string userId)
+{
+    return GetUser(userId)
+        .WithContext($"GetUser(userId: {userId})");
+}
+
+// Original error: "User not found"
+// With context: "GetUser(userId: 123): User not found"
+
+// Nested contexts
+public Result<Order> ProcessOrderWithContext(int orderId)
+{
+    return LoadOrder(orderId)
+        .WithContext($"ProcessOrder(orderId: {orderId})")
+        .Bind(order => ValidateOrder(order)
+            .WithContext($"ValidateOrder"))
+        .Bind(order => SaveOrder(order)
+            .WithContext($"SaveOrder"));
+}
+
+// Error chain: "ProcessOrder(orderId: 123): ValidateOrder: Order total is invalid"
+```
+
+**Practical Examples**:
+```csharp
+// Service layer adding operation context
+public class UserService
+{
+    public Result<User> GetUser(string userId)
+    {
+        return _repository.GetUser(userId)
+            .WithContext($"UserService.GetUser(userId: {userId})");
+    }
+    
+    public Result UpdateUser(string userId, UserUpdate update)
+    {
+        return _repository.UpdateUser(userId, update)
+            .WithContext($"UserService.UpdateUser(userId: {userId})");
+    }
+}
+
+// Request ID tracking
+public Result<Data> ProcessRequest(string requestId, Request request)
+{
+    return ValidateRequest(request)
+        .WithContext($"[Request: {requestId}] Validation")
+        .Bind(req => ProcessData(req)
+            .WithContext($"[Request: {requestId}] Processing"))
+        .Bind(data => SaveData(data)
+            .WithContext($"[Request: {requestId}] Saving"));
+}
+
+// Method call chain tracking
+public Result<Report> GenerateReport(ReportRequest request)
+{
+    return LoadData(request.DataSource)
+        .WithContext($"GenerateReport -> LoadData")
+        .Bind(data => TransformData(data)
+            .WithContext($"GenerateReport -> TransformData"))
+        .Bind(transformed => BuildReport(transformed)
+            .WithContext($"GenerateReport -> BuildReport"))
+        .Bind(report => ValidateReport(report)
+            .WithContext($"GenerateReport -> ValidateReport"));
+}
+```
+
+---
+
 ## Error Inspection
 
 ### HasError<TError>

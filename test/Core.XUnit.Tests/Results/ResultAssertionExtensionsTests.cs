@@ -1,8 +1,6 @@
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.XUnit.Results;
 
-// assertion extensions
-
 namespace UnambitiousFx.Core.XUnit.Tests.Results;
 
 public sealed class ResultAssertionExtensionsTests {
@@ -34,7 +32,7 @@ public sealed class ResultAssertionExtensionsTests {
     [Fact]
     public void MultiArityResult_ShouldBeSuccess_ExtractsTuple() {
         var r = Result.Success(1, "a", true);
-        r.ShouldBeSuccess(out (int, string, bool) tuple);
+        r.ShouldBeSuccess(out var tuple);
         Assert.Equal((1, "a", true), tuple);
     }
 
@@ -48,7 +46,10 @@ public sealed class ResultAssertionExtensionsTests {
     [Fact]
     public void MultiArityResult_ShouldBeSuccess_WithAction() {
         var r = Result.Success(1, 2, 3, 4);
-        r.ShouldBeSuccess((a,b,c,d) => {
+        r.ShouldBeSuccess((a,
+                           b,
+                           c,
+                           d) => {
             Assert.Equal(1, a);
             Assert.Equal(2, b);
             Assert.Equal(3, c);
@@ -56,4 +57,3 @@ public sealed class ResultAssertionExtensionsTests {
         });
     }
 }
-

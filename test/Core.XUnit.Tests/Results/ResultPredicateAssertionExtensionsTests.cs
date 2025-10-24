@@ -6,7 +6,8 @@ namespace UnambitiousFx.Core.XUnit.Tests.Results;
 public sealed class ResultPredicateAssertionExtensionsTests {
     [Fact]
     public void Arity1_ShouldBeSuccessWhere_PredicateTrue() {
-        Result.Success(42).ShouldBeSuccessWhere(v => v > 40);
+        Result.Success(42)
+              .ShouldBeSuccessWhere(v => v > 40);
     }
 
     [Fact]
@@ -29,13 +30,14 @@ public sealed class ResultPredicateAssertionExtensionsTests {
 
     [Fact]
     public void Arity8_ShouldBeSuccessWhere_PredicateTrue() {
-        Result.Success(1,2,3,4,5,6,7,8)
+        Result.Success(1, 2, 3, 4, 5, 6, 7, 8)
               .ShouldBeSuccessWhere(t => t.Item8 == 8);
     }
 
     [Fact]
     public void CustomMessageOverload_Success() {
-        Result.Success(10).ShouldBeSuccess(out var v, "Should succeed");
+        Result.Success(10)
+              .ShouldBeSuccess(out var v, "Should succeed");
         Assert.Equal(10, v);
     }
 
@@ -46,4 +48,3 @@ public sealed class ResultPredicateAssertionExtensionsTests {
         Assert.Equal("x", ex.Message);
     }
 }
-

@@ -7,12 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\src\Mediator\Mediator.csproj"/>
-        <ProjectReference Include="..\Application\Application.csproj"/>
+        <ProjectReference Include="..\..\..\src\Mediator\Mediator.csproj" />
+        <ProjectReference Include="..\Application\Application.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <InternalsVisibleTo Include="WebApi.Tests"/>
+        <InternalsVisibleTo Include="WebApi.Tests" />
     </ItemGroup>
 
 
