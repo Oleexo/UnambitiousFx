@@ -6,7 +6,6 @@ public static partial class ResultExtensions {
         original.Ok(out var existingError);
         var newEx  = mapError(existingError!);
         var mapped = Result.Failure(newEx);
-        // Copy prior reasons + metadata (accumulation semantics)
         foreach (var r in original.Reasons) {
             mapped.AddReason(r);
         }
