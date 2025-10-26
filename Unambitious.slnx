@@ -10,6 +10,7 @@
     <Project Path="examples\mediator\WebApi\WebApi.csproj" Type="Classic C#" />
   </Folder>
   <Folder Name="/src/">
+    <Project Path="src\Core.CodeGen\Core.CodeGen.csproj" Type="Classic C#" />
     <Project Path="src\Core.XUnit\Core.XUnit.csproj" Type="Classic C#" />
     <Project Path="src\Core\Core.csproj" Type="Classic C#" />
     <Project Path="src\Mediator.Abstractions\Mediator.Abstractions.csproj" Type="Classic C#" />
