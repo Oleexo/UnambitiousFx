@@ -6,6 +6,8 @@ using UnambitiousFx.Mediator;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using UnambitiousFx.Mediator.Abstractions;
+using IRequest = MediatR.IRequest;
 using OurSender = UnambitiousFx.Mediator.Abstractions.ISender;
 using OurPublisher = UnambitiousFx.Mediator.Abstractions.IPublisher;
 
@@ -131,6 +133,17 @@ public class MediatorVsMediatRBenchmarks {
     [Benchmark(Baseline = true, Description = "Our Mediator - Send (response)")]
     public async Task<int> Our_Send_Response() {
         var res = await _ourSenderBase.SendAsync<RequestWithResponse, int>(RrRequest);
+        return res.Ok(out var v)
+                   ? v!
+                   : -1;
+    }
+
+    [Benchmark(Baseline = true, Description = "Our Mediator - Direct Send (response)")]
+    public async Task<int> Our_Direct_Send_Response() {
+        var handler        = _ourBaseSp.GetRequiredService<RequestWithResponseHandler>();
+        var contextFactory = _ourBaseSp.GetRequiredService<IContextFactory>();
+        var ctx            = contextFactory.Create();
+        var res = await handler.HandleAsync(ctx, RrRequest, CancellationToken.None);
         return res.Ok(out var v)
                    ? v!
                    : -1;
@@ -294,54 +307,54 @@ public class MediatorVsMediatRBenchmarks {
 
     // ===== Types for MediatR =====
     public sealed record MediatRRequestWithResponse(int A,
-                                                    int B) : IRequest<int>;
+                                                    int B) : MediatR.IRequest<int>;
 
     public sealed record MediatRRequestWithoutResponse() : IRequest;
 
-    public sealed class MediatRRequestWithResponseHandler : IRequestHandler<MediatRRequestWithResponse, int> {
+    public sealed class MediatRRequestWithResponseHandler : MediatR.IRequestHandler<MediatRRequestWithResponse, int> {
         public Task<int> Handle(MediatRRequestWithResponse request,
                                 CancellationToken          cancellationToken) => Task.FromResult(request.A + request.B);
     }
 
-    public sealed class MediatRRequestWithoutResponseHandler : IRequestHandler<MediatRRequestWithoutResponse> {
+    public sealed class MediatRRequestWithoutResponseHandler : MediatR.IRequestHandler<MediatRRequestWithoutResponse> {
         public Task Handle(MediatRRequestWithoutResponse request,
                            CancellationToken             cancellationToken) => Task.CompletedTask;
     }
 
     public sealed class MrNoOpBehavior1_RR : IPipelineBehavior<MediatRRequestWithResponse, int> {
-        public Task<int> Handle(MediatRRequestWithResponse  request,
-                                RequestHandlerDelegate<int> next,
-                                CancellationToken           cancellationToken) => next();
+        public Task<int> Handle(MediatRRequestWithResponse          request,
+                                MediatR.RequestHandlerDelegate<int> next,
+                                CancellationToken                   cancellationToken) => next();
     }
 
     public sealed class MrNoOpBehavior2_RR : IPipelineBehavior<MediatRRequestWithResponse, int> {
-        public Task<int> Handle(MediatRRequestWithResponse  request,
-                                RequestHandlerDelegate<int> next,
-                                CancellationToken           cancellationToken) => next();
+        public Task<int> Handle(MediatRRequestWithResponse          request,
+                                MediatR.RequestHandlerDelegate<int> next,
+                                CancellationToken                   cancellationToken) => next();
     }
 
     public sealed class MrNoOpBehavior3_RR : IPipelineBehavior<MediatRRequestWithResponse, int> {
-        public Task<int> Handle(MediatRRequestWithResponse  request,
-                                RequestHandlerDelegate<int> next,
-                                CancellationToken           cancellationToken) => next();
+        public Task<int> Handle(MediatRRequestWithResponse          request,
+                                MediatR.RequestHandlerDelegate<int> next,
+                                CancellationToken                   cancellationToken) => next();
     }
 
     public sealed class MrNoOpBehavior1_Void : IPipelineBehavior<MediatRRequestWithoutResponse, Unit> {
-        public Task<Unit> Handle(MediatRRequestWithoutResponse request,
-                                 RequestHandlerDelegate<Unit>  next,
-                                 CancellationToken             cancellationToken) => next();
+        public Task<Unit> Handle(MediatRRequestWithoutResponse        request,
+                                 MediatR.RequestHandlerDelegate<Unit> next,
+                                 CancellationToken                    cancellationToken) => next();
     }
 
     public sealed class MrNoOpBehavior2_Void : IPipelineBehavior<MediatRRequestWithoutResponse, Unit> {
-        public Task<Unit> Handle(MediatRRequestWithoutResponse request,
-                                 RequestHandlerDelegate<Unit>  next,
-                                 CancellationToken             cancellationToken) => next();
+        public Task<Unit> Handle(MediatRRequestWithoutResponse        request,
+                                 MediatR.RequestHandlerDelegate<Unit> next,
+                                 CancellationToken                    cancellationToken) => next();
     }
 
     public sealed class MrNoOpBehavior3_Void : IPipelineBehavior<MediatRRequestWithoutResponse, Unit> {
-        public Task<Unit> Handle(MediatRRequestWithoutResponse request,
-                                 RequestHandlerDelegate<Unit>  next,
-                                 CancellationToken             cancellationToken) => next();
+        public Task<Unit> Handle(MediatRRequestWithoutResponse        request,
+                                 MediatR.RequestHandlerDelegate<Unit> next,
+                                 CancellationToken                    cancellationToken) => next();
     }
 
     public sealed class MrNotification : INotification {
