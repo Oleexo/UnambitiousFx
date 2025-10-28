@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/benchmarks/">
+    <Project Path="benchmarks\CoreBenchmark\CoreBenchmark.csproj" Type="Classic C#" />
     <Project Path="benchmarks\MediatorBenchmark\MediatorBenchmark.csproj" Type="Classic C#" />
   </Folder>
   <Folder Name="/examples/" />

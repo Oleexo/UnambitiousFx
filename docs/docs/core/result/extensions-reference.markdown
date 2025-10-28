@@ -41,7 +41,7 @@ Jump to any extension category or specific method:
 [Tap](#tap) · [TapError](#taperror) · [TapBoth](#tapboth)
 
 ### Error Handling
-[MapError](#maperror) · [PrependError](#prependerror) · [AppendError](#appenderror) · [WithContext](#withcontext) · [HasError](#haserror) · [HasException](#hasexception) · [FindError](#finderror) · [TryPickError](#trypickerror) · [MatchError](#matcherror) · [FilterError](#filtererror) · [Recover](#recover)
+[MapError](#maperror) · [MapErrors](#maperrors) · [PrependError](#prependerror) · [AppendError](#appenderror) · [WithContext](#withcontext) · [HasError](#haserror) · [HasException](#hasexception) · [FindError](#finderror) · [TryPickError](#trypickerror) · [MatchError](#matcherror) · [FilterError](#filtererror) · [Recover](#recover)
 
 ### Collections
 [Traverse](#traverse) · [Sequence](#sequence) · [Combine](#combine) · [Apply](#apply)
@@ -638,7 +638,182 @@ return GetUser(userId)
     ));
 ```
 
-**Related**: [PrependError](#prependerror), [AppendError](#appenderror), [MapErrorAsync](#maperrorasync)
+**Related**: [MapErrors](#maperrors), [PrependError](#prependerror), [AppendError](#appenderror), [MapErrorAsync](#maperrorasync)
+
+---
+
+### MapErrors
+
+**Description**: Transforms multiple errors in a Result by collecting all errors (primary exception and all error reasons) and mapping them into a single new exception. Preserves all reasons and metadata while replacing the primary error.
+
+**Signature**:
+```csharp
+Result<T> MapErrors<T>(
+    this Result<T> result, 
+    Func<IReadOnlyList<Exception>, Exception> mapper)
+```
+
+**Examples**:
+
+**Aggregating Multiple Errors**:
+```csharp
+// Collect all errors into an AggregateException
+Result<User> result = ValidateAndCreateUser(userData)
+    .MapErrors(errors => new AggregateException(
+        "Multiple validation errors occurred",
+        errors
+    ));
+
+// Create custom error with all error details
+Result<Order> order = ProcessOrder(orderData)
+    .MapErrors(errors => 
+    {
+        var messages = errors.Select(e => e.Message);
+        return new InvalidOperationException(
+            $"Order processing failed with {errors.Count} errors: " +
+            string.Join("; ", messages)
+        );
+    });
+```
+
+**Error Context Aggregation**:
+```csharp
+// Combine multiple validation errors into a single error
+Result<Form> validatedForm = ValidateForm(form)
+    .MapErrors(errors => 
+    {
+        var allMessages = errors
+            .Select(e => e.Message)
+            .ToArray();
+        
+        return new ValidationException(
+            "Form validation failed",
+            new Dictionary<string, object?>
+            {
+                ["ErrorCount"] = errors.Count,
+                ["Errors"] = allMessages,
+                ["Timestamp"] = DateTime.UtcNow
+            }
+        );
+    });
+```
+
+**Creating Domain-Specific Errors**:
+```csharp
+// Convert technical errors to business errors
+Result<Payment> payment = ProcessPayment(paymentData)
+    .MapErrors(errors => 
+    {
+        // Check if any critical errors exist
+        var hasCritical = errors.Any(e => 
+            e is DatabaseException || e is NetworkException);
+        
+        if (hasCritical)
+        {
+            return new PaymentFailedException(
+                "Payment processing unavailable",
+                PaymentErrorCode.ServiceUnavailable,
+                errors
+            );
+        }
+        
+        return new PaymentFailedException(
+            "Payment validation failed",
+            PaymentErrorCode.ValidationError,
+            errors
+        );
+    });
+```
+
+**Logging and Reporting**:
+```csharp
+// Log all errors and create summary
+Result<Report> report = GenerateReport(params)
+    .MapErrors(errors => 
+    {
+        // Log each individual error
+        foreach (var error in errors)
+        {
+            _logger.LogError(error, "Report generation error");
+        }
+        
+        // Return consolidated error
+        return new ReportGenerationException(
+            $"Report generation failed with {errors.Count} error(s)",
+            errors.FirstOrDefault()
+        );
+    });
+```
+
+**Real-World Patterns**:
+```csharp
+// API error response with all error details
+Result<ApiResponse> response = ExecuteApiCall(request)
+    .MapErrors(errors => 
+    {
+        var errorDetails = errors.Select(e => new 
+        {
+            Type = e.GetType().Name,
+            Message = e.Message,
+            StackTrace = e.StackTrace
+        }).ToArray();
+        
+        return new ApiException(
+            "API call failed",
+            500,
+            new { Errors = errorDetails }
+        );
+    });
+
+// Batch processing error summary
+Result<BatchResult> batchResult = ProcessBatch(items)
+    .MapErrors(errors => 
+    {
+        var summary = new StringBuilder();
+        summary.AppendLine($"Batch failed with {errors.Count} errors:");
+        
+        for (int i = 0; i < errors.Count; i++)
+        {
+            summary.AppendLine($"  {i + 1}. {errors[i].Message}");
+        }
+        
+        return new BatchProcessingException(summary.ToString());
+    });
+
+// Error categorization
+Result<Data> data = LoadData()
+    .MapErrors(errors => 
+    {
+        var categorized = errors.GroupBy(e => e.GetType().Name);
+        var summary = string.Join(", ", 
+            categorized.Select(g => $"{g.Key}: {g.Count()}"));
+        
+        return new DataLoadException(
+            $"Data load failed - {summary}",
+            errors
+        );
+    });
+```
+
+**When to Use MapErrors**:
+- Aggregating multiple validation or processing errors
+- Creating comprehensive error reports
+- Converting collections of technical errors to business exceptions
+- Logging all errors while creating a summary exception
+- Building API error responses with detailed error lists
+
+**Difference from MapError**:
+```csharp
+// MapError - transforms single primary error
+Result<T> single = result.MapError(error => 
+    new Exception($"Failed: {error.Message}"));
+
+// MapErrors - processes ALL errors (primary + reasons)
+Result<T> multiple = result.MapErrors(allErrors => 
+    new AggregateException("Multiple failures", allErrors));
+```
+
+**Related**: [MapError](#maperror), [FindError](#finderror), [FilterError](#filtererror)
 
 ---
 
