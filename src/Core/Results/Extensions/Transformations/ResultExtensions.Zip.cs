@@ -5,11 +5,11 @@ public static class ResultZipExtensions {
                                              Result<T2>      r2)
         where T1 : notnull
         where T2 : notnull {
-        if (!r1.Ok(out var v1, out var e1)) {
+        if (!r1.TryGet(out var v1, out var e1)) {
             return Result.Failure<T1, T2>(e1);
         }
 
-        if (!r2.Ok(out var v2, out var e2)) {
+        if (!r2.TryGet(out var v2, out var e2)) {
             return Result.Failure<T1, T2>(e2);
         }
 
@@ -22,15 +22,15 @@ public static class ResultZipExtensions {
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull {
-        if (!r1.Ok(out var v1, out var e1)) {
+        if (!r1.TryGet(out var v1, out var e1)) {
             return Result.Failure<T1, T2, T3>(e1);
         }
 
-        if (!r2.Ok(out var v2, out var e2)) {
+        if (!r2.TryGet(out var v2, out var e2)) {
             return Result.Failure<T1, T2, T3>(e2);
         }
 
-        if (!r3.Ok(out var v3, out var e3)) {
+        if (!r3.TryGet(out var v3, out var e3)) {
             return Result.Failure<T1, T2, T3>(e3);
         }
 
@@ -45,19 +45,19 @@ public static class ResultZipExtensions {
         where T2 : notnull
         where T3 : notnull
         where T4 : notnull {
-        if (!r1.Ok(out var v1, out var e1)) {
+        if (!r1.TryGet(out var v1, out var e1)) {
             return Result.Failure<T1, T2, T3, T4>(e1);
         }
 
-        if (!r2.Ok(out var v2, out var e2)) {
+        if (!r2.TryGet(out var v2, out var e2)) {
             return Result.Failure<T1, T2, T3, T4>(e2);
         }
 
-        if (!r3.Ok(out var v3, out var e3)) {
+        if (!r3.TryGet(out var v3, out var e3)) {
             return Result.Failure<T1, T2, T3, T4>(e3);
         }
 
-        if (!r4.Ok(out var v4, out var e4)) {
+        if (!r4.TryGet(out var v4, out var e4)) {
             return Result.Failure<T1, T2, T3, T4>(e4);
         }
 
@@ -74,23 +74,23 @@ public static class ResultZipExtensions {
         where T3 : notnull
         where T4 : notnull
         where T5 : notnull {
-        if (!r1.Ok(out var v1, out var e1)) {
+        if (!r1.TryGet(out var v1, out var e1)) {
             return Result.Failure<T1, T2, T3, T4, T5>(e1);
         }
 
-        if (!r2.Ok(out var v2, out var e2)) {
+        if (!r2.TryGet(out var v2, out var e2)) {
             return Result.Failure<T1, T2, T3, T4, T5>(e2);
         }
 
-        if (!r3.Ok(out var v3, out var e3)) {
+        if (!r3.TryGet(out var v3, out var e3)) {
             return Result.Failure<T1, T2, T3, T4, T5>(e3);
         }
 
-        if (!r4.Ok(out var v4, out var e4)) {
+        if (!r4.TryGet(out var v4, out var e4)) {
             return Result.Failure<T1, T2, T3, T4, T5>(e4);
         }
 
-        if (!r5.Ok(out var v5, out var e5)) {
+        if (!r5.TryGet(out var v5, out var e5)) {
             return Result.Failure<T1, T2, T3, T4, T5>(e5);
         }
 
@@ -109,27 +109,27 @@ public static class ResultZipExtensions {
         where T4 : notnull
         where T5 : notnull
         where T6 : notnull {
-        if (!r1.Ok(out var v1, out var e1)) {
+        if (!r1.TryGet(out var v1, out var e1)) {
             return Result.Failure<T1, T2, T3, T4, T5, T6>(e1);
         }
 
-        if (!r2.Ok(out var v2, out var e2)) {
+        if (!r2.TryGet(out var v2, out var e2)) {
             return Result.Failure<T1, T2, T3, T4, T5, T6>(e2);
         }
 
-        if (!r3.Ok(out var v3, out var e3)) {
+        if (!r3.TryGet(out var v3, out var e3)) {
             return Result.Failure<T1, T2, T3, T4, T5, T6>(e3);
         }
 
-        if (!r4.Ok(out var v4, out var e4)) {
+        if (!r4.TryGet(out var v4, out var e4)) {
             return Result.Failure<T1, T2, T3, T4, T5, T6>(e4);
         }
 
-        if (!r5.Ok(out var v5, out var e5)) {
+        if (!r5.TryGet(out var v5, out var e5)) {
             return Result.Failure<T1, T2, T3, T4, T5, T6>(e5);
         }
 
-        if (!r6.Ok(out var v6, out var e6)) {
+        if (!r6.TryGet(out var v6, out var e6)) {
             return Result.Failure<T1, T2, T3, T4, T5, T6>(e6);
         }
 
@@ -150,31 +150,31 @@ public static class ResultZipExtensions {
         where T5 : notnull
         where T6 : notnull
         where T7 : notnull {
-        if (!r1.Ok(out var v1, out var e1)) {
+        if (!r1.TryGet(out var v1, out var e1)) {
             return Result.Failure<T1, T2, T3, T4, T5, T6, T7>(e1);
         }
 
-        if (!r2.Ok(out var v2, out var e2)) {
+        if (!r2.TryGet(out var v2, out var e2)) {
             return Result.Failure<T1, T2, T3, T4, T5, T6, T7>(e2);
         }
 
-        if (!r3.Ok(out var v3, out var e3)) {
+        if (!r3.TryGet(out var v3, out var e3)) {
             return Result.Failure<T1, T2, T3, T4, T5, T6, T7>(e3);
         }
 
-        if (!r4.Ok(out var v4, out var e4)) {
+        if (!r4.TryGet(out var v4, out var e4)) {
             return Result.Failure<T1, T2, T3, T4, T5, T6, T7>(e4);
         }
 
-        if (!r5.Ok(out var v5, out var e5)) {
+        if (!r5.TryGet(out var v5, out var e5)) {
             return Result.Failure<T1, T2, T3, T4, T5, T6, T7>(e5);
         }
 
-        if (!r6.Ok(out var v6, out var e6)) {
+        if (!r6.TryGet(out var v6, out var e6)) {
             return Result.Failure<T1, T2, T3, T4, T5, T6, T7>(e6);
         }
 
-        if (!r7.Ok(out var v7, out var e7)) {
+        if (!r7.TryGet(out var v7, out var e7)) {
             return Result.Failure<T1, T2, T3, T4, T5, T6, T7>(e7);
         }
 
@@ -197,35 +197,35 @@ public static class ResultZipExtensions {
         where T6 : notnull
         where T7 : notnull
         where T8 : notnull {
-        if (!r1.Ok(out var v1, out var e1)) {
+        if (!r1.TryGet(out var v1, out var e1)) {
             return Result.Failure<T1, T2, T3, T4, T5, T6, T7, T8>(e1);
         }
 
-        if (!r2.Ok(out var v2, out var e2)) {
+        if (!r2.TryGet(out var v2, out var e2)) {
             return Result.Failure<T1, T2, T3, T4, T5, T6, T7, T8>(e2);
         }
 
-        if (!r3.Ok(out var v3, out var e3)) {
+        if (!r3.TryGet(out var v3, out var e3)) {
             return Result.Failure<T1, T2, T3, T4, T5, T6, T7, T8>(e3);
         }
 
-        if (!r4.Ok(out var v4, out var e4)) {
+        if (!r4.TryGet(out var v4, out var e4)) {
             return Result.Failure<T1, T2, T3, T4, T5, T6, T7, T8>(e4);
         }
 
-        if (!r5.Ok(out var v5, out var e5)) {
+        if (!r5.TryGet(out var v5, out var e5)) {
             return Result.Failure<T1, T2, T3, T4, T5, T6, T7, T8>(e5);
         }
 
-        if (!r6.Ok(out var v6, out var e6)) {
+        if (!r6.TryGet(out var v6, out var e6)) {
             return Result.Failure<T1, T2, T3, T4, T5, T6, T7, T8>(e6);
         }
 
-        if (!r7.Ok(out var v7, out var e7)) {
+        if (!r7.TryGet(out var v7, out var e7)) {
             return Result.Failure<T1, T2, T3, T4, T5, T6, T7, T8>(e7);
         }
 
-        if (!r8.Ok(out var v8, out var e8)) {
+        if (!r8.TryGet(out var v8, out var e8)) {
             return Result.Failure<T1, T2, T3, T4, T5, T6, T7, T8>(e8);
         }
 
@@ -238,11 +238,11 @@ public static class ResultZipExtensions {
         where T1 : notnull
         where T2 : notnull
         where TR : notnull {
-        if (!r1.Ok(out var v1, out var e1)) {
+        if (!r1.TryGet(out var v1, out var e1)) {
             return Result.Failure<TR>(e1);
         }
 
-        if (!r2.Ok(out var v2, out var e2)) {
+        if (!r2.TryGet(out var v2, out var e2)) {
             return Result.Failure<TR>(e2);
         }
 
@@ -257,15 +257,15 @@ public static class ResultZipExtensions {
         where T2 : notnull
         where T3 : notnull
         where TR : notnull {
-        if (!r1.Ok(out var v1, out var e1)) {
+        if (!r1.TryGet(out var v1, out var e1)) {
             return Result.Failure<TR>(e1);
         }
 
-        if (!r2.Ok(out var v2, out var e2)) {
+        if (!r2.TryGet(out var v2, out var e2)) {
             return Result.Failure<TR>(e2);
         }
 
-        if (!r3.Ok(out var v3, out var e3)) {
+        if (!r3.TryGet(out var v3, out var e3)) {
             return Result.Failure<TR>(e3);
         }
 
@@ -282,19 +282,19 @@ public static class ResultZipExtensions {
         where T3 : notnull
         where T4 : notnull
         where TR : notnull {
-        if (!r1.Ok(out var v1, out var e1)) {
+        if (!r1.TryGet(out var v1, out var e1)) {
             return Result.Failure<TR>(e1);
         }
 
-        if (!r2.Ok(out var v2, out var e2)) {
+        if (!r2.TryGet(out var v2, out var e2)) {
             return Result.Failure<TR>(e2);
         }
 
-        if (!r3.Ok(out var v3, out var e3)) {
+        if (!r3.TryGet(out var v3, out var e3)) {
             return Result.Failure<TR>(e3);
         }
 
-        if (!r4.Ok(out var v4, out var e4)) {
+        if (!r4.TryGet(out var v4, out var e4)) {
             return Result.Failure<TR>(e4);
         }
 
@@ -313,23 +313,23 @@ public static class ResultZipExtensions {
         where T4 : notnull
         where T5 : notnull
         where TR : notnull {
-        if (!r1.Ok(out var v1, out var e1)) {
+        if (!r1.TryGet(out var v1, out var e1)) {
             return Result.Failure<TR>(e1);
         }
 
-        if (!r2.Ok(out var v2, out var e2)) {
+        if (!r2.TryGet(out var v2, out var e2)) {
             return Result.Failure<TR>(e2);
         }
 
-        if (!r3.Ok(out var v3, out var e3)) {
+        if (!r3.TryGet(out var v3, out var e3)) {
             return Result.Failure<TR>(e3);
         }
 
-        if (!r4.Ok(out var v4, out var e4)) {
+        if (!r4.TryGet(out var v4, out var e4)) {
             return Result.Failure<TR>(e4);
         }
 
-        if (!r5.Ok(out var v5, out var e5)) {
+        if (!r5.TryGet(out var v5, out var e5)) {
             return Result.Failure<TR>(e5);
         }
 
@@ -350,27 +350,27 @@ public static class ResultZipExtensions {
         where T5 : notnull
         where T6 : notnull
         where TR : notnull {
-        if (!r1.Ok(out var v1, out var e1)) {
+        if (!r1.TryGet(out var v1, out var e1)) {
             return Result.Failure<TR>(e1);
         }
 
-        if (!r2.Ok(out var v2, out var e2)) {
+        if (!r2.TryGet(out var v2, out var e2)) {
             return Result.Failure<TR>(e2);
         }
 
-        if (!r3.Ok(out var v3, out var e3)) {
+        if (!r3.TryGet(out var v3, out var e3)) {
             return Result.Failure<TR>(e3);
         }
 
-        if (!r4.Ok(out var v4, out var e4)) {
+        if (!r4.TryGet(out var v4, out var e4)) {
             return Result.Failure<TR>(e4);
         }
 
-        if (!r5.Ok(out var v5, out var e5)) {
+        if (!r5.TryGet(out var v5, out var e5)) {
             return Result.Failure<TR>(e5);
         }
 
-        if (!r6.Ok(out var v6, out var e6)) {
+        if (!r6.TryGet(out var v6, out var e6)) {
             return Result.Failure<TR>(e6);
         }
 
@@ -393,31 +393,31 @@ public static class ResultZipExtensions {
         where T6 : notnull
         where T7 : notnull
         where TR : notnull {
-        if (!r1.Ok(out var v1, out var e1)) {
+        if (!r1.TryGet(out var v1, out var e1)) {
             return Result.Failure<TR>(e1);
         }
 
-        if (!r2.Ok(out var v2, out var e2)) {
+        if (!r2.TryGet(out var v2, out var e2)) {
             return Result.Failure<TR>(e2);
         }
 
-        if (!r3.Ok(out var v3, out var e3)) {
+        if (!r3.TryGet(out var v3, out var e3)) {
             return Result.Failure<TR>(e3);
         }
 
-        if (!r4.Ok(out var v4, out var e4)) {
+        if (!r4.TryGet(out var v4, out var e4)) {
             return Result.Failure<TR>(e4);
         }
 
-        if (!r5.Ok(out var v5, out var e5)) {
+        if (!r5.TryGet(out var v5, out var e5)) {
             return Result.Failure<TR>(e5);
         }
 
-        if (!r6.Ok(out var v6, out var e6)) {
+        if (!r6.TryGet(out var v6, out var e6)) {
             return Result.Failure<TR>(e6);
         }
 
-        if (!r7.Ok(out var v7, out var e7)) {
+        if (!r7.TryGet(out var v7, out var e7)) {
             return Result.Failure<TR>(e7);
         }
 
@@ -442,35 +442,35 @@ public static class ResultZipExtensions {
         where T7 : notnull
         where T8 : notnull
         where TR : notnull {
-        if (!r1.Ok(out var v1, out var e1)) {
+        if (!r1.TryGet(out var v1, out var e1)) {
             return Result.Failure<TR>(e1);
         }
 
-        if (!r2.Ok(out var v2, out var e2)) {
+        if (!r2.TryGet(out var v2, out var e2)) {
             return Result.Failure<TR>(e2);
         }
 
-        if (!r3.Ok(out var v3, out var e3)) {
+        if (!r3.TryGet(out var v3, out var e3)) {
             return Result.Failure<TR>(e3);
         }
 
-        if (!r4.Ok(out var v4, out var e4)) {
+        if (!r4.TryGet(out var v4, out var e4)) {
             return Result.Failure<TR>(e4);
         }
 
-        if (!r5.Ok(out var v5, out var e5)) {
+        if (!r5.TryGet(out var v5, out var e5)) {
             return Result.Failure<TR>(e5);
         }
 
-        if (!r6.Ok(out var v6, out var e6)) {
+        if (!r6.TryGet(out var v6, out var e6)) {
             return Result.Failure<TR>(e6);
         }
 
-        if (!r7.Ok(out var v7, out var e7)) {
+        if (!r7.TryGet(out var v7, out var e7)) {
             return Result.Failure<TR>(e7);
         }
 
-        if (!r8.Ok(out var v8, out var e8)) {
+        if (!r8.TryGet(out var v8, out var e8)) {
             return Result.Failure<TR>(e8);
         }
 

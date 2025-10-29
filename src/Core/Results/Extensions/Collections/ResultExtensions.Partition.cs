@@ -6,7 +6,7 @@ public static partial class ResultExtensions {
         var oks    = new List<TValue>();
         var errors = new List<Exception>();
         foreach (var r in results) {
-            if (r.Ok(out var value, out var error)) {
+            if (r.TryGet(out var value, out var error)) {
                 oks.Add(value);
             }
             else {

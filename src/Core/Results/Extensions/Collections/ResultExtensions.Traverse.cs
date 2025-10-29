@@ -8,7 +8,7 @@ public static partial class ResultExtensions {
         var list = new List<TOut>();
         foreach (var item in source) {
             var r = selector(item);
-            if (r.Ok(out var value, out var error)) {
+            if (r.TryGet(out var value, out var error)) {
                 list.Add(value);
             }
             else {

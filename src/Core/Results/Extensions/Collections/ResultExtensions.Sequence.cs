@@ -5,7 +5,7 @@ public static partial class ResultExtensions {
         where TValue : notnull {
         var list = new List<TValue>();
         foreach (var r in results) {
-            if (r.Ok(out var value, out var error)) {
+            if (r.TryGet(out var value, out var error)) {
                 list.Add(value);
             }
             else {

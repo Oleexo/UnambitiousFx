@@ -8,7 +8,7 @@ public static partial class ResultExtensions {
         foreach (var item in source) {
             var r = await selector(item)
                        .ConfigureAwait(false);
-            if (r.Ok(out var value, out var error)) {
+            if (r.TryGet(out var value, out var error)) {
                 list.Add(value);
             }
             else {

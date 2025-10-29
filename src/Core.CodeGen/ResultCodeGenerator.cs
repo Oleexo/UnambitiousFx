@@ -155,7 +155,7 @@ internal class ResultCodeGenerator : ICodeGenerator {
                                   documentation: ifSuccessDoc
                               ));
 
-        // Generate Ok method with error
+        // Generate TryGet method with error
         var okParams = new List<MethodParameter>();
         for (int i = 1; i <= arity; i++) {
             okParams.Add(new MethodParameter($"[NotNullWhen(true)] out TValue{i}?", $"value{i}"));
@@ -173,7 +173,7 @@ internal class ResultCodeGenerator : ICodeGenerator {
              .WithReturns("True if successful, false otherwise");
 
         classWriter.AddMethod(new AbstractMethodWriter(
-                                  name: "Ok",
+                                  name: "TryGet",
                                   returnType: "bool",
                                   visibility: Visibility.Public,
                                   parameters: okParams.ToArray(),
@@ -181,7 +181,7 @@ internal class ResultCodeGenerator : ICodeGenerator {
                                   usings: ["System.Diagnostics.CodeAnalysis"]
                               ));
 
-        // Generate Ok method without error
+        // Generate TryGet method without error
         var okWithoutErrorParams = new List<MethodParameter>();
         for (int i = 1; i <= arity; i++) {
             okWithoutErrorParams.Add(new MethodParameter($"[NotNullWhen(true)] out TValue{i}?", $"value{i}"));
@@ -196,7 +196,7 @@ internal class ResultCodeGenerator : ICodeGenerator {
         okWithoutErrorDoc.WithReturns("True if successful, false otherwise") ;
 
         classWriter.AddMethod(new AbstractMethodWriter(
-                                  name: "Ok",
+                                  name: "TryGet",
                                   returnType: "bool",
                                   visibility: Visibility.Public,
                                   parameters: okWithoutErrorParams.ToArray(),
@@ -374,9 +374,9 @@ internal class ResultCodeGenerator : ICodeGenerator {
                                   parameters: [new MethodParameter("Action<Exception>", "action")]
                               ));
 
-        // Add Ok method from BaseResult
+        // Add TryGet method from BaseResult
         classWriter.AddMethod(new MethodWriter(
-                                  name: "Ok",
+                                  name: "TryGet",
                                   returnType: "bool",
                                   body: "error = null;\nreturn true;",
                                   visibility: Visibility.Public,
@@ -385,7 +385,7 @@ internal class ResultCodeGenerator : ICodeGenerator {
                                   usings: ["System.Diagnostics.CodeAnalysis"]
                               ));
 
-        // Add Ok method with values and error
+        // Add TryGet method with values and error
         var okParams = new List<MethodParameter>();
         for (int i = 1; i <= arity; i++) {
             okParams.Add(new MethodParameter($"[NotNullWhen(true)] out TValue{i}?", $"value{i}"));
@@ -395,7 +395,7 @@ internal class ResultCodeGenerator : ICodeGenerator {
         var okBody = string.Join("\n", Enumerable.Range(1, arity).Select(i => $"value{i} = _value{i};")) + "\nerror = null;\nreturn true;";
 
         classWriter.AddMethod(new MethodWriter(
-                                  name: "Ok",
+                                  name: "TryGet",
                                   returnType: "bool",
                                   body: okBody,
                                   visibility: Visibility.Public,
@@ -404,7 +404,7 @@ internal class ResultCodeGenerator : ICodeGenerator {
                                   usings: ["System.Diagnostics.CodeAnalysis"]
                               ));
 
-        // Add Ok method without error
+        // Add TryGet method without error
         var okWithoutErrorParams = new List<MethodParameter>();
         for (int i = 1; i <= arity; i++) {
             okWithoutErrorParams.Add(new MethodParameter($"[NotNullWhen(true)] out TValue{i}?", $"value{i}"));
@@ -413,7 +413,7 @@ internal class ResultCodeGenerator : ICodeGenerator {
         var okWithoutErrorBody = string.Join("\n", Enumerable.Range(1, arity).Select(i => $"value{i} = _value{i};")) + "\nreturn true;";
 
         classWriter.AddMethod(new MethodWriter(
-                                  name: "Ok",
+                                  name: "TryGet",
                                   returnType: "bool",
                                   body: okWithoutErrorBody,
                                   visibility: Visibility.Public,
@@ -612,9 +612,9 @@ internal class ResultCodeGenerator : ICodeGenerator {
                                   parameters: [new MethodParameter("Action<Exception>", "action")]
                               ));
 
-        // Add Ok method from BaseResult
+        // Add TryGet method from BaseResult
         classWriter.AddMethod(new MethodWriter(
-                                  name: "Ok",
+                                  name: "TryGet",
                                   returnType: "bool",
                                   body: "error = PrimaryException;\nreturn false;",
                                   visibility: Visibility.Public,
@@ -623,7 +623,7 @@ internal class ResultCodeGenerator : ICodeGenerator {
                                   usings: ["System.Diagnostics.CodeAnalysis"]
                               ));
 
-        // Add Ok method with values and error
+        // Add TryGet method with values and error
         var okParams = new List<MethodParameter>();
         for (int i = 1; i <= arity; i++) {
             okParams.Add(new MethodParameter($"[NotNullWhen(true)] out TValue{i}?", $"value{i}"));
@@ -633,7 +633,7 @@ internal class ResultCodeGenerator : ICodeGenerator {
         var okBody = string.Join("\n", Enumerable.Range(1, arity).Select(i => $"value{i} = default;")) + "\nerror = PrimaryException;\nreturn false;";
 
         classWriter.AddMethod(new MethodWriter(
-                                  name: "Ok",
+                                  name: "TryGet",
                                   returnType: "bool",
                                   body: okBody,
                                   visibility: Visibility.Public,
@@ -642,7 +642,7 @@ internal class ResultCodeGenerator : ICodeGenerator {
                                   usings: ["System.Diagnostics.CodeAnalysis"]
                               ));
 
-        // Add Ok method without error
+        // Add TryGet method without error
         var okWithoutErrorParams = new List<MethodParameter>();
         for (int i = 1; i <= arity; i++) {
             okWithoutErrorParams.Add(new MethodParameter($"[NotNullWhen(true)] out TValue{i}?", $"value{i}"));
@@ -651,7 +651,7 @@ internal class ResultCodeGenerator : ICodeGenerator {
         var okWithoutErrorBody = string.Join("\n", Enumerable.Range(1, arity).Select(i => $"value{i} = default;")) + "\nreturn false;";
 
         classWriter.AddMethod(new MethodWriter(
-                                  name: "Ok",
+                                  name: "TryGet",
                                   returnType: "bool",
                                   body: okWithoutErrorBody,
                                   visibility: Visibility.Public,

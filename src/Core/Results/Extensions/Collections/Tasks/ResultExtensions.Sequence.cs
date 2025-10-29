@@ -6,7 +6,7 @@ public static partial class ResultExtensions {
         var list = new List<TValue>();
         foreach (var t in tasks) {
             var r = await t.ConfigureAwait(false);
-            if (r.Ok(out var value, out var error)) {
+            if (r.TryGet(out var value, out var error)) {
                 list.Add(value);
             }
             else {

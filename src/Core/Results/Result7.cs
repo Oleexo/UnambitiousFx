@@ -1,36 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
-using UnambitiousFx.Core.Results.Reasons;
 
 namespace UnambitiousFx.Core.Results;
 
-public partial class Result
-{
-    public static Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> Success<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(TValue1 value1, TValue2 value2, TValue3 value3, TValue4 value4, TValue5 value5, TValue6 value6, TValue7 value7) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull {
-        return new SuccessResult<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(value1, value2, value3, value4, value5, value6, value7);
-    }
-    
-    public static Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> Failure<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(Exception error) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull {
-        return new FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(error);
-    }
-    
-    public static Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> Failure<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(IError error) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull {
-        var r = new FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(error.Exception ?? new Exception(error.Message), false);
-        r.AddReason(error);
-        foreach (var kv in error.Metadata) {
-            r.AddMetadata(kv.Key, kv.Value);
-        }
-        return r;
-    }
-    
-    public static Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> Failure<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(string message) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull {
-        return new FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(new Exception(message));
-    }
-    
-    public static Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> Failure<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(IEnumerable<IError> errors) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull {
-        return new FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(errors);
-    }
-    
-}
 /// <summary>
 /// Represents the result of an operation that can succeed with 7 value(s) or fail with an exception.
 /// </summary>
@@ -55,7 +26,7 @@ public abstract class Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue
     /// </summary>
     /// <param name="success">Action to execute if the result is successful</param>
     /// <param name="failure">Action to execute if the result is a failure</param>
-    public abstract void Match(Action<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> success, Action<IEnumerable<IError>> failure);
+    public abstract void Match(Action<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> success, Action<Exception> failure);
     
     /// <summary>
     /// Pattern matches the result, returning a value from the appropriate function.
@@ -64,7 +35,7 @@ public abstract class Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue
     /// <param name="success">Function to invoke if the result is successful</param>
     /// <param name="failure">Function to invoke if the result is a failure</param>
     /// <returns>The result of invoking the appropriate function</returns>
-    public abstract TOut Match<TOut>(Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TOut> success, Func<IEnumerable<IError>, TOut> failure);
+    public abstract TOut Match<TOut>(Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TOut> success, Func<Exception, TOut> failure);
     
     /// <summary>
     /// Executes the action if the result is successful.
@@ -84,7 +55,7 @@ public abstract class Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue
     /// <param name="value7">The seventh value if successful</param>
     /// <param name="error">The exception if failed</param>
     /// <returns>True if successful, false otherwise</returns>
-    public abstract bool TryGet([NotNullWhen(true)] out TValue1? value1, [NotNullWhen(true)] out TValue2? value2, [NotNullWhen(true)] out TValue3? value3, [NotNullWhen(true)] out TValue4? value4, [NotNullWhen(true)] out TValue5? value5, [NotNullWhen(true)] out TValue6? value6, [NotNullWhen(true)] out TValue7? value7, [NotNullWhen(false)] out IEnumerable<IError>? error);
+    public abstract bool TryGet([NotNullWhen(true)] out TValue1? value1, [NotNullWhen(true)] out TValue2? value2, [NotNullWhen(true)] out TValue3? value3, [NotNullWhen(true)] out TValue4? value4, [NotNullWhen(true)] out TValue5? value5, [NotNullWhen(true)] out TValue6? value6, [NotNullWhen(true)] out TValue7? value7, [NotNullWhen(false)] out Exception? error);
     
     /// <summary>
     /// Attempts to extract the success values.
@@ -105,6 +76,6 @@ public abstract class Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue
     /// <param name="isSuccess">Whether the result is successful</param>
     /// <param name="value">The success value(s) if successful</param>
     /// <param name="error">The exception if failed</param>
-    public abstract void Deconstruct(out bool isSuccess, out (TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7)? value, out IEnumerable<IError>? error);
+    public abstract void Deconstruct(out bool isSuccess, out (TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7)? value, out Exception? error);
     
 }

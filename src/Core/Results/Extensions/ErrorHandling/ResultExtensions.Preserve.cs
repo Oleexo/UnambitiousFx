@@ -8,10 +8,10 @@ public static partial class ResultExtensions {
             // If the mapped result already has a primary ExceptionalError (from MapError constructing a new FailureResult)
             // we should NOT duplicate the original primary ExceptionalError; only copy the non-primary / domain reasons.
             // This keeps the reason count stable (e.g., ExceptionalError + ConflictError stays 2 instead of becoming 3).
-            var originalIsFailure = !original.Ok(out _);
-            var mappedIsFailure   = !mapped.Ok(out _);
+            var originalIsFailure = !original.TryGet(out _);
+            var mappedIsFailure   = !mapped.TryGet(out _);
             if (originalIsFailure && mappedIsFailure) {
-                original.Ok(out var originalPrimaryEx);
+                original.TryGet(out var originalPrimaryEx);
                 // Detect if mapped already has an ExceptionalError referencing its own primary exception.
                 var mappedPrimaryExceptional =
                     mapped.Reasons.FirstOrDefault(r => r is Reasons.ExceptionalError) as Reasons.ExceptionalError;

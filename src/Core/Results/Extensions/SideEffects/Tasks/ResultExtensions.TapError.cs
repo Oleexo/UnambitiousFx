@@ -4,7 +4,7 @@ public static class ResultTapErrorExtensions {
     public static async Task<Result<TValue>> TapErrorAsync<TValue>(this Result<TValue>   result,
                                                                    Func<Exception, Task> tap)
         where TValue : notnull {
-        if (!result.Ok(out Exception? err)) {
+        if (!result.TryGet(out Exception? err)) {
             await tap(err);
         }
 
@@ -22,7 +22,7 @@ public static class ResultTapErrorExtensions {
                                                                                        Func<Exception, Task>         tap)
         where TValue1 : notnull
         where TValue2 : notnull {
-        if (!result.Ok(out Exception? err)) {
+        if (!result.TryGet(out Exception? err)) {
             await tap(err);
         }
 
@@ -42,7 +42,7 @@ public static class ResultTapErrorExtensions {
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull {
-        if (!result.Ok(out Exception? err)) {
+        if (!result.TryGet(out Exception? err)) {
             await tap(err);
         }
 
@@ -64,7 +64,7 @@ public static class ResultTapErrorExtensions {
         where TValue2 : notnull
         where TValue3 : notnull
         where TValue4 : notnull {
-        if (!result.Ok(out Exception? err)) {
+        if (!result.TryGet(out Exception? err)) {
             await tap(err);
         }
 
@@ -90,7 +90,7 @@ public static class ResultTapErrorExtensions {
         where TValue3 : notnull
         where TValue4 : notnull
         where TValue5 : notnull {
-        if (!result.Ok(out Exception? err)) {
+        if (!result.TryGet(out Exception? err)) {
             await tap(err);
         }
 
@@ -118,7 +118,7 @@ public static class ResultTapErrorExtensions {
         where TValue4 : notnull
         where TValue5 : notnull
         where TValue6 : notnull {
-        if (!result.Ok(out Exception? err)) {
+        if (!result.TryGet(out Exception? err)) {
             await tap(err);
         }
 
@@ -148,7 +148,7 @@ public static class ResultTapErrorExtensions {
         where TValue5 : notnull
         where TValue6 : notnull
         where TValue7 : notnull {
-        if (!result.Ok(out Exception? err)) {
+        if (!result.TryGet(out Exception? err)) {
             await tap(err);
         }
 
@@ -181,7 +181,7 @@ public static class ResultTapErrorExtensions {
         where TValue6 : notnull
         where TValue7 : notnull
         where TValue8 : notnull {
-        if (!result.Ok(out Exception? err)) {
+        if (!result.TryGet(out Exception? err)) {
             await tap(err);
         }
 

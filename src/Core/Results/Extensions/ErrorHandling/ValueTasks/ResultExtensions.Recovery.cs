@@ -4,7 +4,7 @@ public static partial class ResultExtensions {
     public static async ValueTask<Result<TValue>> RecoverAsync<TValue>(this Result<TValue>                result,
                                                                        Func<Exception, ValueTask<TValue>> recover)
         where TValue : notnull {
-        if (result.Ok(out var value, out var error)) {
+        if (result.TryGet(out var value, out var error)) {
             return Result.Success(value);
         }
 
@@ -16,7 +16,7 @@ public static partial class ResultExtensions {
     public static async ValueTask<Result<TValue>> RecoverWithAsync<TValue>(this Result<TValue>                        result,
                                                                            Func<Exception, ValueTask<Result<TValue>>> recover)
         where TValue : notnull {
-        if (result.Ok(out var value, out var error)) {
+        if (result.TryGet(out var value, out var error)) {
             return Result.Success(value);
         }
 

@@ -5,7 +5,7 @@ public static class ResultTapBothExtensions {
                                                                   Func<TValue, ValueTask>    onSuccess,
                                                                   Func<Exception, ValueTask> onFailure)
         where TValue : notnull {
-        if (result.Ok(out var value, out var err)) {
+        if (result.TryGet(out var value, out var err)) {
             await onSuccess(value);
         }
         else {
@@ -28,7 +28,7 @@ public static class ResultTapBothExtensions {
                                                                                       Func<Exception, ValueTask>         onFailure)
         where TValue1 : notnull
         where TValue2 : notnull {
-        if (result.Ok(out var value1, out var value2, out var err)) {
+        if (result.TryGet(out var value1, out var value2, out var err)) {
             await onSuccess(value1, value2);
         }
         else {
@@ -53,7 +53,7 @@ public static class ResultTapBothExtensions {
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull {
-        if (result.Ok(out var value1, out var value2, out var value3, out var err)) {
+        if (result.TryGet(out var value1, out var value2, out var value3, out var err)) {
             await onSuccess(value1, value2, value3);
         }
         else {
@@ -80,7 +80,7 @@ public static class ResultTapBothExtensions {
         where TValue2 : notnull
         where TValue3 : notnull
         where TValue4 : notnull {
-        if (result.Ok(out var value1, out var value2, out var value3, out var value4, out var err)) {
+        if (result.TryGet(out var value1, out var value2, out var value3, out var value4, out var err)) {
             await onSuccess(value1, value2, value3, value4);
         }
         else {
@@ -111,7 +111,7 @@ public static class ResultTapBothExtensions {
         where TValue3 : notnull
         where TValue4 : notnull
         where TValue5 : notnull {
-        if (result.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out var err)) {
+        if (result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var err)) {
             await onSuccess(value1, value2, value3, value4, value5);
         }
         else {
@@ -144,7 +144,7 @@ public static class ResultTapBothExtensions {
         where TValue4 : notnull
         where TValue5 : notnull
         where TValue6 : notnull {
-        if (result.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var err)) {
+        if (result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var err)) {
             await onSuccess(value1, value2, value3, value4, value5, value6);
         }
         else {
@@ -179,7 +179,7 @@ public static class ResultTapBothExtensions {
         where TValue5 : notnull
         where TValue6 : notnull
         where TValue7 : notnull {
-        if (result.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out var err)) {
+        if (result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out var err)) {
             await onSuccess(value1, value2, value3, value4, value5, value6, value7);
         }
         else {
@@ -217,7 +217,7 @@ public static class ResultTapBothExtensions {
         where TValue6 : notnull
         where TValue7 : notnull
         where TValue8 : notnull {
-        if (result.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out var value8, out var err)) {
+        if (result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out var value8, out var err)) {
             await onSuccess(value1, value2, value3, value4, value5, value6, value7, value8);
         }
         else {

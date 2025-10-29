@@ -9,19 +9,22 @@ internal sealed class ConstructorWriter {
     private readonly string               _body;
     private readonly DocumentationWriter? _documentation;
     private readonly string?              _baseCall;
+    private readonly List<string>         _usings;
 
     public ConstructorWriter(string                        className,
                              string                        body,
-                             Visibility                    visibility   = Visibility.Public,
-                             IEnumerable<MethodParameter>? parameters   = null,
+                             Visibility                    visibility    = Visibility.Public,
+                             IEnumerable<MethodParameter>? parameters    = null,
                              DocumentationWriter?          documentation = null,
-                             string?                       baseCall     = null) {
+                             string?                       baseCall      = null,
+                             IEnumerable<string>?          usings        = null) {
         _className     = className;
         _body          = body;
         _visibility    = visibility;
         _parameters    = parameters?.ToArray() ?? [];
         _documentation = documentation;
         _baseCall      = baseCall;
+        _usings        = usings?.ToList() ?? [];
     }
 
     public void Write(IndentedTextWriter writer) {

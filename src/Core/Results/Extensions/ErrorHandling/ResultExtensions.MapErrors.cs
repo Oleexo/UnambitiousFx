@@ -5,11 +5,11 @@ namespace UnambitiousFx.Core.Results.Extensions.ErrorHandling;
 public static partial class ResultExtensions {
     public static Result MapErrors(this Result                               result,
                                    Func<IReadOnlyList<Exception>, Exception> map) {
-        if (result.Ok(out _)) {
+        if (result.TryGet(out _)) {
             return result;
         }
 
-        result.Ok(out var primary);
+        result.TryGet(out var primary);
         var errs       = CollectErrors(result, primary);
         var newPrimary = map(errs);
         var failure    = new FailureResult(newPrimary, false);
@@ -23,7 +23,7 @@ public static partial class ResultExtensions {
         if (primary != null) {
             list.Add(primary);
         }
-        else if (!r.Ok(out var e)) {
+        else if (!r.TryGet(out var e)) {
             list.Add(e);
         }
 
@@ -70,11 +70,11 @@ public static partial class ResultExtensions {
     public static Result<TValue1> MapErrors<TValue1>(this Result<TValue1>                      result,
                                                      Func<IReadOnlyList<Exception>, Exception> map)
         where TValue1 : notnull {
-        if (result.Ok(out _, out _)) {
+        if (result.TryGet(out _, out _)) {
             return result;
         }
 
-        result.Ok(out _, out var primary);
+        result.TryGet(out _, out var primary);
         var errs       = CollectErrors(result, primary);
         var newPrimary = map(errs);
         var failure    = new FailureResult<TValue1>(newPrimary, false);
@@ -86,11 +86,11 @@ public static partial class ResultExtensions {
                                                                        Func<IReadOnlyList<Exception>, Exception> map)
         where TValue1 : notnull
         where TValue2 : notnull {
-        if (result.Ok(out _, out _)) {
+        if (result.TryGet(out _, out _)) {
             return result;
         }
 
-        result.Ok(out _, out _, out var primary);
+        result.TryGet(out _, out _, out var primary);
         var errs       = CollectErrors(result, primary);
         var newPrimary = map(errs);
         var failure    = new FailureResult<TValue1, TValue2>(newPrimary, false);
@@ -107,7 +107,7 @@ public static partial class ResultExtensions {
             return result;
         }
 
-        result.Ok(out _, out _, out _, out var primary);
+        result.TryGet(out _, out _, out _, out var primary);
         var errs       = CollectErrors(result, primary);
         var newPrimary = map(errs);
         var failure    = new FailureResult<TValue1, TValue2, TValue3>(newPrimary, false);
@@ -125,7 +125,7 @@ public static partial class ResultExtensions {
             return result;
         }
 
-        result.Ok(out _, out _, out _, out _, out var primary);
+        result.TryGet(out _, out _, out _, out _, out var primary);
         var errs       = CollectErrors(result, primary);
         var newPrimary = map(errs);
         var failure    = new FailureResult<TValue1, TValue2, TValue3, TValue4>(newPrimary, false);
@@ -145,7 +145,7 @@ public static partial class ResultExtensions {
             return result;
         }
 
-        result.Ok(out _, out _, out _, out _, out _, out var primary);
+        result.TryGet(out _, out _, out _, out _, out _, out var primary);
         var errs       = CollectErrors(result, primary);
         var newPrimary = map(errs);
         var failure    = new FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5>(newPrimary, false);
@@ -166,7 +166,7 @@ public static partial class ResultExtensions {
             return result;
         }
 
-        result.Ok(out _, out _, out _, out _, out _, out _, out var primary);
+        result.TryGet(out _, out _, out _, out _, out _, out _, out var primary);
         var errs       = CollectErrors(result, primary);
         var newPrimary = map(errs);
         var failure    = new FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(newPrimary, false);
@@ -188,7 +188,7 @@ public static partial class ResultExtensions {
             return result;
         }
 
-        result.Ok(out _, out _, out _, out _, out _, out _, out _, out var primary);
+        result.TryGet(out _, out _, out _, out _, out _, out _, out _, out var primary);
         var errs       = CollectErrors(result, primary);
         var newPrimary = map(errs);
         var failure    = new FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(newPrimary, false);
@@ -211,7 +211,7 @@ public static partial class ResultExtensions {
             return result;
         }
 
-        result.Ok(out _, out _, out _, out _, out _, out _, out _, out _, out var primary);
+        result.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var primary);
         var errs       = CollectErrors(result, primary);
         var newPrimary = map(errs);
         var failure    = new FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(newPrimary, false);

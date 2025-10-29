@@ -5,7 +5,7 @@ public static partial class ResultExtensions {
         var errors = new List<Exception>();
         foreach (var t in tasks) {
             var r = await t.ConfigureAwait(false);
-            if (!r.Ok(out var error)) {
+            if (!r.TryGet(out var error)) {
                 errors.Add(error);
             }
         }

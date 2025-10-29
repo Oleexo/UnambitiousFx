@@ -6,11 +6,11 @@ public static partial class ResultExtensions {
         where TIn : notnull
         where TOut : notnull {
         var rfResolved = await rf.ConfigureAwait(false);
-        if (!rfResolved.Ok(out var f, out var fErr)) {
+        if (!rfResolved.TryGet(out var f, out var fErr)) {
             return Result.Failure<TOut>(fErr);
         }
 
-        if (!ra.Ok(out var a, out var aErr)) {
+        if (!ra.TryGet(out var a, out var aErr)) {
             return Result.Failure<TOut>(aErr);
         }
 
@@ -21,12 +21,12 @@ public static partial class ResultExtensions {
                                                                       ValueTask<Result<TIn>>        ra)
         where TIn : notnull
         where TOut : notnull {
-        if (!rf.Ok(out var f, out var fErr)) {
+        if (!rf.TryGet(out var f, out var fErr)) {
             return Result.Failure<TOut>(fErr);
         }
 
         var raResolved = await ra.ConfigureAwait(false);
-        if (!raResolved.Ok(out var a, out var aErr)) {
+        if (!raResolved.TryGet(out var a, out var aErr)) {
             return Result.Failure<TOut>(aErr);
         }
 
@@ -38,12 +38,12 @@ public static partial class ResultExtensions {
         where TIn : notnull
         where TOut : notnull {
         var rfResolved = await rf.ConfigureAwait(false);
-        if (!rfResolved.Ok(out var f, out var fErr)) {
+        if (!rfResolved.TryGet(out var f, out var fErr)) {
             return Result.Failure<TOut>(fErr);
         }
 
         var raResolved = await ra.ConfigureAwait(false);
-        if (!raResolved.Ok(out var a, out var aErr)) {
+        if (!raResolved.TryGet(out var a, out var aErr)) {
             return Result.Failure<TOut>(aErr);
         }
 

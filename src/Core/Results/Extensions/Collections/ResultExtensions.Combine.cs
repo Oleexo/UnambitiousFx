@@ -5,7 +5,7 @@ public static partial class ResultExtensions {
     public static Result Combine(this IEnumerable<Result> results) {
         var errors = new List<Exception>();
         foreach (var result in results) {
-            if (!result.Ok(out var error)) {
+            if (!result.TryGet(out var error)) {
                 errors.Add(error);
             }
         }

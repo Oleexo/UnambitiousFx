@@ -4,7 +4,7 @@ public static partial class ResultExtensions {
     public static Result<TValue> Recover<TValue>(this Result<TValue>     result,
                                                  Func<Exception, TValue> recover)
         where TValue : notnull {
-        if (result.Ok(out _, out var error)) {
+        if (result.TryGet(out _, out var error)) {
             return result;
         }
 
@@ -22,7 +22,7 @@ public static partial class ResultExtensions {
                                                                      Func<Exception, (TValue1, TValue2)> recover)
         where TValue1 : notnull
         where TValue2 : notnull {
-        if (result.Ok(out _, out _, out var error)) {
+        if (result.TryGet(out _, out _, out var error)) {
             return result;
         }
 
@@ -43,7 +43,7 @@ public static partial class ResultExtensions {
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull {
-        if (result.Ok(out _, out _, out _, out var error)) {
+        if (result.TryGet(out _, out _, out _, out var error)) {
             return result;
         }
 
@@ -67,7 +67,7 @@ public static partial class ResultExtensions {
         where TValue2 : notnull
         where TValue3 : notnull
         where TValue4 : notnull {
-        if (result.Ok(out _, out _, out _, out _, out var error)) {
+        if (result.TryGet(out _, out _, out _, out _, out var error)) {
             return result;
         }
 
@@ -95,7 +95,7 @@ public static partial class ResultExtensions {
         where TValue3 : notnull
         where TValue4 : notnull
         where TValue5 : notnull {
-        if (result.Ok(out _, out _, out _, out _, out _, out var error)) {
+        if (result.TryGet(out _, out _, out _, out _, out _, out var error)) {
             return result;
         }
 
@@ -127,7 +127,7 @@ public static partial class ResultExtensions {
         where TValue4 : notnull
         where TValue5 : notnull
         where TValue6 : notnull {
-        if (result.Ok(out _, out _, out _, out _, out _, out _, out var error)) {
+        if (result.TryGet(out _, out _, out _, out _, out _, out _, out var error)) {
             return result;
         }
 
@@ -162,7 +162,7 @@ public static partial class ResultExtensions {
         where TValue5 : notnull
         where TValue6 : notnull
         where TValue7 : notnull {
-        if (result.Ok(out _, out _, out _, out _, out _, out _, out _, out var error)) {
+        if (result.TryGet(out _, out _, out _, out _, out _, out _, out _, out var error)) {
             return result;
         }
 
@@ -200,7 +200,7 @@ public static partial class ResultExtensions {
         where TValue6 : notnull
         where TValue7 : notnull
         where TValue8 : notnull {
-        if (result.Ok(out _, out _, out _, out _, out _, out _, out _, out _, out var error)) {
+        if (result.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var error)) {
             return result;
         }
 

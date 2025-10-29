@@ -66,7 +66,7 @@ public static partial class ResultExtensions {
                     metadata[kv.Key] = kv.Value; // last write wins
                 }
 
-                if (!r.Ok(out var error)) {
+                if (!r.TryGet(out var error)) {
                     var primary = r is IFailureResult fr
                                       ? fr.PrimaryException
                                       : error;
@@ -126,7 +126,7 @@ public static partial class ResultExtensions {
                 }
             }
 
-            if (!r.Ok(out var error)) {
+            if (!r.TryGet(out var error)) {
                 if (r is IFailureResult fr) {
                     exceptions.Add(fr.PrimaryException);
                 }
@@ -170,7 +170,7 @@ public static partial class ResultExtensions {
 
     public static Result FirstFailureOrSuccess(this IEnumerable<Result> results) {
         foreach (var r in results) {
-            if (!r.Ok(out _)) {
+            if (!r.TryGet(out _)) {
                 return r; // return original failure instance
             }
         }

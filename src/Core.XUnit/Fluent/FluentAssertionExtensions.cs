@@ -29,7 +29,7 @@ public static class FluentAssertionExtensions {
     /// <param name="result">The <see cref="Result" /> to validate as a failure.</param>
     /// <returns>A <see cref="FailureAssertion" /> containing the error details of the failure.</returns>
     public static FailureAssertion EnsureFailure(this Result result) {
-        var success = result.Ok(out var error);
+        var success = result.TryGet(out var error);
         if (success) {
             Assert.Fail("Expected failure result but was success.");
         }
@@ -44,7 +44,7 @@ public static class FluentAssertionExtensions {
     /// <returns>A SuccessAssertion for the contained value.</returns>
     public static SuccessAssertion<T1> EnsureSuccess<T1>(this Result<T1> result)
         where T1 : notnull {
-        if (!result.Ok(out var value)) {
+        if (!result.TryGet(out var value)) {
             Assert.Fail("Expected success result but was failure.");
         }
 
@@ -58,7 +58,7 @@ public static class FluentAssertionExtensions {
     /// <returns>A FailureAssertion for the error.</returns>
     public static FailureAssertion EnsureFailure<T1>(this Result<T1> result)
         where T1 : notnull {
-        if (result.Ok(out _, out var error)) {
+        if (result.TryGet(out _, out var error)) {
             Assert.Fail("Expected failure result but was success.");
         }
 
@@ -74,7 +74,7 @@ public static class FluentAssertionExtensions {
     public static SuccessAssertion<(T1, T2)> EnsureSuccess<T1, T2>(this Result<T1, T2> result)
         where T1 : notnull
         where T2 : notnull {
-        if (!result.Ok(out var v1, out var v2)) {
+        if (!result.TryGet(out var v1, out var v2)) {
             Assert.Fail("Expected success result but was failure.");
         }
 
@@ -92,7 +92,7 @@ public static class FluentAssertionExtensions {
     public static FailureAssertion EnsureFailure<T1, T2>(this Result<T1, T2> result)
         where T1 : notnull
         where T2 : notnull {
-        if (result.Ok(out _, out _, out var error)) {
+        if (result.TryGet(out _, out _, out var error)) {
             Assert.Fail("Expected failure result but was success.");
         }
 
@@ -109,7 +109,7 @@ public static class FluentAssertionExtensions {
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull {
-        if (!result.Ok(out var v1, out var v2, out var v3)) {
+        if (!result.TryGet(out var v1, out var v2, out var v3)) {
             Assert.Fail("Expected success result but was failure.");
         }
 
@@ -125,7 +125,7 @@ public static class FluentAssertionExtensions {
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull {
-        if (result.Ok(out _, out _, out _, out var error)) {
+        if (result.TryGet(out _, out _, out _, out var error)) {
             Assert.Fail("Expected failure result but was success.");
         }
 
@@ -143,7 +143,7 @@ public static class FluentAssertionExtensions {
         where T2 : notnull
         where T3 : notnull
         where T4 : notnull {
-        if (!result.Ok(out var v1, out var v2, out var v3, out var v4)) {
+        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4)) {
             Assert.Fail("Expected success result but was failure.");
         }
 
@@ -162,7 +162,7 @@ public static class FluentAssertionExtensions {
         where T2 : notnull
         where T3 : notnull
         where T4 : notnull {
-        if (result.Ok(out _, out _, out _, out _, out var error)) {
+        if (result.TryGet(out _, out _, out _, out _, out var error)) {
             Assert.Fail("Expected failure result but was success.");
         }
 
@@ -180,7 +180,7 @@ public static class FluentAssertionExtensions {
         where T3 : notnull
         where T4 : notnull
         where T5 : notnull {
-        if (!result.Ok(out var v1, out var v2, out var v3, out var v4, out var v5)) {
+        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5)) {
             Assert.Fail("Expected success result but was failure.");
         }
 
@@ -197,7 +197,7 @@ public static class FluentAssertionExtensions {
         where T3 : notnull
         where T4 : notnull
         where T5 : notnull {
-        if (result.Ok(out _, out _, out _, out _, out _, out var error)) {
+        if (result.TryGet(out _, out _, out _, out _, out _, out var error)) {
             Assert.Fail("Expected failure result but was success.");
         }
 
@@ -216,7 +216,7 @@ public static class FluentAssertionExtensions {
         where T4 : notnull
         where T5 : notnull
         where T6 : notnull {
-        if (!result.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6)) {
+        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6)) {
             Assert.Fail("Expected success result but was failure.");
         }
 
@@ -234,7 +234,7 @@ public static class FluentAssertionExtensions {
         where T4 : notnull
         where T5 : notnull
         where T6 : notnull {
-        if (result.Ok(out _, out _, out _, out _, out _, out _, out var error)) {
+        if (result.TryGet(out _, out _, out _, out _, out _, out _, out var error)) {
             Assert.Fail("Expected failure result but was success.");
         }
 
@@ -261,7 +261,7 @@ public static class FluentAssertionExtensions {
         where T5 : notnull
         where T6 : notnull
         where T7 : notnull {
-        if (!result.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7)) {
+        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7)) {
             Assert.Fail("Expected success result but was failure.");
         }
 
@@ -280,7 +280,7 @@ public static class FluentAssertionExtensions {
         where T5 : notnull
         where T6 : notnull
         where T7 : notnull {
-        if (result.Ok(out _, out _, out _, out _, out _, out _, out _, out var error)) {
+        if (result.TryGet(out _, out _, out _, out _, out _, out _, out _, out var error)) {
             Assert.Fail("Expected failure result but was success.");
         }
 
@@ -309,7 +309,7 @@ public static class FluentAssertionExtensions {
         where T6 : notnull
         where T7 : notnull
         where T8 : notnull {
-        if (!result.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7, out var v8)) {
+        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7, out var v8)) {
             Assert.Fail("Expected success result but was failure.");
         }
 
@@ -338,7 +338,7 @@ public static class FluentAssertionExtensions {
         where T6 : notnull
         where T7 : notnull
         where T8 : notnull {
-        if (result.Ok(out _, out _, out _, out _, out _, out _, out _, out _, out var error)) {
+        if (result.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var error)) {
             Assert.Fail("Expected failure result but was success.");
         }
 

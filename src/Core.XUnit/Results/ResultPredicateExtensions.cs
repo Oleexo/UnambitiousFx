@@ -21,7 +21,7 @@ public static class ResultPredicateExtensions {
                                               Func<Exception, bool> predicate,
                                               string?               because = null) {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (result.Ok(out var err)) {
+        if (result.TryGet(out var err)) {
             Assert.Fail(because ?? "Expected failure but was success.");
         }
 
@@ -40,7 +40,7 @@ public static class ResultPredicateExtensions {
                                                       string?         because = null)
         where T1 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (!result.Ok(out var value)) {
+        if (!result.TryGet(out var value)) {
             Assert.Fail(because ?? "Expected success but was failure.");
         }
 
@@ -59,7 +59,7 @@ public static class ResultPredicateExtensions {
                                                       string?               because = null)
         where T1 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (result.Ok(out var _, out var err)) {
+        if (result.TryGet(out var _, out var err)) {
             Assert.Fail(because ?? "Expected failure but was success.");
         }
 
@@ -127,7 +127,7 @@ public static class ResultPredicateExtensions {
         where T1 : notnull
         where T2 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (!result.Ok(out var v1, out var v2)) {
+        if (!result.TryGet(out var v1, out var v2)) {
             Assert.Fail(because ?? "Expected success but was failure.");
         }
 
@@ -148,7 +148,7 @@ public static class ResultPredicateExtensions {
         where T1 : notnull
         where T2 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (result.Ok(out _, out _, out var err)) {
+        if (result.TryGet(out _, out _, out var err)) {
             Assert.Fail(because ?? "Expected failure but was success.");
         }
 
@@ -221,7 +221,7 @@ public static class ResultPredicateExtensions {
         where T2 : notnull
         where T3 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (!result.Ok(out var v1, out var v2, out var v3)) {
+        if (!result.TryGet(out var v1, out var v2, out var v3)) {
             Assert.Fail(because ?? "Expected success but was failure.");
         }
 
@@ -243,7 +243,7 @@ public static class ResultPredicateExtensions {
         where T2 : notnull
         where T3 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (result.Ok(out _, out _, out _, out var err)) {
+        if (result.TryGet(out _, out _, out _, out var err)) {
             Assert.Fail(because ?? "Expected failure but was success.");
         }
 
@@ -321,7 +321,7 @@ public static class ResultPredicateExtensions {
         where T3 : notnull
         where T4 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (!result.Ok(out var v1, out var v2, out var v3, out var v4)) {
+        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4)) {
             Assert.Fail(because ?? "Expected success but was failure.");
         }
 
@@ -344,7 +344,7 @@ public static class ResultPredicateExtensions {
         where T3 : notnull
         where T4 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (result.Ok(out _, out _, out _, out _, out var err)) {
+        if (result.TryGet(out _, out _, out _, out _, out var err)) {
             Assert.Fail(because ?? "Expected failure but was success.");
         }
 
@@ -427,7 +427,7 @@ public static class ResultPredicateExtensions {
         where T4 : notnull
         where T5 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (!result.Ok(out var v1, out var v2, out var v3, out var v4, out var v5)) {
+        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5)) {
             Assert.Fail(because ?? "Expected success but was failure.");
         }
 
@@ -451,7 +451,7 @@ public static class ResultPredicateExtensions {
         where T4 : notnull
         where T5 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (result.Ok(out _, out _, out _, out _, out _, out var err)) {
+        if (result.TryGet(out _, out _, out _, out _, out _, out var err)) {
             Assert.Fail(because ?? "Expected failure but was success.");
         }
 
@@ -575,7 +575,7 @@ public static class ResultPredicateExtensions {
         where T5 : notnull
         where T6 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (!result.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6)) {
+        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6)) {
             Assert.Fail(because ?? "Expected success but was failure.");
         }
 
@@ -600,7 +600,7 @@ public static class ResultPredicateExtensions {
         where T5 : notnull
         where T6 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (result.Ok(out _, out _, out _, out _, out _, out _, out var err)) {
+        if (result.TryGet(out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Fail(because ?? "Expected failure but was success.");
         }
 
@@ -693,7 +693,7 @@ public static class ResultPredicateExtensions {
         where T6 : notnull
         where T7 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (!result.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7)) {
+        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7)) {
             Assert.Fail(because ?? "Expected success but was failure.");
         }
 
@@ -719,7 +719,7 @@ public static class ResultPredicateExtensions {
         where T6 : notnull
         where T7 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (result.Ok(out _, out _, out _, out _, out _, out _, out _, out var err)) {
+        if (result.TryGet(out _, out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Fail(because ?? "Expected failure but was success.");
         }
 
@@ -817,7 +817,7 @@ public static class ResultPredicateExtensions {
         where T7 : notnull
         where T8 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (!result.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7, out var v8)) {
+        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7, out var v8)) {
             Assert.Fail(because ?? "Expected success but was failure.");
         }
 
@@ -844,7 +844,7 @@ public static class ResultPredicateExtensions {
         where T7 : notnull
         where T8 : notnull {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (result.Ok(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
+        if (result.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Fail(because ?? "Expected failure but was success.");
         }
 

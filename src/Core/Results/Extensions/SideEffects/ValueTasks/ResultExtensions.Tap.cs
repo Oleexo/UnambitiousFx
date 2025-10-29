@@ -4,7 +4,7 @@ public static class ResultTapExtensions {
     public static async ValueTask<Result<TValue>> TapAsync<TValue>(this Result<TValue>     result,
                                                                    Func<TValue, ValueTask> tap)
         where TValue : notnull {
-        if (result.Ok(out var value)) {
+        if (result.TryGet(out var value)) {
             await tap(value);
         }
 
@@ -22,7 +22,7 @@ public static class ResultTapExtensions {
                                                                                        Func<TValue1, TValue2, ValueTask> tap)
         where TValue1 : notnull
         where TValue2 : notnull {
-        if (result.Ok(out var value1, out var value2)) {
+        if (result.TryGet(out var value1, out var value2)) {
             await tap(value1, value2);
         }
 
@@ -42,7 +42,7 @@ public static class ResultTapExtensions {
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull {
-        if (result.Ok(out var value1, out var value2, out var value3)) {
+        if (result.TryGet(out var value1, out var value2, out var value3)) {
             await tap(value1, value2, value3);
         }
 
@@ -64,7 +64,7 @@ public static class ResultTapExtensions {
         where TValue2 : notnull
         where TValue3 : notnull
         where TValue4 : notnull {
-        if (result.Ok(out var value1, out var value2, out var value3, out var value4)) {
+        if (result.TryGet(out var value1, out var value2, out var value3, out var value4)) {
             await tap(value1, value2, value3, value4);
         }
 
@@ -90,7 +90,7 @@ public static class ResultTapExtensions {
         where TValue3 : notnull
         where TValue4 : notnull
         where TValue5 : notnull {
-        if (result.Ok(out var value1, out var value2, out var value3, out var value4, out var value5)) {
+        if (result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5)) {
             await tap(value1, value2, value3, value4, value5);
         }
 
@@ -118,7 +118,7 @@ public static class ResultTapExtensions {
         where TValue4 : notnull
         where TValue5 : notnull
         where TValue6 : notnull {
-        if (result.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6)) {
+        if (result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6)) {
             await tap(value1, value2, value3, value4, value5, value6);
         }
 
@@ -148,7 +148,7 @@ public static class ResultTapExtensions {
         where TValue5 : notnull
         where TValue6 : notnull
         where TValue7 : notnull {
-        if (result.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7)) {
+        if (result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7)) {
             await tap(value1, value2, value3, value4, value5, value6, value7);
         }
 
@@ -181,7 +181,7 @@ public static class ResultTapExtensions {
         where TValue6 : notnull
         where TValue7 : notnull
         where TValue8 : notnull {
-        if (result.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out var value8)) {
+        if (result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out var value8)) {
             await tap(value1, value2, value3, value4, value5, value6, value7, value8);
         }
 

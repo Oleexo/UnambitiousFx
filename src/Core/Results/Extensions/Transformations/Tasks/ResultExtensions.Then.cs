@@ -5,7 +5,7 @@ public static class ResultThenExtensions {
                                                        Func<T1, Task<Result<T1>>> then,
                                                        bool                       copyReasonsAndMetadata = true)
         where T1 : notnull {
-        if (!result.Ok(out var value)) {
+        if (!result.TryGet(out var value)) {
             return result;
         }
 
@@ -38,7 +38,7 @@ public static class ResultThenExtensions {
                                                                bool                               copyReasonsAndMetadata = true)
         where T1 : notnull
         where T2 : notnull {
-        if (!result.Ok(out var value1, out var value2)) {
+        if (!result.TryGet(out var value1, out var value2)) {
             return result;
         }
 
@@ -74,7 +74,7 @@ public static class ResultThenExtensions {
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull {
-        if (!result.Ok(out var value1, out var value2, out var value3)) {
+        if (!result.TryGet(out var value1, out var value2, out var value3)) {
             return result;
         }
 
@@ -113,7 +113,7 @@ public static class ResultThenExtensions {
         where T2 : notnull
         where T3 : notnull
         where T4 : notnull {
-        if (!result.Ok(out var value1, out var value2, out var value3, out var value4)) {
+        if (!result.TryGet(out var value1, out var value2, out var value3, out var value4)) {
             return result;
         }
 
@@ -155,7 +155,7 @@ public static class ResultThenExtensions {
         where T3 : notnull
         where T4 : notnull
         where T5 : notnull {
-        if (!result.Ok(out var value1, out var value2, out var value3, out var value4, out var value5)) {
+        if (!result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5)) {
             return result;
         }
 
@@ -200,7 +200,7 @@ public static class ResultThenExtensions {
         where T4 : notnull
         where T5 : notnull
         where T6 : notnull {
-        if (!result.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6)) {
+        if (!result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6)) {
             return result;
         }
 
@@ -249,7 +249,7 @@ public static class ResultThenExtensions {
         where T5 : notnull
         where T6 : notnull
         where T7 : notnull {
-        if (!result.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7)) {
+        if (!result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7)) {
             return result;
         }
 
@@ -302,7 +302,7 @@ public static class ResultThenExtensions {
         where T6 : notnull
         where T7 : notnull
         where T8 : notnull {
-        if (!result.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out var value8)) {
+        if (!result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out var value8)) {
             return result;
         }
 

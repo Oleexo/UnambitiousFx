@@ -104,6 +104,9 @@ internal sealed class ClassWriter : IConcreteTypeWriter {
             if (_baseClass is null) {
                 classDeclaration += " : ";
             }
+            else {
+                classDeclaration += ", ";
+            }
 
             classDeclaration += string.Join(", ", _interfaces.Select(i => i.Name));
         }
