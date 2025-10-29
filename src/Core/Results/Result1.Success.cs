@@ -1,8 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
+using UnambitiousFx.Core.Results.Reasons;
 
 namespace UnambitiousFx.Core.Results;
 
-internal sealed class SuccessResult<TValue1> : Result<TValue1>ISuccessResult
+internal sealed class SuccessResult<TValue1> : Result<TValue1>, ISuccessResult
     where TValue1 : notnull
 {
     private readonly TValue1 _value1;
@@ -14,11 +15,11 @@ internal sealed class SuccessResult<TValue1> : Result<TValue1>ISuccessResult
     public override bool IsFaulted => false;
     public override bool IsSuccess => true;
     
-    public override void Match(Action success, Action<Exception> failure) {
+    public override void Match(Action success, Action<IEnumerable<IError>> failure) {
         success();
     }
     
-    public override TOut Match<TOut>(Func<TOut> success, Func<Exception, TOut> failure) {
+    public override TOut Match<TOut>(Func<TOut> success, Func<IEnumerable<IError>, TOut> failure) {
         return success();
     }
     
@@ -26,11 +27,11 @@ internal sealed class SuccessResult<TValue1> : Result<TValue1>ISuccessResult
         action();
     }
     
-    public override void Match(Action<TValue1> success, Action<Exception> failure) {
+    public override void Match(Action<TValue1> success, Action<IEnumerable<IError>> failure) {
         success(_value1);
     }
     
-    public override TOut Match<TOut>(Func<TValue1, TOut> success, Func<Exception, TOut> failure) {
+    public override TOut Match<TOut>(Func<TValue1, TOut> success, Func<IEnumerable<IError>, TOut> failure) {
         return success(_value1);
     }
     
@@ -38,18 +39,7 @@ internal sealed class SuccessResult<TValue1> : Result<TValue1>ISuccessResult
         action(_value1);
     }
     
-    public override void IfFailure(Action<Exception> action) {
-    }
-    
-    public override bool TryGet([NotNullWhen(false)] out Exception? error) {
-        error = null;
-        return true;
-    }
-    
-    public override bool TryGet([NotNullWhen(true)] out TValue1? value1, [NotNullWhen(false)] out Exception? error) {
-        value1 = _value1;
-        error = null;
-        return true;
+    public override void IfFailure(Action<IEnumerable<IError>> action) {
     }
     
     public override bool TryGet([NotNullWhen(true)] out TValue1? value1) {
@@ -57,48 +47,21 @@ internal sealed class SuccessResult<TValue1> : Result<TValue1>ISuccessResult
         return true;
     }
     
-    public override void Deconstruct(out bool isSuccess, out TValue1? value, out Exception? error) {
+    public override bool TryGet([NotNullWhen(true)] out TValue1? value1, [NotNullWhen(false)] out IEnumerable<IError>? errors) {
+        value1 = _value1;
+        errors = null;
+        return true;
+    }
+    
+    public override bool TryGet([NotNullWhen(false)] out IEnumerable<IError>? errors) {
+        errors = Errors;
+        return false;
+    }
+    
+    public override void Deconstruct(out bool isSuccess, out TValue1? value, out IEnumerable<IError>? error) {
         isSuccess = true;
         value = _value1;
         error = null;
-    }
-    
-    public override string ToString() {
-        string FormatType(Type t) {
-            return t == typeof(int)
-                       ? "int"
-                       : t == typeof(string)
-                           ? "string"
-                           : t == typeof(bool)
-                               ? "bool"
-                               : t == typeof(long)
-                                   ? "long"
-                                   : t == typeof(short)
-                                       ? "short"
-                                       : t == typeof(byte)
-                                           ? "byte"
-                                           : t == typeof(char)
-                                               ? "char"
-                                               : t == typeof(decimal)
-                                                   ? "decimal"
-                                                   : t == typeof(double)
-                                                       ? "double"
-                                                       : t == typeof(float)
-                                                           ? "float"
-                                                           : t == typeof(object)
-                                                               ? "object"
-                                                               : t.IsGenericType
-                                                                   ? t.Name.Substring(0, t.Name.IndexOf('`'))
-                                                                   : t.Name;
-        }
-        var typeArgs = GetType().GetGenericArguments();
-        var typeList = string.Join(", ", typeArgs.Select(FormatType));
-        var metaPart = Metadata.Count == 0
-                           ? string.Empty
-                           : " meta=" +
-                             string.Join(",", Metadata.Take(2)
-                                                      .Select(kv => kv.Key + ":" + (kv.Value ?? "null")));
-        return $"Success<{typeList}>(_value1) reasons={Reasons.Count}{metaPart}";
     }
     
 }

@@ -1,7 +1,7 @@
 ﻿using UnambitiousFx.Core.CodeGen;
 
-const string targetSourceDirectory = "output/src";
-const string targetTestDirectory   = "output/test";
+const string targetSourceDirectory = "src/Core";
+const string targetTestDirectory   = "test/Core.Tests";
 const int    targetArity           = 8;
 
 var sourceDirectoryPath = Path.GetFullPath(targetSourceDirectory);

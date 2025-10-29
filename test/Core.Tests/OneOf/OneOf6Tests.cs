@@ -1,12 +1,11 @@
-using UnambitiousFx.Core.OneOf;
 
 namespace UnambitiousFx.Core.Tests.OneOf;
 
-public sealed class OneOf6Tests {
+public sealed class OneOf6Tests
+{
     [Fact]
     public void FromFirst_ShouldSetIsFirst() {
-        var result = OneOf<int, string, bool, double, DateTime, Guid>.FromFirst(42);
-
+        var result = OneOf<int, string, bool, double, decimal, long>.FromFirst(42);
         Assert.True(result.IsFirst);
         Assert.False(result.IsSecond);
         Assert.False(result.IsThird);
@@ -14,11 +13,10 @@ public sealed class OneOf6Tests {
         Assert.False(result.IsFifth);
         Assert.False(result.IsSixth);
     }
-
+    
     [Fact]
     public void FromSecond_ShouldSetIsSecond() {
-        var result = OneOf<int, string, bool, double, DateTime, Guid>.FromSecond("hello");
-
+        var result = OneOf<int, string, bool, double, decimal, long>.FromSecond("hello");
         Assert.False(result.IsFirst);
         Assert.True(result.IsSecond);
         Assert.False(result.IsThird);
@@ -26,11 +24,10 @@ public sealed class OneOf6Tests {
         Assert.False(result.IsFifth);
         Assert.False(result.IsSixth);
     }
-
+    
     [Fact]
     public void FromThird_ShouldSetIsThird() {
-        var result = OneOf<int, string, bool, double, DateTime, Guid>.FromThird(true);
-
+        var result = OneOf<int, string, bool, double, decimal, long>.FromThird(true);
         Assert.False(result.IsFirst);
         Assert.False(result.IsSecond);
         Assert.True(result.IsThird);
@@ -38,11 +35,10 @@ public sealed class OneOf6Tests {
         Assert.False(result.IsFifth);
         Assert.False(result.IsSixth);
     }
-
+    
     [Fact]
     public void FromFourth_ShouldSetIsFourth() {
-        var result = OneOf<int, string, bool, double, DateTime, Guid>.FromFourth(3.14);
-
+        var result = OneOf<int, string, bool, double, decimal, long>.FromFourth(3.14);
         Assert.False(result.IsFirst);
         Assert.False(result.IsSecond);
         Assert.False(result.IsThird);
@@ -50,12 +46,10 @@ public sealed class OneOf6Tests {
         Assert.False(result.IsFifth);
         Assert.False(result.IsSixth);
     }
-
+    
     [Fact]
     public void FromFifth_ShouldSetIsFifth() {
-        var now = new DateTime(2025, 1, 2, 3, 4, 5, DateTimeKind.Utc);
-        var result = OneOf<int, string, bool, double, DateTime, Guid>.FromFifth(now);
-
+        var result = OneOf<int, string, bool, double, decimal, long>.FromFifth(99.99m);
         Assert.False(result.IsFirst);
         Assert.False(result.IsSecond);
         Assert.False(result.IsThird);
@@ -63,12 +57,10 @@ public sealed class OneOf6Tests {
         Assert.True(result.IsFifth);
         Assert.False(result.IsSixth);
     }
-
+    
     [Fact]
     public void FromSixth_ShouldSetIsSixth() {
-        var id = Guid.NewGuid();
-        var result = OneOf<int, string, bool, double, DateTime, Guid>.FromSixth(id);
-
+        var result = OneOf<int, string, bool, double, decimal, long>.FromSixth(1000L);
         Assert.False(result.IsFirst);
         Assert.False(result.IsSecond);
         Assert.False(result.IsThird);
@@ -76,14 +68,13 @@ public sealed class OneOf6Tests {
         Assert.False(result.IsFifth);
         Assert.True(result.IsSixth);
     }
-
-    [Theory]
+    
     [InlineData(0)]
     [InlineData(42)]
     [InlineData(-1)]
+    [Theory]
     public void FromFirst_ShouldStoreValue(int value) {
-        var result = OneOf<int, string, bool, double, DateTime, Guid>.FromFirst(value);
-
+        var result = OneOf<int, string, bool, double, decimal, long>.FromFirst(value);
         Assert.True(result.First(out var extracted));
         Assert.Equal(value, extracted);
         Assert.False(result.Second(out _));
@@ -92,14 +83,13 @@ public sealed class OneOf6Tests {
         Assert.False(result.Fifth(out _));
         Assert.False(result.Sixth(out _));
     }
-
-    [Theory]
+    
     [InlineData("")]
     [InlineData("hello")]
     [InlineData("test string")]
+    [Theory]
     public void FromSecond_ShouldStoreValue(string value) {
-        var result = OneOf<int, string, bool, double, DateTime, Guid>.FromSecond(value);
-
+        var result = OneOf<int, string, bool, double, decimal, long>.FromSecond(value);
         Assert.True(result.Second(out var extracted));
         Assert.Equal(value, extracted);
         Assert.False(result.First(out _));
@@ -108,313 +98,179 @@ public sealed class OneOf6Tests {
         Assert.False(result.Fifth(out _));
         Assert.False(result.Sixth(out _));
     }
-
-    [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public void FromThird_ShouldStoreValue(bool value) {
-        var result = OneOf<int, string, bool, double, DateTime, Guid>.FromThird(value);
-
+    
+    [Fact]
+    public void FromThird_ShouldStoreValue() {
+        var result = OneOf<int, string, bool, double, decimal, long>.FromThird(true);
         Assert.True(result.Third(out var extracted));
-        Assert.Equal(value, extracted);
+        Assert.Equal(true, extracted);
         Assert.False(result.First(out _));
         Assert.False(result.Second(out _));
         Assert.False(result.Fourth(out _));
         Assert.False(result.Fifth(out _));
         Assert.False(result.Sixth(out _));
     }
-
-    [Theory]
-    [InlineData(0.0)]
-    [InlineData(3.14)]
-    [InlineData(-2.5)]
-    public void FromFourth_ShouldStoreValue(double value) {
-        var result = OneOf<int, string, bool, double, DateTime, Guid>.FromFourth(value);
-
+    
+    [Fact]
+    public void FromFourth_ShouldStoreValue() {
+        var result = OneOf<int, string, bool, double, decimal, long>.FromFourth(3.14);
         Assert.True(result.Fourth(out var extracted));
-        Assert.Equal(value, extracted);
+        Assert.Equal(3.14, extracted);
         Assert.False(result.First(out _));
         Assert.False(result.Second(out _));
         Assert.False(result.Third(out _));
         Assert.False(result.Fifth(out _));
         Assert.False(result.Sixth(out _));
     }
-
+    
     [Fact]
     public void FromFifth_ShouldStoreValue() {
-        var value = new DateTime(2024, 12, 31, 23, 59, 59, DateTimeKind.Utc);
-        var result = OneOf<int, string, bool, double, DateTime, Guid>.FromFifth(value);
-
+        var result = OneOf<int, string, bool, double, decimal, long>.FromFifth(99.99m);
         Assert.True(result.Fifth(out var extracted));
-        Assert.Equal(value, extracted);
+        Assert.Equal(99.99m, extracted);
         Assert.False(result.First(out _));
         Assert.False(result.Second(out _));
         Assert.False(result.Third(out _));
         Assert.False(result.Fourth(out _));
         Assert.False(result.Sixth(out _));
     }
-
+    
     [Fact]
     public void FromSixth_ShouldStoreValue() {
-        var value = Guid.NewGuid();
-        var result = OneOf<int, string, bool, double, DateTime, Guid>.FromSixth(value);
-
+        var result = OneOf<int, string, bool, double, decimal, long>.FromSixth(1000L);
         Assert.True(result.Sixth(out var extracted));
-        Assert.Equal(value, extracted);
+        Assert.Equal(1000L, extracted);
         Assert.False(result.First(out _));
         Assert.False(result.Second(out _));
         Assert.False(result.Third(out _));
         Assert.False(result.Fourth(out _));
         Assert.False(result.Fifth(out _));
     }
-
+    
     [Fact]
     public void FromFirst_WhenMatchWithResponse_ShouldReturnFirstValue() {
-        var oneOf = OneOf<int, string, bool, double, DateTime, Guid>.FromFirst(42);
-
-        var result = oneOf.Match(x => x,
-                                 _ => {
-                                     Assert.Fail("Second handler was called for OneOf holding First value");
-                                     return 0;
-                                 },
-                                 _ => {
-                                     Assert.Fail("Third handler was called for OneOf holding First value");
-                                     return 0;
-                                 },
-                                 _ => {
-                                     Assert.Fail("Fourth handler was called for OneOf holding First value");
-                                     return 0;
-                                 },
-                                 _ => {
-                                     Assert.Fail("Fifth handler was called for OneOf holding First value");
-                                     return 0;
-                                 },
-                                 _ => {
-                                     Assert.Fail("Sixth handler was called for OneOf holding First value");
-                                     return 0;
-                                 });
-
+        var oneOf = OneOf<int, string, bool, double, decimal, long>.FromFirst(42);
+        var result = oneOf.Match(x => x, _ => { Assert.Fail("Second handler was called for OneOf holding First value"); return default; }, _ => { Assert.Fail("Third handler was called for OneOf holding First value"); return default; }, _ => { Assert.Fail("Fourth handler was called for OneOf holding First value"); return default; }, _ => { Assert.Fail("Fifth handler was called for OneOf holding First value"); return default; }, _ => { Assert.Fail("Sixth handler was called for OneOf holding First value"); return default; });
         Assert.Equal(42, result);
     }
-
+    
     [Fact]
     public void FromSecond_WhenMatchWithResponse_ShouldReturnSecondValue() {
-        var oneOf = OneOf<int, string, bool, double, DateTime, Guid>.FromSecond("hello");
-
-        var result = oneOf.Match(_ => {
-                                     Assert.Fail("First handler was called for OneOf holding Second value");
-                                     return string.Empty;
-                                 },
-                                 x => x,
-                                 _ => {
-                                     Assert.Fail("Third handler was called for OneOf holding Second value");
-                                     return string.Empty;
-                                 },
-                                 _ => {
-                                     Assert.Fail("Fourth handler was called for OneOf holding Second value");
-                                     return string.Empty;
-                                 },
-                                 _ => {
-                                     Assert.Fail("Fifth handler was called for OneOf holding Second value");
-                                     return string.Empty;
-                                 },
-                                 _ => {
-                                     Assert.Fail("Sixth handler was called for OneOf holding Second value");
-                                     return string.Empty;
-                                 });
-
+        var oneOf = OneOf<int, string, bool, double, decimal, long>.FromSecond("hello");
+        var result = oneOf.Match(_ => { Assert.Fail("First handler was called for OneOf holding Second value"); return default; }, x => x, _ => { Assert.Fail("Third handler was called for OneOf holding Second value"); return default; }, _ => { Assert.Fail("Fourth handler was called for OneOf holding Second value"); return default; }, _ => { Assert.Fail("Fifth handler was called for OneOf holding Second value"); return default; }, _ => { Assert.Fail("Sixth handler was called for OneOf holding Second value"); return default; });
         Assert.Equal("hello", result);
     }
-
+    
     [Fact]
     public void FromThird_WhenMatchWithResponse_ShouldReturnThirdValue() {
-        var oneOf = OneOf<int, string, bool, double, DateTime, Guid>.FromThird(true);
-
-        var result = oneOf.Match(_ => {
-                                     Assert.Fail("First handler was called for OneOf holding Third value");
-                                     return false;
-                                 },
-                                 _ => {
-                                     Assert.Fail("Second handler was called for OneOf holding Third value");
-                                     return false;
-                                 },
-                                 x => x,
-                                 _ => {
-                                     Assert.Fail("Fourth handler was called for OneOf holding Third value");
-                                     return false;
-                                 },
-                                 _ => {
-                                     Assert.Fail("Fifth handler was called for OneOf holding Third value");
-                                     return false;
-                                 },
-                                 _ => {
-                                     Assert.Fail("Sixth handler was called for OneOf holding Third value");
-                                     return false;
-                                 });
-
-        Assert.True(result);
+        var oneOf = OneOf<int, string, bool, double, decimal, long>.FromThird(true);
+        var result = oneOf.Match(_ => { Assert.Fail("First handler was called for OneOf holding Third value"); return default; }, _ => { Assert.Fail("Second handler was called for OneOf holding Third value"); return default; }, x => x, _ => { Assert.Fail("Fourth handler was called for OneOf holding Third value"); return default; }, _ => { Assert.Fail("Fifth handler was called for OneOf holding Third value"); return default; }, _ => { Assert.Fail("Sixth handler was called for OneOf holding Third value"); return default; });
+        Assert.Equal(true, result);
     }
-
+    
     [Fact]
     public void FromFourth_WhenMatchWithResponse_ShouldReturnFourthValue() {
-        var oneOf = OneOf<int, string, bool, double, DateTime, Guid>.FromFourth(2.5);
-
-        var result = oneOf.Match(_ => {
-                                     Assert.Fail("First handler was called for OneOf holding Fourth value");
-                                     return 0.0;
-                                 },
-                                 _ => {
-                                     Assert.Fail("Second handler was called for OneOf holding Fourth value");
-                                     return 0.0;
-                                 },
-                                 _ => {
-                                     Assert.Fail("Third handler was called for OneOf holding Fourth value");
-                                     return 0.0;
-                                 },
-                                 x => x,
-                                 _ => {
-                                     Assert.Fail("Fifth handler was called for OneOf holding Fourth value");
-                                     return 0.0;
-                                 },
-                                 _ => {
-                                     Assert.Fail("Sixth handler was called for OneOf holding Fourth value");
-                                     return 0.0;
-                                 });
-
-        Assert.Equal(2.5, result);
+        var oneOf = OneOf<int, string, bool, double, decimal, long>.FromFourth(3.14);
+        var result = oneOf.Match(_ => { Assert.Fail("First handler was called for OneOf holding Fourth value"); return default; }, _ => { Assert.Fail("Second handler was called for OneOf holding Fourth value"); return default; }, _ => { Assert.Fail("Third handler was called for OneOf holding Fourth value"); return default; }, x => x, _ => { Assert.Fail("Fifth handler was called for OneOf holding Fourth value"); return default; }, _ => { Assert.Fail("Sixth handler was called for OneOf holding Fourth value"); return default; });
+        Assert.Equal(3.14, result);
     }
-
+    
     [Fact]
     public void FromFifth_WhenMatchWithResponse_ShouldReturnFifthValue() {
-        var date = new DateTime(2025, 2, 3, 4, 5, 6, DateTimeKind.Utc);
-        var oneOf = OneOf<int, string, bool, double, DateTime, Guid>.FromFifth(date);
-
-        var result = oneOf.Match(_ => {
-                                     Assert.Fail("First handler was called for OneOf holding Fifth value");
-                                     return DateTime.MinValue;
-                                 },
-                                 _ => {
-                                     Assert.Fail("Second handler was called for OneOf holding Fifth value");
-                                     return DateTime.MinValue;
-                                 },
-                                 _ => {
-                                     Assert.Fail("Third handler was called for OneOf holding Fifth value");
-                                     return DateTime.MinValue;
-                                 },
-                                 _ => {
-                                     Assert.Fail("Fourth handler was called for OneOf holding Fifth value");
-                                     return DateTime.MinValue;
-                                 },
-                                 x => x,
-                                 _ => {
-                                     Assert.Fail("Sixth handler was called for OneOf holding Fifth value");
-                                     return DateTime.MinValue;
-                                 });
-
-        Assert.Equal(date, result);
+        var oneOf = OneOf<int, string, bool, double, decimal, long>.FromFifth(99.99m);
+        var result = oneOf.Match(_ => { Assert.Fail("First handler was called for OneOf holding Fifth value"); return default; }, _ => { Assert.Fail("Second handler was called for OneOf holding Fifth value"); return default; }, _ => { Assert.Fail("Third handler was called for OneOf holding Fifth value"); return default; }, _ => { Assert.Fail("Fourth handler was called for OneOf holding Fifth value"); return default; }, x => x, _ => { Assert.Fail("Sixth handler was called for OneOf holding Fifth value"); return default; });
+        Assert.Equal(99.99m, result);
     }
-
+    
     [Fact]
     public void FromSixth_WhenMatchWithResponse_ShouldReturnSixthValue() {
-        var id = Guid.NewGuid();
-        var oneOf = OneOf<int, string, bool, double, DateTime, Guid>.FromSixth(id);
-
-        var result = oneOf.Match(_ => {
-                                     Assert.Fail("First handler was called for OneOf holding Sixth value");
-                                     return Guid.Empty;
-                                 },
-                                 _ => {
-                                     Assert.Fail("Second handler was called for OneOf holding Sixth value");
-                                     return Guid.Empty;
-                                 },
-                                 _ => {
-                                     Assert.Fail("Third handler was called for OneOf holding Sixth value");
-                                     return Guid.Empty;
-                                 },
-                                 _ => {
-                                     Assert.Fail("Fourth handler was called for OneOf holding Sixth value");
-                                     return Guid.Empty;
-                                 },
-                                 _ => {
-                                     Assert.Fail("Fifth handler was called for OneOf holding Sixth value");
-                                     return Guid.Empty;
-                                 },
-                                 x => x);
-
-        Assert.Equal(id, result);
+        var oneOf = OneOf<int, string, bool, double, decimal, long>.FromSixth(1000L);
+        var result = oneOf.Match(_ => { Assert.Fail("First handler was called for OneOf holding Sixth value"); return default; }, _ => { Assert.Fail("Second handler was called for OneOf holding Sixth value"); return default; }, _ => { Assert.Fail("Third handler was called for OneOf holding Sixth value"); return default; }, _ => { Assert.Fail("Fourth handler was called for OneOf holding Sixth value"); return default; }, _ => { Assert.Fail("Fifth handler was called for OneOf holding Sixth value"); return default; }, x => x);
+        Assert.Equal(1000L, result);
     }
-
+    
     [Fact]
     public void FromFirst_WhenMatch_ShouldCallFirstHandler() {
-        var oneOf = OneOf<int, string, bool, double, DateTime, Guid>.FromFirst(42);
-
-        oneOf.Match(x => { Assert.Equal(42, x); },
-                    _ => { Assert.Fail("Second handler was called for OneOf holding First value"); },
-                    _ => { Assert.Fail("Third handler was called for OneOf holding First value"); },
-                    _ => { Assert.Fail("Fourth handler was called for OneOf holding First value"); },
-                    _ => { Assert.Fail("Fifth handler was called for OneOf holding First value"); },
-                    _ => { Assert.Fail("Sixth handler was called for OneOf holding First value"); });
+        var oneOf = OneOf<int, string, bool, double, decimal, long>.FromFirst(42);
+        oneOf.Match(x => { Assert.Equal(42, x); }, _ => { Assert.Fail("Second handler was called for OneOf holding First value"); }, _ => { Assert.Fail("Third handler was called for OneOf holding First value"); }, _ => { Assert.Fail("Fourth handler was called for OneOf holding First value"); }, _ => { Assert.Fail("Fifth handler was called for OneOf holding First value"); }, _ => { Assert.Fail("Sixth handler was called for OneOf holding First value"); });
     }
-
+    
     [Fact]
     public void FromSecond_WhenMatch_ShouldCallSecondHandler() {
-        var oneOf = OneOf<int, string, bool, double, DateTime, Guid>.FromSecond("hello");
-
-        oneOf.Match(_ => { Assert.Fail("First handler was called for OneOf holding Second value"); },
-                    x => { Assert.Equal("hello", x); },
-                    _ => { Assert.Fail("Third handler was called for OneOf holding Second value"); },
-                    _ => { Assert.Fail("Fourth handler was called for OneOf holding Second value"); },
-                    _ => { Assert.Fail("Fifth handler was called for OneOf holding Second value"); },
-                    _ => { Assert.Fail("Sixth handler was called for OneOf holding Second value"); });
+        var oneOf = OneOf<int, string, bool, double, decimal, long>.FromSecond("hello");
+        oneOf.Match(_ => { Assert.Fail("First handler was called for OneOf holding Second value"); }, x => { Assert.Equal("hello", x); }, _ => { Assert.Fail("Third handler was called for OneOf holding Second value"); }, _ => { Assert.Fail("Fourth handler was called for OneOf holding Second value"); }, _ => { Assert.Fail("Fifth handler was called for OneOf holding Second value"); }, _ => { Assert.Fail("Sixth handler was called for OneOf holding Second value"); });
     }
-
+    
     [Fact]
     public void FromThird_WhenMatch_ShouldCallThirdHandler() {
-        var oneOf = OneOf<int, string, bool, double, DateTime, Guid>.FromThird(true);
-
-        oneOf.Match(_ => { Assert.Fail("First handler was called for OneOf holding Third value"); },
-                    _ => { Assert.Fail("Second handler was called for OneOf holding Third value"); },
-                    x => { Assert.True(x); },
-                    _ => { Assert.Fail("Fourth handler was called for OneOf holding Third value"); },
-                    _ => { Assert.Fail("Fifth handler was called for OneOf holding Third value"); },
-                    _ => { Assert.Fail("Sixth handler was called for OneOf holding Third value"); });
+        var oneOf = OneOf<int, string, bool, double, decimal, long>.FromThird(true);
+        oneOf.Match(_ => { Assert.Fail("First handler was called for OneOf holding Third value"); }, _ => { Assert.Fail("Second handler was called for OneOf holding Third value"); }, x => { Assert.Equal(true, x); }, _ => { Assert.Fail("Fourth handler was called for OneOf holding Third value"); }, _ => { Assert.Fail("Fifth handler was called for OneOf holding Third value"); }, _ => { Assert.Fail("Sixth handler was called for OneOf holding Third value"); });
     }
-
+    
     [Fact]
     public void FromFourth_WhenMatch_ShouldCallFourthHandler() {
-        var oneOf = OneOf<int, string, bool, double, DateTime, Guid>.FromFourth(3.14);
-
-        oneOf.Match(_ => { Assert.Fail("First handler was called for OneOf holding Fourth value"); },
-                    _ => { Assert.Fail("Second handler was called for OneOf holding Fourth value"); },
-                    _ => { Assert.Fail("Third handler was called for OneOf holding Fourth value"); },
-                    x => { Assert.Equal(3.14, x); },
-                    _ => { Assert.Fail("Fifth handler was called for OneOf holding Fourth value"); },
-                    _ => { Assert.Fail("Sixth handler was called for OneOf holding Fourth value"); });
+        var oneOf = OneOf<int, string, bool, double, decimal, long>.FromFourth(3.14);
+        oneOf.Match(_ => { Assert.Fail("First handler was called for OneOf holding Fourth value"); }, _ => { Assert.Fail("Second handler was called for OneOf holding Fourth value"); }, _ => { Assert.Fail("Third handler was called for OneOf holding Fourth value"); }, x => { Assert.Equal(3.14, x); }, _ => { Assert.Fail("Fifth handler was called for OneOf holding Fourth value"); }, _ => { Assert.Fail("Sixth handler was called for OneOf holding Fourth value"); });
     }
-
+    
     [Fact]
     public void FromFifth_WhenMatch_ShouldCallFifthHandler() {
-        var date = new DateTime(2025, 10, 17, 1, 2, 3, DateTimeKind.Utc);
-        var oneOf = OneOf<int, string, bool, double, DateTime, Guid>.FromFifth(date);
-
-        oneOf.Match(_ => { Assert.Fail("First handler was called for OneOf holding Fifth value"); },
-                    _ => { Assert.Fail("Second handler was called for OneOf holding Fifth value"); },
-                    _ => { Assert.Fail("Third handler was called for OneOf holding Fifth value"); },
-                    _ => { Assert.Fail("Fourth handler was called for OneOf holding Fifth value"); },
-                    x => { Assert.Equal(date, x); },
-                    _ => { Assert.Fail("Sixth handler was called for OneOf holding Fifth value"); });
+        var oneOf = OneOf<int, string, bool, double, decimal, long>.FromFifth(99.99m);
+        oneOf.Match(_ => { Assert.Fail("First handler was called for OneOf holding Fifth value"); }, _ => { Assert.Fail("Second handler was called for OneOf holding Fifth value"); }, _ => { Assert.Fail("Third handler was called for OneOf holding Fifth value"); }, _ => { Assert.Fail("Fourth handler was called for OneOf holding Fifth value"); }, x => { Assert.Equal(99.99m, x); }, _ => { Assert.Fail("Sixth handler was called for OneOf holding Fifth value"); });
     }
-
+    
     [Fact]
     public void FromSixth_WhenMatch_ShouldCallSixthHandler() {
-        var id = Guid.NewGuid();
-        var oneOf = OneOf<int, string, bool, double, DateTime, Guid>.FromSixth(id);
-
-        oneOf.Match(_ => { Assert.Fail("First handler was called for OneOf holding Sixth value"); },
-                    _ => { Assert.Fail("Second handler was called for OneOf holding Sixth value"); },
-                    _ => { Assert.Fail("Third handler was called for OneOf holding Sixth value"); },
-                    _ => { Assert.Fail("Fourth handler was called for OneOf holding Sixth value"); },
-                    _ => { Assert.Fail("Fifth handler was called for OneOf holding Sixth value"); },
-                    x => { Assert.Equal(id, x); });
+        var oneOf = OneOf<int, string, bool, double, decimal, long>.FromSixth(1000L);
+        oneOf.Match(_ => { Assert.Fail("First handler was called for OneOf holding Sixth value"); }, _ => { Assert.Fail("Second handler was called for OneOf holding Sixth value"); }, _ => { Assert.Fail("Third handler was called for OneOf holding Sixth value"); }, _ => { Assert.Fail("Fourth handler was called for OneOf holding Sixth value"); }, _ => { Assert.Fail("Fifth handler was called for OneOf holding Sixth value"); }, x => { Assert.Equal(1000L, x); });
     }
+    
+    [Fact]
+    public void ImplicitConversion_FromFirst_ShouldWork() {
+        OneOf<int, string, bool, double, decimal, long> result = 42;
+        Assert.True(result.IsFirst);
+        Assert.True(result.First(out var value));
+        Assert.Equal(42, value);
+    }
+    
+    [Fact]
+    public void ImplicitConversion_FromSecond_ShouldWork() {
+        OneOf<int, string, bool, double, decimal, long> result = "hello";
+        Assert.True(result.IsSecond);
+        Assert.True(result.Second(out var value));
+        Assert.Equal("hello", value);
+    }
+    
+    [Fact]
+    public void ImplicitConversion_FromThird_ShouldWork() {
+        OneOf<int, string, bool, double, decimal, long> result = true;
+        Assert.True(result.IsThird);
+        Assert.True(result.Third(out var value));
+        Assert.Equal(true, value);
+    }
+    
+    [Fact]
+    public void ImplicitConversion_FromFourth_ShouldWork() {
+        OneOf<int, string, bool, double, decimal, long> result = 3.14;
+        Assert.True(result.IsFourth);
+        Assert.True(result.Fourth(out var value));
+        Assert.Equal(3.14, value);
+    }
+    
+    [Fact]
+    public void ImplicitConversion_FromFifth_ShouldWork() {
+        OneOf<int, string, bool, double, decimal, long> result = 99.99m;
+        Assert.True(result.IsFifth);
+        Assert.True(result.Fifth(out var value));
+        Assert.Equal(99.99m, value);
+    }
+    
+    [Fact]
+    public void ImplicitConversion_FromSixth_ShouldWork() {
+        OneOf<int, string, bool, double, decimal, long> result = 1000L;
+        Assert.True(result.IsSixth);
+        Assert.True(result.Sixth(out var value));
+        Assert.Equal(1000L, value);
+    }
+    
 }
