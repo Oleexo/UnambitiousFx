@@ -3,12 +3,15 @@ namespace UnambitiousFx.Core.CodeGen.Results.TestBuilders;
 /// <summary>
 /// Provides helper methods for generating Result test data and code patterns.
 /// </summary>
-internal static class ResultTestHelpers {
+internal static class ResultTestHelpers
+{
     /// <summary>
     /// Gets the C# type name for a given position in the Result generic parameters.
     /// </summary>
-    public static string GetTestType(int position) {
-        return position switch {
+    public static string GetTestType(int position)
+    {
+        return position switch
+        {
             1 => "int",
             2 => "string",
             3 => "bool",
@@ -24,8 +27,10 @@ internal static class ResultTestHelpers {
     /// <summary>
     /// Gets a test value for a given position in the Result generic parameters.
     /// </summary>
-    public static string GetTestValue(int position) {
-        return position switch {
+    public static string GetTestValue(int position)
+    {
+        return position switch
+        {
             1 => "42",
             2 => "\"foo\"",
             3 => "true",
@@ -41,8 +46,10 @@ internal static class ResultTestHelpers {
     /// <summary>
     /// Gets the default value for a given type position.
     /// </summary>
-    public static string GetDefaultValue(int position) {
-        return position switch {
+    public static string GetDefaultValue(int position)
+    {
+        return position switch
+        {
             1 => "0",
             2 => "null",
             3 => "false",
@@ -58,7 +65,12 @@ internal static class ResultTestHelpers {
     /// <summary>
     /// Generates a Result.Success() call with appropriate test values.
     /// </summary>
-    public static string GenerateSuccessCall(ushort arity) {
+    public static string GenerateSuccessCall(ushort arity)
+    {
+        if (arity == 0)
+        {
+            return "Result.Success()";
+        }
         var values = Enumerable.Range(1, arity)
                                .Select(GetTestValue)
                                .ToArray();
@@ -68,7 +80,12 @@ internal static class ResultTestHelpers {
     /// <summary>
     /// Generates a Result.Failure() call with appropriate generic type parameters.
     /// </summary>
-    public static string GenerateFailureCall(ushort arity) {
+    public static string GenerateFailureCall(ushort arity)
+    {
+        if (arity == 0)
+        {
+            return "Result.Failure(new Exception(\"boom\"))";
+        }
         var types = Enumerable.Range(1, arity)
                               .Select(GetTestType)
                               .ToArray();
@@ -78,7 +95,8 @@ internal static class ResultTestHelpers {
     /// <summary>
     /// Generates parameter names for lambda expressions (v or v1, v2, ...).
     /// </summary>
-    public static string GenerateValueParameters(ushort arity) {
+    public static string GenerateValueParameters(ushort arity)
+    {
         return string.Join(", ", Enumerable.Range(1, arity)
                                            .Select(i => arity == 1
                                                             ? "v"
@@ -88,7 +106,8 @@ internal static class ResultTestHelpers {
     /// <summary>
     /// Generates wildcard parameters for lambda expressions (_, _, ...).
     /// </summary>
-    public static string GenerateWildcardParameters(ushort arity) {
+    public static string GenerateWildcardParameters(ushort arity)
+    {
         return string.Join(", ", Enumerable.Repeat("_", arity));
     }
 
@@ -96,19 +115,23 @@ internal static class ResultTestHelpers {
     /// Generates assertions for value parameters, using Assert.True/False for booleans.
     /// </summary>
     public static string GenerateValueAssertions(ushort arity,
-                                                 string indent = "        ") {
+                                                 string indent = "        ")
+    {
         var result = "";
-        for (int i = 1; i <= arity; i++) {
+        for (int i = 1; i <= arity; i++)
+        {
             var varName = arity == 1
                               ? "v"
                               : $"v{i}";
-            var testType  = GetTestType(i);
+            var testType = GetTestType(i);
             var testValue = GetTestValue(i);
 
-            if (testType == "bool") {
+            if (testType == "bool")
+            {
                 result += $"{indent}Assert.{(testValue == "true" ? "True" : "False")}({varName});\n";
             }
-            else {
+            else
+            {
                 result += $"{indent}Assert.Equal({testValue}, {varName});\n";
             }
         }
@@ -119,19 +142,22 @@ internal static class ResultTestHelpers {
     /// <summary>
     /// Checks if a type at the given position is boolean.
     /// </summary>
-    public static bool IsBooleanType(int position) {
+    public static bool IsBooleanType(int position)
+    {
         return GetTestType(position) == "bool";
     }
 
     /// <summary>
     /// Generates an assertion for a single value, using Assert.True/False for booleans.
     /// </summary>
-    public static string GenerateValueAssertion(int    position,
-                                                string variableName) {
-        var testType  = GetTestType(position);
+    public static string GenerateValueAssertion(int position,
+                                                string variableName)
+    {
+        var testType = GetTestType(position);
         var testValue = GetTestValue(position);
 
-        if (testType == "bool") {
+        if (testType == "bool")
+        {
             return $"Assert.{(testValue == "true" ? "True" : "False")}({variableName});";
         }
 

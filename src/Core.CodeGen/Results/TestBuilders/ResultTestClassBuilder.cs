@@ -5,16 +5,18 @@ namespace UnambitiousFx.Core.CodeGen.Results.TestBuilders;
 /// <summary>
 /// Orchestrates the creation of a complete Result test class by coordinating all test builders.
 /// </summary>
-internal static class ResultTestClassBuilder {
+internal static class ResultTestClassBuilder
+{
     /// <summary>
     /// Builds a complete test class for a Result type with the specified arity.
     /// </summary>
-    /// <param name="arity">The number of generic type parameters (1-8).</param>
+    /// <param name="arity">The number of generic type parameters (0-8).</param>
     /// <returns>A ClassWriter configured with all test methods.</returns>
-    public static ClassWriter Build(ushort arity) {
-        if (arity < 1 ||
-            arity > 8) {
-            throw new ArgumentOutOfRangeException(nameof(arity), "Arity must be between 1 and 8.");
+    public static ClassWriter Build(ushort arity)
+    {
+        if (arity > 8)
+        {
+            throw new ArgumentOutOfRangeException(nameof(arity), "Arity must be between 0 and 8.");
         }
 
         var classWriter = new ClassWriter(
@@ -33,11 +35,14 @@ internal static class ResultTestClassBuilder {
         classWriter.AddMethod(MatchTestBuilder.BuildMatchBaseWithResponseSuccessTest(arity));
         classWriter.AddMethod(MatchTestBuilder.BuildMatchBaseWithResponseFailureTest(arity));
 
-        // Match tests - value overloads (with value parameters)
-        classWriter.AddMethod(MatchTestBuilder.BuildMatchWithoutResponseSuccessTest(arity));
-        classWriter.AddMethod(MatchTestBuilder.BuildMatchWithoutResponseFailureTest(arity));
-        classWriter.AddMethod(MatchTestBuilder.BuildMatchWithResponseSuccessTest(arity));
-        classWriter.AddMethod(MatchTestBuilder.BuildMatchWithResponseFailureTest(arity));
+        // For arity > 0, add Match tests with value overloads
+        if (arity > 0)
+        {
+            classWriter.AddMethod(MatchTestBuilder.BuildMatchWithoutResponseSuccessTest(arity));
+            classWriter.AddMethod(MatchTestBuilder.BuildMatchWithoutResponseFailureTest(arity));
+            classWriter.AddMethod(MatchTestBuilder.BuildMatchWithResponseSuccessTest(arity));
+            classWriter.AddMethod(MatchTestBuilder.BuildMatchWithResponseFailureTest(arity));
+        }
 
         // Conditional tests
         classWriter.AddMethod(ConditionalTestBuilder.BuildIfSuccessCallsActionTest(arity));
