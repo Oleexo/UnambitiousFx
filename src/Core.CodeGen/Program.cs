@@ -16,6 +16,7 @@ internal static class Program
 
         GenerateOneOf(sourceDirectoryPath, testDirectoryPath, TargetArity);
         GenerateResults(sourceDirectoryPath, testDirectoryPath, TargetArity);
+        GenerateResultValueAccessExtensions(sourceDirectoryPath, TargetArity);
 
         Console.WriteLine("Done!");
     }
@@ -51,5 +52,11 @@ internal static class Program
 
         var resultTestsGenerator = new ResultTestGenerator(Constant.BaseNamespace);
         resultTestsGenerator.Generate((ushort)arity, testDirectoryPath);
+    }
+
+    private static void GenerateResultValueAccessExtensions(string sourceDirectoryPath, int arity)
+    {
+        var resultValueAccessExtensionsGenerator = new ResultValueAccessExtensionsCodeGenerator(Constant.BaseNamespace);
+        resultValueAccessExtensionsGenerator.Generate((ushort)arity, sourceDirectoryPath);
     }
 }
