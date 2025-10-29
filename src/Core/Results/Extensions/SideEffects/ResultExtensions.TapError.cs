@@ -1,21 +1,23 @@
-﻿namespace UnambitiousFx.Core.Results.Extensions.SideEffects;
+﻿using UnambitiousFx.Core.Results.Reasons;
+
+namespace UnambitiousFx.Core.Results.Extensions.SideEffects;
 
 public static class ResultTapErrorExtensions {
     public static Result TapError(this Result       result,
-                                  Action<Exception> tap) {
+                                  Action<IEnumerable<IError>> tap) {
         result.IfFailure(tap);
         return result;
     }
     
     public static Result<TValue> TapError<TValue>(this Result<TValue> result,
-                                                  Action<Exception>   tap)
+                                                  Action<IEnumerable<IError>>   tap)
         where TValue : notnull {
         result.IfFailure(tap);
         return result;
     }
 
     public static Result<TValue1, TValue2> TapError<TValue1, TValue2>(this Result<TValue1, TValue2> result,
-                                                                      Action<Exception>             tap)
+                                                                      Action<IEnumerable<IError>>             tap)
         where TValue1 : notnull
         where TValue2 : notnull {
         result.IfFailure(tap);
@@ -23,7 +25,7 @@ public static class ResultTapErrorExtensions {
     }
 
     public static Result<TValue1, TValue2, TValue3> TapError<TValue1, TValue2, TValue3>(this Result<TValue1, TValue2, TValue3> result,
-                                                                                        Action<Exception>                      tap)
+                                                                                        Action<IEnumerable<IError>>                      tap)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull {
@@ -32,7 +34,7 @@ public static class ResultTapErrorExtensions {
     }
 
     public static Result<TValue1, TValue2, TValue3, TValue4> TapError<TValue1, TValue2, TValue3, TValue4>(this Result<TValue1, TValue2, TValue3, TValue4> result,
-                                                                                                          Action<Exception>                               tap)
+                                                                                                          Action<IEnumerable<IError>>                               tap)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -43,7 +45,7 @@ public static class ResultTapErrorExtensions {
 
     public static Result<TValue1, TValue2, TValue3, TValue4, TValue5> TapError<TValue1, TValue2, TValue3, TValue4, TValue5>(
         this Result<TValue1, TValue2, TValue3, TValue4, TValue5> result,
-        Action<Exception>                                        tap)
+        Action<IEnumerable<IError>>                                        tap)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -55,7 +57,7 @@ public static class ResultTapErrorExtensions {
 
     public static Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6> TapError<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(
         this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6> result,
-        Action<Exception>                                                 tap)
+        Action<IEnumerable<IError>>                                                 tap)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -68,7 +70,7 @@ public static class ResultTapErrorExtensions {
 
     public static Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> TapError<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(
         this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> result,
-        Action<Exception>                                                          tap)
+        Action<IEnumerable<IError>>                                                          tap)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -82,7 +84,7 @@ public static class ResultTapErrorExtensions {
 
     public static Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8> TapError<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(
         this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8> result,
-        Action<Exception>                                                                   tap)
+        Action<IEnumerable<IError>>                                                                   tap)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
