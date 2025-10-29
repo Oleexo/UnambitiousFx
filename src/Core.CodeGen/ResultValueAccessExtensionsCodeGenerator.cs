@@ -17,42 +17,46 @@ internal sealed class ResultValueAccessExtensionsCodeGenerator : ICodeGenerator
         _baseNamespace = baseNamespace;
     }
 
+    // Duplicate Generate method removed
+
+    /// <summary>
+    /// Generates extension methods for accessing values from Result types with varying arity.
+    /// </summary>
+    /// <param name="numberOfArity">Maximum arity to generate for.</param>
+    /// <param name="outputPath">Root output directory for generated files.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="numberOfArity"/> is less than <c>StartArity</c>.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="outputPath"/> is null or whitespace.</exception>
     public void Generate(ushort numberOfArity, string outputPath)
+    {
+        ValidateGenerateArguments(numberOfArity, outputPath);
+        var (mainOutput, tasksOutput, valueTasksOutput) = Results.Extensions.ValueAccess.DirectorySetup.Prepare(outputPath, DirectoryName);
+        Results.Extensions.ValueAccess.PartialGenerators.GenerateAllPartials(this, numberOfArity, mainOutput, tasksOutput, valueTasksOutput);
+        GenerateAritySpecificFiles(numberOfArity, mainOutput, tasksOutput, valueTasksOutput);
+    }
+
+    /// <summary>
+    /// Validates arguments for the Generate method.
+    /// </summary>
+    private static void ValidateGenerateArguments(ushort numberOfArity, string outputPath)
     {
         if (numberOfArity < StartArity)
             throw new ArgumentOutOfRangeException(nameof(numberOfArity), $"Arity must be >= {StartArity}.");
         if (string.IsNullOrWhiteSpace(outputPath))
             throw new ArgumentException("Output path cannot be null or whitespace.", nameof(outputPath));
+    }
 
-        outputPath = Path.Combine(outputPath, DirectoryName);
-        if (!Directory.Exists(outputPath))
-        {
-            Directory.CreateDirectory(outputPath);
-        }
+    // Directory setup and partial generation logic moved to Results/Extensions/ValueAccess helpers
 
-        var tasksOutputPath = Path.Combine(outputPath, "Tasks");
-        var valueTasksOutputPath = Path.Combine(outputPath, "ValueTasks");
-        if (!Directory.Exists(tasksOutputPath))
-        {
-            Directory.CreateDirectory(tasksOutputPath);
-        }
-        if (!Directory.Exists(valueTasksOutputPath))
-        {
-            Directory.CreateDirectory(valueTasksOutputPath);
-        }
-
-        // Generate individual partial files for ToNullable, ValueOr, ValueOrThrow methods
-        GenerateToNullablePartialFiles(numberOfArity, outputPath);
-        GenerateValueOrPartialFiles(numberOfArity, outputPath);
-        GenerateValueOrThrowPartialFiles(numberOfArity, outputPath);
-        GenerateValueOrAsyncPartialFiles(numberOfArity, tasksOutputPath, valueTasksOutputPath);
-        GenerateValueOrThrowAsyncPartialFiles(numberOfArity, tasksOutputPath, valueTasksOutputPath);
-
+    /// <summary>
+    /// Generates arity-specific extension files for each arity.
+    /// </summary>
+    private void GenerateAritySpecificFiles(ushort numberOfArity, string mainOutput, string tasksOutput, string valueTasksOutput)
+    {
         for (ushort i = StartArity; i <= numberOfArity; i++)
         {
-            GenerateValueAccessExtensions(i, outputPath);
-            GenerateTaskValueAccessExtensions(i, tasksOutputPath);
-            GenerateValueTaskValueAccessExtensions(i, valueTasksOutputPath);
+            GenerateValueAccessExtensions(i, mainOutput);
+            GenerateTaskValueAccessExtensions(i, tasksOutput);
+            GenerateValueTaskValueAccessExtensions(i, valueTasksOutput);
         }
     }
     // ...existing code...
@@ -66,7 +70,7 @@ internal sealed class ResultValueAccessExtensionsCodeGenerator : ICodeGenerator
         WriteFile(fileWriter, fileName);
     }
 
-    private void GenerateToNullablePartialFiles(ushort numberOfArity, string outputPath)
+    internal void GenerateToNullablePartialFiles(ushort numberOfArity, string outputPath)
     {
         for (ushort arity = StartArity; arity <= numberOfArity; arity++)
         {
@@ -255,7 +259,7 @@ internal sealed class ResultValueAccessExtensionsCodeGenerator : ICodeGenerator
     }
 
 
-    private void GenerateValueOrPartialFiles(ushort numberOfArity, string outputPath)
+    internal void GenerateValueOrPartialFiles(ushort numberOfArity, string outputPath)
     {
         for (ushort arity = StartArity; arity <= numberOfArity; arity++)
         {
@@ -275,7 +279,7 @@ internal sealed class ResultValueAccessExtensionsCodeGenerator : ICodeGenerator
         }
     }
 
-    private void GenerateValueOrThrowPartialFiles(ushort numberOfArity, string outputPath)
+    internal void GenerateValueOrThrowPartialFiles(ushort numberOfArity, string outputPath)
     {
         for (ushort arity = StartArity; arity <= numberOfArity; arity++)
         {
@@ -462,7 +466,7 @@ internal sealed class ResultValueAccessExtensionsCodeGenerator : ICodeGenerator
     }
 
     // Async partial generation for ValueOr / ValueOrThrow
-    private void GenerateValueOrAsyncPartialFiles(ushort numberOfArity, string tasksPath, string valueTasksPath)
+    internal void GenerateValueOrAsyncPartialFiles(ushort numberOfArity, string tasksPath, string valueTasksPath)
     {
         for (ushort arity = StartArity; arity <= numberOfArity; arity++)
         {
@@ -484,7 +488,7 @@ internal sealed class ResultValueAccessExtensionsCodeGenerator : ICodeGenerator
         }
     }
 
-    private void GenerateValueOrThrowAsyncPartialFiles(ushort numberOfArity, string tasksPath, string valueTasksPath)
+    internal void GenerateValueOrThrowAsyncPartialFiles(ushort numberOfArity, string tasksPath, string valueTasksPath)
     {
         for (ushort arity = StartArity; arity <= numberOfArity; arity++)
         {
