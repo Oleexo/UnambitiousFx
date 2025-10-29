@@ -36,7 +36,10 @@ public sealed class ResultFluentAssertionExtensionsTests {
     public void GenericResult_EnsureFailure_Chaining() {
         Result.Failure<int>(new Exception("boom"))
               .EnsureFailure()
-              .And(e => Assert.Equal("boom", e.Message))
+              .And(errors => {
+                  var firstError = errors.First();
+                  Assert.Equal("boom", firstError.Message);
+              })
               .AndMessage("boom");
     }
 

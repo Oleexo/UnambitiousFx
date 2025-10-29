@@ -13,7 +13,10 @@ public sealed class ResultPredicateAssertionExtensionsTests {
     [Fact]
     public void Arity1_ShouldBeFailureWhere_PredicateTrue() {
         Result.Failure<int>(new InvalidOperationException("boom"))
-              .ShouldBeFailureWhere(ex => ex is InvalidOperationException);
+              .ShouldBeFailureWhere(errors => {
+                  var firstError = errors.First();
+                  return firstError.Exception is InvalidOperationException;
+              });
     }
 
     [Fact]
@@ -44,7 +47,8 @@ public sealed class ResultPredicateAssertionExtensionsTests {
     [Fact]
     public void CustomMessageOverload_Failure() {
         Result.Failure<int>(new Exception("x"))
-              .ShouldBeFailure(out var ex, "Should fail");
-        Assert.Equal("x", ex.Message);
+              .ShouldBeFailure(out var errors, "Should fail");
+        var firstError = errors.First();
+        Assert.Equal("x", firstError.Message);
     }
 }

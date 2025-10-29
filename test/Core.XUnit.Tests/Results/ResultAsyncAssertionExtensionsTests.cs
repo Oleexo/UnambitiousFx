@@ -20,8 +20,9 @@ public sealed class ResultAsyncAssertionExtensionsTests {
     [Fact]
     public async Task Task_Generic_ShouldBeFailure() {
         await Task.FromResult(Result.Failure<int>(new Exception("boom")))
-                  .ShouldBeFailure(out var err);
-        Assert.Equal("boom", err.Message);
+                  .ShouldBeFailure(out var errors);
+        var firstError = errors.First();
+        Assert.Equal("boom", firstError.Message);
     }
 
     [Fact]
@@ -34,7 +35,8 @@ public sealed class ResultAsyncAssertionExtensionsTests {
     [Fact]
     public async Task ValueTask_Generic_ShouldBeFailure() {
         await new ValueTask<Result<int>>(Result.Failure<int>(new Exception("err")))
-           .ShouldBeFailure(out var ex);
-        Assert.Equal("err", ex.Message);
+           .ShouldBeFailure(out var errors);
+        var firstError = errors.First();
+        Assert.Equal("err", firstError.Message);
     }
 }

@@ -39,8 +39,9 @@ public sealed class ResultAssertionExtensionsTests {
     [Fact]
     public void MultiArityResult_ShouldBeFailure() {
         var r = Result.Failure<int, string, bool>(new Exception("multi"));
-        r.ShouldBeFailure(out var ex);
-        Assert.Equal("multi", ex.Message);
+        r.ShouldBeFailure(out var errors);
+        var firstError = errors.First();
+        Assert.Equal("multi", firstError.Message);
     }
 
     [Fact]

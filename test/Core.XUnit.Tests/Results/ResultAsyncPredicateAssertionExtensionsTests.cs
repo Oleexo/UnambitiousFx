@@ -13,7 +13,10 @@ public sealed class ResultAsyncPredicateAssertionExtensionsTests {
     [Fact]
     public async Task Task_ShouldBeFailureWhereAsync_Arity1() {
         await Task.FromResult(Result.Failure<int>(new Exception("boom")))
-                  .ShouldBeFailureWhereAsync(ex => ex.Message == "boom");
+                  .ShouldBeFailureWhereAsync(errors => {
+                      var firstError = errors.First();
+                      return firstError.Message == "boom";
+                  });
     }
 
     [Fact]
@@ -25,6 +28,9 @@ public sealed class ResultAsyncPredicateAssertionExtensionsTests {
     [Fact]
     public async Task ValueTask_ShouldBeFailureWhereAsync_Arity2() {
         await new ValueTask<Result<int, int>>(Result.Failure<int, int>(new InvalidOperationException("x")))
-           .ShouldBeFailureWhereAsync(ex => ex is InvalidOperationException);
+           .ShouldBeFailureWhereAsync(errors => {
+               var firstError = errors.First();
+               return firstError.Exception is InvalidOperationException;
+           });
     }
 }
