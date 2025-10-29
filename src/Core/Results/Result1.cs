@@ -1,8 +1,37 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 using UnambitiousFx.Core.Results.Reasons;
 
 namespace UnambitiousFx.Core.Results;
 
+public partial class Result
+{
+    public static Result<TValue1> Success<TValue1>(TValue1 value1) where TValue1 : notnull {
+        return new SuccessResult<TValue1>(value1);
+    }
+    
+    public static Result<TValue1> Failure<TValue1>(Exception error) where TValue1 : notnull {
+        return new FailureResult<TValue1>(error);
+    }
+    
+    public static Result<TValue1> Failure<TValue1>(IError error) where TValue1 : notnull {
+        var r = new FailureResult<TValue1>(error.Exception ?? new Exception(error.Message), false);
+        r.AddReason(error);
+        foreach (var kv in error.Metadata) {
+            r.AddMetadata(kv.Key, kv.Value);
+        }
+        return r;
+    }
+    
+    public static Result<TValue1> Failure<TValue1>(string message) where TValue1 : notnull {
+        return new FailureResult<TValue1>(new Exception(message));
+    }
+    
+    public static Result<TValue1> Failure<TValue1>(IEnumerable<IError> errors) where TValue1 : notnull {
+        return new FailureResult<TValue1>(errors);
+    }
+    
+}
 /// <summary>
 /// Represents the result of an operation that can succeed with 1 value(s) or fail with an exception.
 /// </summary>

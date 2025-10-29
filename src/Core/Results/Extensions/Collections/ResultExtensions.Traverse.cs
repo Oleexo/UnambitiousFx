@@ -1,7 +1,6 @@
 namespace UnambitiousFx.Core.Results.Extensions.Collections;
 
 public static partial class ResultExtensions {
-
     public static Result<List<TOut>> Traverse<TIn, TOut>(this IEnumerable<TIn>   source,
                                                          Func<TIn, Result<TOut>> selector)
         where TOut : notnull {
@@ -18,8 +17,4 @@ public static partial class ResultExtensions {
 
         return Result.Success(list);
     }
-
-   
-
-    
 }

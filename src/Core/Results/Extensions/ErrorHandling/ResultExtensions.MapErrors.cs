@@ -9,7 +9,7 @@ public static partial class ResultExtensions {
             return result;
         }
 
-        result.TryGet(out var primary);
+        var primary = FindPrimaryException(result);
         var errs       = CollectErrors(result, primary);
         var newPrimary = map(errs);
         var failure    = new FailureResult(newPrimary, false);
@@ -23,9 +23,6 @@ public static partial class ResultExtensions {
         if (primary != null) {
             list.Add(primary);
         }
-        else if (!r.TryGet(out var e)) {
-            list.Add(e);
-        }
 
         foreach (var re in r.Reasons.OfType<IError>()) {
             if (re.Exception != null &&
@@ -38,6 +35,18 @@ public static partial class ResultExtensions {
         }
 
         return list;
+    }
+
+    private static Exception? FindPrimaryException(BaseResult r) {
+        // Prefer ExceptionalError when present (original primary from Result.Failure(Exception))
+        var exceptional = r.Reasons.OfType<ExceptionalError>().FirstOrDefault();
+        if (exceptional is not null) {
+            return exceptional.Exception;
+        }
+
+        // Otherwise use the first domain error that carries an exception, if any
+        var withEx = r.Reasons.OfType<IError>().FirstOrDefault(e => e.Exception is not null);
+        return withEx?.Exception;
     }
 
     private static void CopyReasonsAndMetadataReplacingPrimary(BaseResult from,
@@ -70,11 +79,11 @@ public static partial class ResultExtensions {
     public static Result<TValue1> MapErrors<TValue1>(this Result<TValue1>                      result,
                                                      Func<IReadOnlyList<Exception>, Exception> map)
         where TValue1 : notnull {
-        if (result.TryGet(out _, out _)) {
+        if (result.IsSuccess) {
             return result;
         }
 
-        result.TryGet(out _, out var primary);
+        var primary = FindPrimaryException(result);
         var errs       = CollectErrors(result, primary);
         var newPrimary = map(errs);
         var failure    = new FailureResult<TValue1>(newPrimary, false);
@@ -86,11 +95,11 @@ public static partial class ResultExtensions {
                                                                        Func<IReadOnlyList<Exception>, Exception> map)
         where TValue1 : notnull
         where TValue2 : notnull {
-        if (result.TryGet(out _, out _)) {
+        if (result.IsSuccess) {
             return result;
         }
 
-        result.TryGet(out _, out _, out var primary);
+        var primary = FindPrimaryException(result);
         var errs       = CollectErrors(result, primary);
         var newPrimary = map(errs);
         var failure    = new FailureResult<TValue1, TValue2>(newPrimary, false);
@@ -107,7 +116,7 @@ public static partial class ResultExtensions {
             return result;
         }
 
-        result.TryGet(out _, out _, out _, out var primary);
+        var primary = FindPrimaryException(result);
         var errs       = CollectErrors(result, primary);
         var newPrimary = map(errs);
         var failure    = new FailureResult<TValue1, TValue2, TValue3>(newPrimary, false);
@@ -125,7 +134,7 @@ public static partial class ResultExtensions {
             return result;
         }
 
-        result.TryGet(out _, out _, out _, out _, out var primary);
+        var primary = FindPrimaryException(result);
         var errs       = CollectErrors(result, primary);
         var newPrimary = map(errs);
         var failure    = new FailureResult<TValue1, TValue2, TValue3, TValue4>(newPrimary, false);
@@ -145,7 +154,7 @@ public static partial class ResultExtensions {
             return result;
         }
 
-        result.TryGet(out _, out _, out _, out _, out _, out var primary);
+        var primary = FindPrimaryException(result);
         var errs       = CollectErrors(result, primary);
         var newPrimary = map(errs);
         var failure    = new FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5>(newPrimary, false);
@@ -166,7 +175,7 @@ public static partial class ResultExtensions {
             return result;
         }
 
-        result.TryGet(out _, out _, out _, out _, out _, out _, out var primary);
+        var primary = FindPrimaryException(result);
         var errs       = CollectErrors(result, primary);
         var newPrimary = map(errs);
         var failure    = new FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(newPrimary, false);
@@ -188,7 +197,7 @@ public static partial class ResultExtensions {
             return result;
         }
 
-        result.TryGet(out _, out _, out _, out _, out _, out _, out _, out var primary);
+        var primary = FindPrimaryException(result);
         var errs       = CollectErrors(result, primary);
         var newPrimary = map(errs);
         var failure    = new FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(newPrimary, false);
@@ -211,7 +220,7 @@ public static partial class ResultExtensions {
             return result;
         }
 
-        result.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var primary);
+        var primary = FindPrimaryException(result);
         var errs       = CollectErrors(result, primary);
         var newPrimary = map(errs);
         var failure    = new FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(newPrimary, false);

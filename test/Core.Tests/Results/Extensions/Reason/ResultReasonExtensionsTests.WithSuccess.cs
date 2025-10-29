@@ -4,61 +4,76 @@ using UnambitiousFx.Core.Results.Reasons;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Reason;
 
-public sealed partial class ResultReasonExtensionsTests {
+public sealed partial class ResultReasonExtensionsTests
+{
     [Fact]
-    public void WithSuccess_Instance_AttachesProvidedInstance() {
+    public void WithSuccess_Instance_AttachesProvidedInstance()
+    {
         var success = new SuccessReason("ok", new Dictionary<string, object?>());
         var result = Result.Success()
                            .WithSuccess(success);
 
-        Assert.Same(success, result.Reasons[0]);
+        Assert.Same(success, result.Reasons.ElementAt(0));
     }
 
     [Fact]
-    public void WithSuccess_Instance_CopiesMetadata_WhenEnabled() {
+    public void WithSuccess_Instance_CopiesMetadata_WhenEnabled()
+    {
         var success = new SuccessReason("ok", new Dictionary<string, object?> { { "k", 1 } });
         var result = Result.Success()
                            .WithSuccess(success);
 
+        Assert.True(result.Metadata.ContainsKey("k"));
         Assert.Equal(1, result.Metadata["k"]);
     }
 
     [Fact]
-    public void WithSuccess_Instance_DoesNotCopyMetadata_WhenDisabled() {
+    public void WithSuccess_Instance_DoesNotCopyMetadata_WhenDisabled()
+    {
         var success = new SuccessReason("ok", new Dictionary<string, object?> { { "k", 1 } });
         var result = Result.Success()
                            .WithSuccess(success, false);
 
         Assert.False(result.Metadata.ContainsKey("k"));
     }
-    
+
     [Fact]
-    public void WithSuccess_AttachesSuccessReason() {
+    public void WithSuccess_AttachesSuccessReason()
+    {
         var result = Result.Success()
                            .WithSuccess("cache hit");
 
-        Assert.IsType<SuccessReason>(result.Reasons[0]);
+        var reason = result.Reasons.FirstOrDefault();
+        Assert.NotNull(reason);
+        Assert.IsType<SuccessReason>(reason);
     }
 
     [Fact]
-    public void WithSuccess_PreservesMessage() {
+    public void WithSuccess_PreservesMessage()
+    {
         var result = Result.Success()
                            .WithSuccess("cache");
 
-        Assert.Equal("cache", ((SuccessReason)result.Reasons[0]).Message);
+        var reason = result.Reasons.FirstOrDefault();
+        Assert.NotNull(reason);
+        Assert.IsType<SuccessReason>(reason);
+        Assert.Equal("cache", ((SuccessReason)reason).Message);
     }
 
     [Fact]
-    public void WithSuccess_CopiesMetadata_WhenEnabled() {
+    public void WithSuccess_CopiesMetadata_WhenEnabled()
+    {
         var meta = new Dictionary<string, object?> { { "source", "cache" } };
         var result = Result.Success()
                            .WithSuccess("cache", meta);
 
+        Assert.True(result.Metadata.ContainsKey("source"));
         Assert.Equal("cache", result.Metadata["source"]);
     }
 
     [Fact]
-    public void WithSuccess_DoesNotCopyMetadata_WhenDisabled() {
+    public void WithSuccess_DoesNotCopyMetadata_WhenDisabled()
+    {
         var meta = new Dictionary<string, object?> { { "source", "cache" } };
         var result = Result.Success()
                            .WithSuccess("cache", meta, false);
@@ -67,13 +82,18 @@ public sealed partial class ResultReasonExtensionsTests {
     }
 
     [Fact]
-    public void WithSuccess_ReasonRetainsMetadata_WhenCopyDisabled() {
+    public void WithSuccess_ReasonRetainsMetadata_WhenCopyDisabled()
+    {
         var meta = new Dictionary<string, object?> { { "source", "cache" } };
         var result = Result.Success()
                            .WithSuccess("cache", meta, false);
 
-        var sr = (SuccessReason)result.Reasons[0];
-        Assert.Equal("cache", sr.Metadata["source"]);
+        var sr = result.Reasons.FirstOrDefault();
+        Assert.NotNull(sr);
+        Assert.IsType<SuccessReason>(sr);
+        var successReason = (SuccessReason)sr;
+        Assert.True(successReason.Metadata.ContainsKey("source"));
+        Assert.Equal("cache", successReason.Metadata["source"]);
     }
 
 }

@@ -8,14 +8,14 @@ namespace UnambitiousFx.Core.Results.Extensions;
 /// </summary>
 public static partial class ResultExtensions {
     public static IEnumerable<IError> Errors(this Result result) {
-        return ((BaseResult)result).Errors();
+        return result.Errors;
     }
 
     /// <summary>
     ///     Enumerates all error reasons (IError) across a set of results.
     /// </summary>
     public static IEnumerable<IError> AllErrors(this IEnumerable<BaseResult> results) {
-        return results.SelectMany(r => r.Errors());
+        return results.SelectMany(r => r.Errors);
     }
 
     /// <summary>
@@ -66,18 +66,11 @@ public static partial class ResultExtensions {
                     metadata[kv.Key] = kv.Value; // last write wins
                 }
 
-                if (!r.TryGet(out var error)) {
-                    var primary = r is IFailureResult fr
-                                      ? fr.PrimaryException
-                                      : error;
+                if (!r.TryGet(out var errors)) {
                     // Create failure without auto ExceptionalError so original domain error ordering preserved
-                    var failure = new FailureResult(primary, false);
+                    var failure = new FailureResult(errors);
                     if (successReasons.Count != 0) {
                         failure.WithReasons(successReasons);
-                    }
-
-                    if (r.Reasons.Count != 0) {
-                        failure.WithReasons(r.Reasons);
                     }
 
                     if (metadata.Count != 0) {
@@ -118,21 +111,18 @@ public static partial class ResultExtensions {
             }
 
             foreach (var reason in r.Reasons) {
-                if (reason is IError) {
-                    errorReasonsAll.Add(reason);
+                if (reason is IError err) {
+                    if (err is not ExceptionalError) {
+                        errorReasonsAll.Add(err);
+                    }
                 }
                 else {
                     successReasonsAll.Add(reason);
                 }
             }
 
-            if (!r.TryGet(out var error)) {
-                if (r is IFailureResult fr) {
-                    exceptions.Add(fr.PrimaryException);
-                }
-                else {
-                    exceptions.Add(error);
-                }
+            if (!r.TryGet(out var errors)) {
+                exceptions.Add(ExtractPrimaryException(r, errors));
             }
         }
 
@@ -166,6 +156,29 @@ public static partial class ResultExtensions {
         }
 
         return mergedFailureAcc;
+    }
+
+    private static Exception ExtractPrimaryException(BaseResult r, IEnumerable<IError> errors) {
+        // Prefer ExceptionalError if present (preserves original primary when created via Result.Failure(Exception))
+        var exceptional = r.Reasons.OfType<ExceptionalError>().FirstOrDefault();
+        if (exceptional is not null) {
+            return exceptional.Exception ?? new Exception(exceptional.Message);
+        }
+
+        // Then prefer first domain error with an exception attached
+        var withEx = errors.FirstOrDefault(e => e.Exception is not null);
+        if (withEx is not null) {
+            return withEx.Exception ?? new Exception(withEx.Message);
+        }
+
+        // Otherwise synthesize from the first domain error message if any
+        var any = errors.FirstOrDefault();
+        if (any is not null) {
+            return new Exception(any.Message);
+        }
+
+        // Fallback safety: shouldn't normally happen because caller checks failure
+        return new Exception("Unknown error");
     }
 
     public static Result FirstFailureOrSuccess(this IEnumerable<Result> results) {

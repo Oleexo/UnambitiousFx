@@ -1,3 +1,4 @@
+using UnambitiousFx.Core.Results.Reasons;
 using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Extensions.Collections;
@@ -26,7 +27,7 @@ public sealed class ResultExtensionsTests {
         var r = rf.Apply(ra);
 
         Assert.False(r.TryGet(out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -38,6 +39,6 @@ public sealed class ResultExtensionsTests {
         var r = rf.Apply(ra);
 
         Assert.False(r.TryGet(out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 }

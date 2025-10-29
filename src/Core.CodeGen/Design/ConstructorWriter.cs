@@ -9,7 +9,7 @@ internal sealed class ConstructorWriter {
     private readonly string               _body;
     private readonly DocumentationWriter? _documentation;
     private readonly string?              _baseCall;
-    private readonly List<string>         _usings;
+    private readonly IEnumerable<string>? _usings;
 
     public ConstructorWriter(string                        className,
                              string                        body,
@@ -24,8 +24,10 @@ internal sealed class ConstructorWriter {
         _parameters    = parameters?.ToArray() ?? [];
         _documentation = documentation;
         _baseCall      = baseCall;
-        _usings        = usings?.ToList() ?? [];
+        _usings        = usings;
     }
+    
+    public IEnumerable<string> Usings => _usings ?? [];
 
     public void Write(IndentedTextWriter writer) {
         // Write documentation

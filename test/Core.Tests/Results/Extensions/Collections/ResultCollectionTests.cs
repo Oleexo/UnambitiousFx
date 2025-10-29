@@ -1,3 +1,4 @@
+using UnambitiousFx.Core.Results.Reasons;
 using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Extensions.Collections;
@@ -24,7 +25,7 @@ public sealed class ResultCollectionTests {
         var sequenced = results.Sequence();
 
         Assert.False(sequenced.TryGet(out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -47,7 +48,7 @@ public sealed class ResultCollectionTests {
                                                 : Result.Success(s));
 
         Assert.False(traversed.TryGet(out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -65,8 +66,8 @@ public sealed class ResultCollectionTests {
 
         Assert.Equal(new[] { 1, 3 }, oks);
         Assert.Equal(2,              errors.Count);
-        Assert.Same(ex1, errors[0]);
-        Assert.Same(ex2, errors[1]);
+        { var firstError = errors[0] as ExceptionalError; Assert.NotNull(firstError); Assert.Same(ex1, firstError.Exception); }
+        { var secondError = errors[1] as ExceptionalError; Assert.NotNull(secondError); Assert.Same(ex2, secondError.Exception); }
     }
 
     [Fact]

@@ -22,7 +22,7 @@ public sealed class ResultExtensionsTests {
         var prepended = r.PrependError("PRE: ");
 
         if (!prepended.TryGet(out var err)) {
-            Assert.Equal("PRE: boom", err.Message);
+            Assert.Equal("PRE: boom", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");
@@ -56,7 +56,7 @@ public sealed class ResultExtensionsTests {
         var prepended = r.PrependError("?? ");
 
         if (!prepended.TryGet(out _, out var err)) {
-            Assert.Equal("?? bad", err.Message);
+            Assert.Equal("?? bad", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");
@@ -91,7 +91,7 @@ public sealed class ResultExtensionsTests {
         var prepended = r.PrependError("+ ");
 
         if (!prepended.TryGet(out _,out _, out var err)) {
-            Assert.Equal("+ ouch", err.Message);
+            Assert.Equal("+ ouch", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");
@@ -127,7 +127,7 @@ public sealed class ResultExtensionsTests {
         var prepended = r.PrependError("# ");
 
         if (!prepended.TryGet(out _,out _,out _, out var err)) {
-            Assert.Equal("# ouch3", err.Message);
+            Assert.Equal("# ouch3", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");
@@ -164,7 +164,7 @@ public sealed class ResultExtensionsTests {
         var prepended = r.PrependError(">> ");
 
         if (!prepended.TryGet(out _,out _,out _,out _, out var err)) {
-            Assert.Equal(">> err4", err.Message);
+            Assert.Equal(">> err4", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");
@@ -202,7 +202,7 @@ public sealed class ResultExtensionsTests {
         var prepended = r.PrependError("[p] ");
 
         if (!prepended.TryGet(out _,out _,out _,out _,out _, out var err)) {
-            Assert.Equal("[p] boom5", err.Message);
+            Assert.Equal("[p] boom5", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");
@@ -241,7 +241,7 @@ public sealed class ResultExtensionsTests {
         var prepended = r.PrependError("~ ");
 
         if (!prepended.TryGet(out _,out _,out _,out _,out _,out _, out var err)) {
-            Assert.Equal("~ e6", err.Message);
+            Assert.Equal("~ e6", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");
@@ -281,7 +281,7 @@ public sealed class ResultExtensionsTests {
         var prepended = r.PrependError("!! ");
 
         if (!prepended.TryGet(out _,out _,out _,out _,out _,out _,out _, out var err)) {
-            Assert.Equal("!! stop7", err.Message);
+            Assert.Equal("!! stop7", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");
@@ -322,7 +322,7 @@ public sealed class ResultExtensionsTests {
         var prepended = r.PrependError("@ ");
 
         if (!prepended.TryGet(out _,out _,out _,out _,out _,out _,out _,out _, out var err)) {
-            Assert.Equal("@ x8", err.Message);
+            Assert.Equal("@ x8", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");

@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.Results.Reasons;
 using UnambitiousFx.Core.Results.Extensions.Transformations;
 using UnambitiousFx.Core.XUnit.Results;
 
@@ -39,7 +40,7 @@ public sealed class FromArity8BindTests {
                    return Result.Success();
                })
               .ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -75,7 +76,7 @@ public sealed class FromArity8BindTests {
                              return Result.Success(1);
                          });
         res.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -111,7 +112,7 @@ public sealed class FromArity8BindTests {
                              return Result.Success(1, 2);
                          });
         res.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -147,7 +148,7 @@ public sealed class FromArity8BindTests {
                              return Result.Success(1, 2, 3);
                          });
         res.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -183,7 +184,7 @@ public sealed class FromArity8BindTests {
                              return Result.Success(1, 2, 3, 4);
                          });
         res.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -219,7 +220,7 @@ public sealed class FromArity8BindTests {
                              return Result.Success(1, 2, 3, 4, 5);
                          });
         res.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -255,7 +256,7 @@ public sealed class FromArity8BindTests {
                              return Result.Success(1, 2, 3, 4, 5, 6);
                          });
         res.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -291,7 +292,7 @@ public sealed class FromArity8BindTests {
                              return Result.Success(1, 2, 3, 4, 5, 6, 7);
                          });
         res.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -327,7 +328,7 @@ public sealed class FromArity8BindTests {
                              return Result.Success(1, 2, 3, 4, 5, 6, 7, 8);
                          });
         res.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 }

@@ -28,9 +28,9 @@ public sealed class ResultExtensionsTests {
     public async Task TapErrorAsync_Arity1_Failure_CapturesSameException() {
         var ex = new Exception("boom");
         var r = Result.Failure<int>(ex);
-        Exception? captured = null;
+        IEnumerable<UnambitiousFx.Core.Results.Reasons.IError>? captured = null;
         await r.TapErrorAsync(e => { captured = e; return Task.CompletedTask; });
-        Assert.Same(ex, captured);
+        Assert.Same(ex, captured?.FirstOrDefault()?.Exception);
     }
     #endregion
 
@@ -56,9 +56,9 @@ public sealed class ResultExtensionsTests {
     public async Task TapErrorAsync_Arity2_Failure_CapturesSameException() {
         var ex = new Exception("boom");
         var r = Result.Failure<int, int>(ex);
-        Exception? captured = null;
+        IEnumerable<UnambitiousFx.Core.Results.Reasons.IError>? captured = null;
         await r.TapErrorAsync(e => { captured = e; return Task.CompletedTask; });
-        Assert.Same(ex, captured);
+        Assert.Same(ex, captured?.FirstOrDefault()?.Exception);
     }
     #endregion
 
@@ -84,9 +84,9 @@ public sealed class ResultExtensionsTests {
     public async Task TapErrorAsync_Arity3_Failure_CapturesSameException() {
         var ex = new Exception("boom");
         var r = Result.Failure<int, int, int>(ex);
-        Exception? captured = null;
+        IEnumerable<UnambitiousFx.Core.Results.Reasons.IError>? captured = null;
         await r.TapErrorAsync(e => { captured = e; return Task.CompletedTask; });
-        Assert.Same(ex, captured);
+        Assert.Same(ex, captured?.FirstOrDefault()?.Exception);
     }
     #endregion
 
@@ -112,9 +112,9 @@ public sealed class ResultExtensionsTests {
     public async Task TapErrorAsync_Arity4_Failure_CapturesSameException() {
         var ex = new Exception("boom");
         var r = Result.Failure<int, int, int, int>(ex);
-        Exception? captured = null;
+        IEnumerable<UnambitiousFx.Core.Results.Reasons.IError>? captured = null;
         await r.TapErrorAsync(e => { captured = e; return Task.CompletedTask; });
-        Assert.Same(ex, captured);
+        Assert.Same(ex, captured?.FirstOrDefault()?.Exception);
     }
     #endregion
 
@@ -140,9 +140,9 @@ public sealed class ResultExtensionsTests {
     public async Task TapErrorAsync_Arity5_Failure_CapturesSameException() {
         var ex = new Exception("boom");
         var r = Result.Failure<int, int, int, int, int>(ex);
-        Exception? captured = null;
+        IEnumerable<UnambitiousFx.Core.Results.Reasons.IError>? captured = null;
         await r.TapErrorAsync(e => { captured = e; return Task.CompletedTask; });
-        Assert.Same(ex, captured);
+        Assert.Same(ex, captured?.FirstOrDefault()?.Exception);
     }
     #endregion
 
@@ -168,9 +168,9 @@ public sealed class ResultExtensionsTests {
     public async Task TapErrorAsync_Arity6_Failure_CapturesSameException() {
         var ex = new Exception("boom");
         var r = Result.Failure<int, int, int, int, int, int>(ex);
-        Exception? captured = null;
+        IEnumerable<UnambitiousFx.Core.Results.Reasons.IError>? captured = null;
         await r.TapErrorAsync(e => { captured = e; return Task.CompletedTask; });
-        Assert.Same(ex, captured);
+        Assert.Same(ex, captured?.FirstOrDefault()?.Exception);
     }
     #endregion
 
@@ -196,9 +196,9 @@ public sealed class ResultExtensionsTests {
     public async Task TapErrorAsync_Arity7_Failure_CapturesSameException() {
         var ex = new Exception("boom");
         var r = Result.Failure<int, int, int, int, int, int, int>(ex);
-        Exception? captured = null;
+        IEnumerable<UnambitiousFx.Core.Results.Reasons.IError>? captured = null;
         await r.TapErrorAsync(e => { captured = e; return Task.CompletedTask; });
-        Assert.Same(ex, captured);
+        Assert.Same(ex, captured?.FirstOrDefault()?.Exception);
     }
     #endregion
 
@@ -224,9 +224,9 @@ public sealed class ResultExtensionsTests {
     public async Task TapErrorAsync_Arity8_Failure_CapturesSameException() {
         var ex = new Exception("boom");
         var r = Result.Failure<int, int, int, int, int, int, int, int>(ex);
-        Exception? captured = null;
+        IEnumerable<UnambitiousFx.Core.Results.Reasons.IError>? captured = null;
         await r.TapErrorAsync(e => { captured = e; return Task.CompletedTask; });
-        Assert.Same(ex, captured);
+        Assert.Same(ex, captured?.FirstOrDefault()?.Exception);
     }
     #endregion
 }

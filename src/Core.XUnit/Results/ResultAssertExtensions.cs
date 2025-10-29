@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
 
 namespace UnambitiousFx.Core.XUnit.Results;
@@ -12,7 +13,8 @@ namespace UnambitiousFx.Core.XUnit.Results;
 /// values, asserting specific error messages, and providing contextual information for test clarity.
 /// </summary>
 [DebuggerStepThrough]
-public static class ResultAssertExtensions {
+public static class ResultAssertExtensions
+{
     /// <summary>
     /// Represents the default message indicating that a success result was expected
     /// but a failure result was encountered.
@@ -30,7 +32,8 @@ public static class ResultAssertExtensions {
     /// </summary>
     /// <param name="result">The result instance to be evaluated.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
-    public static Result ShouldBeSuccess(this Result result) {
+    public static Result ShouldBeSuccess(this Result result)
+    {
         Assert.True(result.IsSuccess, SuccessExpected);
         return result;
     }
@@ -42,8 +45,10 @@ public static class ResultAssertExtensions {
     /// <param name="because">A custom message explaining the context of the assertion.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result ShouldBeSuccess(this Result result,
-                                         string      because) {
-        if (!result.IsSuccess) {
+                                         string because)
+    {
+        if (!result.IsSuccess)
+        {
             Assert.Fail(because);
         }
 
@@ -55,7 +60,8 @@ public static class ResultAssertExtensions {
     /// </summary>
     /// <param name="result">The result instance to be validated.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
-    public static Result ShouldBeFailure(this Result result) {
+    public static Result ShouldBeFailure(this Result result)
+    {
         Assert.True(result.IsFaulted, FailureExpected);
         return result;
     }
@@ -67,8 +73,10 @@ public static class ResultAssertExtensions {
     /// <param name="because">A custom message explaining the context of the assertion.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result ShouldBeFailure(this Result result,
-                                         string      because) {
-        if (!result.IsFaulted) {
+                                         string because)
+    {
+        if (!result.IsFaulted)
+        {
             Assert.Fail(because);
         }
 
@@ -81,9 +89,11 @@ public static class ResultAssertExtensions {
     /// <param name="result">The result instance to be evaluated.</param>
     /// <param name="error">The exception output if the result is a failure.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
-    public static Result ShouldBeFailure(this Result    result,
-                                         out  Exception error) {
-        if (result.TryGet(out var maybeError)) {
+    public static Result ShouldBeFailure(this Result result,
+                                         out IEnumerable<IError> error)
+    {
+        if (result.TryGet(out var maybeError))
+        {
             Assert.Fail(FailureExpected);
             throw new UnreachableException();
         }
@@ -99,10 +109,12 @@ public static class ResultAssertExtensions {
     /// <param name="error">The exception output if the result is a failure.</param>
     /// <param name="because">A custom message explaining the context of the assertion.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
-    public static Result ShouldBeFailure(this Result    result,
-                                         out  Exception error,
-                                         string         because) {
-        if (result.TryGet(out var maybeError)) {
+    public static Result ShouldBeFailure(this Result result,
+                                         out IEnumerable<IError> error,
+                                         string because)
+    {
+        if (result.TryGet(out var maybeError))
+        {
             Assert.Fail(because);
             throw new UnreachableException();
         }
@@ -115,9 +127,12 @@ public static class ResultAssertExtensions {
     /// Asserts that the (non-generic) result is a failure with the specified message.
     /// </summary>
     public static Result ShouldBeFailureWithMessage(this Result result,
-                                                    string      expectedMessage) {
-        result.ShouldBeFailure(out var ex);
-        Assert.Equal(expectedMessage, ex.Message);
+                                                    string expectedMessage)
+    {
+        result.ShouldBeFailure(out var errors);
+        var firstError = errors.FirstOrDefault();
+        var actualMessage = firstError?.Message ?? string.Empty;
+        Assert.Equal(expectedMessage, actualMessage);
         return result;
     }
 
@@ -130,10 +145,13 @@ public static class ResultAssertExtensions {
     /// <param name="expectedMessage">The expected exception message.</param>
     /// <returns>The original result for fluent chaining.</returns>
     public static Result<T1> ShouldBeFailureWithMessage<T1>(this Result<T1> result,
-                                                            string          expectedMessage)
-        where T1 : notnull {
-        result.ShouldBeFailure(out var ex);
-        Assert.Equal(expectedMessage, ex.Message);
+                                                            string expectedMessage)
+        where T1 : notnull
+    {
+        result.ShouldBeFailure(out var errors);
+        var firstError = errors.FirstOrDefault();
+        var actualMessage = firstError?.Message ?? string.Empty;
+        Assert.Equal(expectedMessage, actualMessage);
         return result;
     }
 
@@ -144,9 +162,11 @@ public static class ResultAssertExtensions {
     /// <param name="value">The output value if the result is a success.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1> ShouldBeSuccess<T1>(this Result<T1> result,
-                                                 out  T1         value)
-        where T1 : notnull {
-        if (!result.TryGet(out var tmp)) {
+                                                 out T1 value)
+        where T1 : notnull
+    {
+        if (!result.TryGet(out var tmp))
+        {
             Assert.Fail(SuccessExpected);
         }
 
@@ -162,10 +182,12 @@ public static class ResultAssertExtensions {
     /// <param name="because">A custom message explaining the context of the assertion.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1> ShouldBeSuccess<T1>(this Result<T1> result,
-                                                 out  T1         value,
-                                                 string          because)
-        where T1 : notnull {
-        if (!result.TryGet(out var tmp)) {
+                                                 out T1 value,
+                                                 string because)
+        where T1 : notnull
+    {
+        if (!result.TryGet(out var tmp))
+        {
             Assert.Fail(because);
         }
 
@@ -180,8 +202,9 @@ public static class ResultAssertExtensions {
     /// <param name="assert">An action to perform additional assertions on the success value.</param>
     /// <returns>The original result instance if it is a success.</returns>
     public static Result<T1> ShouldBeSuccess<T1>(this Result<T1> result,
-                                                 Action<T1>      assert)
-        where T1 : notnull {
+                                                 Action<T1> assert)
+        where T1 : notnull
+    {
         result.ShouldBeSuccess(out var v);
         assert(v);
         return result;
@@ -194,9 +217,11 @@ public static class ResultAssertExtensions {
     /// <param name="error">The exception output if the result is a failure.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1> ShouldBeFailure<T1>(this Result<T1> result,
-                                                 out  Exception  error)
-        where T1 : notnull {
-        if (result.TryGet(out _, out var err)) {
+                                                 out IEnumerable<IError> error)
+        where T1 : notnull
+    {
+        if (result.TryGet(out _, out var err))
+        {
             Assert.Fail(FailureExpected);
             throw new UnreachableException();
         }
@@ -213,10 +238,12 @@ public static class ResultAssertExtensions {
     /// <param name="because">A custom message explaining the context of the assertion.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1> ShouldBeFailure<T1>(this Result<T1> result,
-                                                 out  Exception  error,
-                                                 string          because)
-        where T1 : notnull {
-        if (result.TryGet(out _, out var err)) {
+                                                 out IEnumerable<IError> error,
+                                                 string because)
+        where T1 : notnull
+    {
+        if (result.TryGet(out _, out var err))
+        {
             Assert.Fail(because);
             throw new UnreachableException();
         }
@@ -230,7 +257,8 @@ public static class ResultAssertExtensions {
     /// </summary>
     /// <param name="task">The asynchronous task returning a result.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
-    public static async Task<Result> ShouldBeSuccess(this Task<Result> task) {
+    public static async Task<Result> ShouldBeSuccess(this Task<Result> task)
+    {
         return (await task.ConfigureAwait(false)).ShouldBeSuccess();
     }
 
@@ -241,7 +269,8 @@ public static class ResultAssertExtensions {
     /// <param name="error">The exception output if the result is a failure.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Task<Result> ShouldBeFailure(this Task<Result> task,
-                                               out  Exception    error) {
+                                               out IEnumerable<IError> error)
+    {
         var r = task.GetAwaiter()
                     .GetResult();
         r.ShouldBeFailure(out error);
@@ -255,8 +284,9 @@ public static class ResultAssertExtensions {
     /// <param name="value">The output value if the result is a success.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Task<Result<T1>> ShouldBeSuccess<T1>(this Task<Result<T1>> task,
-                                                       out  T1               value)
-        where T1 : notnull {
+                                                       out T1 value)
+        where T1 : notnull
+    {
         var r = task.GetAwaiter()
                     .GetResult();
         r.ShouldBeSuccess(out value);
@@ -270,8 +300,9 @@ public static class ResultAssertExtensions {
     /// <param name="assert">An action to perform additional assertions on the success value.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static async Task<Result<T1>> ShouldBeSuccess<T1>(this Task<Result<T1>> task,
-                                                             Action<T1>            assert)
-        where T1 : notnull {
+                                                             Action<T1> assert)
+        where T1 : notnull
+    {
         var r = await task.ConfigureAwait(false);
         r.ShouldBeSuccess(assert);
         return r;
@@ -284,8 +315,9 @@ public static class ResultAssertExtensions {
     /// <param name="error">The exception output if the result is a failure.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Task<Result<T1>> ShouldBeFailure<T1>(this Task<Result<T1>> task,
-                                                       out  Exception        error)
-        where T1 : notnull {
+                                                       out IEnumerable<IError> error)
+        where T1 : notnull
+    {
         var r = task.GetAwaiter()
                     .GetResult();
         r.ShouldBeFailure(out error);
@@ -299,8 +331,9 @@ public static class ResultAssertExtensions {
     /// <param name="value">The output value if the result is a success.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static ValueTask<Result<T1>> ShouldBeSuccess<T1>(this ValueTask<Result<T1>> task,
-                                                            out  T1                    value)
-        where T1 : notnull {
+                                                            out T1 value)
+        where T1 : notnull
+    {
         var r = task.GetAwaiter()
                     .GetResult();
         r.ShouldBeSuccess(out value);
@@ -314,8 +347,9 @@ public static class ResultAssertExtensions {
     /// <param name="error">The exception output if the result is a failure.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static ValueTask<Result<T1>> ShouldBeFailure<T1>(this ValueTask<Result<T1>> task,
-                                                            out  Exception             error)
-        where T1 : notnull {
+                                                            out IEnumerable<IError> error)
+        where T1 : notnull
+    {
         var r = task.GetAwaiter()
                     .GetResult();
         r.ShouldBeFailure(out error);
@@ -326,8 +360,10 @@ public static class ResultAssertExtensions {
     /// Ensures that the operation was successful; otherwise, fails the assertion with a predefined message.
     /// </summary>
     /// <param name="ok">A boolean value indicating whether the operation was successful.</param>
-    private static void EnsureSuccess(bool ok) {
-        if (!ok) {
+    private static void EnsureSuccess(bool ok)
+    {
+        if (!ok)
+        {
             Assert.Fail(SuccessExpected);
         }
     }
@@ -336,8 +372,10 @@ public static class ResultAssertExtensions {
     /// Ensures that the specified condition represents a failure.
     /// </summary>
     /// <param name="ok">A boolean indicating whether the condition represents failure. If true, an assertion failure is raised.</param>
-    private static void EnsureFailure(bool ok) {
-        if (ok) {
+    private static void EnsureFailure(bool ok)
+    {
+        if (ok)
+        {
             Assert.Fail(FailureExpected);
         }
     }
@@ -349,10 +387,12 @@ public static class ResultAssertExtensions {
     /// <param name="values">The output tuple of values if the result is a success.</param>
     /// <returns>The original result for additional operations or assertions.</returns>
     public static Result<T1, T2> ShouldBeSuccess<T1, T2>(this Result<T1, T2> result,
-                                                         out  (T1, T2)       values)
+                                                         out (T1, T2) values)
         where T1 : notnull
-        where T2 : notnull {
-        if (!result.TryGet(out var value1, out var value2)) {
+        where T2 : notnull
+    {
+        if (!result.TryGet(out var value1, out var value2))
+        {
             Assert.Fail(SuccessExpected);
             throw new UnreachableException();
         }
@@ -368,9 +408,10 @@ public static class ResultAssertExtensions {
     /// <param name="assert">An action to perform additional assertions on the success values.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1, T2> ShouldBeSuccess<T1, T2>(this Result<T1, T2> result,
-                                                         Action<T1, T2>      assert)
+                                                         Action<T1, T2> assert)
         where T1 : notnull
-        where T2 : notnull {
+        where T2 : notnull
+    {
         result.ShouldBeSuccess(out var v);
         assert(v.Item1, v.Item2);
         return result;
@@ -383,10 +424,12 @@ public static class ResultAssertExtensions {
     /// <param name="error">The exception output if the result is a failure.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1, T2> ShouldBeFailure<T1, T2>(this Result<T1, T2> result,
-                                                         out  Exception      error)
+                                                         out IEnumerable<IError> error)
         where T1 : notnull
-        where T2 : notnull {
-        if (result.TryGet(out _, out _, out var tmpError)) {
+        where T2 : notnull
+    {
+        if (result.TryGet(out _, out _, out var tmpError))
+        {
             Assert.Fail(FailureExpected);
             throw new UnreachableException();
         }
@@ -403,11 +446,13 @@ public static class ResultAssertExtensions {
     /// <param name="because">A custom message explaining the context of the assertion.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1, T2> ShouldBeFailure<T1, T2>(this Result<T1, T2> result,
-                                                         out  Exception      error,
-                                                         string          because)
+                                                         out IEnumerable<IError> error,
+                                                         string because)
         where T1 : notnull
-        where T2 : notnull {
-        if (result.TryGet(out _, out _, out var tmpError)) {
+        where T2 : notnull
+    {
+        if (result.TryGet(out _, out _, out var tmpError))
+        {
             Assert.Fail(because);
             throw new UnreachableException();
         }
@@ -423,11 +468,13 @@ public static class ResultAssertExtensions {
     /// <param name="values">The output tuple of values if the result is a success.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1, T2, T3> ShouldBeSuccess<T1, T2, T3>(this Result<T1, T2, T3> result,
-                                                                 out  (T1, T2, T3)       values)
+                                                                 out (T1, T2, T3) values)
         where T1 : notnull
         where T2 : notnull
-        where T3 : notnull {
-        if (!result.TryGet(out var v1, out var v2, out var v3)) {
+        where T3 : notnull
+    {
+        if (!result.TryGet(out var v1, out var v2, out var v3))
+        {
             Assert.Fail(SuccessExpected);
             throw new UnreachableException();
         }
@@ -443,10 +490,11 @@ public static class ResultAssertExtensions {
     /// <param name="assert">An action to perform additional assertions on the success values.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1, T2, T3> ShouldBeSuccess<T1, T2, T3>(this Result<T1, T2, T3> result,
-                                                                 Action<T1, T2, T3>      assert)
+                                                                 Action<T1, T2, T3> assert)
         where T1 : notnull
         where T2 : notnull
-        where T3 : notnull {
+        where T3 : notnull
+    {
         result.ShouldBeSuccess(out var v);
         assert(v.Item1, v.Item2, v.Item3);
         return result;
@@ -459,11 +507,13 @@ public static class ResultAssertExtensions {
     /// <param name="error">The exception output if the result is a failure.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1, T2, T3> ShouldBeFailure<T1, T2, T3>(this Result<T1, T2, T3> result,
-                                                                 out  Exception          error)
+                                                                 out IEnumerable<IError> error)
         where T1 : notnull
         where T2 : notnull
-        where T3 : notnull {
-        if (result.TryGet(out _, out _, out _, out var tmpError)) {
+        where T3 : notnull
+    {
+        if (result.TryGet(out _, out _, out _, out var tmpError))
+        {
             Assert.Fail(FailureExpected);
             throw new UnreachableException();
         }
@@ -480,12 +530,14 @@ public static class ResultAssertExtensions {
     /// <param name="because">A custom message explaining the context of the assertion.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1, T2, T3> ShouldBeFailure<T1, T2, T3>(this Result<T1, T2, T3> result,
-                                                                 out  Exception          error,
-                                                                 string          because)
+                                                                 out IEnumerable<IError> error,
+                                                                 string because)
         where T1 : notnull
         where T2 : notnull
-        where T3 : notnull {
-        if (result.TryGet(out _, out _, out _, out var tmpError)) {
+        where T3 : notnull
+    {
+        if (result.TryGet(out _, out _, out _, out var tmpError))
+        {
             Assert.Fail(because);
             throw new UnreachableException();
         }
@@ -501,12 +553,14 @@ public static class ResultAssertExtensions {
     /// <param name="values">The output tuple of values if the result is a success.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1, T2, T3, T4> ShouldBeSuccess<T1, T2, T3, T4>(this Result<T1, T2, T3, T4> result,
-                                                                         out  (T1, T2, T3, T4)       values)
+                                                                         out (T1, T2, T3, T4) values)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
-        where T4 : notnull {
-        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4)) {
+        where T4 : notnull
+    {
+        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4))
+        {
             Assert.Fail(SuccessExpected);
             throw new UnreachableException();
         }
@@ -522,11 +576,12 @@ public static class ResultAssertExtensions {
     /// <param name="assert">An action to perform additional assertions on the success values.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1, T2, T3, T4> ShouldBeSuccess<T1, T2, T3, T4>(this Result<T1, T2, T3, T4> result,
-                                                                         Action<T1, T2, T3, T4>      assert)
+                                                                         Action<T1, T2, T3, T4> assert)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
-        where T4 : notnull {
+        where T4 : notnull
+    {
         result.ShouldBeSuccess(out var v);
         assert(v.Item1, v.Item2, v.Item3, v.Item4);
         return result;
@@ -539,12 +594,14 @@ public static class ResultAssertExtensions {
     /// <param name="error">The exception output if the result is a failure.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1, T2, T3, T4> ShouldBeFailure<T1, T2, T3, T4>(this Result<T1, T2, T3, T4> result,
-                                                                         out  Exception              error)
+                                                                         out IEnumerable<IError> error)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
-        where T4 : notnull {
-        if (result.TryGet(out _, out _, out _, out _, out var tmpError)) {
+        where T4 : notnull
+    {
+        if (result.TryGet(out _, out _, out _, out _, out var tmpError))
+        {
             Assert.Fail(FailureExpected);
             throw new UnreachableException();
         }
@@ -561,13 +618,15 @@ public static class ResultAssertExtensions {
     /// <param name="because">A custom message explaining the context of the assertion.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1, T2, T3, T4> ShouldBeFailure<T1, T2, T3, T4>(this Result<T1, T2, T3, T4> result,
-                                                                         out  Exception              error,
-                                                                         string          because)
+                                                                         out IEnumerable<IError> error,
+                                                                         string because)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
-        where T4 : notnull {
-        if (result.TryGet(out _, out _, out _, out _, out var tmpError)) {
+        where T4 : notnull
+    {
+        if (result.TryGet(out _, out _, out _, out _, out var tmpError))
+        {
             Assert.Fail(because);
             throw new UnreachableException();
         }
@@ -583,13 +642,15 @@ public static class ResultAssertExtensions {
     /// <param name="values">The output tuple of values if the result is a success.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1, T2, T3, T4, T5> ShouldBeSuccess<T1, T2, T3, T4, T5>(this Result<T1, T2, T3, T4, T5> result,
-                                                                                 out  (T1, T2, T3, T4, T5)       values)
+                                                                                 out (T1, T2, T3, T4, T5) values)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
         where T4 : notnull
-        where T5 : notnull {
-        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5)) {
+        where T5 : notnull
+    {
+        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5))
+        {
             Assert.Fail(SuccessExpected);
             throw new UnreachableException();
         }
@@ -605,12 +666,13 @@ public static class ResultAssertExtensions {
     /// <param name="assert">An action to perform additional assertions on the success values.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1, T2, T3, T4, T5> ShouldBeSuccess<T1, T2, T3, T4, T5>(this Result<T1, T2, T3, T4, T5> result,
-                                                                                 Action<T1, T2, T3, T4, T5>      assert)
+                                                                                 Action<T1, T2, T3, T4, T5> assert)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
         where T4 : notnull
-        where T5 : notnull {
+        where T5 : notnull
+    {
         result.ShouldBeSuccess(out var v);
         assert(v.Item1, v.Item2, v.Item3, v.Item4, v.Item5);
         return result;
@@ -623,13 +685,15 @@ public static class ResultAssertExtensions {
     /// <param name="error">The exception output if the result is a failure.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1, T2, T3, T4, T5> ShouldBeFailure<T1, T2, T3, T4, T5>(this Result<T1, T2, T3, T4, T5> result,
-                                                                                 out  Exception                  error)
+                                                                                 out IEnumerable<IError> error)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
         where T4 : notnull
-        where T5 : notnull {
-        if (result.TryGet(out _, out _, out _, out _, out _, out var tmpError)) {
+        where T5 : notnull
+    {
+        if (result.TryGet(out _, out _, out _, out _, out _, out var tmpError))
+        {
             Assert.Fail(FailureExpected);
             throw new UnreachableException();
         }
@@ -645,14 +709,16 @@ public static class ResultAssertExtensions {
     /// <param name="values">The output tuple of values if the result is a success.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1, T2, T3, T4, T5, T6> ShouldBeSuccess<T1, T2, T3, T4, T5, T6>(this Result<T1, T2, T3, T4, T5, T6> result,
-                                                                                         out  (T1, T2, T3, T4, T5, T6)       values)
+                                                                                         out (T1, T2, T3, T4, T5, T6) values)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
         where T4 : notnull
         where T5 : notnull
-        where T6 : notnull {
-        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6)) {
+        where T6 : notnull
+    {
+        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6))
+        {
             Assert.Fail(SuccessExpected);
             throw new UnreachableException();
         }
@@ -668,13 +734,14 @@ public static class ResultAssertExtensions {
     /// <param name="assert">An action to perform additional assertions on the success values.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1, T2, T3, T4, T5, T6> ShouldBeSuccess<T1, T2, T3, T4, T5, T6>(this Result<T1, T2, T3, T4, T5, T6> result,
-                                                                                         Action<T1, T2, T3, T4, T5, T6>      assert)
+                                                                                         Action<T1, T2, T3, T4, T5, T6> assert)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
         where T4 : notnull
         where T5 : notnull
-        where T6 : notnull {
+        where T6 : notnull
+    {
         result.ShouldBeSuccess(out var v);
         assert(v.Item1, v.Item2, v.Item3, v.Item4, v.Item5, v.Item6);
         return result;
@@ -687,14 +754,16 @@ public static class ResultAssertExtensions {
     /// <param name="error">The exception output if the result is a failure.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1, T2, T3, T4, T5, T6> ShouldBeFailure<T1, T2, T3, T4, T5, T6>(this Result<T1, T2, T3, T4, T5, T6> result,
-                                                                                         out  Exception                      error)
+                                                                                         out IEnumerable<IError> error)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
         where T4 : notnull
         where T5 : notnull
-        where T6 : notnull {
-        if (result.TryGet(out _, out _, out _, out _, out _, out _, out var tmpError)) {
+        where T6 : notnull
+    {
+        if (result.TryGet(out _, out _, out _, out _, out _, out _, out var tmpError))
+        {
             Assert.Fail(FailureExpected);
             throw new UnreachableException();
         }
@@ -710,15 +779,17 @@ public static class ResultAssertExtensions {
     /// <param name="values">The output tuple of values if the result is a success.</param>
     /// <returns>The same result instance, allowing for method chaining or additional assertions.</returns>
     public static Result<T1, T2, T3, T4, T5, T6, T7> ShouldBeSuccess<T1, T2, T3, T4, T5, T6, T7>(this Result<T1, T2, T3, T4, T5, T6, T7> result,
-                                                                                                 out  (T1, T2, T3, T4, T5, T6, T7)       values)
+                                                                                                 out (T1, T2, T3, T4, T5, T6, T7) values)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
         where T4 : notnull
         where T5 : notnull
         where T6 : notnull
-        where T7 : notnull {
-        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7)) {
+        where T7 : notnull
+    {
+        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7))
+        {
             Assert.Fail(SuccessExpected);
             throw new UnreachableException();
         }
@@ -734,14 +805,15 @@ public static class ResultAssertExtensions {
     /// <param name="assert">An action to perform additional assertions on the success values.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1, T2, T3, T4, T5, T6, T7> ShouldBeSuccess<T1, T2, T3, T4, T5, T6, T7>(this Result<T1, T2, T3, T4, T5, T6, T7> result,
-                                                                                                 Action<T1, T2, T3, T4, T5, T6, T7>      assert)
+                                                                                                 Action<T1, T2, T3, T4, T5, T6, T7> assert)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
         where T4 : notnull
         where T5 : notnull
         where T6 : notnull
-        where T7 : notnull {
+        where T7 : notnull
+    {
         result.ShouldBeSuccess(out var v);
         assert(v.Item1, v.Item2, v.Item3, v.Item4, v.Item5, v.Item6, v.Item7);
         return result;
@@ -754,15 +826,17 @@ public static class ResultAssertExtensions {
     /// <param name="error">The exception output if the result is a failure.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1, T2, T3, T4, T5, T6, T7> ShouldBeFailure<T1, T2, T3, T4, T5, T6, T7>(this Result<T1, T2, T3, T4, T5, T6, T7> result,
-                                                                                                 out  Exception                          error)
+                                                                                                 out IEnumerable<IError> error)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
         where T4 : notnull
         where T5 : notnull
         where T6 : notnull
-        where T7 : notnull {
-        if (result.TryGet(out _, out _, out _, out _, out _, out _, out _, out var tmpError)) {
+        where T7 : notnull
+    {
+        if (result.TryGet(out _, out _, out _, out _, out _, out _, out _, out var tmpError))
+        {
             Assert.Fail(FailureExpected);
             throw new UnreachableException();
         }
@@ -778,7 +852,7 @@ public static class ResultAssertExtensions {
     /// <param name="values">The output tuple of values if the result is a success.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1, T2, T3, T4, T5, T6, T7, T8> ShouldBeSuccess<T1, T2, T3, T4, T5, T6, T7, T8>(this Result<T1, T2, T3, T4, T5, T6, T7, T8> result,
-                                                                                                         out  (T1, T2, T3, T4, T5, T6, T7, T8)       values)
+                                                                                                         out (T1, T2, T3, T4, T5, T6, T7, T8) values)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
@@ -786,8 +860,10 @@ public static class ResultAssertExtensions {
         where T5 : notnull
         where T6 : notnull
         where T7 : notnull
-        where T8 : notnull {
-        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7, out var v8)) {
+        where T8 : notnull
+    {
+        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7, out var v8))
+        {
             Assert.Fail(SuccessExpected);
             throw new UnreachableException();
         }
@@ -803,7 +879,7 @@ public static class ResultAssertExtensions {
     /// <param name="assert">An action to perform additional assertions on the success values.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1, T2, T3, T4, T5, T6, T7, T8> ShouldBeSuccess<T1, T2, T3, T4, T5, T6, T7, T8>(this Result<T1, T2, T3, T4, T5, T6, T7, T8> result,
-                                                                                                         Action<T1, T2, T3, T4, T5, T6, T7, T8>      assert)
+                                                                                                         Action<T1, T2, T3, T4, T5, T6, T7, T8> assert)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
@@ -811,7 +887,8 @@ public static class ResultAssertExtensions {
         where T5 : notnull
         where T6 : notnull
         where T7 : notnull
-        where T8 : notnull {
+        where T8 : notnull
+    {
         result.ShouldBeSuccess(out var v);
         assert(v.Item1, v.Item2, v.Item3, v.Item4, v.Item5, v.Item6, v.Item7, v.Item8);
         return result;
@@ -824,7 +901,7 @@ public static class ResultAssertExtensions {
     /// <param name="error">The exception output if the result is a failure.</param>
     /// <returns>The original result for further assertions or chaining.</returns>
     public static Result<T1, T2, T3, T4, T5, T6, T7, T8> ShouldBeFailure<T1, T2, T3, T4, T5, T6, T7, T8>(this Result<T1, T2, T3, T4, T5, T6, T7, T8> result,
-                                                                                                         out  Exception                              error)
+                                                                                                         out IEnumerable<IError> error)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
@@ -832,8 +909,10 @@ public static class ResultAssertExtensions {
         where T5 : notnull
         where T6 : notnull
         where T7 : notnull
-        where T8 : notnull {
-        if (result.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var tmpError)) {
+        where T8 : notnull
+    {
+        if (result.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var tmpError))
+        {
             Assert.Fail(FailureExpected);
             throw new UnreachableException();
         }

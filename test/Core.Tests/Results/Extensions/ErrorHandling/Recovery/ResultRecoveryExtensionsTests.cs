@@ -4,16 +4,13 @@ using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.ErrorHandling.Recovery;
 
-public sealed class ResultRecoveryExtensionsTests
-{
+public sealed class ResultRecoveryExtensionsTests {
     [Fact]
-    public void Recover_Success_DoesNotInvoke_ReturnsSameValue()
-    {
-        var r = Result.Success(5);
+    public void Recover_Success_DoesNotInvoke_ReturnsSameValue() {
+        var r      = Result.Success(5);
         var called = false;
 
-        var recovered = r.Recover(_ =>
-        {
+        var recovered = r.Recover(_ => {
             called = true;
             return 0;
         });
@@ -24,15 +21,13 @@ public sealed class ResultRecoveryExtensionsTests
     }
 
     [Fact]
-    public void Recover_Failure_UsesFallbackValue()
-    {
-        var ex = new InvalidOperationException("boom");
-        var r = Result.Failure<int>(ex);
+    public void Recover_Failure_UsesFallbackValue() {
+        var ex              = new InvalidOperationException("boom");
+        var r               = Result.Failure<int>(ex);
         var passedSameError = false;
 
-        var recovered = r.Recover(err =>
-        {
-            passedSameError = ReferenceEquals(err, ex);
+        var recovered = r.Recover(err => {
+            passedSameError = ReferenceEquals(err.FirstOrDefault()?.Exception, ex);
             return 42;
         });
 
@@ -42,10 +37,9 @@ public sealed class ResultRecoveryExtensionsTests
     }
 
     [Fact]
-    public void Recover_WithConstantFallback_WhenFailure_UsesConstant()
-    {
+    public void Recover_WithConstantFallback_WhenFailure_UsesConstant() {
         var ex = new Exception("oops");
-        var r = Result.Failure<int>(ex);
+        var r  = Result.Failure<int>(ex);
 
         var recovered = r.Recover(99);
 

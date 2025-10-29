@@ -1,4 +1,3 @@
 namespace UnambitiousFx.Core.Results;
 
-public interface IFailureResult : IResult {
-}
+public interface IFailureResult : IResult;

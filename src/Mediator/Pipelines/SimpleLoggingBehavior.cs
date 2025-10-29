@@ -57,8 +57,8 @@ public sealed class SimpleLoggingBehavior : IRequestPipelineBehavior, IEventPipe
 
 
         var elapsedTime = Stopwatch.GetElapsedTime(startedAt);
-        if (!result.TryGet(out var error)) {
-            _logger.LogWarning("Request {RequestName} handled in {ElapsedMilliseconds}ms with error {ErrorMessage}", requestName, elapsedTime, error.Message);
+        if (!result.TryGet(out var errors)) {
+            _logger.LogWarning("Request {RequestName} handled in {ElapsedMilliseconds}ms with error {ErrorMessage}", requestName, elapsedTime, errors.Message);
         }
         else {
             _logger.LogInformation("Request {RequestName} handled in {ElapsedMilliseconds}ms", requestName, elapsedTime);

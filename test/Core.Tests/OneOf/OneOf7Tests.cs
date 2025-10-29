@@ -1,3 +1,4 @@
+using UnambitiousFx.Core.OneOf;
 
 namespace UnambitiousFx.Core.Tests.OneOf;
 
@@ -123,7 +124,7 @@ public sealed class OneOf7Tests
     public void FromThird_ShouldStoreValue() {
         var result = OneOf<int, string, bool, double, decimal, long, char>.FromThird(true);
         Assert.True(result.Third(out var extracted));
-        Assert.Equal(true, extracted);
+        Assert.True(extracted);
         Assert.False(result.First(out _));
         Assert.False(result.Second(out _));
         Assert.False(result.Fourth(out _));
@@ -202,7 +203,7 @@ public sealed class OneOf7Tests
     public void FromThird_WhenMatchWithResponse_ShouldReturnThirdValue() {
         var oneOf = OneOf<int, string, bool, double, decimal, long, char>.FromThird(true);
         var result = oneOf.Match(_ => { Assert.Fail("First handler was called for OneOf holding Third value"); return default; }, _ => { Assert.Fail("Second handler was called for OneOf holding Third value"); return default; }, x => x, _ => { Assert.Fail("Fourth handler was called for OneOf holding Third value"); return default; }, _ => { Assert.Fail("Fifth handler was called for OneOf holding Third value"); return default; }, _ => { Assert.Fail("Sixth handler was called for OneOf holding Third value"); return default; }, _ => { Assert.Fail("Seventh handler was called for OneOf holding Third value"); return default; });
-        Assert.Equal(true, result);
+        Assert.True(result);
     }
     
     [Fact]
@@ -248,7 +249,7 @@ public sealed class OneOf7Tests
     [Fact]
     public void FromThird_WhenMatch_ShouldCallThirdHandler() {
         var oneOf = OneOf<int, string, bool, double, decimal, long, char>.FromThird(true);
-        oneOf.Match(_ => { Assert.Fail("First handler was called for OneOf holding Third value"); }, _ => { Assert.Fail("Second handler was called for OneOf holding Third value"); }, x => { Assert.Equal(true, x); }, _ => { Assert.Fail("Fourth handler was called for OneOf holding Third value"); }, _ => { Assert.Fail("Fifth handler was called for OneOf holding Third value"); }, _ => { Assert.Fail("Sixth handler was called for OneOf holding Third value"); }, _ => { Assert.Fail("Seventh handler was called for OneOf holding Third value"); });
+        oneOf.Match(_ => { Assert.Fail("First handler was called for OneOf holding Third value"); }, _ => { Assert.Fail("Second handler was called for OneOf holding Third value"); }, x => { Assert.True(x); }, _ => { Assert.Fail("Fourth handler was called for OneOf holding Third value"); }, _ => { Assert.Fail("Fifth handler was called for OneOf holding Third value"); }, _ => { Assert.Fail("Sixth handler was called for OneOf holding Third value"); }, _ => { Assert.Fail("Seventh handler was called for OneOf holding Third value"); });
     }
     
     [Fact]
@@ -296,7 +297,7 @@ public sealed class OneOf7Tests
         OneOf<int, string, bool, double, decimal, long, char> result = true;
         Assert.True(result.IsThird);
         Assert.True(result.Third(out var value));
-        Assert.Equal(true, value);
+        Assert.True(value);
     }
     
     [Fact]

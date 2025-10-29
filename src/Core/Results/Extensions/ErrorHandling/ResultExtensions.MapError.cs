@@ -1,19 +1,20 @@
-﻿using UnambitiousFx.Core.Results.Types;
+﻿using UnambitiousFx.Core.Results.Reasons;
+using UnambitiousFx.Core.Results.Types;
 
 namespace UnambitiousFx.Core.Results.Extensions.ErrorHandling;
 
 public static partial class ResultExtensions {
-    public static Result MapError(this Result                result,
-                                  Func<Exception, Exception> mapError) {
+    public static Result MapError(this Result                                    result,
+                                  Func<IEnumerable<IError>, IEnumerable<IError>> mapError) {
         return result.Match(
             Result.Success,
             ex => Result.Failure(mapError(ex))
         );
     }
 
-    public static Result MapError(this Result                result,
-                                  Func<Exception, Exception> mapError,
-                                  MapErrorChainPolicy        policy) {
+    public static Result MapError(this Result                                    result,
+                                  Func<IEnumerable<IError>, IEnumerable<IError>> mapError,
+                                  MapErrorChainPolicy                            policy) {
         if (result.IsSuccess) {
             return result;
         }
@@ -25,8 +26,8 @@ public static partial class ResultExtensions {
         };
     }
 
-    public static Result<TValue> MapError<TValue>(this Result<TValue>        result,
-                                                  Func<Exception, Exception> mapError)
+    public static Result<TValue> MapError<TValue>(this Result<TValue>                            result,
+                                                  Func<IEnumerable<IError>, IEnumerable<IError>> mapError)
         where TValue : notnull {
         return result.Match(
             Result.Success,
@@ -34,9 +35,9 @@ public static partial class ResultExtensions {
         );
     }
 
-    public static Result<T1> MapError<T1>(this Result<T1>            result,
-                                          Func<Exception, Exception> mapError,
-                                          MapErrorChainPolicy        policy)
+    public static Result<T1> MapError<T1>(this Result<T1>                                result,
+                                          Func<IEnumerable<IError>, IEnumerable<IError>> mapError,
+                                          MapErrorChainPolicy                            policy)
         where T1 : notnull {
         if (result.IsSuccess) {
             return result; // no-op
@@ -49,8 +50,8 @@ public static partial class ResultExtensions {
         };
     }
 
-    public static Result<TValue1, TValue2> MapError<TValue1, TValue2>(this Result<TValue1, TValue2> result,
-                                                                      Func<Exception, Exception>    mapError)
+    public static Result<TValue1, TValue2> MapError<TValue1, TValue2>(this Result<TValue1, TValue2>                  result,
+                                                                      Func<IEnumerable<IError>, IEnumerable<IError>> mapError)
         where TValue1 : notnull
         where TValue2 : notnull {
         return result.Match(
@@ -59,9 +60,9 @@ public static partial class ResultExtensions {
         );
     }
 
-    public static Result<T1, T2> MapError<T1, T2>(this Result<T1, T2>        result,
-                                                  Func<Exception, Exception> mapError,
-                                                  MapErrorChainPolicy        policy)
+    public static Result<T1, T2> MapError<T1, T2>(this Result<T1, T2>                            result,
+                                                  Func<IEnumerable<IError>, IEnumerable<IError>> mapError,
+                                                  MapErrorChainPolicy                            policy)
         where T1 : notnull
         where T2 : notnull {
         if (result.IsSuccess) {
@@ -75,8 +76,8 @@ public static partial class ResultExtensions {
         };
     }
 
-    public static Result<TValue1, TValue2, TValue3> MapError<TValue1, TValue2, TValue3>(this Result<TValue1, TValue2, TValue3> result,
-                                                                                        Func<Exception, Exception>             mapError)
+    public static Result<TValue1, TValue2, TValue3> MapError<TValue1, TValue2, TValue3>(this Result<TValue1, TValue2, TValue3>         result,
+                                                                                        Func<IEnumerable<IError>, IEnumerable<IError>> mapError)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull {
@@ -86,9 +87,9 @@ public static partial class ResultExtensions {
         );
     }
 
-    public static Result<T1, T2, T3> MapError<T1, T2, T3>(this Result<T1, T2, T3>    result,
-                                                          Func<Exception, Exception> mapError,
-                                                          MapErrorChainPolicy        policy)
+    public static Result<T1, T2, T3> MapError<T1, T2, T3>(this Result<T1, T2, T3>                        result,
+                                                          Func<IEnumerable<IError>, IEnumerable<IError>> mapError,
+                                                          MapErrorChainPolicy                            policy)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull {
@@ -104,7 +105,7 @@ public static partial class ResultExtensions {
     }
 
     public static Result<TValue1, TValue2, TValue3, TValue4> MapError<TValue1, TValue2, TValue3, TValue4>(this Result<TValue1, TValue2, TValue3, TValue4> result,
-                                                                                                          Func<Exception, Exception>                      mapError)
+                                                                                                          Func<IEnumerable<IError>, IEnumerable<IError>>  mapError)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -115,9 +116,9 @@ public static partial class ResultExtensions {
         );
     }
 
-    public static Result<T1, T2, T3, T4> MapError<T1, T2, T3, T4>(this Result<T1, T2, T3, T4> result,
-                                                                  Func<Exception, Exception>  mapError,
-                                                                  MapErrorChainPolicy         policy)
+    public static Result<T1, T2, T3, T4> MapError<T1, T2, T3, T4>(this Result<T1, T2, T3, T4>                    result,
+                                                                  Func<IEnumerable<IError>, IEnumerable<IError>> mapError,
+                                                                  MapErrorChainPolicy                            policy)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
@@ -135,7 +136,7 @@ public static partial class ResultExtensions {
 
     public static Result<TValue1, TValue2, TValue3, TValue4, TValue5> MapError<TValue1, TValue2, TValue3, TValue4, TValue5>(
         this Result<TValue1, TValue2, TValue3, TValue4, TValue5> result,
-        Func<Exception, Exception>                               mapError)
+        Func<IEnumerable<IError>, IEnumerable<IError>>           mapError)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -147,9 +148,9 @@ public static partial class ResultExtensions {
         );
     }
 
-    public static Result<T1, T2, T3, T4, T5> MapError<T1, T2, T3, T4, T5>(this Result<T1, T2, T3, T4, T5> result,
-                                                                          Func<Exception, Exception>      mapError,
-                                                                          MapErrorChainPolicy             policy)
+    public static Result<T1, T2, T3, T4, T5> MapError<T1, T2, T3, T4, T5>(this Result<T1, T2, T3, T4, T5>                result,
+                                                                          Func<IEnumerable<IError>, IEnumerable<IError>> mapError,
+                                                                          MapErrorChainPolicy                            policy)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
@@ -168,7 +169,7 @@ public static partial class ResultExtensions {
 
     public static Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6> MapError<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(
         this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6> result,
-        Func<Exception, Exception>                                        mapError)
+        Func<IEnumerable<IError>, IEnumerable<IError>>                    mapError)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -181,9 +182,9 @@ public static partial class ResultExtensions {
         );
     }
 
-    public static Result<T1, T2, T3, T4, T5, T6> MapError<T1, T2, T3, T4, T5, T6>(this Result<T1, T2, T3, T4, T5, T6> result,
-                                                                                  Func<Exception, Exception>          mapError,
-                                                                                  MapErrorChainPolicy                 policy)
+    public static Result<T1, T2, T3, T4, T5, T6> MapError<T1, T2, T3, T4, T5, T6>(this Result<T1, T2, T3, T4, T5, T6>            result,
+                                                                                  Func<IEnumerable<IError>, IEnumerable<IError>> mapError,
+                                                                                  MapErrorChainPolicy                            policy)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
@@ -203,7 +204,7 @@ public static partial class ResultExtensions {
 
     public static Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> MapError<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(
         this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> result,
-        Func<Exception, Exception>                                                 mapError)
+        Func<IEnumerable<IError>, IEnumerable<IError>>                             mapError)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -217,9 +218,9 @@ public static partial class ResultExtensions {
         );
     }
 
-    public static Result<T1, T2, T3, T4, T5, T6, T7> MapError<T1, T2, T3, T4, T5, T6, T7>(this Result<T1, T2, T3, T4, T5, T6, T7> result,
-                                                                                          Func<Exception, Exception>              mapError,
-                                                                                          MapErrorChainPolicy                     policy)
+    public static Result<T1, T2, T3, T4, T5, T6, T7> MapError<T1, T2, T3, T4, T5, T6, T7>(this Result<T1, T2, T3, T4, T5, T6, T7>        result,
+                                                                                          Func<IEnumerable<IError>, IEnumerable<IError>> mapError,
+                                                                                          MapErrorChainPolicy                            policy)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
@@ -240,7 +241,7 @@ public static partial class ResultExtensions {
 
     public static Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8> MapError<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(
         this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8> result,
-        Func<Exception, Exception>                                                          mapError)
+        Func<IEnumerable<IError>, IEnumerable<IError>>                                      mapError)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -255,9 +256,9 @@ public static partial class ResultExtensions {
         );
     }
 
-    public static Result<T1, T2, T3, T4, T5, T6, T7, T8> MapError<T1, T2, T3, T4, T5, T6, T7, T8>(this Result<T1, T2, T3, T4, T5, T6, T7, T8> result,
-                                                                                                  Func<Exception, Exception>                  mapError,
-                                                                                                  MapErrorChainPolicy                         policy)
+    public static Result<T1, T2, T3, T4, T5, T6, T7, T8> MapError<T1, T2, T3, T4, T5, T6, T7, T8>(this Result<T1, T2, T3, T4, T5, T6, T7, T8>    result,
+                                                                                                  Func<IEnumerable<IError>, IEnumerable<IError>> mapError,
+                                                                                                  MapErrorChainPolicy                            policy)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull

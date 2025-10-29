@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.Results.Reasons;
 using UnambitiousFx.Core.Results.Extensions.ValueAccess.Tasks;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.ValueAccess.ValueOrThrow.Tasks;
@@ -26,7 +27,7 @@ public sealed class ResultExtensionsTests {
     public async Task ValueOrThrowAsync_Arity1_Failure_FactoryTransformsType() {
         var ex = new ArgumentException("bad");
         var awaitable = Task.FromResult(Result.Failure<int>(ex));
-        var custom = await Assert.ThrowsAsync<ApplicationException>(async () => await awaitable.ValueOrThrowAsync(e => new ApplicationException("wrapped", e)));
+        var custom = await Assert.ThrowsAsync<ApplicationException>(async () => await awaitable.ValueOrThrowAsync(errors => new ApplicationException("wrapped", errors.ToException())));
         Assert.IsType<ApplicationException>(custom);
     }
 
@@ -62,7 +63,7 @@ public sealed class ResultExtensionsTests {
     public async Task ValueOrThrowAsync_Arity2_Failure_FactoryTransformsType() {
         var ex = new ArgumentException("bad");
         var awaitable = Task.FromResult(Result.Failure<int, int>(ex));
-        var custom = await Assert.ThrowsAsync<ApplicationException>(async () => await awaitable.ValueOrThrowAsync(e => new ApplicationException("wrapped", e)));
+        var custom = await Assert.ThrowsAsync<ApplicationException>(async () => await awaitable.ValueOrThrowAsync(errors => new ApplicationException("wrapped", errors.ToException())));
         Assert.IsType<ApplicationException>(custom);
     }
 
@@ -98,7 +99,7 @@ public sealed class ResultExtensionsTests {
     public async Task ValueOrThrowAsync_Arity3_Failure_FactoryTransformsType() {
         var ex = new ArgumentException("bad");
         var awaitable = Task.FromResult(Result.Failure<int, int, int>(ex));
-        var custom = await Assert.ThrowsAsync<ApplicationException>(async () => await awaitable.ValueOrThrowAsync(e => new ApplicationException("wrapped", e)));
+        var custom = await Assert.ThrowsAsync<ApplicationException>(async () => await awaitable.ValueOrThrowAsync(errors => new ApplicationException("wrapped", errors.ToException())));
         Assert.IsType<ApplicationException>(custom);
     }
 
@@ -134,7 +135,7 @@ public sealed class ResultExtensionsTests {
     public async Task ValueOrThrowAsync_Arity4_Failure_FactoryTransformsType() {
         var ex = new ArgumentException("bad");
         var awaitable = Task.FromResult(Result.Failure<int, int, int, int>(ex));
-        var custom = await Assert.ThrowsAsync<ApplicationException>(async () => await awaitable.ValueOrThrowAsync(e => new ApplicationException("wrapped", e)));
+        var custom = await Assert.ThrowsAsync<ApplicationException>(async () => await awaitable.ValueOrThrowAsync(errors => new ApplicationException("wrapped", errors.ToException())));
         Assert.IsType<ApplicationException>(custom);
     }
 
@@ -170,7 +171,7 @@ public sealed class ResultExtensionsTests {
     public async Task ValueOrThrowAsync_Arity5_Failure_FactoryTransformsType() {
         var ex = new ArgumentException("bad");
         var awaitable = Task.FromResult(Result.Failure<int, int, int, int, int>(ex));
-        var custom = await Assert.ThrowsAsync<ApplicationException>(async () => await awaitable.ValueOrThrowAsync(e => new ApplicationException("wrapped", e)));
+        var custom = await Assert.ThrowsAsync<ApplicationException>(async () => await awaitable.ValueOrThrowAsync(errors => new ApplicationException("wrapped", errors.ToException())));
         Assert.IsType<ApplicationException>(custom);
     }
 
@@ -206,7 +207,7 @@ public sealed class ResultExtensionsTests {
     public async Task ValueOrThrowAsync_Arity6_Failure_FactoryTransformsType() {
         var ex = new ArgumentException("bad");
         var awaitable = Task.FromResult(Result.Failure<int, int, int, int, int, int>(ex));
-        var custom = await Assert.ThrowsAsync<ApplicationException>(async () => await awaitable.ValueOrThrowAsync(e => new ApplicationException("wrapped", e)));
+        var custom = await Assert.ThrowsAsync<ApplicationException>(async () => await awaitable.ValueOrThrowAsync(errors => new ApplicationException("wrapped", errors.ToException())));
         Assert.IsType<ApplicationException>(custom);
     }
 
@@ -242,7 +243,7 @@ public sealed class ResultExtensionsTests {
     public async Task ValueOrThrowAsync_Arity7_Failure_FactoryTransformsType() {
         var ex = new ArgumentException("bad");
         var awaitable = Task.FromResult(Result.Failure<int, int, int, int, int, int, int>(ex));
-        var custom = await Assert.ThrowsAsync<ApplicationException>(async () => await awaitable.ValueOrThrowAsync(e => new ApplicationException("wrapped", e)));
+        var custom = await Assert.ThrowsAsync<ApplicationException>(async () => await awaitable.ValueOrThrowAsync(errors => new ApplicationException("wrapped", errors.ToException())));
         Assert.IsType<ApplicationException>(custom);
     }
 
@@ -278,7 +279,7 @@ public sealed class ResultExtensionsTests {
     public async Task ValueOrThrowAsync_Arity8_Failure_FactoryTransformsType() {
         var ex = new ArgumentException("bad");
         var awaitable = Task.FromResult(Result.Failure<int, int, int, int, int, int, int, int>(ex));
-        var custom = await Assert.ThrowsAsync<ApplicationException>(async () => await awaitable.ValueOrThrowAsync(e => new ApplicationException("wrapped", e)));
+        var custom = await Assert.ThrowsAsync<ApplicationException>(async () => await awaitable.ValueOrThrowAsync(errors => new ApplicationException("wrapped", errors.ToException())));
         Assert.IsType<ApplicationException>(custom);
     }
 

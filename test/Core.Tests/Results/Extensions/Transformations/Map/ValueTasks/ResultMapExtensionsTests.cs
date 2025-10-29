@@ -1,3 +1,4 @@
+using UnambitiousFx.Core.Results.Reasons;
 using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Extensions.Transformations.ValueTasks;
@@ -27,7 +28,7 @@ public class ResultMapExtensionsTests {
         var mapped = await r.MapAsync(x => ValueTask.FromResult(x + 1));
 
         mapped.ShouldBeFailure(out var err);
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -63,7 +64,7 @@ public class ResultMapExtensionsTests {
         var mapped = await rTask.MapAsync(x => ValueTask.FromResult(x + 1));
 
         mapped.ShouldBeFailure(out var err);
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -99,7 +100,7 @@ public class ResultMapExtensionsTests {
         var mapped = await rTask.MapAsync(x => x + 1);
 
         mapped.ShouldBeFailure(out var err);
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -140,7 +141,7 @@ public class ResultMapExtensionsTests {
                                        b) => ValueTask.FromResult((a + 10, b * 2)));
 
         mapped.ShouldBeFailure(out var err);
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -179,7 +180,7 @@ public class ResultMapExtensionsTests {
                                            b) => ValueTask.FromResult((a + 10, b * 2)));
 
         mapped.ShouldBeFailure(out var err);
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -218,7 +219,7 @@ public class ResultMapExtensionsTests {
                                            b) => (a + 10, b * 2));
 
         mapped.ShouldBeFailure(out var err);
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -262,7 +263,7 @@ public class ResultMapExtensionsTests {
                                        c) => ValueTask.FromResult((a + 1, b + 1, c + 1)));
 
         mapped.ShouldBeFailure(out var err);
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -304,7 +305,7 @@ public class ResultMapExtensionsTests {
                                            c) => ValueTask.FromResult((a + 1, b + 1, c + 1)));
 
         mapped.ShouldBeFailure(out var err);
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -346,7 +347,7 @@ public class ResultMapExtensionsTests {
                                            c) => (a + 1, b + 1, c + 1));
 
         mapped.ShouldBeFailure(out var err);
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -393,7 +394,7 @@ public class ResultMapExtensionsTests {
                                        d) => ValueTask.FromResult((a + 1, b + 1, c + 1, d + 1)));
 
         mapped.ShouldBeFailure(out var err);
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -438,7 +439,7 @@ public class ResultMapExtensionsTests {
                                            d) => ValueTask.FromResult((a + 1, b + 1, c + 1, d + 1)));
 
         mapped.ShouldBeFailure(out var err);
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -483,7 +484,7 @@ public class ResultMapExtensionsTests {
                                            d) => (a + 1, b + 1, c + 1, d + 1));
 
         mapped.ShouldBeFailure(out var err);
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -533,7 +534,7 @@ public class ResultMapExtensionsTests {
                                        e) => ValueTask.FromResult((a + 1, b + 1, c + 1, d + 1, e + 1)));
 
         mapped.ShouldBeFailure(out var err);
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -581,7 +582,7 @@ public class ResultMapExtensionsTests {
                                            e) => ValueTask.FromResult((a + 1, b + 1, c + 1, d + 1, e + 1)));
 
         mapped.ShouldBeFailure(out var err);
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -629,7 +630,7 @@ public class ResultMapExtensionsTests {
                                            e) => (a + 1, b + 1, c + 1, d + 1, e + 1));
 
         mapped.ShouldBeFailure(out var err);
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -671,7 +672,7 @@ public class ResultMapExtensionsTests {
         var mapped = await r.MapAsync((a, b, c, d, e, f) => ValueTask.FromResult((a + 1, b + 1, c + 1, d + 1, e + 1, f + 1)));
 
         mapped.ShouldBeFailure(out var err);
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -707,7 +708,7 @@ public class ResultMapExtensionsTests {
         var mapped = await rTask.MapAsync((a, b, c, d, e, f) => ValueTask.FromResult((a + 1, b + 1, c + 1, d + 1, e + 1, f + 1)));
 
         mapped.ShouldBeFailure(out var err);
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -743,7 +744,7 @@ public class ResultMapExtensionsTests {
         var mapped = await rTask.MapAsync((a, b, c, d, e, f) => (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1));
 
         mapped.ShouldBeFailure(out var err);
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -780,7 +781,7 @@ public class ResultMapExtensionsTests {
         var mapped = await r.MapAsync((a, b, c, d, e, f, g) => ValueTask.FromResult((a + 1, b + 1, c + 1, d + 1, e + 1, f + 1, g + 1)));
 
         mapped.ShouldBeFailure(out var err);
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -816,7 +817,7 @@ public class ResultMapExtensionsTests {
         var mapped = await rTask.MapAsync((a, b, c, d, e, f, g) => ValueTask.FromResult((a + 1, b + 1, c + 1, d + 1, e + 1, f + 1, g + 1)));
 
         mapped.ShouldBeFailure(out var err);
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -852,7 +853,7 @@ public class ResultMapExtensionsTests {
         var mapped = await rTask.MapAsync((a, b, c, d, e, f, g) => (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1, g + 1));
 
         mapped.ShouldBeFailure(out var err);
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -889,7 +890,7 @@ public class ResultMapExtensionsTests {
         var mapped = await r.MapAsync((a, b, c, d, e, f, g, h) => ValueTask.FromResult((a + 1, b + 1, c + 1, d + 1, e + 1, f + 1, g + 1, h + 1)));
 
         mapped.ShouldBeFailure(out var err);
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -925,7 +926,7 @@ public class ResultMapExtensionsTests {
         var mapped = await rTask.MapAsync((a, b, c, d, e, f, g, h) => ValueTask.FromResult((a + 1, b + 1, c + 1, d + 1, e + 1, f + 1, g + 1, h + 1)));
 
         mapped.ShouldBeFailure(out var err);
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -961,7 +962,7 @@ public class ResultMapExtensionsTests {
         var mapped = await rTask.MapAsync((a, b, c, d, e, f, g, h) => (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1, g + 1, h + 1));
 
         mapped.ShouldBeFailure(out var err);
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]

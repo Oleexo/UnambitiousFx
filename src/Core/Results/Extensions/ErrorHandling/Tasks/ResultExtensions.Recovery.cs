@@ -1,8 +1,10 @@
+using UnambitiousFx.Core.Results.Reasons;
+
 namespace UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
 
 public static partial class ResultExtensions {
-    public static async Task<Result<TValue>> RecoverAsync<TValue>(this Result<TValue>           result,
-                                                                  Func<Exception, Task<TValue>> recover)
+    public static async Task<Result<TValue>> RecoverAsync<TValue>(this Result<TValue>                     result,
+                                                                  Func<IEnumerable<IError>, Task<TValue>> recover)
         where TValue : notnull {
         if (result.TryGet(out var value, out var error)) {
             return Result.Success(value);
@@ -13,8 +15,8 @@ public static partial class ResultExtensions {
         return Result.Success(fallback);
     }
 
-    public static async Task<Result<TValue>> RecoverWithAsync<TValue>(this Result<TValue>                   result,
-                                                                      Func<Exception, Task<Result<TValue>>> recover)
+    public static async Task<Result<TValue>> RecoverWithAsync<TValue>(this Result<TValue>                             result,
+                                                                      Func<IEnumerable<IError>, Task<Result<TValue>>> recover)
         where TValue : notnull {
         if (result.TryGet(out var value, out var error)) {
             return Result.Success(value);

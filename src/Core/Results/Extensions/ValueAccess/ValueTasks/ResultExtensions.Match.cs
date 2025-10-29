@@ -1,9 +1,11 @@
-﻿namespace UnambitiousFx.Core.Results.Extensions.ValueAccess.ValueTasks;
+﻿using UnambitiousFx.Core.Results.Reasons;
+
+namespace UnambitiousFx.Core.Results.Extensions.ValueAccess.ValueTasks;
 
 public static class ResultMatchExtensions {
     public static async ValueTask<TOut> MatchAsync<TOut, TValue>(this ValueTask<Result<TValue>>   awaitableResult,
                                                                  Func<TValue, ValueTask<TOut>>    success,
-                                                                 Func<Exception, ValueTask<TOut>> failure)
+                                                                 Func<IEnumerable<IError>, ValueTask<TOut>> failure)
         where TValue : notnull
         where TOut : notnull {
         var result = await awaitableResult.ConfigureAwait(false);
@@ -12,7 +14,7 @@ public static class ResultMatchExtensions {
 
     public static async ValueTask<TOut> MatchAsync<TOut, TValue1, TValue2>(this ValueTask<Result<TValue1, TValue2>> awaitableResult,
                                                                            Func<TValue1, TValue2, ValueTask<TOut>>  success,
-                                                                           Func<Exception, ValueTask<TOut>>         failure)
+                                                                           Func<IEnumerable<IError>, ValueTask<TOut>>         failure)
         where TValue1 : notnull
         where TValue2 : notnull
         where TOut : notnull {
@@ -22,7 +24,7 @@ public static class ResultMatchExtensions {
 
     public static async ValueTask<TOut> MatchAsync<TOut, TValue1, TValue2, TValue3>(this ValueTask<Result<TValue1, TValue2, TValue3>> awaitableResult,
                                                                                     Func<TValue1, TValue2, TValue3, ValueTask<TOut>>  success,
-                                                                                    Func<Exception, ValueTask<TOut>>                  failure)
+                                                                                    Func<IEnumerable<IError>, ValueTask<TOut>>                  failure)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -33,7 +35,7 @@ public static class ResultMatchExtensions {
 
     public static async ValueTask<TOut> MatchAsync<TOut, TValue1, TValue2, TValue3, TValue4>(this ValueTask<Result<TValue1, TValue2, TValue3, TValue4>> awaitableResult,
                                                                                              Func<TValue1, TValue2, TValue3, TValue4, ValueTask<TOut>>  success,
-                                                                                             Func<Exception, ValueTask<TOut>>                           failure)
+                                                                                             Func<IEnumerable<IError>, ValueTask<TOut>>                           failure)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -46,7 +48,7 @@ public static class ResultMatchExtensions {
     public static async ValueTask<TOut> MatchAsync<TOut, TValue1, TValue2, TValue3, TValue4, TValue5>(
         this ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5>> awaitableResult,
         Func<TValue1, TValue2, TValue3, TValue4, TValue5, ValueTask<TOut>>  success,
-        Func<Exception, ValueTask<TOut>>                                    failure)
+        Func<IEnumerable<IError>, ValueTask<TOut>>                                    failure)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -60,7 +62,7 @@ public static class ResultMatchExtensions {
     public static async ValueTask<TOut> MatchAsync<TOut, TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(
         this ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>> awaitableResult,
         Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, ValueTask<TOut>>  success,
-        Func<Exception, ValueTask<TOut>>                                             failure)
+        Func<IEnumerable<IError>, ValueTask<TOut>>                                             failure)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -75,7 +77,7 @@ public static class ResultMatchExtensions {
     public static async ValueTask<TOut> MatchAsync<TOut, TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(
         this ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>> awaitableResult,
         Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, ValueTask<TOut>>  success,
-        Func<Exception, ValueTask<TOut>>                                                      failure)
+        Func<IEnumerable<IError>, ValueTask<TOut>>                                                      failure)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -91,7 +93,7 @@ public static class ResultMatchExtensions {
     public static async ValueTask<TOut> MatchAsync<TOut, TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(
         this ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>> awaitableResult,
         Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8, ValueTask<TOut>>  success,
-        Func<Exception, ValueTask<TOut>>                                                               failure)
+        Func<IEnumerable<IError>, ValueTask<TOut>>                                                               failure)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull

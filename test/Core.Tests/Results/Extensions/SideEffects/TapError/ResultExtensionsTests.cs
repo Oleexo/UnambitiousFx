@@ -21,7 +21,7 @@ public sealed class ResultExtensionsTests {
         var        ex       = new Exception("boom");
         var        r        = Result.Failure(ex);
         var        called   = 0;
-        Exception? captured = null;
+        IEnumerable<UnambitiousFx.Core.Results.Reasons.IError>? captured = null;
 
         r.TapError(e => {
             called++;
@@ -29,7 +29,10 @@ public sealed class ResultExtensionsTests {
         });
 
         Assert.Equal(1,  called);
-        Assert.Equal(ex, captured);
+        Assert.NotNull(captured);
+        var firstError = captured.FirstOrDefault();
+        Assert.NotNull(firstError);
+        Assert.Equal(ex, firstError.Exception);
     }
 
     [Fact]
@@ -47,7 +50,7 @@ public sealed class ResultExtensionsTests {
         var        ex       = new Exception("boom");
         var        r        = Result.Failure<int>(ex);
         var        called   = 0;
-        Exception? captured = null;
+        IEnumerable<UnambitiousFx.Core.Results.Reasons.IError>? captured = null;
 
         r.TapError(e => {
             called++;
@@ -55,7 +58,10 @@ public sealed class ResultExtensionsTests {
         });
 
         Assert.Equal(1,  called);
-        Assert.Equal(ex, captured);
+        Assert.NotNull(captured);
+        var firstError = captured.FirstOrDefault();
+        Assert.NotNull(firstError);
+        Assert.Equal(ex, firstError.Exception);
     }
 
     [Fact]
@@ -73,7 +79,7 @@ public sealed class ResultExtensionsTests {
         var        ex       = new Exception("boom");
         var        r        = Result.Failure<int, int>(ex);
         var        called   = 0;
-        Exception? captured = null;
+        IEnumerable<UnambitiousFx.Core.Results.Reasons.IError>? captured = null;
 
         r.TapError(e => {
             called++;
@@ -81,7 +87,10 @@ public sealed class ResultExtensionsTests {
         });
 
         Assert.Equal(1,  called);
-        Assert.Equal(ex, captured);
+        Assert.NotNull(captured);
+        var firstError = captured.FirstOrDefault();
+        Assert.NotNull(firstError);
+        Assert.Equal(ex, firstError.Exception);
     }
 
     [Fact]
@@ -99,7 +108,7 @@ public sealed class ResultExtensionsTests {
         var        ex       = new Exception("boom");
         var        r        = Result.Failure<int, int, int>(ex);
         var        called   = 0;
-        Exception? captured = null;
+        IEnumerable<UnambitiousFx.Core.Results.Reasons.IError>? captured = null;
 
         r.TapError(e => {
             called++;
@@ -107,7 +116,10 @@ public sealed class ResultExtensionsTests {
         });
 
         Assert.Equal(1,  called);
-        Assert.Equal(ex, captured);
+        Assert.NotNull(captured);
+        var firstError = captured.FirstOrDefault();
+        Assert.NotNull(firstError);
+        Assert.Equal(ex, firstError.Exception);
     }
 
     [Fact]
@@ -125,7 +137,7 @@ public sealed class ResultExtensionsTests {
         var        ex       = new Exception("boom");
         var        r        = Result.Failure<int, int, int, int>(ex);
         var        called   = 0;
-        Exception? captured = null;
+        IEnumerable<UnambitiousFx.Core.Results.Reasons.IError>? captured = null;
 
         r.TapError(e => {
             called++;
@@ -133,7 +145,10 @@ public sealed class ResultExtensionsTests {
         });
 
         Assert.Equal(1,  called);
-        Assert.Equal(ex, captured);
+        Assert.NotNull(captured);
+        var firstError = captured.FirstOrDefault();
+        Assert.NotNull(firstError);
+        Assert.Equal(ex, firstError.Exception);
     }
 
     [Fact]
@@ -151,7 +166,7 @@ public sealed class ResultExtensionsTests {
         var        ex       = new Exception("boom");
         var        r        = Result.Failure<int, int, int, int, int>(ex);
         var        called   = 0;
-        Exception? captured = null;
+        IEnumerable<UnambitiousFx.Core.Results.Reasons.IError>? captured = null;
 
         r.TapError(e => {
             called++;
@@ -159,7 +174,10 @@ public sealed class ResultExtensionsTests {
         });
 
         Assert.Equal(1,  called);
-        Assert.Equal(ex, captured);
+        Assert.NotNull(captured);
+        var firstError = captured.FirstOrDefault();
+        Assert.NotNull(firstError);
+        Assert.Equal(ex, firstError.Exception);
     }
 
     [Fact]
@@ -177,7 +195,7 @@ public sealed class ResultExtensionsTests {
         var        ex       = new Exception("boom");
         var        r        = Result.Failure<int, int, int, int, int, int>(ex);
         var        called   = 0;
-        Exception? captured = null;
+        IEnumerable<UnambitiousFx.Core.Results.Reasons.IError>? captured = null;
 
         r.TapError(e => {
             called++;
@@ -185,7 +203,10 @@ public sealed class ResultExtensionsTests {
         });
 
         Assert.Equal(1,  called);
-        Assert.Equal(ex, captured);
+        Assert.NotNull(captured);
+        var firstError = captured.FirstOrDefault();
+        Assert.NotNull(firstError);
+        Assert.Equal(ex, firstError.Exception);
     }
 
     [Fact]
@@ -203,7 +224,7 @@ public sealed class ResultExtensionsTests {
         var        ex       = new Exception("boom");
         var        r        = Result.Failure<int, int, int, int, int, int, int>(ex);
         var        called   = 0;
-        Exception? captured = null;
+        IEnumerable<UnambitiousFx.Core.Results.Reasons.IError>? captured = null;
 
         r.TapError(e => {
             called++;
@@ -211,7 +232,10 @@ public sealed class ResultExtensionsTests {
         });
 
         Assert.Equal(1,  called);
-        Assert.Equal(ex, captured);
+        Assert.NotNull(captured);
+        var firstError = captured.FirstOrDefault();
+        Assert.NotNull(firstError);
+        Assert.Equal(ex, firstError.Exception);
     }
 
     [Fact]
@@ -229,7 +253,7 @@ public sealed class ResultExtensionsTests {
         var        ex       = new Exception("boom");
         var        r        = Result.Failure<int, int, int, int, int, int, int, int>(ex);
         var        called   = 0;
-        Exception? captured = null;
+        IEnumerable<UnambitiousFx.Core.Results.Reasons.IError>? captured = null;
 
         r.TapError(e => {
             called++;
@@ -237,6 +261,9 @@ public sealed class ResultExtensionsTests {
         });
 
         Assert.Equal(1,  called);
-        Assert.Equal(ex, captured);
+        Assert.NotNull(captured);
+        var firstError = captured.FirstOrDefault();
+        Assert.NotNull(firstError);
+        Assert.Equal(ex, firstError.Exception);
     }
 }

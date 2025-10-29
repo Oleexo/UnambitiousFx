@@ -36,7 +36,7 @@ public sealed class ExceptionWrappingExtensionsTests {
         var result = Result.Failure(ex.Wrap());
         Assert.False(result.TryGet(out _));
         Assert.Single(result.Reasons);
-        var exceptional = Assert.IsType<ExceptionalError>(result.Reasons[0]);
+        var exceptional = Assert.IsType<ExceptionalError>(result.Reasons.ElementAt(0));
         Assert.Equal(ex, exceptional.Exception);
     }
 

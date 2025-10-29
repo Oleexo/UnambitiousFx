@@ -1,3 +1,4 @@
+using UnambitiousFx.Core.Results.Reasons;
 using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Extensions.Transformations.ValueTasks;
@@ -36,7 +37,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -70,7 +71,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out var err)) {
-            Assert.Same(thrown, err);
+            Assert.Same(thrown, err?.FirstOrDefault()?.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -105,7 +106,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -139,7 +140,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out var err)) {
-            Assert.Same(thrown, err);
+            Assert.Same(thrown, err?.FirstOrDefault()?.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -180,7 +181,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -216,7 +217,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out var err)) {
-            Assert.Same(thrown, err);
+            Assert.Same(thrown, err?.FirstOrDefault()?.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -253,7 +254,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -289,7 +290,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out var err)) {
-            Assert.Same(thrown, err);
+            Assert.Same(thrown, err?.FirstOrDefault()?.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -332,7 +333,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -370,7 +371,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out var err)) {
-            Assert.Same(thrown, err);
+            Assert.Same(thrown, err?.FirstOrDefault()?.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -409,7 +410,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -447,7 +448,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out var err)) {
-            Assert.Same(thrown, err);
+            Assert.Same(thrown, err?.FirstOrDefault()?.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -492,7 +493,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -532,7 +533,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out _, out var err)) {
-            Assert.Same(thrown, err);
+            Assert.Same(thrown, err?.FirstOrDefault()?.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -573,7 +574,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -613,7 +614,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out _, out var err)) {
-            Assert.Same(thrown, err);
+            Assert.Same(thrown, err?.FirstOrDefault()?.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -660,7 +661,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -702,7 +703,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out _, out _, out var err)) {
-            Assert.Same(thrown, err);
+            Assert.Same(thrown, err?.FirstOrDefault()?.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -745,7 +746,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -787,7 +788,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out _, out _, out var err)) {
-            Assert.Same(thrown, err);
+            Assert.Same(thrown, err?.FirstOrDefault()?.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -836,7 +837,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -880,7 +881,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out var err)) {
-            Assert.Same(thrown, err);
+            Assert.Same(thrown, err?.FirstOrDefault()?.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -925,7 +926,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -969,7 +970,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out var err)) {
-            Assert.Same(thrown, err);
+            Assert.Same(thrown, err?.FirstOrDefault()?.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -1020,7 +1021,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -1066,7 +1067,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out var err)) {
-            Assert.Same(thrown, err);
+            Assert.Same(thrown, err?.FirstOrDefault()?.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -1113,7 +1114,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -1159,7 +1160,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out var err)) {
-            Assert.Same(thrown, err);
+            Assert.Same(thrown, err?.FirstOrDefault()?.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -1212,7 +1213,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -1260,7 +1261,7 @@ public class ResultExtensionsTests {
                                                                                                                       });
 
         if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
-            Assert.Same(thrown, err);
+            Assert.Same(thrown, err?.FirstOrDefault()?.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -1309,7 +1310,7 @@ public class ResultExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
         }
         else {
             Assert.Fail("Expected failure");
@@ -1357,7 +1358,7 @@ public class ResultExtensionsTests {
                          });
 
         if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
-            Assert.Same(thrown, err);
+            Assert.Same(thrown, err?.FirstOrDefault()?.Exception);
         }
         else {
             Assert.Fail("Expected failure");

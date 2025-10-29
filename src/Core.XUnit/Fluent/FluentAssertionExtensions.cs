@@ -1,5 +1,6 @@
 using UnambitiousFx.Core.Options;
 using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
 
 namespace UnambitiousFx.Core.XUnit.Fluent;
@@ -8,14 +9,17 @@ namespace UnambitiousFx.Core.XUnit.Fluent;
 ///     Provides extension methods for asserting success or failure of result objects
 ///     within the FluentAssertions framework.
 /// </summary>
-public static class FluentAssertionExtensions {
+public static class FluentAssertionExtensions
+{
     /// <summary>
     ///     Asserts that the given result represents a successful outcome.
     /// </summary>
     /// <param name="result">The result to assert.</param>
     /// <returns>A SuccessAssertion wrapping Unit.</returns>
-    public static SuccessAssertion<Unit> EnsureSuccess(this Result result) {
-        if (!result.IsSuccess) {
+    public static SuccessAssertion<Unit> EnsureSuccess(this Result result)
+    {
+        if (!result.IsSuccess)
+        {
             Assert.Fail("Expected success result but was failure.");
         }
 
@@ -28,9 +32,11 @@ public static class FluentAssertionExtensions {
     /// </summary>
     /// <param name="result">The <see cref="Result" /> to validate as a failure.</param>
     /// <returns>A <see cref="FailureAssertion" /> containing the error details of the failure.</returns>
-    public static FailureAssertion EnsureFailure(this Result result) {
+    public static FailureAssertion EnsureFailure(this Result result)
+    {
         var success = result.TryGet(out var error);
-        if (success) {
+        if (success)
+        {
             Assert.Fail("Expected failure result but was success.");
         }
 
@@ -43,8 +49,10 @@ public static class FluentAssertionExtensions {
     /// <param name="result">The result to assert.</param>
     /// <returns>A SuccessAssertion for the contained value.</returns>
     public static SuccessAssertion<T1> EnsureSuccess<T1>(this Result<T1> result)
-        where T1 : notnull {
-        if (!result.TryGet(out var value)) {
+        where T1 : notnull
+    {
+        if (!result.TryGet(out var value))
+        {
             Assert.Fail("Expected success result but was failure.");
         }
 
@@ -57,8 +65,10 @@ public static class FluentAssertionExtensions {
     /// <param name="result">The result to assert.</param>
     /// <returns>A FailureAssertion for the error.</returns>
     public static FailureAssertion EnsureFailure<T1>(this Result<T1> result)
-        where T1 : notnull {
-        if (result.TryGet(out _, out var error)) {
+        where T1 : notnull
+    {
+        if (result.TryGet(out _, out var error))
+        {
             Assert.Fail("Expected failure result but was success.");
         }
 
@@ -73,8 +83,10 @@ public static class FluentAssertionExtensions {
     /// <returns>An instance of <see cref="SuccessAssertion{Unit}" /> representing the success state of the result.</returns>
     public static SuccessAssertion<(T1, T2)> EnsureSuccess<T1, T2>(this Result<T1, T2> result)
         where T1 : notnull
-        where T2 : notnull {
-        if (!result.TryGet(out var v1, out var v2)) {
+        where T2 : notnull
+    {
+        if (!result.TryGet(out var v1, out var v2))
+        {
             Assert.Fail("Expected success result but was failure.");
         }
 
@@ -91,8 +103,10 @@ public static class FluentAssertionExtensions {
     /// <exception cref="Xunit.Sdk.XunitException">Thrown when the result is not a failure.</exception>
     public static FailureAssertion EnsureFailure<T1, T2>(this Result<T1, T2> result)
         where T1 : notnull
-        where T2 : notnull {
-        if (result.TryGet(out _, out _, out var error)) {
+        where T2 : notnull
+    {
+        if (result.TryGet(out _, out _, out var error))
+        {
             Assert.Fail("Expected failure result but was success.");
         }
 
@@ -108,8 +122,10 @@ public static class FluentAssertionExtensions {
     public static SuccessAssertion<(T1, T2, T3)> EnsureSuccess<T1, T2, T3>(this Result<T1, T2, T3> result)
         where T1 : notnull
         where T2 : notnull
-        where T3 : notnull {
-        if (!result.TryGet(out var v1, out var v2, out var v3)) {
+        where T3 : notnull
+    {
+        if (!result.TryGet(out var v1, out var v2, out var v3))
+        {
             Assert.Fail("Expected success result but was failure.");
         }
 
@@ -124,8 +140,10 @@ public static class FluentAssertionExtensions {
     public static FailureAssertion EnsureFailure<T1, T2, T3>(this Result<T1, T2, T3> result)
         where T1 : notnull
         where T2 : notnull
-        where T3 : notnull {
-        if (result.TryGet(out _, out _, out _, out var error)) {
+        where T3 : notnull
+    {
+        if (result.TryGet(out _, out _, out _, out var error))
+        {
             Assert.Fail("Expected failure result but was success.");
         }
 
@@ -142,8 +160,10 @@ public static class FluentAssertionExtensions {
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
-        where T4 : notnull {
-        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4)) {
+        where T4 : notnull
+    {
+        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4))
+        {
             Assert.Fail("Expected success result but was failure.");
         }
 
@@ -161,8 +181,10 @@ public static class FluentAssertionExtensions {
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
-        where T4 : notnull {
-        if (result.TryGet(out _, out _, out _, out _, out var error)) {
+        where T4 : notnull
+    {
+        if (result.TryGet(out _, out _, out _, out _, out var error))
+        {
             Assert.Fail("Expected failure result but was success.");
         }
 
@@ -179,8 +201,10 @@ public static class FluentAssertionExtensions {
         where T2 : notnull
         where T3 : notnull
         where T4 : notnull
-        where T5 : notnull {
-        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5)) {
+        where T5 : notnull
+    {
+        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5))
+        {
             Assert.Fail("Expected success result but was failure.");
         }
 
@@ -196,8 +220,10 @@ public static class FluentAssertionExtensions {
         where T2 : notnull
         where T3 : notnull
         where T4 : notnull
-        where T5 : notnull {
-        if (result.TryGet(out _, out _, out _, out _, out _, out var error)) {
+        where T5 : notnull
+    {
+        if (result.TryGet(out _, out _, out _, out _, out _, out var error))
+        {
             Assert.Fail("Expected failure result but was success.");
         }
 
@@ -215,8 +241,10 @@ public static class FluentAssertionExtensions {
         where T3 : notnull
         where T4 : notnull
         where T5 : notnull
-        where T6 : notnull {
-        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6)) {
+        where T6 : notnull
+    {
+        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6))
+        {
             Assert.Fail("Expected success result but was failure.");
         }
 
@@ -233,8 +261,10 @@ public static class FluentAssertionExtensions {
         where T3 : notnull
         where T4 : notnull
         where T5 : notnull
-        where T6 : notnull {
-        if (result.TryGet(out _, out _, out _, out _, out _, out _, out var error)) {
+        where T6 : notnull
+    {
+        if (result.TryGet(out _, out _, out _, out _, out _, out _, out var error))
+        {
             Assert.Fail("Expected failure result but was success.");
         }
 
@@ -260,8 +290,10 @@ public static class FluentAssertionExtensions {
         where T4 : notnull
         where T5 : notnull
         where T6 : notnull
-        where T7 : notnull {
-        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7)) {
+        where T7 : notnull
+    {
+        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7))
+        {
             Assert.Fail("Expected success result but was failure.");
         }
 
@@ -279,8 +311,10 @@ public static class FluentAssertionExtensions {
         where T4 : notnull
         where T5 : notnull
         where T6 : notnull
-        where T7 : notnull {
-        if (result.TryGet(out _, out _, out _, out _, out _, out _, out _, out var error)) {
+        where T7 : notnull
+    {
+        if (result.TryGet(out _, out _, out _, out _, out _, out _, out _, out var error))
+        {
             Assert.Fail("Expected failure result but was success.");
         }
 
@@ -308,8 +342,10 @@ public static class FluentAssertionExtensions {
         where T5 : notnull
         where T6 : notnull
         where T7 : notnull
-        where T8 : notnull {
-        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7, out var v8)) {
+        where T8 : notnull
+    {
+        if (!result.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7, out var v8))
+        {
             Assert.Fail("Expected success result but was failure.");
         }
 
@@ -337,8 +373,10 @@ public static class FluentAssertionExtensions {
         where T5 : notnull
         where T6 : notnull
         where T7 : notnull
-        where T8 : notnull {
-        if (result.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var error)) {
+        where T8 : notnull
+    {
+        if (result.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var error))
+        {
             Assert.Fail("Expected failure result but was success.");
         }
 
@@ -353,8 +391,10 @@ public static class FluentAssertionExtensions {
     /// <param name="option">The option to assert.</param>
     /// <returns>A SomeAssertion for the contained value.</returns>
     public static SomeAssertion<T> EnsureSome<T>(this Option<T> option)
-        where T : notnull {
-        if (!option.Some(out var value)) {
+        where T : notnull
+    {
+        if (!option.Some(out var value))
+        {
             Assert.Fail("Expected Option.Some but was None.");
         }
 
@@ -368,8 +408,10 @@ public static class FluentAssertionExtensions {
     /// <param name="option">The option to assert.</param>
     /// <returns>A NoneAssertion to allow further chaining.</returns>
     public static NoneAssertion EnsureNone<T>(this Option<T> option)
-        where T : notnull {
-        if (option.IsSome) {
+        where T : notnull
+    {
+        if (option.IsSome)
+        {
             Assert.Fail("Expected Option.None but was Some.");
         }
 
@@ -381,7 +423,8 @@ public static class FluentAssertionExtensions {
     /// </summary>
     /// <param name="task">The task producing the result.</param>
     /// <returns>A SuccessAssertion wrapping Unit.</returns>
-    public static async Task<SuccessAssertion<Unit>> EnsureSuccess(this Task<Result> task) {
+    public static async Task<SuccessAssertion<Unit>> EnsureSuccess(this Task<Result> task)
+    {
         return (await task.ConfigureAwait(false)).EnsureSuccess();
     }
 
@@ -390,7 +433,8 @@ public static class FluentAssertionExtensions {
     /// </summary>
     /// <param name="task">The task producing the result.</param>
     /// <returns>A FailureAssertion.</returns>
-    public static async Task<FailureAssertion> EnsureFailure(this Task<Result> task) {
+    public static async Task<FailureAssertion> EnsureFailure(this Task<Result> task)
+    {
         return (await task.ConfigureAwait(false)).EnsureFailure();
     }
 
@@ -401,7 +445,8 @@ public static class FluentAssertionExtensions {
     /// <param name="task">The task producing the result.</param>
     /// <returns>A SuccessAssertion for the contained value.</returns>
     public static async Task<SuccessAssertion<T1>> EnsureSuccess<T1>(this Task<Result<T1>> task)
-        where T1 : notnull {
+        where T1 : notnull
+    {
         return (await task.ConfigureAwait(false)).EnsureSuccess();
     }
 
@@ -412,7 +457,8 @@ public static class FluentAssertionExtensions {
     /// <param name="task">The task producing the result.</param>
     /// <returns>A FailureAssertion.</returns>
     public static async Task<FailureAssertion> EnsureFailure<T1>(this Task<Result<T1>> task)
-        where T1 : notnull {
+        where T1 : notnull
+    {
         return (await task.ConfigureAwait(false)).EnsureFailure();
     }
 
@@ -423,7 +469,8 @@ public static class FluentAssertionExtensions {
     /// <param name="task">The task producing the option.</param>
     /// <returns>A SomeAssertion for the contained value.</returns>
     public static async Task<SomeAssertion<T>> EnsureSome<T>(this Task<Option<T>> task)
-        where T : notnull {
+        where T : notnull
+    {
         return (await task.ConfigureAwait(false)).EnsureSome();
     }
 
@@ -434,18 +481,20 @@ public static class FluentAssertionExtensions {
     /// <param name="task">The task producing the option.</param>
     /// <returns>A NoneAssertion to allow further chaining.</returns>
     public static async Task<NoneAssertion> EnsureNone<T>(this Task<Option<T>> task)
-        where T : notnull {
+        where T : notnull
+    {
         return (await task.ConfigureAwait(false)).EnsureNone();
     }
 
-   
+
 
     /// <summary>
     ///     Asserts that the ValueTask of Result resolves to a successful outcome.
     /// </summary>
     /// <param name="vt">The ValueTask to await.</param>
     /// <returns>A SuccessAssertion wrapping Unit.</returns>
-    public static async ValueTask<SuccessAssertion<Unit>> EnsureSuccess(this ValueTask<Result> vt) {
+    public static async ValueTask<SuccessAssertion<Unit>> EnsureSuccess(this ValueTask<Result> vt)
+    {
         return (await vt.ConfigureAwait(false)).EnsureSuccess();
     }
 
@@ -454,7 +503,8 @@ public static class FluentAssertionExtensions {
     /// </summary>
     /// <param name="vt">The ValueTask to await.</param>
     /// <returns>A FailureAssertion.</returns>
-    public static async ValueTask<FailureAssertion> EnsureFailure(this ValueTask<Result> vt) {
+    public static async ValueTask<FailureAssertion> EnsureFailure(this ValueTask<Result> vt)
+    {
         return (await vt.ConfigureAwait(false)).EnsureFailure();
     }
 
@@ -465,7 +515,8 @@ public static class FluentAssertionExtensions {
     /// <param name="vt">The ValueTask to await.</param>
     /// <returns>A SuccessAssertion for the contained value.</returns>
     public static async ValueTask<SuccessAssertion<T1>> EnsureSuccess<T1>(this ValueTask<Result<T1>> vt)
-        where T1 : notnull {
+        where T1 : notnull
+    {
         return (await vt.ConfigureAwait(false)).EnsureSuccess();
     }
 
@@ -476,7 +527,8 @@ public static class FluentAssertionExtensions {
     /// <param name="vt">The ValueTask to await.</param>
     /// <returns>A FailureAssertion.</returns>
     public static async ValueTask<FailureAssertion> EnsureFailure<T1>(this ValueTask<Result<T1>> vt)
-        where T1 : notnull {
+        where T1 : notnull
+    {
         return (await vt.ConfigureAwait(false)).EnsureFailure();
     }
 
@@ -487,7 +539,8 @@ public static class FluentAssertionExtensions {
     /// <param name="vt">The ValueTask to await.</param>
     /// <returns>A SomeAssertion for the contained value.</returns>
     public static async ValueTask<SomeAssertion<T>> EnsureSome<T>(this ValueTask<Option<T>> vt)
-        where T : notnull {
+        where T : notnull
+    {
         return (await vt.ConfigureAwait(false)).EnsureSome();
     }
 
@@ -498,11 +551,12 @@ public static class FluentAssertionExtensions {
     /// <param name="vt">The ValueTask to await.</param>
     /// <returns>A NoneAssertion to allow further chaining.</returns>
     public static async ValueTask<NoneAssertion> EnsureNone<T>(this ValueTask<Option<T>> vt)
-        where T : notnull {
+        where T : notnull
+    {
         return (await vt.ConfigureAwait(false)).EnsureNone();
     }
 
-  
+
 
     /// <summary>
     ///     Applies a predicate to the success value, failing the assertion if the predicate is not satisfied.
@@ -513,11 +567,13 @@ public static class FluentAssertionExtensions {
     /// <param name="because">An optional reason to include if the assertion fails.</param>
     /// <returns>The same SuccessAssertion instance.</returns>
     public static SuccessAssertion<T> Where<T>(this SuccessAssertion<T> assertion,
-                                               Func<T, bool>            predicate,
-                                               string?                  because = null)
-        where T : notnull {
+                                               Func<T, bool> predicate,
+                                               string? because = null)
+        where T : notnull
+    {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (!predicate(assertion.Value)) {
+        if (!predicate(assertion.Value))
+        {
             Assert.Fail(because ?? $"Value '{assertion.Value}' does not satisfy predicate.");
         }
 
@@ -528,15 +584,19 @@ public static class FluentAssertionExtensions {
     ///     Applies a predicate to the error of a failure assertion, failing if the predicate is not satisfied.
     /// </summary>
     /// <param name="assertion">The failure assertion to evaluate.</param>
-    /// <param name="predicate">The predicate to test the error against.</param>
+    /// <param name="predicate">The predicate to test the errors against.</param>
     /// <param name="because">An optional reason to include if the assertion fails.</param>
     /// <returns>The same FailureAssertion instance.</returns>
     public static FailureAssertion Where(this FailureAssertion assertion,
-                                         Func<Exception, bool> predicate,
-                                         string?               because = null) {
+                                         Func<IEnumerable<IError>, bool> predicate,
+                                         string? because = null)
+    {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (!predicate(assertion.Error)) {
-            Assert.Fail(because ?? $"Error '{assertion.Error.Message}' does not satisfy predicate.");
+        if (!predicate(assertion.Errors))
+        {
+            var firstError = assertion.Errors.FirstOrDefault();
+            var errorMessage = firstError?.Message ?? "Unknown error";
+            Assert.Fail(because ?? $"Errors do not satisfy predicate. First error: '{errorMessage}'");
         }
 
         return assertion;
@@ -551,11 +611,13 @@ public static class FluentAssertionExtensions {
     /// <param name="because">An optional reason to include if the assertion fails.</param>
     /// <returns>The same SomeAssertion instance.</returns>
     public static SomeAssertion<T> Where<T>(this SomeAssertion<T> assertion,
-                                            Func<T, bool>         predicate,
-                                            string?               because = null)
-        where T : notnull {
+                                            Func<T, bool> predicate,
+                                            string? because = null)
+        where T : notnull
+    {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (!predicate(assertion.Value)) {
+        if (!predicate(assertion.Value))
+        {
             Assert.Fail(because ?? $"Value '{assertion.Value}' does not satisfy predicate.");
         }
 
@@ -574,12 +636,14 @@ public static class FluentAssertionExtensions {
     /// <exception cref="ArgumentNullException">Thrown if the <paramref name="predicate" /> is null.</exception>
     /// <exception cref="Xunit.Sdk.XunitException">Thrown if the predicate is not satisfied by the left value.</exception>
     public static LeftAssertion<TLeft, TRight> WhereLeft<TLeft, TRight>(this LeftAssertion<TLeft, TRight> assertion,
-                                                                        Func<TLeft, bool>                 predicate,
-                                                                        string?                           because = null)
+                                                                        Func<TLeft, bool> predicate,
+                                                                        string? because = null)
         where TLeft : notnull
-        where TRight : notnull {
+        where TRight : notnull
+    {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (!predicate(assertion.Value)) {
+        if (!predicate(assertion.Value))
+        {
             Assert.Fail(because ?? $"Left value '{assertion.Value}' does not satisfy predicate.");
         }
 
@@ -595,12 +659,14 @@ public static class FluentAssertionExtensions {
     /// <exception cref="ArgumentNullException">Thrown when the predicate is null.</exception>
     /// <exception cref="Xunit.Sdk.XunitException">Thrown when the "Right" value does not satisfy the predicate.</exception>
     public static RightAssertion<TLeft, TRight> WhereRight<TLeft, TRight>(this RightAssertion<TLeft, TRight> assertion,
-                                                                          Func<TRight, bool>                 predicate,
-                                                                          string?                            because = null)
+                                                                          Func<TRight, bool> predicate,
+                                                                          string? because = null)
         where TLeft : notnull
-        where TRight : notnull {
+        where TRight : notnull
+    {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (!predicate(assertion.Value)) {
+        if (!predicate(assertion.Value))
+        {
             Assert.Fail(because ?? $"Right value '{assertion.Value}' does not satisfy predicate.");
         }
 

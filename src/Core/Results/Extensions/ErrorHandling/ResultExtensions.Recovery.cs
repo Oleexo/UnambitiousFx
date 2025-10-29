@@ -1,8 +1,10 @@
+using UnambitiousFx.Core.Results.Reasons;
+
 namespace UnambitiousFx.Core.Results.Extensions.ErrorHandling;
 
 public static partial class ResultExtensions {
-    public static Result<TValue> Recover<TValue>(this Result<TValue>     result,
-                                                 Func<Exception, TValue> recover)
+    public static Result<TValue> Recover<TValue>(this Result<TValue>               result,
+                                                 Func<IEnumerable<IError>, TValue> recover)
         where TValue : notnull {
         if (result.TryGet(out _, out var error)) {
             return result;
@@ -18,8 +20,8 @@ public static partial class ResultExtensions {
         return result.Recover(_ => fallback);
     }
 
-    public static Result<TValue1, TValue2> Recover<TValue1, TValue2>(this Result<TValue1, TValue2>       result,
-                                                                     Func<Exception, (TValue1, TValue2)> recover)
+    public static Result<TValue1, TValue2> Recover<TValue1, TValue2>(this Result<TValue1, TValue2>                 result,
+                                                                     Func<IEnumerable<IError>, (TValue1, TValue2)> recover)
         where TValue1 : notnull
         where TValue2 : notnull {
         if (result.TryGet(out _, out _, out var error)) {
@@ -38,8 +40,8 @@ public static partial class ResultExtensions {
         return result.Recover(_ => (fallback1, fallback2));
     }
 
-    public static Result<TValue1, TValue2, TValue3> Recover<TValue1, TValue2, TValue3>(this Result<TValue1, TValue2, TValue3>       result,
-                                                                                       Func<Exception, (TValue1, TValue2, TValue3)> recover)
+    public static Result<TValue1, TValue2, TValue3> Recover<TValue1, TValue2, TValue3>(this Result<TValue1, TValue2, TValue3>                 result,
+                                                                                       Func<IEnumerable<IError>, (TValue1, TValue2, TValue3)> recover)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull {
@@ -61,8 +63,8 @@ public static partial class ResultExtensions {
         return result.Recover(_ => (fallback1, fallback2, fallback3));
     }
 
-    public static Result<TValue1, TValue2, TValue3, TValue4> Recover<TValue1, TValue2, TValue3, TValue4>(this Result<TValue1, TValue2, TValue3, TValue4>       result,
-                                                                                                         Func<Exception, (TValue1, TValue2, TValue3, TValue4)> recover)
+    public static Result<TValue1, TValue2, TValue3, TValue4> Recover<TValue1, TValue2, TValue3, TValue4>(this Result<TValue1, TValue2, TValue3, TValue4>                 result,
+                                                                                                         Func<IEnumerable<IError>, (TValue1, TValue2, TValue3, TValue4)> recover)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -88,8 +90,8 @@ public static partial class ResultExtensions {
     }
 
     public static Result<TValue1, TValue2, TValue3, TValue4, TValue5> Recover<TValue1, TValue2, TValue3, TValue4, TValue5>(
-        this Result<TValue1, TValue2, TValue3, TValue4, TValue5>       result,
-        Func<Exception, (TValue1, TValue2, TValue3, TValue4, TValue5)> recover)
+        this Result<TValue1, TValue2, TValue3, TValue4, TValue5>                 result,
+        Func<IEnumerable<IError>, (TValue1, TValue2, TValue3, TValue4, TValue5)> recover)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -119,8 +121,8 @@ public static partial class ResultExtensions {
     }
 
     public static Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6> Recover<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(
-        this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>       result,
-        Func<Exception, (TValue1, TValue2, TValue3, TValue4, TValue5, TValue6)> recover)
+        this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>                 result,
+        Func<IEnumerable<IError>, (TValue1, TValue2, TValue3, TValue4, TValue5, TValue6)> recover)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -153,8 +155,8 @@ public static partial class ResultExtensions {
     }
 
     public static Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> Recover<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(
-        this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>       result,
-        Func<Exception, (TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7)> recover)
+        this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>                 result,
+        Func<IEnumerable<IError>, (TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7)> recover)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -190,8 +192,8 @@ public static partial class ResultExtensions {
     }
 
     public static Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8> Recover<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(
-        this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>       result,
-        Func<Exception, (TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8)> recover)
+        this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>                 result,
+        Func<IEnumerable<IError>, (TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8)> recover)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull

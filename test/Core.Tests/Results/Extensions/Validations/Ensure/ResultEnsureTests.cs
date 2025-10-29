@@ -1,3 +1,4 @@
+using UnambitiousFx.Core.Results.Reasons;
 using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Extensions.Validations;
@@ -28,7 +29,7 @@ public sealed class ResultEnsureTests {
         var ensured = r.Ensure(x => x != 5, _ => new Exception("bad"));
 
         if (!ensured.TryGet(out _, out var err)) {
-            Assert.Equal("bad", err.Message);
+            Assert.Equal("bad", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");
@@ -47,7 +48,7 @@ public sealed class ResultEnsureTests {
         }, _ => new Exception("bad"));
 
         if (!ensured.TryGet(out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
             Assert.Equal(0,  called);
         }
         else {
@@ -82,7 +83,7 @@ public sealed class ResultEnsureTests {
                                                    _) => new Exception("bad"));
 
         if (!ensured.TryGet(out _, out _, out var err)) {
-            Assert.Equal("bad", err.Message);
+            Assert.Equal("bad", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");
@@ -103,7 +104,7 @@ public sealed class ResultEnsureTests {
             _) => new Exception("bad"));
 
         if (!ensured.TryGet(out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
             Assert.Equal(0,  called);
         }
         else {
@@ -143,7 +144,7 @@ public sealed class ResultEnsureTests {
                                                        _) => new Exception("bad"));
 
         if (!ensured.TryGet(out _, out _, out _, out var err)) {
-            Assert.Equal("bad", err.Message);
+            Assert.Equal("bad", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");
@@ -166,7 +167,7 @@ public sealed class ResultEnsureTests {
             _) => new Exception("bad"));
 
         if (!ensured.TryGet(out _, out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
             Assert.Equal(0,  called);
         }
         else {
@@ -211,7 +212,7 @@ public sealed class ResultEnsureTests {
                                                            _) => new Exception("bad"));
 
         if (!ensured.TryGet(out _, out _, out _, out _, out var err)) {
-            Assert.Equal("bad", err.Message);
+            Assert.Equal("bad", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");
@@ -236,7 +237,7 @@ public sealed class ResultEnsureTests {
             _) => new Exception("bad"));
 
         if (!ensured.TryGet(out _, out _, out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
             Assert.Equal(0,  called);
         }
         else {
@@ -286,7 +287,7 @@ public sealed class ResultEnsureTests {
                                                                _) => new Exception("bad"));
 
         if (!ensured.TryGet(out _, out _, out _, out _, out _, out var err)) {
-            Assert.Equal("bad", err.Message);
+            Assert.Equal("bad", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");
@@ -313,7 +314,7 @@ public sealed class ResultEnsureTests {
             _) => new Exception("bad"));
 
         if (!ensured.TryGet(out _, out _, out _, out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
             Assert.Equal(0,  called);
         }
         else {
@@ -368,7 +369,7 @@ public sealed class ResultEnsureTests {
                                                                    _) => new Exception("bad"));
 
         if (!ensured.TryGet(out _, out _, out _, out _, out _, out _, out var err)) {
-            Assert.Equal("bad", err.Message);
+            Assert.Equal("bad", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");
@@ -397,7 +398,7 @@ public sealed class ResultEnsureTests {
             _) => new Exception("bad"));
 
         if (!ensured.TryGet(out _, out _, out _, out _, out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
             Assert.Equal(0,  called);
         }
         else {
@@ -457,7 +458,7 @@ public sealed class ResultEnsureTests {
                                                                        _) => new Exception("bad"));
 
         if (!ensured.TryGet(out _, out _, out _, out _, out _, out _, out _, out var err)) {
-            Assert.Equal("bad", err.Message);
+            Assert.Equal("bad", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");
@@ -488,7 +489,7 @@ public sealed class ResultEnsureTests {
             _) => new Exception("bad"));
 
         if (!ensured.TryGet(out _, out _, out _, out _, out _, out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
             Assert.Equal(0,  called);
         }
         else {
@@ -553,7 +554,7 @@ public sealed class ResultEnsureTests {
                                                                            _) => new Exception("bad"));
 
         if (!ensured.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
-            Assert.Equal("bad", err.Message);
+            Assert.Equal("bad", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");
@@ -586,7 +587,7 @@ public sealed class ResultEnsureTests {
             _) => new Exception("bad"));
 
         if (!ensured.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
             Assert.Equal(0,  called);
         }
         else {

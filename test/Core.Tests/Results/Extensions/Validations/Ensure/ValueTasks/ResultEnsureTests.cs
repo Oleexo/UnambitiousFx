@@ -30,7 +30,7 @@ public sealed class ResultEnsureTests {
         Assert.False(r.TryGet(out _));
         Assert.False(r.TryGet(out _, out var error));
         Assert.NotNull(error);
-        Assert.Equal("v was 0", error.Message);
+        Assert.Equal("v was 0", error.FirstOrDefault()?.Message ?? string.Empty);
     }
 
     [Fact]
@@ -93,7 +93,7 @@ public sealed class ResultEnsureTests {
         Assert.False(r.TryGet(out _, out _));
         Assert.False(r.TryGet(out _, out _, out var error));
         Assert.NotNull(error);
-        Assert.Equal("2+3 != 6", error.Message);
+        Assert.Equal("2+3 != 6", error.FirstOrDefault()?.Message ?? string.Empty);
     }
 
     [Fact]
@@ -146,7 +146,7 @@ public sealed class ResultEnsureTests {
         Assert.False(r.TryGet(out _, out _, out _));
         Assert.False(r.TryGet(out _, out _, out _, out var error));
         Assert.NotNull(error);
-        Assert.Equal("1+2+3 != 7", error.Message);
+        Assert.Equal("1+2+3 != 7", error.FirstOrDefault()?.Message ?? string.Empty);
     }
 
     [Fact]
@@ -206,7 +206,7 @@ public sealed class ResultEnsureTests {
         Assert.False(r.TryGet(out _, out _, out _, out _));
         Assert.False(r.TryGet(out _, out _, out _, out _, out var error));
         Assert.NotNull(error);
-        Assert.Equal("1+2+3+4 != 11", error.Message);
+        Assert.Equal("1+2+3+4 != 11", error.FirstOrDefault()?.Message ?? string.Empty);
     }
 
     [Fact]
@@ -273,7 +273,7 @@ public sealed class ResultEnsureTests {
         Assert.False(r.TryGet(out _, out _, out _, out _, out _));
         Assert.False(r.TryGet(out _, out _, out _, out _, out _, out var error));
         Assert.NotNull(error);
-        Assert.Equal("1+2+3+4+5 != 16", error.Message);
+        Assert.Equal("1+2+3+4+5 != 16", error.FirstOrDefault()?.Message ?? string.Empty);
     }
 
     [Fact]
@@ -347,7 +347,7 @@ public sealed class ResultEnsureTests {
         Assert.False(r.TryGet(out _, out _, out _, out _, out _, out _));
         Assert.False(r.TryGet(out _, out _, out _, out _, out _, out _, out var error));
         Assert.NotNull(error);
-        Assert.Equal("1+2+3+4+5+6 != 22", error.Message);
+        Assert.Equal("1+2+3+4+5+6 != 22", error.FirstOrDefault()?.Message ?? string.Empty);
     }
 
     [Fact]
@@ -428,7 +428,7 @@ public sealed class ResultEnsureTests {
         Assert.False(r.TryGet(out _, out _, out _, out _, out _, out _, out _));
         Assert.False(r.TryGet(out _, out _, out _, out _, out _, out _, out _, out var error));
         Assert.NotNull(error);
-        Assert.Equal("1+2+3+4+5+6+7 != 29", error.Message);
+        Assert.Equal("1+2+3+4+5+6+7 != 29", error.FirstOrDefault()?.Message ?? string.Empty);
     }
 
     [Fact]
@@ -516,7 +516,7 @@ public sealed class ResultEnsureTests {
         Assert.False(r.TryGet(out _, out _, out _, out _, out _, out _, out _, out _));
         Assert.False(r.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var error));
         Assert.NotNull(error);
-        Assert.Equal("1+2+3+4+5+6+7+8 != 37", error.Message);
+        Assert.Equal("1+2+3+4+5+6+7+8 != 37", error.FirstOrDefault()?.Message ?? string.Empty);
     }
 
     [Fact]

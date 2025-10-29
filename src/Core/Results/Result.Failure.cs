@@ -19,12 +19,7 @@ internal sealed class FailureResult : Result, IFailureResult {
         : this(new Exception(message)) {
     }
 
-    /// <summary>
-    ///     The primary causal exception for this failure.
-    /// </summary>
-
     public override bool IsFaulted => true;
-
     public override bool IsSuccess => false;
 
     public override void Match(Action                      success,
@@ -39,7 +34,7 @@ internal sealed class FailureResult : Result, IFailureResult {
 
     public override bool TryGet([NotNullWhen(false)] out IEnumerable<IError>? errors) {
         errors = Errors;
-        return true;
+        return false;
     }
 
     public override void IfSuccess(Action action) {

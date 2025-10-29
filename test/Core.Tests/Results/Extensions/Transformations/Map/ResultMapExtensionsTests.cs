@@ -1,3 +1,4 @@
+using UnambitiousFx.Core.Results.Reasons;
 using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Extensions.Transformations;
@@ -34,7 +35,7 @@ public sealed class ResultMapExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
             Assert.False(called);
         }
         else {
@@ -75,7 +76,7 @@ public sealed class ResultMapExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
             Assert.False(called);
         }
         else {
@@ -119,7 +120,7 @@ public sealed class ResultMapExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
             Assert.False(called);
         }
         else {
@@ -166,7 +167,7 @@ public sealed class ResultMapExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
             Assert.False(called);
         }
         else {
@@ -216,7 +217,7 @@ public sealed class ResultMapExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
             Assert.False(called);
         }
         else {
@@ -269,7 +270,7 @@ public sealed class ResultMapExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
             Assert.False(called);
         }
         else {
@@ -325,7 +326,7 @@ public sealed class ResultMapExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
             Assert.False(called);
         }
         else {
@@ -384,7 +385,7 @@ public sealed class ResultMapExtensionsTests {
         });
 
         if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
-            Assert.Equal(ex, err);
+            var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Equal(ex, firstError.Exception);
             Assert.False(called);
         }
         else {

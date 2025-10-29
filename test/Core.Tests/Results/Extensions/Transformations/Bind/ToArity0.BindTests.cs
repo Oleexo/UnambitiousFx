@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.Results.Reasons;
 using UnambitiousFx.Core.Results.Extensions.Transformations;
 using UnambitiousFx.Core.XUnit.Results;
 
@@ -24,7 +25,7 @@ public sealed class ToArity0BindTests {
                              return Result.Success();
                          });
         res.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -47,7 +48,7 @@ public sealed class ToArity0BindTests {
                              return Result.Success();
                          });
         res.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -72,7 +73,7 @@ public sealed class ToArity0BindTests {
                              return Result.Success();
                          });
         res.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -99,7 +100,7 @@ public sealed class ToArity0BindTests {
                              return Result.Success();
                          });
         res.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -128,7 +129,7 @@ public sealed class ToArity0BindTests {
                              return Result.Success();
                          });
         res.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -159,7 +160,7 @@ public sealed class ToArity0BindTests {
                              return Result.Success();
                          });
         res.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -192,7 +193,7 @@ public sealed class ToArity0BindTests {
                              return Result.Success();
                          });
         res.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -227,7 +228,7 @@ public sealed class ToArity0BindTests {
                              return Result.Success();
                          });
         res.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 }

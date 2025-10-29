@@ -1,8 +1,37 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 using UnambitiousFx.Core.Results.Reasons;
 
 namespace UnambitiousFx.Core.Results;
 
+public partial class Result
+{
+    public static Result<TValue1, TValue2, TValue3, TValue4> Success<TValue1, TValue2, TValue3, TValue4>(TValue1 value1, TValue2 value2, TValue3 value3, TValue4 value4) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull {
+        return new SuccessResult<TValue1, TValue2, TValue3, TValue4>(value1, value2, value3, value4);
+    }
+    
+    public static Result<TValue1, TValue2, TValue3, TValue4> Failure<TValue1, TValue2, TValue3, TValue4>(Exception error) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull {
+        return new FailureResult<TValue1, TValue2, TValue3, TValue4>(error);
+    }
+    
+    public static Result<TValue1, TValue2, TValue3, TValue4> Failure<TValue1, TValue2, TValue3, TValue4>(IError error) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull {
+        var r = new FailureResult<TValue1, TValue2, TValue3, TValue4>(error.Exception ?? new Exception(error.Message), false);
+        r.AddReason(error);
+        foreach (var kv in error.Metadata) {
+            r.AddMetadata(kv.Key, kv.Value);
+        }
+        return r;
+    }
+    
+    public static Result<TValue1, TValue2, TValue3, TValue4> Failure<TValue1, TValue2, TValue3, TValue4>(string message) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull {
+        return new FailureResult<TValue1, TValue2, TValue3, TValue4>(new Exception(message));
+    }
+    
+    public static Result<TValue1, TValue2, TValue3, TValue4> Failure<TValue1, TValue2, TValue3, TValue4>(IEnumerable<IError> errors) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull {
+        return new FailureResult<TValue1, TValue2, TValue3, TValue4>(errors);
+    }
+    
+}
 /// <summary>
 /// Represents the result of an operation that can succeed with 4 value(s) or fail with an exception.
 /// </summary>

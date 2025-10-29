@@ -1,3 +1,4 @@
+using UnambitiousFx.Core.OneOf;
 
 namespace UnambitiousFx.Core.Tests.OneOf;
 
@@ -55,7 +56,7 @@ public sealed class OneOf3Tests
     public void FromThird_ShouldStoreValue() {
         var result = OneOf<int, string, bool>.FromThird(true);
         Assert.True(result.Third(out var extracted));
-        Assert.Equal(true, extracted);
+        Assert.True(extracted);
         Assert.False(result.First(out _));
         Assert.False(result.Second(out _));
     }
@@ -78,7 +79,7 @@ public sealed class OneOf3Tests
     public void FromThird_WhenMatchWithResponse_ShouldReturnThirdValue() {
         var oneOf = OneOf<int, string, bool>.FromThird(true);
         var result = oneOf.Match(_ => { Assert.Fail("First handler was called for OneOf holding Third value"); return default; }, _ => { Assert.Fail("Second handler was called for OneOf holding Third value"); return default; }, x => x);
-        Assert.Equal(true, result);
+        Assert.True(result);
     }
     
     [Fact]
@@ -96,7 +97,7 @@ public sealed class OneOf3Tests
     [Fact]
     public void FromThird_WhenMatch_ShouldCallThirdHandler() {
         var oneOf = OneOf<int, string, bool>.FromThird(true);
-        oneOf.Match(_ => { Assert.Fail("First handler was called for OneOf holding Third value"); }, _ => { Assert.Fail("Second handler was called for OneOf holding Third value"); }, x => { Assert.Equal(true, x); });
+        oneOf.Match(_ => { Assert.Fail("First handler was called for OneOf holding Third value"); }, _ => { Assert.Fail("Second handler was called for OneOf holding Third value"); }, x => { Assert.True(x); });
     }
     
     [Fact]
@@ -120,7 +121,7 @@ public sealed class OneOf3Tests
         OneOf<int, string, bool> result = true;
         Assert.True(result.IsThird);
         Assert.True(result.Third(out var value));
-        Assert.Equal(true, value);
+        Assert.True(value);
     }
     
 }

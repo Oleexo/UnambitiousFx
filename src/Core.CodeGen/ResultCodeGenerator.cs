@@ -4,46 +4,79 @@ using UnambitiousFx.Core.CodeGen.Results.Builders;
 
 namespace UnambitiousFx.Core.CodeGen;
 
-internal class ResultCodeGenerator : ICodeGenerator
-{
+internal sealed class ResultCodeGenerator : ICodeGenerator {
     private readonly string _baseNamespace;
-    private const int StartArity = 1;
-    private const string DirectoryName = "Results";
+    private const    int    StartArity    = 1;
+    private const    string ClassName     = "Result";
+    private const    string DirectoryName = "Results";
 
-    public ResultCodeGenerator(string baseNamespace) => _baseNamespace = baseNamespace;
+    public ResultCodeGenerator(string baseNamespace) {
+        if (string.IsNullOrWhiteSpace(baseNamespace))
+            throw new ArgumentException("Base namespace cannot be null or whitespace.", nameof(baseNamespace));
+        _baseNamespace = baseNamespace;
+    }
 
     public void Generate(ushort numberOfArity,
-                         string outputPath)
-    {
-        outputPath = Path.Combine(outputPath, DirectoryName);
-        if (!Directory.Exists(outputPath)) Directory.CreateDirectory(outputPath);
+                         string outputPath) {
+        if (numberOfArity < StartArity)
+            throw new ArgumentOutOfRangeException(nameof(numberOfArity), $"Arity must be >= {StartArity}.");
 
-        // Clean stale previously generated files (old signature versions etc.)
-        foreach (var stale in Directory.EnumerateFiles(outputPath, "Result*.cs"))
-        {
-            File.Delete(stale);
+        if (string.IsNullOrWhiteSpace(outputPath))
+            throw new ArgumentException("Output path cannot be null or whitespace.", nameof(outputPath));
+
+        outputPath = Path.Combine(outputPath, DirectoryName);
+        if (!Directory.Exists(outputPath)) {
+            Directory.CreateDirectory(outputPath);
         }
 
-        for (ushort arity = StartArity; arity <= numberOfArity; arity++)
-        {
-            WriteClassFile(outputPath, arity, suffix: string.Empty, ResultBaseClassBuilder.Build(arity));
-            WriteClassFile(outputPath, arity, suffix: ".Success", SuccessResultClassBuilder.Build(arity));
-            WriteClassFile(outputPath, arity, suffix: ".Failure", FailureResultClassBuilder.Build(arity));
-            // Static factory generation currently disabled pending naming strategy to avoid conflict between generic/non-generic type names.
+        for (ushort i = StartArity; i <= numberOfArity; i++) {
+            GenerateResultBase(i, outputPath);
+            GenerateSuccessImplementation(i, outputPath);
+            GenerateFailureImplementation(i, outputPath);
         }
     }
 
-    private void WriteClassFile(string outputPath,
-                                ushort arity,
-                                string suffix,
-                                ClassWriter classWriter)
-    {
+    private void GenerateResultBase(ushort arity,
+                                    string outputPath) {
         var fileWriter = new FileWriter($"{_baseNamespace}.Results");
-        fileWriter.AddClass(classWriter);
-        var fileName = Path.Combine(outputPath, $"Result{arity}{suffix}.cs");
-        using var stringWriter = new StringWriter();
+        fileWriter.AddClass(ResultStaticFactoryBuilder.Build(arity));
+        fileWriter.AddClass(ResultBaseClassBuilder.Build(arity));
+
+        var fileName = Path.Combine(outputPath, $"{ClassName}{arity}.cs");
+
+        WriteFile(fileWriter, fileName);
+    }
+
+
+    private void GenerateSuccessImplementation(ushort arity,
+                                               string outputPath) {
+        var fileWriter  = new FileWriter($"{_baseNamespace}.Results");
+        fileWriter.AddClass(SuccessResultClassBuilder.Build(arity));
+
+        var fileName = Path.Combine(outputPath, $"{ClassName}{arity}.Success.cs");
+
+        WriteFile(fileWriter, fileName);
+    }
+
+    private void GenerateFailureImplementation(ushort arity,
+                                               string outputPath) {
+        var fileWriter  = new FileWriter($"{_baseNamespace}.Results");
+        fileWriter.AddClass(FailureResultClassBuilder.Build(arity));
+
+        var fileName = Path.Combine(outputPath, $"{ClassName}{arity}.Failure.cs");
+
+        WriteFile(fileWriter, fileName);
+    }
+
+    private static void WriteFile(FileWriter fileWriter,
+                                  string     fileName) {
+        using var stringWriter   = new StringWriter();
         using var indentedWriter = new IndentedTextWriter(stringWriter, Constant.Spacing);
         fileWriter.Write(indentedWriter);
         File.WriteAllText(fileName, stringWriter.ToString());
     }
+
+
+
+
 }

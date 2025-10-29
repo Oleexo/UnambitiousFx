@@ -1,8 +1,37 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 using UnambitiousFx.Core.Results.Reasons;
 
 namespace UnambitiousFx.Core.Results;
 
+public partial class Result
+{
+    public static Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> Success<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(TValue1 value1, TValue2 value2, TValue3 value3, TValue4 value4, TValue5 value5, TValue6 value6, TValue7 value7) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull {
+        return new SuccessResult<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(value1, value2, value3, value4, value5, value6, value7);
+    }
+    
+    public static Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> Failure<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(Exception error) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull {
+        return new FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(error);
+    }
+    
+    public static Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> Failure<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(IError error) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull {
+        var r = new FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(error.Exception ?? new Exception(error.Message), false);
+        r.AddReason(error);
+        foreach (var kv in error.Metadata) {
+            r.AddMetadata(kv.Key, kv.Value);
+        }
+        return r;
+    }
+    
+    public static Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> Failure<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(string message) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull {
+        return new FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(new Exception(message));
+    }
+    
+    public static Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> Failure<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(IEnumerable<IError> errors) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull {
+        return new FailureResult<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(errors);
+    }
+    
+}
 /// <summary>
 /// Represents the result of an operation that can succeed with 7 value(s) or fail with an exception.
 /// </summary>

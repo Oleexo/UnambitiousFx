@@ -1,35 +1,32 @@
-﻿namespace UnambitiousFx.Core.Results.Extensions.ErrorHandling;
+﻿using UnambitiousFx.Core.Results.Reasons;
 
-public static partial class ResultExtensions
-{
+namespace UnambitiousFx.Core.Results.Extensions.ErrorHandling;
+
+public static partial class ResultExtensions {
     public static bool HasException<TException>(this Result result)
-        where TException : Exception
-    {
-        return !result.TryGet(out var err) && err is TException;
+        where TException : Exception {
+        return !result.IsSuccess && result.Reasons.OfType<IError>().Any(x => x.Exception is TException);
     }
 
     public static bool HasException<TException, TValue1>(this Result<TValue1> result)
         where TException : Exception
-        where TValue1 : notnull
-    {
-        return !result.TryGet(out Exception? err) && err is TException;
+        where TValue1 : notnull {
+        return !result.IsSuccess && result.Reasons.OfType<IError>().Any(x => x.Exception is TException);
     }
 
     public static bool HasException<TException, TValue1, TValue2>(this Result<TValue1, TValue2> result)
         where TException : Exception
         where TValue1 : notnull
-        where TValue2 : notnull
-    {
-        return !result.TryGet(out Exception? err) && err is TException;
+        where TValue2 : notnull {
+        return !result.IsSuccess && result.Reasons.OfType<IError>().Any(x => x.Exception is TException);
     }
 
     public static bool HasException<TException, TValue1, TValue2, TValue3>(this Result<TValue1, TValue2, TValue3> result)
         where TException : Exception
         where TValue1 : notnull
         where TValue2 : notnull
-        where TValue3 : notnull
-    {
-        return !result.TryGet(out Exception? err) && err is TException;
+        where TValue3 : notnull {
+        return !result.IsSuccess && result.Reasons.OfType<IError>().Any(x => x.Exception is TException);
     }
 
     public static bool HasException<TException, TValue1, TValue2, TValue3, TValue4>(this Result<TValue1, TValue2, TValue3, TValue4> result)
@@ -37,9 +34,8 @@ public static partial class ResultExtensions
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
-        where TValue4 : notnull
-    {
-        return !result.TryGet(out Exception? err) && err is TException;
+        where TValue4 : notnull {
+        return !result.IsSuccess && result.Reasons.OfType<IError>().Any(x => x.Exception is TException);
     }
 
     public static bool HasException<TException, TValue1, TValue2, TValue3, TValue4, TValue5>(this Result<TValue1, TValue2, TValue3, TValue4, TValue5> result)
@@ -48,9 +44,8 @@ public static partial class ResultExtensions
         where TValue2 : notnull
         where TValue3 : notnull
         where TValue4 : notnull
-        where TValue5 : notnull
-    {
-        return !result.TryGet(out Exception? err) && err is TException;
+        where TValue5 : notnull {
+        return !result.IsSuccess && result.Reasons.OfType<IError>().Any(x => x.Exception is TException);
     }
 
     public static bool HasException<TException, TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6> result)
@@ -60,9 +55,8 @@ public static partial class ResultExtensions
         where TValue3 : notnull
         where TValue4 : notnull
         where TValue5 : notnull
-        where TValue6 : notnull
-    {
-        return !result.TryGet(out Exception? err) && err is TException;
+        where TValue6 : notnull {
+        return !result.IsSuccess && result.Reasons.OfType<IError>().Any(x => x.Exception is TException);
     }
 
     public static bool HasException<TException, TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(
@@ -74,9 +68,8 @@ public static partial class ResultExtensions
         where TValue4 : notnull
         where TValue5 : notnull
         where TValue6 : notnull
-        where TValue7 : notnull
-    {
-        return !result.TryGet(out Exception? err) && err is TException;
+        where TValue7 : notnull {
+        return !result.IsSuccess && result.Reasons.OfType<IError>().Any(x => x.Exception is TException);
     }
 
     public static bool HasException<TException, TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(
@@ -89,8 +82,7 @@ public static partial class ResultExtensions
         where TValue5 : notnull
         where TValue6 : notnull
         where TValue7 : notnull
-        where TValue8 : notnull
-    {
-        return !result.TryGet(out Exception? err) && err is TException;
+        where TValue8 : notnull {
+        return !result.IsSuccess && result.Reasons.OfType<IError>().Any(x => x.Exception is TException);
     }
 }

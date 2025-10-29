@@ -1,10 +1,11 @@
 ﻿using UnambitiousFx.Core.Results.Extensions.ValueAccess.Tasks;
+using UnambitiousFx.Core.Results.Reasons;
 
 namespace UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
 
 public static partial class ResultExtensions {
     public static Task<Result<TValue>> MapErrorAsync<TValue>(this Result<TValue>              result,
-                                                             Func<Exception, Task<Exception>> mapError)
+                                                             Func<IEnumerable<IError>, Task<IEnumerable<IError>>> mapError)
         where TValue : notnull {
         return result.Match<Task<Result<TValue>>>(
             value => Task.FromResult(Result.Success(value)),
@@ -13,7 +14,7 @@ public static partial class ResultExtensions {
     }
 
     public static Task<Result<TValue>> MapErrorAsync<TValue>(this Task<Result<TValue>>        awaitableResult,
-                                                             Func<Exception, Task<Exception>> mapError)
+                                                             Func<IEnumerable<IError>, Task<IEnumerable<IError>>> mapError)
         where TValue : notnull {
         return awaitableResult.MatchAsync<Result<TValue>, TValue>(
             value => Task.FromResult(Result.Success<TValue>(value)),
@@ -22,7 +23,7 @@ public static partial class ResultExtensions {
     }
 
     public static Task<Result<TValue1, TValue2>> MapErrorAsync<TValue1, TValue2>(this Result<TValue1, TValue2>    result,
-                                                                                 Func<Exception, Task<Exception>> mapError)
+                                                                                 Func<IEnumerable<IError>, Task<IEnumerable<IError>>> mapError)
         where TValue1 : notnull
         where TValue2 : notnull {
         return result.Match<Task<Result<TValue1, TValue2>>>(
@@ -33,7 +34,7 @@ public static partial class ResultExtensions {
     }
 
     public static Task<Result<TValue1, TValue2>> MapErrorAsync<TValue1, TValue2>(this Task<Result<TValue1, TValue2>> awaitableResult,
-                                                                                 Func<Exception, Task<Exception>>    mapError)
+                                                                                 Func<IEnumerable<IError>, Task<IEnumerable<IError>>>    mapError)
         where TValue1 : notnull
         where TValue2 : notnull {
         return awaitableResult.MatchAsync(
@@ -44,7 +45,7 @@ public static partial class ResultExtensions {
     }
 
     public static Task<Result<TValue1, TValue2, TValue3>> MapErrorAsync<TValue1, TValue2, TValue3>(this Result<TValue1, TValue2, TValue3> result,
-                                                                                                   Func<Exception, Task<Exception>>       mapError)
+                                                                                                   Func<IEnumerable<IError>, Task<IEnumerable<IError>>>       mapError)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull {
@@ -57,7 +58,7 @@ public static partial class ResultExtensions {
     }
 
     public static Task<Result<TValue1, TValue2, TValue3>> MapErrorAsync<TValue1, TValue2, TValue3>(this Task<Result<TValue1, TValue2, TValue3>> awaitableResult,
-                                                                                                   Func<Exception, Task<Exception>>             mapError)
+                                                                                                   Func<IEnumerable<IError>, Task<IEnumerable<IError>>>             mapError)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull {
@@ -70,7 +71,7 @@ public static partial class ResultExtensions {
     }
 
     public static Task<Result<TValue1, TValue2, TValue3, TValue4>> MapErrorAsync<TValue1, TValue2, TValue3, TValue4>(this Result<TValue1, TValue2, TValue3, TValue4> result,
-                                                                                                                     Func<Exception, Task<Exception>>                mapError)
+                                                                                                                     Func<IEnumerable<IError>, Task<IEnumerable<IError>>>                mapError)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -86,7 +87,7 @@ public static partial class ResultExtensions {
 
     public static Task<Result<TValue1, TValue2, TValue3, TValue4>> MapErrorAsync<TValue1, TValue2, TValue3, TValue4>(
         this Task<Result<TValue1, TValue2, TValue3, TValue4>> awaitableResult,
-        Func<Exception, Task<Exception>>                      mapError)
+        Func<IEnumerable<IError>, Task<IEnumerable<IError>>>                      mapError)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -102,7 +103,7 @@ public static partial class ResultExtensions {
 
     public static Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5>> MapErrorAsync<TValue1, TValue2, TValue3, TValue4, TValue5>(
         this Result<TValue1, TValue2, TValue3, TValue4, TValue5> result,
-        Func<Exception, Task<Exception>>                         mapError)
+        Func<IEnumerable<IError>, Task<IEnumerable<IError>>>                         mapError)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -121,7 +122,7 @@ public static partial class ResultExtensions {
 
     public static Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5>> MapErrorAsync<TValue1, TValue2, TValue3, TValue4, TValue5>(
         this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5>> awaitableResult,
-        Func<Exception, Task<Exception>>                               mapError)
+        Func<IEnumerable<IError>, Task<IEnumerable<IError>>>                               mapError)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -140,7 +141,7 @@ public static partial class ResultExtensions {
 
     public static Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>> MapErrorAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(
         this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6> result,
-        Func<Exception, Task<Exception>>                                  mapError)
+        Func<IEnumerable<IError>, Task<IEnumerable<IError>>>                                  mapError)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -161,7 +162,7 @@ public static partial class ResultExtensions {
 
     public static Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>> MapErrorAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(
         this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>> awaitableResult,
-        Func<Exception, Task<Exception>>                                        mapError)
+        Func<IEnumerable<IError>, Task<IEnumerable<IError>>>                                        mapError)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -182,7 +183,7 @@ public static partial class ResultExtensions {
 
     public static Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>> MapErrorAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(
         this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> result,
-        Func<Exception, Task<Exception>>                                           mapError)
+        Func<IEnumerable<IError>, Task<IEnumerable<IError>>>                                           mapError)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -205,7 +206,7 @@ public static partial class ResultExtensions {
 
     public static Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>> MapErrorAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(
         this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>> awaitableResult,
-        Func<Exception, Task<Exception>>                                                 mapError)
+        Func<IEnumerable<IError>, Task<IEnumerable<IError>>>                                                 mapError)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -229,7 +230,7 @@ public static partial class ResultExtensions {
     public static Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>>
         MapErrorAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(
             this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8> result,
-            Func<Exception, Task<Exception>>                                                    mapError)
+            Func<IEnumerable<IError>, Task<IEnumerable<IError>>>                                                    mapError)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
@@ -255,7 +256,7 @@ public static partial class ResultExtensions {
     public static Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>>
         MapErrorAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(
             this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>> awaitableResult,
-            Func<Exception, Task<Exception>>                                                          mapError)
+            Func<IEnumerable<IError>, Task<IEnumerable<IError>>>                                                          mapError)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull

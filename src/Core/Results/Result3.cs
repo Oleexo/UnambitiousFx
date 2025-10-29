@@ -1,8 +1,37 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 using UnambitiousFx.Core.Results.Reasons;
 
 namespace UnambitiousFx.Core.Results;
 
+public partial class Result
+{
+    public static Result<TValue1, TValue2, TValue3> Success<TValue1, TValue2, TValue3>(TValue1 value1, TValue2 value2, TValue3 value3) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull {
+        return new SuccessResult<TValue1, TValue2, TValue3>(value1, value2, value3);
+    }
+    
+    public static Result<TValue1, TValue2, TValue3> Failure<TValue1, TValue2, TValue3>(Exception error) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull {
+        return new FailureResult<TValue1, TValue2, TValue3>(error);
+    }
+    
+    public static Result<TValue1, TValue2, TValue3> Failure<TValue1, TValue2, TValue3>(IError error) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull {
+        var r = new FailureResult<TValue1, TValue2, TValue3>(error.Exception ?? new Exception(error.Message), false);
+        r.AddReason(error);
+        foreach (var kv in error.Metadata) {
+            r.AddMetadata(kv.Key, kv.Value);
+        }
+        return r;
+    }
+    
+    public static Result<TValue1, TValue2, TValue3> Failure<TValue1, TValue2, TValue3>(string message) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull {
+        return new FailureResult<TValue1, TValue2, TValue3>(new Exception(message));
+    }
+    
+    public static Result<TValue1, TValue2, TValue3> Failure<TValue1, TValue2, TValue3>(IEnumerable<IError> errors) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull {
+        return new FailureResult<TValue1, TValue2, TValue3>(errors);
+    }
+    
+}
 /// <summary>
 /// Represents the result of an operation that can succeed with 3 value(s) or fail with an exception.
 /// </summary>

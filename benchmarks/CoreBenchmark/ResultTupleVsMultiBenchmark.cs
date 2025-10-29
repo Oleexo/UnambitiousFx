@@ -58,14 +58,14 @@ public class ResultTupleVsMultiBenchmark
     [Benchmark(Description = "Ok Success (Tuple)")]
     public int Ok_Success_Tuple()
     {
-        _tupleSuccess.Ok(out var value);
+        _tupleSuccess.TryGet(out var value);
         return value.Item1 + value.Item2 + value.Item3;
     }
 
     [Benchmark(Description = "Ok Success (Multi)")]
     public int Ok_Success_Multi()
     {
-        _multiSuccess.Ok(out var x, out var y, out var z);
+        _multiSuccess.TryGet(out var x, out var y, out var z);
         return x + y + z;
     }
 
@@ -73,12 +73,12 @@ public class ResultTupleVsMultiBenchmark
     [Benchmark(Description = "Ok Failure (Tuple)")]
     public bool Ok_Failure_Tuple()
     {
-        return _tupleFailure.Ok(out _);
+        return _tupleFailure.TryGet(out _);
     }
 
     [Benchmark(Description = "Ok Failure (Multi)")]
     public bool Ok_Failure_Multi()
     {
-        return _multiFailure.Ok(out _, out _, out _);
+        return _multiFailure.TryGet(out _, out _, out _);
     }
 }

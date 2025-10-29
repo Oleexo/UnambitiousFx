@@ -6,8 +6,7 @@ public static partial class ResultExtensions {
         ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(prefix) ||
             result.IsSuccess) return result; // no-op
-        var mapped = result.MapError(e => new Exception(prefix + e.Message, e));
-        return Preserve(result, mapped);
+        return result.MapErrors(errs => new Exception(prefix + errs[0].Message, errs[0]));
     }
 
     public static Result<T1> PrependError<T1>(this Result<T1> result,
@@ -16,8 +15,7 @@ public static partial class ResultExtensions {
         ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(prefix) ||
             result.IsSuccess) return result; // no-op
-        var mapped = result.MapError(e => new Exception(prefix + e.Message, e));
-        return Preserve(result, mapped);
+        return result.MapErrors(errs => new Exception(prefix + errs[0].Message, errs[0]));
     }
 
     public static Result<T1, T2> PrependError<T1, T2>(this Result<T1, T2> result,
@@ -27,7 +25,7 @@ public static partial class ResultExtensions {
         ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(prefix) ||
             result.IsSuccess) return result;
-        return result.ShapeError(e => new Exception(prefix + e.Message, e));
+        return result.MapErrors(errs => new Exception(prefix + errs[0].Message, errs[0]));
     }
 
     public static Result<T1, T2, T3> PrependError<T1, T2, T3>(this Result<T1, T2, T3> result,
@@ -38,7 +36,7 @@ public static partial class ResultExtensions {
         ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(prefix) ||
             result.IsSuccess) return result;
-        return result.ShapeError(e => new Exception(prefix + e.Message, e));
+        return result.MapErrors(errs => new Exception(prefix + errs[0].Message, errs[0]));
     }
 
     public static Result<T1, T2, T3, T4> PrependError<T1, T2, T3, T4>(this Result<T1, T2, T3, T4> result,
@@ -50,7 +48,7 @@ public static partial class ResultExtensions {
         ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(prefix) ||
             result.IsSuccess) return result;
-        return result.ShapeError(e => new Exception(prefix + e.Message, e));
+        return result.MapErrors(errs => new Exception(prefix + errs[0].Message, errs[0]));
     }
 
     public static Result<T1, T2, T3, T4, T5> PrependError<T1, T2, T3, T4, T5>(this Result<T1, T2, T3, T4, T5> result,
@@ -63,7 +61,7 @@ public static partial class ResultExtensions {
         ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(prefix) ||
             result.IsSuccess) return result;
-        return result.ShapeError(e => new Exception(prefix + e.Message, e));
+        return result.MapErrors(errs => new Exception(prefix + errs[0].Message, errs[0]));
     }
 
     public static Result<T1, T2, T3, T4, T5, T6> PrependError<T1, T2, T3, T4, T5, T6>(this Result<T1, T2, T3, T4, T5, T6> result,
@@ -77,7 +75,7 @@ public static partial class ResultExtensions {
         ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(prefix) ||
             result.IsSuccess) return result;
-        return result.ShapeError(e => new Exception(prefix + e.Message, e));
+        return result.MapErrors(errs => new Exception(prefix + errs[0].Message, errs[0]));
     }
 
     public static Result<T1, T2, T3, T4, T5, T6, T7> PrependError<T1, T2, T3, T4, T5, T6, T7>(this Result<T1, T2, T3, T4, T5, T6, T7> result,
@@ -92,7 +90,7 @@ public static partial class ResultExtensions {
         ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(prefix) ||
             result.IsSuccess) return result;
-        return result.ShapeError(e => new Exception(prefix + e.Message, e));
+        return result.MapErrors(errs => new Exception(prefix + errs[0].Message, errs[0]));
     }
 
     public static Result<T1, T2, T3, T4, T5, T6, T7, T8> PrependError<T1, T2, T3, T4, T5, T6, T7, T8>(this Result<T1, T2, T3, T4, T5, T6, T7, T8> result,
@@ -108,6 +106,6 @@ public static partial class ResultExtensions {
         ArgumentNullException.ThrowIfNull(result);
         if (string.IsNullOrEmpty(prefix) ||
             result.IsSuccess) return result;
-        return result.ShapeError(e => new Exception(prefix + e.Message, e));
+        return result.MapErrors(errs => new Exception(prefix + errs[0].Message, errs[0]));
     }
 }

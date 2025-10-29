@@ -22,7 +22,7 @@ public sealed class ResultExtensionsTests {
         var appended = r.AppendError("!");
 
         if (!appended.TryGet(out var err)) {
-            Assert.Equal("boom!", err.Message);
+            Assert.Equal("boom!", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");
@@ -56,7 +56,7 @@ public sealed class ResultExtensionsTests {
         var appended = r.AppendError("?");
 
         if (!appended.TryGet(out _, out var err)) {
-            Assert.Equal("bad?", err.Message);
+            Assert.Equal("bad?", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");
@@ -91,7 +91,7 @@ public sealed class ResultExtensionsTests {
         var appended = r.AppendError("+");
 
         if (!appended.TryGet(out _, out _, out var err)) {
-            Assert.Equal("ouch+", err.Message);
+            Assert.Equal("ouch+", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");
@@ -127,7 +127,7 @@ public sealed class ResultExtensionsTests {
         var appended = r.AppendError("*");
 
         if (!appended.TryGet(out _, out _, out _, out var err)) {
-            Assert.Equal("trip*", err.Message);
+            Assert.Equal("trip*", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");
@@ -164,7 +164,7 @@ public sealed class ResultExtensionsTests {
         var appended = r.AppendError("#");
 
         if (!appended.TryGet(out _, out _,out _,out _, out var err)) {
-            Assert.Equal("quad#", err.Message);
+            Assert.Equal("quad#", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");
@@ -202,7 +202,7 @@ public sealed class ResultExtensionsTests {
         var appended = r.AppendError("@");
 
         if (!appended.TryGet(out _,out _,out _,out _,out _, out var err)) {
-            Assert.Equal("penta@", err.Message);
+            Assert.Equal("penta@", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");
@@ -241,7 +241,7 @@ public sealed class ResultExtensionsTests {
         var appended = r.AppendError("%");
 
         if (!appended.TryGet(out _,out _,out _,out _,out _,out _, out var err)) {
-            Assert.Equal("hexa%", err.Message);
+            Assert.Equal("hexa%", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");
@@ -281,7 +281,7 @@ public sealed class ResultExtensionsTests {
         var appended = r.AppendError("=");
 
         if (!appended.TryGet(out _,out _,out _,out _,out _,out _,out _, out var err)) {
-            Assert.Equal("hepta=", err.Message);
+            Assert.Equal("hepta=", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");
@@ -322,7 +322,7 @@ public sealed class ResultExtensionsTests {
         var appended = r.AppendError("^");
 
         if (!appended.TryGet(out _,out _,out _,out _,out _,out _,out _,out _, out var err)) {
-            Assert.Equal("octa^", err.Message);
+            Assert.Equal("octa^", err.FirstOrDefault()?.Message ?? string.Empty);
         }
         else {
             Assert.Fail("Expected failure");

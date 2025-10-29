@@ -19,7 +19,7 @@ internal sealed class SuccessResult : Result, ISuccessResult {
 
     public override bool TryGet([NotNullWhen(false)] out IEnumerable<IError>? errors) {
         errors = null;
-        return false;
+        return true;
     }
 
     public override void IfSuccess(Action action) {

@@ -3,7 +3,7 @@ using UnambitiousFx.Core.CodeGen.Design;
 
 namespace UnambitiousFx.Core.CodeGen;
 
-internal class OneOfTestsGenerator : ICodeGenerator {
+internal sealed class OneOfTestsGenerator : ICodeGenerator {
     private readonly string _baseNamespace;
     private const    int    StartArity    = 2;
     private const    string ClassName     = "OneOf";
@@ -26,6 +26,7 @@ internal class OneOfTestsGenerator : ICodeGenerator {
 
         var classWriter = CreateTestClass(arity);
         fileWriter.AddClass(classWriter);
+        fileWriter.AddUsing("UnambitiousFx.Core.OneOf");
 
         outputPath = Path.Combine(outputPath, DirectoryName);
         if (!Directory.Exists(outputPath)) {
@@ -42,7 +43,7 @@ internal class OneOfTestsGenerator : ICodeGenerator {
 
     private ClassWriter CreateTestClass(ushort arity) {
         var genericParams = Enumerable.Range(1, arity)
-                                      .Select(i => GetTestType(i))
+                                      .Select(GetTestType)
                                       .ToArray();
 
         var allTypeParams = string.Join(", ", genericParams);
@@ -130,7 +131,7 @@ internal class OneOfTestsGenerator : ICodeGenerator {
         for (ushort i = 1; i <= arity; i++) {
             var ordinalName = GetOrdinalName(i);
             var testValue   = GetTestValue(i);
-            var testBody    = GenerateImplicitConversionTestBody(allTypeParams, ordinalName, testValue);
+            var testBody    = GenerateImplicitConversionTestBody(i, allTypeParams, ordinalName, testValue);
 
             classWriter.AddMethod(new MethodWriter(
                                       name: $"ImplicitConversion_From{ordinalName}_ShouldWork",
@@ -172,7 +173,13 @@ internal class OneOfTestsGenerator : ICodeGenerator {
 
         var body = $"var result = OneOf<{genericTypes}>.From{ordinalName}(value);\n\n";
         body += $"Assert.True(result.{ordinalName}(out var extracted));\n";
-        body += "Assert.Equal(value, extracted);\n";
+
+        if (GetTestType(position) == "bool") {
+            body += "Assert.True(extracted);\n";
+        }
+        else {
+            body += "Assert.Equal(value, extracted);\n";
+        }
 
         for (ushort i = 1; i <= arity; i++) {
             if (i != position) {
@@ -209,7 +216,12 @@ internal class OneOfTestsGenerator : ICodeGenerator {
         }
 
         body += ");\n\n";
-        body += $"Assert.Equal({testValue}, result);";
+        if (GetTestType(position) == "bool") {
+            body += "Assert.True(result);";
+        }
+        else {
+            body += $"Assert.Equal({testValue}, result);";
+        }
 
         return body;
     }
@@ -230,7 +242,12 @@ internal class OneOfTestsGenerator : ICodeGenerator {
             if (i > 1) body += ", ";
 
             if (i == position) {
-                body += $"x => {{ Assert.Equal({testValue}, x); }}";
+                if (GetTestType(position) == "bool") {
+                    body += "x => { Assert.True(x); }";
+                }
+                else {
+                    body += $"x => {{ Assert.Equal({testValue}, x); }}";
+                }
             }
             else {
                 var currentOrdinal = GetOrdinalName(i);
@@ -243,13 +260,22 @@ internal class OneOfTestsGenerator : ICodeGenerator {
         return body;
     }
 
-    private string GenerateImplicitConversionTestBody(string allTypeParams,
+    private string GenerateImplicitConversionTestBody(ushort position,
+                                                      string allTypeParams,
                                                       string ordinalName,
                                                       string testValue) {
-        return $"OneOf<{allTypeParams}> result = {testValue};\n\n"    +
-               $"Assert.True(result.Is{ordinalName});\n"              +
-               $"Assert.True(result.{ordinalName}(out var value));\n" +
-               $"Assert.Equal({testValue}, value);";
+        var body = $"OneOf<{allTypeParams}> result = {testValue};\n\n" +
+                   $"Assert.True(result.Is{ordinalName});\n" +
+                   $"Assert.True(result.{ordinalName}(out var value));\n";
+
+        if (GetTestType(position) == "bool") {
+            body += "Assert.True(value);";
+        }
+        else {
+            body += $"Assert.Equal({testValue}, value);";
+        }
+
+        return body;
     }
 
     private string GetOrdinalName(int position) {

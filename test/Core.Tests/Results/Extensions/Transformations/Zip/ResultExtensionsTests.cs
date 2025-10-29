@@ -1,3 +1,4 @@
+using UnambitiousFx.Core.Results.Reasons;
 using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Extensions.Transformations;
@@ -29,7 +30,7 @@ public sealed class ResultExtensionsTests {
         var zipped = r1.Zip(r2);
 
         Assert.False(zipped.TryGet(out _, out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -41,7 +42,7 @@ public sealed class ResultExtensionsTests {
         var zipped = r1.Zip(r2);
 
         Assert.False(zipped.TryGet(out _, out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -66,7 +67,7 @@ public sealed class ResultExtensionsTests {
                                b) => a + b);
 
         Assert.False(proj.TryGet(out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -79,7 +80,7 @@ public sealed class ResultExtensionsTests {
                                b) => a + b);
 
         Assert.False(proj.TryGet(out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     #endregion
@@ -110,7 +111,7 @@ public sealed class ResultExtensionsTests {
         var zipped = r1.Zip(r2, r3);
 
         Assert.False(zipped.TryGet(out _, out _, out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -123,7 +124,7 @@ public sealed class ResultExtensionsTests {
         var zipped = r1.Zip(r2, r3);
 
         Assert.False(zipped.TryGet(out _, out _, out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -152,7 +153,7 @@ public sealed class ResultExtensionsTests {
                                    c) => a + b + c);
 
         Assert.False(proj.TryGet(out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -167,7 +168,7 @@ public sealed class ResultExtensionsTests {
                                    c) => a + b + c);
 
         Assert.False(proj.TryGet(out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     #endregion
@@ -201,7 +202,7 @@ public sealed class ResultExtensionsTests {
         var zipped = r1.Zip(r2, r3, r4);
 
         Assert.False(zipped.TryGet(out _, out _, out _, out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -215,7 +216,7 @@ public sealed class ResultExtensionsTests {
         var zipped = r1.Zip(r2, r3, r4);
 
         Assert.False(zipped.TryGet(out _, out _, out _, out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -248,7 +249,7 @@ public sealed class ResultExtensionsTests {
                                        d) => a + b + c + d);
 
         Assert.False(proj.TryGet(out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -265,7 +266,7 @@ public sealed class ResultExtensionsTests {
                                        d) => a + b + c + d);
 
         Assert.False(proj.TryGet(out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     #endregion
@@ -302,7 +303,7 @@ public sealed class ResultExtensionsTests {
         var zipped = r1.Zip(r2, r3, r4, r5);
 
         Assert.False(zipped.TryGet(out _, out _, out _, out _, out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -317,7 +318,7 @@ public sealed class ResultExtensionsTests {
         var zipped = r1.Zip(r2, r3, r4, r5);
 
         Assert.False(zipped.TryGet(out _, out _, out _, out _, out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -354,7 +355,7 @@ public sealed class ResultExtensionsTests {
                                            e) => a + b + c + d + e);
 
         Assert.False(proj.TryGet(out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -373,7 +374,7 @@ public sealed class ResultExtensionsTests {
                                            e) => a + b + c + d + e);
 
         Assert.False(proj.TryGet(out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     #endregion
@@ -413,7 +414,7 @@ public sealed class ResultExtensionsTests {
         var zipped = r1.Zip(r2, r3, r4, r5, r6);
 
         Assert.False(zipped.TryGet(out _, out _, out _, out _, out _, out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -429,7 +430,7 @@ public sealed class ResultExtensionsTests {
         var zipped = r1.Zip(r2, r3, r4, r5, r6);
 
         Assert.False(zipped.TryGet(out _, out _, out _, out _, out _, out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -470,7 +471,7 @@ public sealed class ResultExtensionsTests {
                                                f) => a + b + c + d + e + f);
 
         Assert.False(proj.TryGet(out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -491,7 +492,7 @@ public sealed class ResultExtensionsTests {
                                                f) => a + b + c + d + e + f);
 
         Assert.False(proj.TryGet(out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     #endregion
@@ -534,7 +535,7 @@ public sealed class ResultExtensionsTests {
         var zipped = r1.Zip(r2, r3, r4, r5, r6, r7);
 
         Assert.False(zipped.TryGet(out _, out _, out _, out _, out _, out _, out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -551,7 +552,7 @@ public sealed class ResultExtensionsTests {
         var zipped = r1.Zip(r2, r3, r4, r5, r6, r7);
 
         Assert.False(zipped.TryGet(out _, out _, out _, out _, out _, out _, out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -596,7 +597,7 @@ public sealed class ResultExtensionsTests {
                                                    g) => a + b + c + d + e + f + g);
 
         Assert.False(proj.TryGet(out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -619,7 +620,7 @@ public sealed class ResultExtensionsTests {
                                                    g) => a + b + c + d + e + f + g);
 
         Assert.False(proj.TryGet(out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     #endregion
@@ -665,7 +666,7 @@ public sealed class ResultExtensionsTests {
         var zipped = r1.Zip(r2, r3, r4, r5, r6, r7, r8);
 
         Assert.False(zipped.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -683,7 +684,7 @@ public sealed class ResultExtensionsTests {
         var zipped = r1.Zip(r2, r3, r4, r5, r6, r7, r8);
 
         Assert.False(zipped.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -732,7 +733,7 @@ public sealed class ResultExtensionsTests {
                                                        h) => a + b + c + d + e + f + g + h);
 
         Assert.False(proj.TryGet(out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -757,7 +758,7 @@ public sealed class ResultExtensionsTests {
                                                        h) => a + b + c + d + e + f + g + h);
 
         Assert.False(proj.TryGet(out _, out var err));
-        Assert.Same(ex, err);
+        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     #endregion

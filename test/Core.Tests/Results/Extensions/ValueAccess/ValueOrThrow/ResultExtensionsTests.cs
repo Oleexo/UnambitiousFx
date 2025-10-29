@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.Results.Reasons;
 using UnambitiousFx.Core.Results.Extensions.ValueAccess;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.ValueAccess.ValueOrThrow;
@@ -25,7 +26,7 @@ public sealed class ResultExtensionsTests {
     public void ValueOrThrow_Arity1_Failure_FactoryTransforms() {
         var ex     = new ArgumentException("bad");
         var r      = Result.Failure<int>(ex);
-        var custom = Assert.Throws<ApplicationException>(() => r.ValueOrThrow(e => new ApplicationException("wrapped", e)));
+        var custom = Assert.Throws<ApplicationException>(() => r.ValueOrThrow(errors => new ApplicationException("wrapped", errors.ToException())));
         Assert.IsType<ArgumentException>(custom.InnerException);
     }
 
@@ -60,7 +61,7 @@ public sealed class ResultExtensionsTests {
     public void ValueOrThrow_Arity2_Failure_FactoryTransforms() {
         var ex     = new ArgumentException("bad");
         var r      = Result.Failure<int, int>(ex);
-        var custom = Assert.Throws<ApplicationException>(() => r.ValueOrThrow(e => new ApplicationException("wrapped", e)));
+        var custom = Assert.Throws<ApplicationException>(() => r.ValueOrThrow(errors => new ApplicationException("wrapped", errors.ToException())));
         Assert.IsType<ArgumentException>(custom.InnerException);
     }
 
@@ -96,7 +97,7 @@ public sealed class ResultExtensionsTests {
     public void ValueOrThrow_Arity3_Failure_FactoryTransforms() {
         var ex     = new ArgumentException("bad");
         var r      = Result.Failure<int, int, int>(ex);
-        var custom = Assert.Throws<ApplicationException>(() => r.ValueOrThrow(e => new ApplicationException("wrapped", e)));
+        var custom = Assert.Throws<ApplicationException>(() => r.ValueOrThrow(errors => new ApplicationException("wrapped", errors.ToException())));
         Assert.IsType<ArgumentException>(custom.InnerException);
     }
 
@@ -133,7 +134,7 @@ public sealed class ResultExtensionsTests {
     public void ValueOrThrow_Arity4_Failure_FactoryTransforms() {
         var ex     = new ArgumentException("bad");
         var r      = Result.Failure<int, int, int, int>(ex);
-        var custom = Assert.Throws<ApplicationException>(() => r.ValueOrThrow(e => new ApplicationException("wrapped", e)));
+        var custom = Assert.Throws<ApplicationException>(() => r.ValueOrThrow(errors => new ApplicationException("wrapped", errors.ToException())));
         Assert.IsType<ArgumentException>(custom.InnerException);
     }
 
@@ -171,7 +172,7 @@ public sealed class ResultExtensionsTests {
     public void ValueOrThrow_Arity5_Failure_FactoryTransforms() {
         var ex     = new ArgumentException("bad");
         var r      = Result.Failure<int, int, int, int, int>(ex);
-        var custom = Assert.Throws<ApplicationException>(() => r.ValueOrThrow(e => new ApplicationException("wrapped", e)));
+        var custom = Assert.Throws<ApplicationException>(() => r.ValueOrThrow(errors => new ApplicationException("wrapped", errors.ToException())));
         Assert.IsType<ArgumentException>(custom.InnerException);
     }
 
@@ -210,7 +211,7 @@ public sealed class ResultExtensionsTests {
     public void ValueOrThrow_Arity6_Failure_FactoryTransforms() {
         var ex     = new ArgumentException("bad");
         var r      = Result.Failure<int, int, int, int, int, int>(ex);
-        var custom = Assert.Throws<ApplicationException>(() => r.ValueOrThrow(e => new ApplicationException("wrapped", e)));
+        var custom = Assert.Throws<ApplicationException>(() => r.ValueOrThrow(errors => new ApplicationException("wrapped", errors.ToException())));
         Assert.IsType<ArgumentException>(custom.InnerException);
     }
 
@@ -250,7 +251,7 @@ public sealed class ResultExtensionsTests {
     public void ValueOrThrow_Arity7_Failure_FactoryTransforms() {
         var ex     = new ArgumentException("bad");
         var r      = Result.Failure<int, int, int, int, int, int, int>(ex);
-        var custom = Assert.Throws<ApplicationException>(() => r.ValueOrThrow(e => new ApplicationException("wrapped", e)));
+        var custom = Assert.Throws<ApplicationException>(() => r.ValueOrThrow(errors => new ApplicationException("wrapped", errors.ToException())));
         Assert.IsType<ArgumentException>(custom.InnerException);
     }
 
@@ -291,7 +292,7 @@ public sealed class ResultExtensionsTests {
     public void ValueOrThrow_Arity8_Failure_FactoryTransforms() {
         var ex     = new ArgumentException("bad");
         var r      = Result.Failure<int, int, int, int, int, int, int, int>(ex);
-        var custom = Assert.Throws<ApplicationException>(() => r.ValueOrThrow(e => new ApplicationException("wrapped", e)));
+        var custom = Assert.Throws<ApplicationException>(() => r.ValueOrThrow(errors => new ApplicationException("wrapped", errors.ToException())));
         Assert.IsType<ArgumentException>(custom.InnerException);
     }
 

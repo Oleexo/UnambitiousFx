@@ -1,4 +1,8 @@
 ﻿using BenchmarkDotNet.Running;
 using CoreBenchmark;
 
-BenchmarkRunner.Run<ResultTupleVsMultiBenchmark>();
+BenchmarkSwitcher.FromTypes(new[]
+{
+    typeof(ResultTupleVsMultiBenchmark),
+    typeof(ResultVsFluentResultsBenchmark)
+}).Run(args);

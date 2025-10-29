@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.Results.Reasons;
 using UnambitiousFx.Core.Results.Extensions;
 using UnambitiousFx.Core.Results.Extensions.Transformations.Tasks;
 using UnambitiousFx.Core.XUnit.Results;
@@ -26,7 +27,7 @@ public sealed class FromArity0BindAsyncTaskTests {
                                  return Task.FromResult(Result.Success());
                              });
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -48,7 +49,7 @@ public sealed class FromArity0BindAsyncTaskTests {
                                  return Task.FromResult(Result.Success(1));
                              });
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -70,7 +71,7 @@ public sealed class FromArity0BindAsyncTaskTests {
                                  return Task.FromResult(Result.Success(1, 2));
                              });
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -92,7 +93,7 @@ public sealed class FromArity0BindAsyncTaskTests {
                                  return Task.FromResult(Result.Success(1, 2, 3));
                              });
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -114,7 +115,7 @@ public sealed class FromArity0BindAsyncTaskTests {
                                  return Task.FromResult(Result.Success(1, 2, 3, 4));
                              });
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -136,7 +137,7 @@ public sealed class FromArity0BindAsyncTaskTests {
                                  return Task.FromResult(Result.Success(1, 2, 3, 4, 5));
                              });
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -158,7 +159,7 @@ public sealed class FromArity0BindAsyncTaskTests {
                                  return Task.FromResult(Result.Success(1, 2, 3, 4, 5, 6));
                              });
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -180,7 +181,7 @@ public sealed class FromArity0BindAsyncTaskTests {
                                  return Task.FromResult(Result.Success(1, 2, 3, 4, 5, 6, 7));
                              });
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -202,7 +203,7 @@ public sealed class FromArity0BindAsyncTaskTests {
                                  return Task.FromResult(Result.Success(1, 2, 3, 4, 5, 6, 7, 8));
                              });
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -235,7 +236,7 @@ public sealed class FromArity0BindAsyncTaskTests {
         }, copyReasonsAndMetadata: true);
 
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
         // Copy=true exercised; binder not invoked and error preserved
         Assert.NotEmpty(r.Reasons);
@@ -270,7 +271,7 @@ public sealed class FromArity0BindAsyncTaskTests {
         }, copyReasonsAndMetadata: true);
 
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
         Assert.NotEmpty(r.Reasons);
         Assert.NotEmpty(r.Metadata);
@@ -305,7 +306,7 @@ public sealed class FromArity0BindAsyncTaskTests {
         }, copyReasonsAndMetadata: true);
 
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
         Assert.NotEmpty(r.Reasons);
         Assert.NotEmpty(r.Metadata);
@@ -340,7 +341,7 @@ public sealed class FromArity0BindAsyncTaskTests {
         }, copyReasonsAndMetadata: true);
 
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
         Assert.NotEmpty(r.Reasons);
         Assert.NotEmpty(r.Metadata);
@@ -371,7 +372,7 @@ public sealed class FromArity0BindAsyncTaskTests {
             return Result.Success(1, 2);
         }, copyReasonsAndMetadata: true);
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
         Assert.NotEmpty(r.Reasons);
         Assert.NotEmpty(r.Metadata);
@@ -402,7 +403,7 @@ public sealed class FromArity0BindAsyncTaskTests {
             return Task.FromResult(Result.Success(1, 2));
         }, copyReasonsAndMetadata: true);
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
         Assert.NotEmpty(r.Reasons);
         Assert.NotEmpty(r.Metadata);
@@ -433,7 +434,7 @@ public sealed class FromArity0BindAsyncTaskTests {
             return Result.Success(1, 2, 3);
         }, copyReasonsAndMetadata: true);
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
         Assert.NotEmpty(r.Reasons);
         Assert.NotEmpty(r.Metadata);
@@ -464,7 +465,7 @@ public sealed class FromArity0BindAsyncTaskTests {
             return Task.FromResult(Result.Success(1, 2, 3));
         }, copyReasonsAndMetadata: true);
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
         Assert.NotEmpty(r.Reasons);
         Assert.NotEmpty(r.Metadata);
@@ -495,7 +496,7 @@ public sealed class FromArity0BindAsyncTaskTests {
             return Result.Success(1, 2, 3, 4);
         }, copyReasonsAndMetadata: true);
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
         Assert.NotEmpty(r.Reasons);
         Assert.NotEmpty(r.Metadata);
@@ -526,7 +527,7 @@ public sealed class FromArity0BindAsyncTaskTests {
             return Task.FromResult(Result.Success(1, 2, 3, 4));
         }, copyReasonsAndMetadata: true);
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
         Assert.NotEmpty(r.Reasons);
         Assert.NotEmpty(r.Metadata);
@@ -557,7 +558,7 @@ public sealed class FromArity0BindAsyncTaskTests {
             return Result.Success(1, 2, 3, 4, 5);
         }, copyReasonsAndMetadata: true);
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
         Assert.NotEmpty(r.Reasons);
         Assert.NotEmpty(r.Metadata);
@@ -588,7 +589,7 @@ public sealed class FromArity0BindAsyncTaskTests {
             return Task.FromResult(Result.Success(1, 2, 3, 4, 5));
         }, copyReasonsAndMetadata: true);
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
         Assert.NotEmpty(r.Reasons);
         Assert.NotEmpty(r.Metadata);
@@ -619,7 +620,7 @@ public sealed class FromArity0BindAsyncTaskTests {
             return Result.Success(1, 2, 3, 4, 5, 6);
         }, copyReasonsAndMetadata: true);
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
         Assert.NotEmpty(r.Reasons);
         Assert.NotEmpty(r.Metadata);
@@ -650,7 +651,7 @@ public sealed class FromArity0BindAsyncTaskTests {
             return Task.FromResult(Result.Success(1, 2, 3, 4, 5, 6));
         }, copyReasonsAndMetadata: true);
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
         Assert.NotEmpty(r.Reasons);
         Assert.NotEmpty(r.Metadata);
@@ -681,7 +682,7 @@ public sealed class FromArity0BindAsyncTaskTests {
             return Result.Success(1, 2, 3, 4, 5, 6, 7);
         }, copyReasonsAndMetadata: true);
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
         Assert.NotEmpty(r.Reasons);
         Assert.NotEmpty(r.Metadata);
@@ -712,7 +713,7 @@ public sealed class FromArity0BindAsyncTaskTests {
             return Task.FromResult(Result.Success(1, 2, 3, 4, 5, 6, 7));
         }, copyReasonsAndMetadata: true);
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
         Assert.NotEmpty(r.Reasons);
         Assert.NotEmpty(r.Metadata);
@@ -743,7 +744,7 @@ public sealed class FromArity0BindAsyncTaskTests {
             return Result.Success(1, 2, 3, 4, 5, 6, 7, 8);
         }, copyReasonsAndMetadata: true);
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
         Assert.NotEmpty(r.Reasons);
         Assert.NotEmpty(r.Metadata);
@@ -774,7 +775,7 @@ public sealed class FromArity0BindAsyncTaskTests {
             return Task.FromResult(Result.Success(1, 2, 3, 4, 5, 6, 7, 8));
         }, copyReasonsAndMetadata: true);
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
         Assert.NotEmpty(r.Reasons);
         Assert.NotEmpty(r.Metadata);

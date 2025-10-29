@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.Results.Reasons;
 using UnambitiousFx.Core.Results.Extensions.Transformations.ValueTasks;
 using UnambitiousFx.Core.XUnit.Results;
 
@@ -25,7 +26,7 @@ public sealed class ToArity5BindAsyncValueTaskTests {
                                 return ValueTask.FromResult(Result.Success(1, 2, 3, 4, 5));
                             });
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -47,7 +48,7 @@ public sealed class ToArity5BindAsyncValueTaskTests {
                                 return ValueTask.FromResult(Result.Success(1, 2, 3, 4, 5));
                             });
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -69,7 +70,7 @@ public sealed class ToArity5BindAsyncValueTaskTests {
                                 return ValueTask.FromResult(Result.Success(1, 2, 3, 4, 5));
                             });
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -91,7 +92,7 @@ public sealed class ToArity5BindAsyncValueTaskTests {
                                 return ValueTask.FromResult(Result.Success(1, 2, 3, 4, 5));
                             });
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -113,7 +114,7 @@ public sealed class ToArity5BindAsyncValueTaskTests {
                                 return ValueTask.FromResult(Result.Success(1, 2, 3, 4, 5));
                             });
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -135,7 +136,7 @@ public sealed class ToArity5BindAsyncValueTaskTests {
                                 return ValueTask.FromResult(Result.Success(1, 2, 3, 4, 5));
                             });
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -157,7 +158,7 @@ public sealed class ToArity5BindAsyncValueTaskTests {
                                 return ValueTask.FromResult(Result.Success(1, 2, 3, 4, 5));
                             });
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -179,7 +180,7 @@ public sealed class ToArity5BindAsyncValueTaskTests {
                                 return ValueTask.FromResult(Result.Success(1, 2, 3, 4, 5));
                             });
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 
@@ -201,7 +202,7 @@ public sealed class ToArity5BindAsyncValueTaskTests {
                                 return ValueTask.FromResult(Result.Success(1, 2, 3, 4, 5));
                             });
         r.ShouldBeFailure(out var e);
-        Assert.Same(ex, e);
+        { var firstError = e?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
         Assert.False(called);
     }
 }

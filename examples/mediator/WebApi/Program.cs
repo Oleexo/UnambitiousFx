@@ -1,3 +1,5 @@
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using Application.Application.Todos;
 using Application.Domain.Entities;
 using Application.Domain.Events;
@@ -24,7 +26,6 @@ builder.Services.AddMediator(cfg => {
 });
 builder.Services.AddScoped<ITodoRepository, TodoRepository>();
 var app = builder.Build();
-
 app.MapGet("/", () => "Hello World!");
 
 var todoEndpoints = app.MapGroup("/todos");
