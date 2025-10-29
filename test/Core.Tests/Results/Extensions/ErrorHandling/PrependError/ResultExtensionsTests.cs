@@ -21,7 +21,7 @@ public sealed class ResultExtensionsTests {
 
         var prepended = r.PrependError("PRE: ");
 
-        if (!prepended.Ok(out var err)) {
+        if (!prepended.TryGet(out var err)) {
             Assert.Equal("PRE: boom", err.Message);
         }
         else {
@@ -44,7 +44,7 @@ public sealed class ResultExtensionsTests {
 
         var prepended = r.PrependError("[x]");
 
-        prepended.Ok(out var value, out _);
+        prepended.TryGet(out var value, out _);
         Assert.Equal(123, value);
     }
 
@@ -55,7 +55,7 @@ public sealed class ResultExtensionsTests {
 
         var prepended = r.PrependError("?? ");
 
-        if (!prepended.Ok(out _, out var err)) {
+        if (!prepended.TryGet(out _, out var err)) {
             Assert.Equal("?? bad", err.Message);
         }
         else {
@@ -78,7 +78,7 @@ public sealed class ResultExtensionsTests {
 
         var prepended = r.PrependError("[t]");
 
-        prepended.Ok(out var value1, out var value2, out _);
+        prepended.TryGet(out var value1, out var value2, out _);
         Assert.Equal(1, value1);
         Assert.Equal(2, value2);       
     }
@@ -90,7 +90,7 @@ public sealed class ResultExtensionsTests {
 
         var prepended = r.PrependError("+ ");
 
-        if (!prepended.Ok(out _,out _, out var err)) {
+        if (!prepended.TryGet(out _,out _, out var err)) {
             Assert.Equal("+ ouch", err.Message);
         }
         else {
@@ -113,7 +113,7 @@ public sealed class ResultExtensionsTests {
 
         var prepended = r.PrependError("[t]");
 
-        prepended.Ok(out var value1, out var value2, out var value3, out _);
+        prepended.TryGet(out var value1, out var value2, out var value3, out _);
         Assert.Equal(1, value1);
         Assert.Equal(2, value2);
         Assert.Equal(3, value3);
@@ -126,7 +126,7 @@ public sealed class ResultExtensionsTests {
 
         var prepended = r.PrependError("# ");
 
-        if (!prepended.Ok(out _,out _,out _, out var err)) {
+        if (!prepended.TryGet(out _,out _,out _, out var err)) {
             Assert.Equal("# ouch3", err.Message);
         }
         else {
@@ -149,7 +149,7 @@ public sealed class ResultExtensionsTests {
 
         var prepended = r.PrependError("[t]");
 
-        prepended.Ok(out var value1, out var value2, out var value3, out var value4, out _);
+        prepended.TryGet(out var value1, out var value2, out var value3, out var value4, out _);
         Assert.Equal(1, value1);
         Assert.Equal(2, value2);
         Assert.Equal(3, value3);
@@ -163,7 +163,7 @@ public sealed class ResultExtensionsTests {
 
         var prepended = r.PrependError(">> ");
 
-        if (!prepended.Ok(out _,out _,out _,out _, out var err)) {
+        if (!prepended.TryGet(out _,out _,out _,out _, out var err)) {
             Assert.Equal(">> err4", err.Message);
         }
         else {
@@ -186,7 +186,7 @@ public sealed class ResultExtensionsTests {
 
         var prepended = r.PrependError("[t]");
 
-        prepended.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out _);
+        prepended.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out _);
         Assert.Equal(1, value1);
         Assert.Equal(2, value2);
         Assert.Equal(3, value3);
@@ -201,7 +201,7 @@ public sealed class ResultExtensionsTests {
 
         var prepended = r.PrependError("[p] ");
 
-        if (!prepended.Ok(out _,out _,out _,out _,out _, out var err)) {
+        if (!prepended.TryGet(out _,out _,out _,out _,out _, out var err)) {
             Assert.Equal("[p] boom5", err.Message);
         }
         else {
@@ -224,7 +224,7 @@ public sealed class ResultExtensionsTests {
 
         var prepended = r.PrependError("[t]");
 
-        prepended.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out _);
+        prepended.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out _);
         Assert.Equal(1, value1);
         Assert.Equal(2, value2);
         Assert.Equal(3, value3);
@@ -240,7 +240,7 @@ public sealed class ResultExtensionsTests {
 
         var prepended = r.PrependError("~ ");
 
-        if (!prepended.Ok(out _,out _,out _,out _,out _,out _, out var err)) {
+        if (!prepended.TryGet(out _,out _,out _,out _,out _,out _, out var err)) {
             Assert.Equal("~ e6", err.Message);
         }
         else {
@@ -263,7 +263,7 @@ public sealed class ResultExtensionsTests {
 
         var prepended = r.PrependError("[t]");
 
-        prepended.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out _);
+        prepended.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out _);
         Assert.Equal(1, value1);
         Assert.Equal(2, value2);
         Assert.Equal(3, value3);
@@ -280,7 +280,7 @@ public sealed class ResultExtensionsTests {
 
         var prepended = r.PrependError("!! ");
 
-        if (!prepended.Ok(out _,out _,out _,out _,out _,out _,out _, out var err)) {
+        if (!prepended.TryGet(out _,out _,out _,out _,out _,out _,out _, out var err)) {
             Assert.Equal("!! stop7", err.Message);
         }
         else {
@@ -303,7 +303,7 @@ public sealed class ResultExtensionsTests {
 
         var prepended = r.PrependError("[t]");
 
-        prepended.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out var value8, out _);
+        prepended.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out var value8, out _);
         Assert.Equal(1, value1);
         Assert.Equal(2, value2);
         Assert.Equal(3, value3);
@@ -321,7 +321,7 @@ public sealed class ResultExtensionsTests {
 
         var prepended = r.PrependError("@ ");
 
-        if (!prepended.Ok(out _,out _,out _,out _,out _,out _,out _,out _, out var err)) {
+        if (!prepended.TryGet(out _,out _,out _,out _,out _,out _,out _,out _, out var err)) {
             Assert.Equal("@ x8", err.Message);
         }
         else {

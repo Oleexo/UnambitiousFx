@@ -13,7 +13,7 @@ public sealed class ResultEnsureTests {
 
         var ensured = r.Ensure(x => x == 5, _ => new Exception("bad"));
 
-        if (ensured.Ok(out var v, out _)) {
+        if (ensured.TryGet(out var v, out _)) {
             Assert.Equal(5, v);
         }
         else {
@@ -27,7 +27,7 @@ public sealed class ResultEnsureTests {
 
         var ensured = r.Ensure(x => x != 5, _ => new Exception("bad"));
 
-        if (!ensured.Ok(out _, out var err)) {
+        if (!ensured.TryGet(out _, out var err)) {
             Assert.Equal("bad", err.Message);
         }
         else {
@@ -46,7 +46,7 @@ public sealed class ResultEnsureTests {
             return true;
         }, _ => new Exception("bad"));
 
-        if (!ensured.Ok(out _, out var err)) {
+        if (!ensured.TryGet(out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.Equal(0,  called);
         }
@@ -64,7 +64,7 @@ public sealed class ResultEnsureTests {
                                 b) => a + b == 5, (_,
                                                    _) => new Exception("bad"));
 
-        if (ensured.Ok(out var a, out var b, out _)) {
+        if (ensured.TryGet(out var a, out var b, out _)) {
             Assert.Equal(2, a);
             Assert.Equal(3, b);
         }
@@ -81,7 +81,7 @@ public sealed class ResultEnsureTests {
                                 b) => a + b == 6, (_,
                                                    _) => new Exception("bad"));
 
-        if (!ensured.Ok(out _, out _, out var err)) {
+        if (!ensured.TryGet(out _, out _, out var err)) {
             Assert.Equal("bad", err.Message);
         }
         else {
@@ -102,7 +102,7 @@ public sealed class ResultEnsureTests {
         }, (_,
             _) => new Exception("bad"));
 
-        if (!ensured.Ok(out _, out _, out var err)) {
+        if (!ensured.TryGet(out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.Equal(0,  called);
         }
@@ -122,7 +122,7 @@ public sealed class ResultEnsureTests {
                                                        _,
                                                        _) => new Exception("bad"));
 
-        if (ensured.Ok(out var a, out var b, out var c, out _)) {
+        if (ensured.TryGet(out var a, out var b, out var c, out _)) {
             Assert.Equal(1, a);
             Assert.Equal(2, b);
             Assert.Equal(3, c);
@@ -142,7 +142,7 @@ public sealed class ResultEnsureTests {
                                                        _,
                                                        _) => new Exception("bad"));
 
-        if (!ensured.Ok(out _, out _, out _, out var err)) {
+        if (!ensured.TryGet(out _, out _, out _, out var err)) {
             Assert.Equal("bad", err.Message);
         }
         else {
@@ -165,7 +165,7 @@ public sealed class ResultEnsureTests {
             _,
             _) => new Exception("bad"));
 
-        if (!ensured.Ok(out _, out _, out _, out var err)) {
+        if (!ensured.TryGet(out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.Equal(0,  called);
         }
@@ -187,7 +187,7 @@ public sealed class ResultEnsureTests {
                                                            _,
                                                            _) => new Exception("bad"));
 
-        if (ensured.Ok(out var a, out var b, out var c, out var d, out _)) {
+        if (ensured.TryGet(out var a, out var b, out var c, out var d, out _)) {
             Assert.Equal(1, a);
             Assert.Equal(1, b);
             Assert.Equal(1, c);
@@ -210,7 +210,7 @@ public sealed class ResultEnsureTests {
                                                            _,
                                                            _) => new Exception("bad"));
 
-        if (!ensured.Ok(out _, out _, out _, out _, out var err)) {
+        if (!ensured.TryGet(out _, out _, out _, out _, out var err)) {
             Assert.Equal("bad", err.Message);
         }
         else {
@@ -235,7 +235,7 @@ public sealed class ResultEnsureTests {
             _,
             _) => new Exception("bad"));
 
-        if (!ensured.Ok(out _, out _, out _, out _, out var err)) {
+        if (!ensured.TryGet(out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.Equal(0,  called);
         }
@@ -259,7 +259,7 @@ public sealed class ResultEnsureTests {
                                                                _,
                                                                _) => new Exception("bad"));
 
-        if (ensured.Ok(out var a, out var b, out var c, out var d, out var e, out _)) {
+        if (ensured.TryGet(out var a, out var b, out var c, out var d, out var e, out _)) {
             Assert.Equal(1, a);
             Assert.Equal(1, b);
             Assert.Equal(1, c);
@@ -285,7 +285,7 @@ public sealed class ResultEnsureTests {
                                                                _,
                                                                _) => new Exception("bad"));
 
-        if (!ensured.Ok(out _, out _, out _, out _, out _, out var err)) {
+        if (!ensured.TryGet(out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal("bad", err.Message);
         }
         else {
@@ -312,7 +312,7 @@ public sealed class ResultEnsureTests {
             _,
             _) => new Exception("bad"));
 
-        if (!ensured.Ok(out _, out _, out _, out _, out _, out var err)) {
+        if (!ensured.TryGet(out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.Equal(0,  called);
         }
@@ -338,7 +338,7 @@ public sealed class ResultEnsureTests {
                                                                    _,
                                                                    _) => new Exception("bad"));
 
-        if (ensured.Ok(out var a, out var b, out var c, out var d, out var e, out var f, out _)) {
+        if (ensured.TryGet(out var a, out var b, out var c, out var d, out var e, out var f, out _)) {
             Assert.Equal(1, a);
             Assert.Equal(1, b);
             Assert.Equal(1, c);
@@ -367,7 +367,7 @@ public sealed class ResultEnsureTests {
                                                                    _,
                                                                    _) => new Exception("bad"));
 
-        if (!ensured.Ok(out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!ensured.TryGet(out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal("bad", err.Message);
         }
         else {
@@ -396,7 +396,7 @@ public sealed class ResultEnsureTests {
             _,
             _) => new Exception("bad"));
 
-        if (!ensured.Ok(out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!ensured.TryGet(out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.Equal(0,  called);
         }
@@ -424,7 +424,7 @@ public sealed class ResultEnsureTests {
                                                                        _,
                                                                        _) => new Exception("bad"));
 
-        if (ensured.Ok(out var a, out var b, out var c, out var d, out var e, out var f, out var g, out _)) {
+        if (ensured.TryGet(out var a, out var b, out var c, out var d, out var e, out var f, out var g, out _)) {
             Assert.Equal(1, a);
             Assert.Equal(1, b);
             Assert.Equal(1, c);
@@ -456,7 +456,7 @@ public sealed class ResultEnsureTests {
                                                                        _,
                                                                        _) => new Exception("bad"));
 
-        if (!ensured.Ok(out _, out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!ensured.TryGet(out _, out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal("bad", err.Message);
         }
         else {
@@ -487,7 +487,7 @@ public sealed class ResultEnsureTests {
             _,
             _) => new Exception("bad"));
 
-        if (!ensured.Ok(out _, out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!ensured.TryGet(out _, out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.Equal(0,  called);
         }
@@ -517,7 +517,7 @@ public sealed class ResultEnsureTests {
                                                                            _,
                                                                            _) => new Exception("bad"));
 
-        if (ensured.Ok(out var a, out var b, out var c, out var d, out var e, out var f, out var g, out var h, out _)) {
+        if (ensured.TryGet(out var a, out var b, out var c, out var d, out var e, out var f, out var g, out var h, out _)) {
             Assert.Equal(1, a);
             Assert.Equal(1, b);
             Assert.Equal(1, c);
@@ -552,7 +552,7 @@ public sealed class ResultEnsureTests {
                                                                            _,
                                                                            _) => new Exception("bad"));
 
-        if (!ensured.Ok(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!ensured.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal("bad", err.Message);
         }
         else {
@@ -585,7 +585,7 @@ public sealed class ResultEnsureTests {
             _,
             _) => new Exception("bad"));
 
-        if (!ensured.Ok(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!ensured.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.Equal(0,  called);
         }

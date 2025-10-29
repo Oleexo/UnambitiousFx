@@ -14,7 +14,7 @@ public sealed class ResultExtensionsTests {
 
         var mapped = r.Try(x => x + 1);
 
-        if (mapped.Ok(out var v, out _)) {
+        if (mapped.TryGet(out var v, out _)) {
             Assert.Equal(2, v);
         }
         else {
@@ -33,7 +33,7 @@ public sealed class ResultExtensionsTests {
             return x + 1;
         });
 
-        if (!mapped.Ok(out _, out var err)) {
+        if (!mapped.TryGet(out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.False(called);
         }
@@ -49,7 +49,7 @@ public sealed class ResultExtensionsTests {
 
         var mapped = r.Try<int, int>(x => throw thrown);
 
-        if (!mapped.Ok(out _, out var err)) {
+        if (!mapped.TryGet(out _, out var err)) {
             Assert.Same(thrown, err);
         }
         else {
@@ -68,7 +68,7 @@ public sealed class ResultExtensionsTests {
         var mapped = r.Try((a,
                             b) => (a + 10, b * 2));
 
-        if (mapped.Ok(out var value1, out var value2, out _)) {
+        if (mapped.TryGet(out var value1, out var value2, out _)) {
             Assert.Equal(11, value1);
             Assert.Equal(4,  value2);
         }
@@ -89,7 +89,7 @@ public sealed class ResultExtensionsTests {
             return (a + 10, b * 2);
         });
 
-        if (!mapped.Ok(out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.False(called);
         }
@@ -106,7 +106,7 @@ public sealed class ResultExtensionsTests {
         var mapped = r.Try<int, int, int, int>((a,
                                                 b) => throw thrown);
 
-        if (!mapped.Ok(out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out var err)) {
             Assert.Same(thrown, err);
         }
         else {
@@ -126,7 +126,7 @@ public sealed class ResultExtensionsTests {
                             b,
                             c) => (a + 1, b + 1, c + 1));
 
-        if (mapped.Ok(out var value1, out var value2, out var value3, out _)) {
+        if (mapped.TryGet(out var value1, out var value2, out var value3, out _)) {
             Assert.Equal(2, value1);
             Assert.Equal(3, value2);
             Assert.Equal(4, value3);
@@ -149,7 +149,7 @@ public sealed class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.False(called);
         }
@@ -167,7 +167,7 @@ public sealed class ResultExtensionsTests {
                                                           b,
                                                           c) => throw thrown);
 
-        if (!mapped.Ok(out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out var err)) {
             Assert.Same(thrown, err);
         }
         else {
@@ -188,7 +188,7 @@ public sealed class ResultExtensionsTests {
                             c,
                             d) => (a + 1, b + 1, c + 1, d + 1));
 
-        if (mapped.Ok(out var value1, out var value2, out var value3, out var value4, out _)) {
+        if (mapped.TryGet(out var value1, out var value2, out var value3, out var value4, out _)) {
             Assert.Equal(2, value1);
             Assert.Equal(3, value2);
             Assert.Equal(4, value3);
@@ -213,7 +213,7 @@ public sealed class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.False(called);
         }
@@ -232,7 +232,7 @@ public sealed class ResultExtensionsTests {
                                                                     c,
                                                                     d) => throw thrown);
 
-        if (!mapped.Ok(out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out var err)) {
             Assert.Same(thrown, err);
         }
         else {
@@ -254,7 +254,7 @@ public sealed class ResultExtensionsTests {
                             d,
                             e) => (a + 1, b + 1, c + 1, d + 1, e + 1));
 
-        if (mapped.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out _)) {
+        if (mapped.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out _)) {
             Assert.Equal(2, value1);
             Assert.Equal(3, value2);
             Assert.Equal(4, value3);
@@ -281,7 +281,7 @@ public sealed class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1, e + 1);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.False(called);
         }
@@ -301,7 +301,7 @@ public sealed class ResultExtensionsTests {
                                                                               d,
                                                                               e) => throw thrown);
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out var err)) {
             Assert.Same(thrown, err);
         }
         else {
@@ -324,7 +324,7 @@ public sealed class ResultExtensionsTests {
                             e,
                             f) => (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1));
 
-        if (mapped.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out _)) {
+        if (mapped.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out _)) {
             Assert.Equal(2, value1);
             Assert.Equal(3, value2);
             Assert.Equal(4, value3);
@@ -353,7 +353,7 @@ public sealed class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.False(called);
         }
@@ -374,7 +374,7 @@ public sealed class ResultExtensionsTests {
                                                                                         e,
                                                                                         f) => throw thrown);
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Same(thrown, err);
         }
         else {
@@ -398,7 +398,7 @@ public sealed class ResultExtensionsTests {
                             f,
                             g) => (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1, g + 1));
 
-        if (mapped.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out _)) {
+        if (mapped.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out _)) {
             Assert.Equal(2, value1);
             Assert.Equal(3, value2);
             Assert.Equal(4, value3);
@@ -429,7 +429,7 @@ public sealed class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1, g + 1);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.False(called);
         }
@@ -451,7 +451,7 @@ public sealed class ResultExtensionsTests {
                                                                                                   f,
                                                                                                   g) => throw thrown);
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Same(thrown, err);
         }
         else {
@@ -476,7 +476,7 @@ public sealed class ResultExtensionsTests {
                             g,
                             h) => (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1, g + 1, h + 1));
 
-        if (mapped.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out var value8, out _)) {
+        if (mapped.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out var value8, out _)) {
             Assert.Equal(2, value1);
             Assert.Equal(3, value2);
             Assert.Equal(4, value3);
@@ -508,7 +508,7 @@ public sealed class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1, g + 1, h + 1);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.False(called);
         }
@@ -531,7 +531,7 @@ public sealed class ResultExtensionsTests {
                                                                                                             g,
                                                                                                             h) => throw thrown);
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Same(thrown, err);
         }
         else {

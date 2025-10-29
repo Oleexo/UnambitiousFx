@@ -10,7 +10,7 @@ public sealed class ResultArity0Tests {
     public void Success_Ok_ReturnsTrue() {
         var r = Result.Success();
 
-        var ok = r.Ok(out _);
+        var ok = r.TryGet(out _);
 
         Assert.True(ok);
     }
@@ -19,7 +19,7 @@ public sealed class ResultArity0Tests {
     public void Failure_Ok_ReturnsFalse() {
         var r = Result.Failure("boom");
 
-        var ok = r.Ok(out _);
+        var ok = r.TryGet(out _);
 
         Assert.False(ok);
     }

@@ -14,7 +14,7 @@ public sealed class ResultThenExtensionsTests {
 
         var mapped = r.Then(x => Result.Success(x + 1));
 
-        if (mapped.Ok(out var v, out _)) {
+        if (mapped.TryGet(out var v, out _)) {
             Assert.Equal(2, v);
         }
         else {
@@ -33,7 +33,7 @@ public sealed class ResultThenExtensionsTests {
             return Result.Success(x + 1);
         });
 
-        if (!mapped.Ok(out _, out var err)) {
+        if (!mapped.TryGet(out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.False(called);
         }
@@ -53,7 +53,7 @@ public sealed class ResultThenExtensionsTests {
         var mapped = r.Then((x,
                              y) => Result.Success(x + 1, y + "42"));
 
-        if (mapped.Ok(out var v1, out var v2, out _)) {
+        if (mapped.TryGet(out var v1, out var v2, out _)) {
             Assert.Equal(2,        v1);
             Assert.Equal("test42", v2);
         }
@@ -74,7 +74,7 @@ public sealed class ResultThenExtensionsTests {
             return Result.Success(x + 1, y + "42");
         });
 
-        if (!mapped.Ok(out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.False(called);
         }
@@ -95,7 +95,7 @@ public sealed class ResultThenExtensionsTests {
                              y,
                              z) => Result.Success(x + 1, y + "42", !z));
 
-        if (mapped.Ok(out var v1, out var v2, out var v3, out _)) {
+        if (mapped.TryGet(out var v1, out var v2, out var v3, out _)) {
             Assert.Equal(2,     v1);
             Assert.Equal("a42", v2);
             Assert.False(v3);
@@ -118,7 +118,7 @@ public sealed class ResultThenExtensionsTests {
             return Result.Success(x + 1, y + "42", !z);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.False(called);
         }
@@ -140,7 +140,7 @@ public sealed class ResultThenExtensionsTests {
                              z,
                              w) => Result.Success(x + 1, y + "42", !z, w + 0.5));
 
-        if (mapped.Ok(out var v1, out var v2, out var v3, out var v4, out _)) {
+        if (mapped.TryGet(out var v1, out var v2, out var v3, out var v4, out _)) {
             Assert.Equal(2,     v1);
             Assert.Equal("a42", v2);
             Assert.False(v3);
@@ -165,7 +165,7 @@ public sealed class ResultThenExtensionsTests {
             return Result.Success(x + 1, y + "42", !z, w + 0.5);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.False(called);
         }
@@ -188,7 +188,7 @@ public sealed class ResultThenExtensionsTests {
                              w,
                              c) => Result.Success(x + 1, y + "42", !z, w + 0.5, (char)(c + 1)));
 
-        if (mapped.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out _)) {
+        if (mapped.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out _)) {
             Assert.Equal(2,     v1);
             Assert.Equal("a42", v2);
             Assert.False(v3);
@@ -215,7 +215,7 @@ public sealed class ResultThenExtensionsTests {
             return Result.Success(x + 1, y + "42", !z, w + 0.5, (char)(c + 1));
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.False(called);
         }
@@ -239,7 +239,7 @@ public sealed class ResultThenExtensionsTests {
                              c,
                              l) => Result.Success(x + 1, y + "42", !z, w + 0.5, (char)(c + 1), l + 1));
 
-        if (mapped.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out _)) {
+        if (mapped.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out _)) {
             Assert.Equal(2,     v1);
             Assert.Equal("a42", v2);
             Assert.False(v3);
@@ -268,7 +268,7 @@ public sealed class ResultThenExtensionsTests {
             return Result.Success(x + 1, y + "42", !z, w + 0.5, (char)(c + 1), l + 1);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.False(called);
         }
@@ -293,7 +293,7 @@ public sealed class ResultThenExtensionsTests {
                              l,
                              d) => Result.Success(x + 1, y + "42", !z, w + 0.5, (char)(c + 1), l + 1, d + 0.5m));
 
-        if (mapped.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7, out _)) {
+        if (mapped.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7, out _)) {
             Assert.Equal(2,     v1);
             Assert.Equal("a42", v2);
             Assert.False(v3);
@@ -324,7 +324,7 @@ public sealed class ResultThenExtensionsTests {
             return Result.Success(x + 1, y + "42", !z, w + 0.5, (char)(c + 1), l + 1, d + 0.5m);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.False(called);
         }
@@ -350,7 +350,7 @@ public sealed class ResultThenExtensionsTests {
                              d,
                              f) => Result.Success(x + 1, y + "42", !z, w + 0.5, (char)(c + 1), l + 1, d + 0.5m, f + 0.75f));
 
-        if (mapped.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7, out var v8, out _)) {
+        if (mapped.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7, out var v8, out _)) {
             Assert.Equal(2,     v1);
             Assert.Equal("a42", v2);
             Assert.False(v3);
@@ -383,7 +383,7 @@ public sealed class ResultThenExtensionsTests {
             return Result.Success(x + 1, y + "42", !z, w + 0.5, (char)(c + 1), l + 1, d + 0.5m, f + 0.75f);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.False(called);
         }

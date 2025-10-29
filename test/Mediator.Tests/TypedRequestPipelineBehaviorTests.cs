@@ -72,7 +72,7 @@ public sealed class TypedRequestPipelineBehaviorTests {
         var sender   = provider.GetRequiredService<ISender>();
 
         var result = await sender.SendAsync<TypedSampleRequestWithResponse, int>(new TypedSampleRequestWithResponse(42));
-        Assert.True(result.Ok(out var value));
+        Assert.True(result.TryGet(out var value));
         Assert.Equal(42, value);
         Assert.Equal(1,  behavior.ExecutionCount);
     }

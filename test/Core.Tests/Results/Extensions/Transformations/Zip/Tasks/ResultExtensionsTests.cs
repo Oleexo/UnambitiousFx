@@ -29,7 +29,7 @@ public sealed class ResultExtensionsTests {
 
         var zipped = await r1.ZipAsync(r2);
 
-        Assert.False(zipped.Ok(out _, out _, out var err));
+        Assert.False(zipped.TryGet(out _, out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -41,7 +41,7 @@ public sealed class ResultExtensionsTests {
 
         var zipped = await r1.ZipAsync(r2);
 
-        Assert.False(zipped.Ok(out _, out _, out var err));
+        Assert.False(zipped.TryGet(out _, out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -66,7 +66,7 @@ public sealed class ResultExtensionsTests {
         var proj = await r1.ZipAsync(r2, (a,
                                           b) => a + b);
 
-        Assert.False(proj.Ok(out _, out var err));
+        Assert.False(proj.TryGet(out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -79,7 +79,7 @@ public sealed class ResultExtensionsTests {
         var proj = await r1.ZipAsync(r2, (a,
                                           b) => a + b);
 
-        Assert.False(proj.Ok(out _, out var err));
+        Assert.False(proj.TryGet(out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -110,7 +110,7 @@ public sealed class ResultExtensionsTests {
 
         var zipped = await r1.ZipAsync(r2, r3);
 
-        Assert.False(zipped.Ok(out _, out _, out _, out var err));
+        Assert.False(zipped.TryGet(out _, out _, out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -123,7 +123,7 @@ public sealed class ResultExtensionsTests {
 
         var zipped = await r1.ZipAsync(r2, r3);
 
-        Assert.False(zipped.Ok(out _, out _, out _, out var err));
+        Assert.False(zipped.TryGet(out _, out _, out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -152,7 +152,7 @@ public sealed class ResultExtensionsTests {
                                               b,
                                               c) => a + b + c);
 
-        Assert.False(proj.Ok(out _, out var err));
+        Assert.False(proj.TryGet(out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -167,7 +167,7 @@ public sealed class ResultExtensionsTests {
                                               b,
                                               c) => a + b + c);
 
-        Assert.False(proj.Ok(out _, out var err));
+        Assert.False(proj.TryGet(out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -201,7 +201,7 @@ public sealed class ResultExtensionsTests {
 
         var zipped = await r1.ZipAsync(r2, r3, r4);
 
-        Assert.False(zipped.Ok(out _, out _, out _, out _, out var err));
+        Assert.False(zipped.TryGet(out _, out _, out _, out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -215,7 +215,7 @@ public sealed class ResultExtensionsTests {
 
         var zipped = await r1.ZipAsync(r2, r3, r4);
 
-        Assert.False(zipped.Ok(out _, out _, out _, out _, out var err));
+        Assert.False(zipped.TryGet(out _, out _, out _, out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -248,7 +248,7 @@ public sealed class ResultExtensionsTests {
                                                   c,
                                                   d) => a + b + c + d);
 
-        Assert.False(proj.Ok(out _, out var err));
+        Assert.False(proj.TryGet(out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -265,7 +265,7 @@ public sealed class ResultExtensionsTests {
                                                   c,
                                                   d) => a + b + c + d);
 
-        Assert.False(proj.Ok(out _, out var err));
+        Assert.False(proj.TryGet(out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -302,7 +302,7 @@ public sealed class ResultExtensionsTests {
 
         var zipped = await r1.ZipAsync(r2, r3, r4, r5);
 
-        Assert.False(zipped.Ok(out _, out _, out _, out _, out _, out var err));
+        Assert.False(zipped.TryGet(out _, out _, out _, out _, out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -317,7 +317,7 @@ public sealed class ResultExtensionsTests {
 
         var zipped = await r1.ZipAsync(r2, r3, r4, r5);
 
-        Assert.False(zipped.Ok(out _, out _, out _, out _, out _, out var err));
+        Assert.False(zipped.TryGet(out _, out _, out _, out _, out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -354,7 +354,7 @@ public sealed class ResultExtensionsTests {
                                                       d,
                                                       e) => a + b + c + d + e);
 
-        Assert.False(proj.Ok(out _, out var err));
+        Assert.False(proj.TryGet(out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -373,7 +373,7 @@ public sealed class ResultExtensionsTests {
                                                       d,
                                                       e) => a + b + c + d + e);
 
-        Assert.False(proj.Ok(out _, out var err));
+        Assert.False(proj.TryGet(out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -413,7 +413,7 @@ public sealed class ResultExtensionsTests {
 
         var zipped = await r1.ZipAsync(r2, r3, r4, r5, r6);
 
-        Assert.False(zipped.Ok(out _, out _, out _, out _, out _, out _, out var err));
+        Assert.False(zipped.TryGet(out _, out _, out _, out _, out _, out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -429,7 +429,7 @@ public sealed class ResultExtensionsTests {
 
         var zipped = await r1.ZipAsync(r2, r3, r4, r5, r6);
 
-        Assert.False(zipped.Ok(out _, out _, out _, out _, out _, out _, out var err));
+        Assert.False(zipped.TryGet(out _, out _, out _, out _, out _, out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -470,7 +470,7 @@ public sealed class ResultExtensionsTests {
                                                           e,
                                                           f) => a + b + c + d + e + f);
 
-        Assert.False(proj.Ok(out _, out var err));
+        Assert.False(proj.TryGet(out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -491,7 +491,7 @@ public sealed class ResultExtensionsTests {
                                                           e,
                                                           f) => a + b + c + d + e + f);
 
-        Assert.False(proj.Ok(out _, out var err));
+        Assert.False(proj.TryGet(out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -534,7 +534,7 @@ public sealed class ResultExtensionsTests {
 
         var zipped = await r1.ZipAsync(r2, r3, r4, r5, r6, r7);
 
-        Assert.False(zipped.Ok(out _, out _, out _, out _, out _, out _, out _, out var err));
+        Assert.False(zipped.TryGet(out _, out _, out _, out _, out _, out _, out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -551,7 +551,7 @@ public sealed class ResultExtensionsTests {
 
         var zipped = await r1.ZipAsync(r2, r3, r4, r5, r6, r7);
 
-        Assert.False(zipped.Ok(out _, out _, out _, out _, out _, out _, out _, out var err));
+        Assert.False(zipped.TryGet(out _, out _, out _, out _, out _, out _, out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -596,7 +596,7 @@ public sealed class ResultExtensionsTests {
                                                               f,
                                                               g) => a + b + c + d + e + f + g);
 
-        Assert.False(proj.Ok(out _, out var err));
+        Assert.False(proj.TryGet(out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -619,7 +619,7 @@ public sealed class ResultExtensionsTests {
                                                               f,
                                                               g) => a + b + c + d + e + f + g);
 
-        Assert.False(proj.Ok(out _, out var err));
+        Assert.False(proj.TryGet(out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -665,7 +665,7 @@ public sealed class ResultExtensionsTests {
 
         var zipped = await r1.ZipAsync(r2, r3, r4, r5, r6, r7, r8);
 
-        Assert.False(zipped.Ok(out _, out _, out _, out _, out _, out _, out _, out _, out var err));
+        Assert.False(zipped.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -683,7 +683,7 @@ public sealed class ResultExtensionsTests {
 
         var zipped = await r1.ZipAsync(r2, r3, r4, r5, r6, r7, r8);
 
-        Assert.False(zipped.Ok(out _, out _, out _, out _, out _, out _, out _, out _, out var err));
+        Assert.False(zipped.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -732,7 +732,7 @@ public sealed class ResultExtensionsTests {
                                                                   g,
                                                                   h) => a + b + c + d + e + f + g + h);
 
-        Assert.False(proj.Ok(out _, out var err));
+        Assert.False(proj.TryGet(out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -757,7 +757,7 @@ public sealed class ResultExtensionsTests {
                                                                   g,
                                                                   h) => a + b + c + d + e + f + g + h);
 
-        Assert.False(proj.Ok(out _, out var err));
+        Assert.False(proj.TryGet(out _, out var err));
         Assert.Same(ex, err);
     }
 

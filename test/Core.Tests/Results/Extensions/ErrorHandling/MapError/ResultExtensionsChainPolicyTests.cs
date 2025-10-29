@@ -19,7 +19,7 @@ public sealed class ResultExtensionsChainPolicyTests {
             return new Exception("wrapped");
         }, MapErrorChainPolicy.Accumulate);
 
-        Assert.True(mapped.Ok(out _));
+        Assert.True(mapped.TryGet(out _));
         Assert.Equal(0, called);
     }
 
@@ -33,7 +33,7 @@ public sealed class ResultExtensionsChainPolicyTests {
 
         var mapped = initial.MapError(e => new InvalidOperationException("wrapped", e), MapErrorChainPolicy.Accumulate);
 
-        if (!mapped.Ok(out var err)) {
+        if (!mapped.TryGet(out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
             Assert.Equal(origReasonCount + 1, mapped.Reasons.Count); // new ExceptionalError + prior reasons
@@ -54,7 +54,7 @@ public sealed class ResultExtensionsChainPolicyTests {
 
         var mapped = initial.MapError(e => new InvalidOperationException("wrapped", e), MapErrorChainPolicy.ShortCircuit);
 
-        if (!mapped.Ok(out var err)) {
+        if (!mapped.TryGet(out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
             Assert.Single(mapped.Reasons); // only new ExceptionalError remains
@@ -76,7 +76,7 @@ public sealed class ResultExtensionsChainPolicyTests {
             return new Exception("wrapped");
         }, MapErrorChainPolicy.Accumulate);
 
-        if (mapped.Ok(out var value, out _)) {
+        if (mapped.TryGet(out var value, out _)) {
             Assert.Equal(1, value);
             Assert.Equal(0, called);
         }
@@ -95,7 +95,7 @@ public sealed class ResultExtensionsChainPolicyTests {
 
         var mapped = initial.MapError(e => new InvalidOperationException("wrapped", e), MapErrorChainPolicy.Accumulate);
 
-        if (!mapped.Ok(out _, out var err)) {
+        if (!mapped.TryGet(out _, out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
             Assert.Equal(origReasonCount + 1, mapped.Reasons.Count);
@@ -116,7 +116,7 @@ public sealed class ResultExtensionsChainPolicyTests {
 
         var mapped = initial.MapError(e => new InvalidOperationException("wrapped", e), MapErrorChainPolicy.ShortCircuit);
 
-        if (!mapped.Ok(out _, out var err)) {
+        if (!mapped.TryGet(out _, out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
             Assert.Single(mapped.Reasons);
@@ -138,7 +138,7 @@ public sealed class ResultExtensionsChainPolicyTests {
             return new Exception("wrapped");
         }, MapErrorChainPolicy.Accumulate);
 
-        if (mapped.Ok(out var a, out var b, out _)) {
+        if (mapped.TryGet(out var a, out var b, out _)) {
             Assert.Equal(1, a);
             Assert.Equal(2, b);
             Assert.Equal(0, called);
@@ -158,7 +158,7 @@ public sealed class ResultExtensionsChainPolicyTests {
 
         var mapped = initial.MapError(e => new InvalidOperationException("wrapped", e), MapErrorChainPolicy.Accumulate);
 
-        if (!mapped.Ok(out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
             Assert.Equal(origReasonCount + 1, mapped.Reasons.Count);
@@ -179,7 +179,7 @@ public sealed class ResultExtensionsChainPolicyTests {
 
         var mapped = initial.MapError(e => new InvalidOperationException("wrapped", e), MapErrorChainPolicy.ShortCircuit);
 
-        if (!mapped.Ok(out _,out _, out var err)) {
+        if (!mapped.TryGet(out _,out _, out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
             Assert.Single(mapped.Reasons);
@@ -201,7 +201,7 @@ public sealed class ResultExtensionsChainPolicyTests {
             return new Exception("wrapped");
         }, MapErrorChainPolicy.Accumulate);
 
-        if (mapped.Ok(out var a, out var b, out var c, out _)) {
+        if (mapped.TryGet(out var a, out var b, out var c, out _)) {
             Assert.Equal(1, a);
             Assert.Equal(2, b);
             Assert.Equal(3, c);
@@ -222,7 +222,7 @@ public sealed class ResultExtensionsChainPolicyTests {
 
         var mapped = initial.MapError(e => new InvalidOperationException("wrapped", e), MapErrorChainPolicy.Accumulate);
 
-        if (!mapped.Ok(out _,out _,out _, out var err)) {
+        if (!mapped.TryGet(out _,out _,out _, out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
             Assert.Equal(origReasonCount + 1, mapped.Reasons.Count);
@@ -243,7 +243,7 @@ public sealed class ResultExtensionsChainPolicyTests {
 
         var mapped = initial.MapError(e => new InvalidOperationException("wrapped", e), MapErrorChainPolicy.ShortCircuit);
 
-        if (!mapped.Ok(out _,out _,out _, out var err)) {
+        if (!mapped.TryGet(out _,out _,out _, out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
             Assert.Single(mapped.Reasons);
@@ -265,7 +265,7 @@ public sealed class ResultExtensionsChainPolicyTests {
             return new Exception("wrapped");
         }, MapErrorChainPolicy.Accumulate);
 
-        if (mapped.Ok(out var a, out var b, out var c, out var d, out _)) {
+        if (mapped.TryGet(out var a, out var b, out var c, out var d, out _)) {
             Assert.Equal(1, a);
             Assert.Equal(2, b);
             Assert.Equal(3, c);
@@ -287,7 +287,7 @@ public sealed class ResultExtensionsChainPolicyTests {
 
         var mapped = initial.MapError(e => new InvalidOperationException("wrapped", e), MapErrorChainPolicy.Accumulate);
 
-        if (!mapped.Ok(out _,out _,out _,out _, out var err)) {
+        if (!mapped.TryGet(out _,out _,out _,out _, out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
             Assert.Equal(origReasonCount + 1, mapped.Reasons.Count);
@@ -308,7 +308,7 @@ public sealed class ResultExtensionsChainPolicyTests {
 
         var mapped = initial.MapError(e => new InvalidOperationException("wrapped", e), MapErrorChainPolicy.ShortCircuit);
 
-        if (!mapped.Ok(out _,out _,out _,out _, out var err)) {
+        if (!mapped.TryGet(out _,out _,out _,out _, out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
             Assert.Single(mapped.Reasons);
@@ -330,7 +330,7 @@ public sealed class ResultExtensionsChainPolicyTests {
             return new Exception("wrapped");
         }, MapErrorChainPolicy.Accumulate);
 
-        if (mapped.Ok(out var a, out var b, out var c, out var d, out var e, out _)) {
+        if (mapped.TryGet(out var a, out var b, out var c, out var d, out var e, out _)) {
             Assert.Equal(1, a);
             Assert.Equal(2, b);
             Assert.Equal(3, c);
@@ -353,7 +353,7 @@ public sealed class ResultExtensionsChainPolicyTests {
 
         var mapped = initial.MapError(e => new InvalidOperationException("wrapped", e), MapErrorChainPolicy.Accumulate);
 
-        if (!mapped.Ok(out _,out _,out _,out _,out _, out var err)) {
+        if (!mapped.TryGet(out _,out _,out _,out _,out _, out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
             Assert.Equal(origReasonCount + 1, mapped.Reasons.Count);
@@ -374,7 +374,7 @@ public sealed class ResultExtensionsChainPolicyTests {
 
         var mapped = initial.MapError(e => new InvalidOperationException("wrapped", e), MapErrorChainPolicy.ShortCircuit);
 
-        if (!mapped.Ok(out _,out _,out _,out _,out _, out var err)) {
+        if (!mapped.TryGet(out _,out _,out _,out _,out _, out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
             Assert.Single(mapped.Reasons);
@@ -396,7 +396,7 @@ public sealed class ResultExtensionsChainPolicyTests {
             return new Exception("wrapped");
         }, MapErrorChainPolicy.Accumulate);
 
-        if (mapped.Ok(out var a, out var b, out var c, out var d, out var e, out var f, out _)) {
+        if (mapped.TryGet(out var a, out var b, out var c, out var d, out var e, out var f, out _)) {
             Assert.Equal(1, a);
             Assert.Equal(2, b);
             Assert.Equal(3, c);
@@ -420,7 +420,7 @@ public sealed class ResultExtensionsChainPolicyTests {
 
         var mapped = initial.MapError(e => new InvalidOperationException("wrapped", e), MapErrorChainPolicy.Accumulate);
 
-        if (!mapped.Ok(out _,out _,out _,out _,out _,out _, out var err)) {
+        if (!mapped.TryGet(out _,out _,out _,out _,out _,out _, out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
             Assert.Equal(origReasonCount + 1, mapped.Reasons.Count);
@@ -441,7 +441,7 @@ public sealed class ResultExtensionsChainPolicyTests {
 
         var mapped = initial.MapError(e => new InvalidOperationException("wrapped", e), MapErrorChainPolicy.ShortCircuit);
 
-        if (!mapped.Ok(out _,out _,out _,out _,out _,out _, out var err)) {
+        if (!mapped.TryGet(out _,out _,out _,out _,out _,out _, out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
             Assert.Single(mapped.Reasons);
@@ -463,7 +463,7 @@ public sealed class ResultExtensionsChainPolicyTests {
             return new Exception("wrapped");
         }, MapErrorChainPolicy.Accumulate);
 
-        if (mapped.Ok(out var a, out var b, out var c, out var d, out var e, out var f, out var g, out _)) {
+        if (mapped.TryGet(out var a, out var b, out var c, out var d, out var e, out var f, out var g, out _)) {
             Assert.Equal(1, a);
             Assert.Equal(2, b);
             Assert.Equal(3, c);
@@ -488,7 +488,7 @@ public sealed class ResultExtensionsChainPolicyTests {
 
         var mapped = initial.MapError(e => new InvalidOperationException("wrapped", e), MapErrorChainPolicy.Accumulate);
 
-        if (!mapped.Ok(out _,out _,out _,out _,out _,out _,out _, out var err)) {
+        if (!mapped.TryGet(out _,out _,out _,out _,out _,out _,out _, out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
             Assert.Equal(origReasonCount + 1, mapped.Reasons.Count);
@@ -509,7 +509,7 @@ public sealed class ResultExtensionsChainPolicyTests {
 
         var mapped = initial.MapError(e => new InvalidOperationException("wrapped", e), MapErrorChainPolicy.ShortCircuit);
 
-        if (!mapped.Ok(out _,out _,out _,out _,out _,out _,out _, out var err)) {
+        if (!mapped.TryGet(out _,out _,out _,out _,out _,out _,out _, out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
             Assert.Single(mapped.Reasons);
@@ -531,7 +531,7 @@ public sealed class ResultExtensionsChainPolicyTests {
             return new Exception("wrapped");
         }, MapErrorChainPolicy.Accumulate);
 
-        if (mapped.Ok(out var a, out var b, out var c, out var d, out var e, out var f, out var g, out var h, out _)) {
+        if (mapped.TryGet(out var a, out var b, out var c, out var d, out var e, out var f, out var g, out var h, out _)) {
             Assert.Equal(1, a);
             Assert.Equal(2, b);
             Assert.Equal(3, c);
@@ -557,7 +557,7 @@ public sealed class ResultExtensionsChainPolicyTests {
 
         var mapped = initial.MapError(e => new InvalidOperationException("wrapped", e), MapErrorChainPolicy.Accumulate);
 
-        if (!mapped.Ok(out _,out _,out _,out _,out _,out _,out _,out _, out var err)) {
+        if (!mapped.TryGet(out _,out _,out _,out _,out _,out _,out _,out _, out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
             Assert.Equal(origReasonCount + 1, mapped.Reasons.Count);
@@ -578,7 +578,7 @@ public sealed class ResultExtensionsChainPolicyTests {
 
         var mapped = initial.MapError(e => new InvalidOperationException("wrapped", e), MapErrorChainPolicy.ShortCircuit);
 
-        if (!mapped.Ok(out _,out _,out _,out _,out _,out _,out _,out _, out var err)) {
+        if (!mapped.TryGet(out _,out _,out _,out _,out _,out _,out _,out _, out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
             Assert.Single(mapped.Reasons);

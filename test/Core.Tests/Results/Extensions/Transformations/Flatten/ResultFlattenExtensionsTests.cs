@@ -14,7 +14,7 @@ public sealed class ResultFlattenExtensionsTests {
         var outer = Result.Success(inner);
         var flat  = outer.Flatten();
 
-        flat.Ok(out var value);
+        flat.TryGet(out var value);
         Assert.Equal(42, value);
     }
 
@@ -47,7 +47,7 @@ public sealed class ResultFlattenExtensionsTests {
         var outer = Result.Success(inner);
         var flat  = outer.Flatten();
 
-        flat.Ok(out var a, out var b);
+        flat.TryGet(out var a, out var b);
         Assert.Equal(1, a);
         Assert.Equal(2, b);
     }
@@ -81,7 +81,7 @@ public sealed class ResultFlattenExtensionsTests {
         var outer = Result.Success(inner);
         var flat  = outer.Flatten();
 
-        flat.Ok(out var a, out var b, out var c);
+        flat.TryGet(out var a, out var b, out var c);
         Assert.Equal(1, a);
         Assert.Equal(2, b);
         Assert.Equal(3, c);
@@ -116,7 +116,7 @@ public sealed class ResultFlattenExtensionsTests {
         var outer = Result.Success(inner);
         var flat  = outer.Flatten();
 
-        flat.Ok(out var a, out var b, out var c, out var d);
+        flat.TryGet(out var a, out var b, out var c, out var d);
         Assert.Equal(1, a);
         Assert.Equal(2, b);
         Assert.Equal(3, c);
@@ -152,7 +152,7 @@ public sealed class ResultFlattenExtensionsTests {
         var outer = Result.Success(inner);
         var flat  = outer.Flatten();
 
-        flat.Ok(out var a, out var b, out var c, out var d, out var e);
+        flat.TryGet(out var a, out var b, out var c, out var d, out var e);
         Assert.Equal(1, a);
         Assert.Equal(2, b);
         Assert.Equal(3, c);
@@ -189,7 +189,7 @@ public sealed class ResultFlattenExtensionsTests {
         var outer = Result.Success(inner);
         var flat  = outer.Flatten();
 
-        flat.Ok(out var a, out var b, out var c, out var d, out var e, out var f);
+        flat.TryGet(out var a, out var b, out var c, out var d, out var e, out var f);
         Assert.Equal(1, a);
         Assert.Equal(2, b);
         Assert.Equal(3, c);
@@ -227,7 +227,7 @@ public sealed class ResultFlattenExtensionsTests {
         var outer = Result.Success(inner);
         var flat  = outer.Flatten();
 
-        flat.Ok(out var a, out var b, out var c, out var d, out var e, out var f, out var g);
+        flat.TryGet(out var a, out var b, out var c, out var d, out var e, out var f, out var g);
         Assert.Equal(1, a);
         Assert.Equal(2, b);
         Assert.Equal(3, c);
@@ -266,7 +266,7 @@ public sealed class ResultFlattenExtensionsTests {
         var outer = Result.Success(inner);
         var flat  = outer.Flatten();
 
-        flat.Ok(out var a, out var b, out var c, out var d, out var e, out var f, out var g, out var h);
+        flat.TryGet(out var a, out var b, out var c, out var d, out var e, out var f, out var g, out var h);
         Assert.Equal(1, a);
         Assert.Equal(2, b);
         Assert.Equal(3, c);

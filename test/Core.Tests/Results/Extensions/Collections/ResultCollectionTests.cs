@@ -12,7 +12,7 @@ public sealed class ResultCollectionTests {
 
         var sequenced = results.Sequence();
 
-        Assert.True(sequenced.Ok(out var list, out _));
+        Assert.True(sequenced.TryGet(out var list, out _));
         Assert.Equal(new[] { 1, 2, 3 }, list);
     }
 
@@ -23,7 +23,7 @@ public sealed class ResultCollectionTests {
 
         var sequenced = results.Sequence();
 
-        Assert.False(sequenced.Ok(out _, out var err));
+        Assert.False(sequenced.TryGet(out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -33,7 +33,7 @@ public sealed class ResultCollectionTests {
 
         var traversed = items.Traverse(s => Result.Success(s.ToUpperInvariant()));
 
-        Assert.True(traversed.Ok(out var list, out _));
+        Assert.True(traversed.TryGet(out var list, out _));
         Assert.Equal(new[] { "A", "B", "C" }, list);
     }
 
@@ -46,7 +46,7 @@ public sealed class ResultCollectionTests {
                                                 ? Result.Failure<string>(ex)
                                                 : Result.Success(s));
 
-        Assert.False(traversed.Ok(out _, out var err));
+        Assert.False(traversed.TryGet(out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -75,7 +75,7 @@ public sealed class ResultCollectionTests {
 
         var combined = results.Combine();
 
-        Assert.True(combined.Ok(out _));
+        Assert.True(combined.TryGet(out _));
     }
 
     [Fact]
@@ -86,7 +86,7 @@ public sealed class ResultCollectionTests {
 
         var combined = results.Combine();
 
-        Assert.False(combined.Ok(out var err));
+        Assert.False(combined.TryGet(out var err));
         var agg = Assert.IsType<AggregateException>(err);
         Assert.Contains(e1, agg.InnerExceptions);
         Assert.Contains(e2, agg.InnerExceptions);

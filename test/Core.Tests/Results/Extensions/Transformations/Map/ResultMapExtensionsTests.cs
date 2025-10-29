@@ -14,7 +14,7 @@ public sealed class ResultMapExtensionsTests {
 
         var mapped = r.Map(x => x + 1);
 
-        if (mapped.Ok(out var v, out _)) {
+        if (mapped.TryGet(out var v, out _)) {
             Assert.Equal(2, v);
         }
         else {
@@ -33,7 +33,7 @@ public sealed class ResultMapExtensionsTests {
             return x + 1;
         });
 
-        if (!mapped.Ok(out _, out var err)) {
+        if (!mapped.TryGet(out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.False(called);
         }
@@ -53,7 +53,7 @@ public sealed class ResultMapExtensionsTests {
         var mapped = r.Map((a,
                             b) => (a + 10, b * 2));
 
-        if (mapped.Ok(out var x, out var y, out _)) {
+        if (mapped.TryGet(out var x, out var y, out _)) {
             Assert.Equal(11, x);
             Assert.Equal(4,  y);
         }
@@ -74,7 +74,7 @@ public sealed class ResultMapExtensionsTests {
             return (a + 10, b * 2);
         });
 
-        if (!mapped.Ok(out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.False(called);
         }
@@ -95,7 +95,7 @@ public sealed class ResultMapExtensionsTests {
                             b,
                             c) => (a + 1, b + 1, c + 1));
 
-        if (mapped.Ok(out var x, out var y, out var z)) {
+        if (mapped.TryGet(out var x, out var y, out var z)) {
             Assert.Equal(2, x);
             Assert.Equal(3, y);
             Assert.Equal(4, z);
@@ -118,7 +118,7 @@ public sealed class ResultMapExtensionsTests {
             return (a + 1, b + 1, c + 1);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.False(called);
         }
@@ -140,7 +140,7 @@ public sealed class ResultMapExtensionsTests {
                             c,
                             d) => (a + 1, b + 1, c + 1, d + 1));
 
-        if (mapped.Ok(out var w, out var x, out var y, out var z)) {
+        if (mapped.TryGet(out var w, out var x, out var y, out var z)) {
             Assert.Equal(2, w);
             Assert.Equal(3, x);
             Assert.Equal(4, y);
@@ -165,7 +165,7 @@ public sealed class ResultMapExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.False(called);
         }
@@ -188,7 +188,7 @@ public sealed class ResultMapExtensionsTests {
                             d,
                             e) => (a + 1, b + 1, c + 1, d + 1, e + 1));
 
-        if (mapped.Ok(out var v1, out var v2, out var v3, out var v4, out var v5)) {
+        if (mapped.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5)) {
             Assert.Equal(2, v1);
             Assert.Equal(3, v2);
             Assert.Equal(4, v3);
@@ -215,7 +215,7 @@ public sealed class ResultMapExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1, e + 1);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.False(called);
         }
@@ -239,7 +239,7 @@ public sealed class ResultMapExtensionsTests {
                             e,
                             f) => (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1));
 
-        if (mapped.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6)) {
+        if (mapped.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6)) {
             Assert.Equal(2, v1);
             Assert.Equal(3, v2);
             Assert.Equal(4, v3);
@@ -268,7 +268,7 @@ public sealed class ResultMapExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.False(called);
         }
@@ -293,7 +293,7 @@ public sealed class ResultMapExtensionsTests {
                             f,
                             g) => (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1, g + 1));
 
-        if (mapped.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7)) {
+        if (mapped.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7)) {
             Assert.Equal(2, v1);
             Assert.Equal(3, v2);
             Assert.Equal(4, v3);
@@ -324,7 +324,7 @@ public sealed class ResultMapExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1, g + 1);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.False(called);
         }
@@ -350,7 +350,7 @@ public sealed class ResultMapExtensionsTests {
                             g,
                             h) => (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1, g + 1, h + 1));
 
-        if (mapped.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7, out var v8)) {
+        if (mapped.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7, out var v8)) {
             Assert.Equal(2, v1);
             Assert.Equal(3, v2);
             Assert.Equal(4, v3);
@@ -383,7 +383,7 @@ public sealed class ResultMapExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1, g + 1, h + 1);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
             Assert.False(called);
         }

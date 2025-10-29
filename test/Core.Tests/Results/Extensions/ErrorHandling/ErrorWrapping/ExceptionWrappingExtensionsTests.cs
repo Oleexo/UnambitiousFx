@@ -34,7 +34,7 @@ public sealed class ExceptionWrappingExtensionsTests {
     public void Wrap_CanBeAttachedToResult() {
         var ex     = new Exception("broken");
         var result = Result.Failure(ex.Wrap());
-        Assert.False(result.Ok(out _));
+        Assert.False(result.TryGet(out _));
         Assert.Single(result.Reasons);
         var exceptional = Assert.IsType<ExceptionalError>(result.Reasons[0]);
         Assert.Equal(ex, exceptional.Exception);

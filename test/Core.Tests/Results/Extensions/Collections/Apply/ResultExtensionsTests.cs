@@ -13,7 +13,7 @@ public sealed class ResultExtensionsTests {
 
         var r = rf.Apply(ra);
 
-        Assert.True(r.Ok(out var value, out _));
+        Assert.True(r.TryGet(out var value, out _));
         Assert.Equal(42, value);
     }
 
@@ -25,7 +25,7 @@ public sealed class ResultExtensionsTests {
 
         var r = rf.Apply(ra);
 
-        Assert.False(r.Ok(out _, out var err));
+        Assert.False(r.TryGet(out _, out var err));
         Assert.Same(ex, err);
     }
 
@@ -37,7 +37,7 @@ public sealed class ResultExtensionsTests {
 
         var r = rf.Apply(ra);
 
-        Assert.False(r.Ok(out _, out var err));
+        Assert.False(r.TryGet(out _, out var err));
         Assert.Same(ex, err);
     }
 }

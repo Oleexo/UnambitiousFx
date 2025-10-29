@@ -15,7 +15,7 @@ public sealed class ResultEnsureTests {
                                          async v1 => await ValueTask.FromResult(new Exception($"v was {v1}")));
 
         Assert.True(r.IsSuccess);
-        Assert.True(r.Ok(out var v));
+        Assert.True(r.TryGet(out var v));
         Assert.Equal(42, v);
     }
 
@@ -27,8 +27,8 @@ public sealed class ResultEnsureTests {
                                          async v => await ValueTask.FromResult(new Exception($"v was {v}")));
 
         Assert.True(r.IsFaulted);
-        Assert.False(r.Ok(out _));
-        Assert.False(r.Ok(out _, out var error));
+        Assert.False(r.TryGet(out _));
+        Assert.False(r.TryGet(out _, out var error));
         Assert.NotNull(error);
         Assert.Equal("v was 0", error.Message);
     }
@@ -61,7 +61,7 @@ public sealed class ResultEnsureTests {
                                             async _ => await ValueTask.FromResult(new Exception("nope")));
 
         Assert.True(r.IsSuccess);
-        Assert.True(r.Ok(out var v));
+        Assert.True(r.TryGet(out var v));
         Assert.Equal(5, v);
     }
 
@@ -75,7 +75,7 @@ public sealed class ResultEnsureTests {
                                                 _) => await ValueTask.FromResult(new Exception("sum mismatch")));
 
         Assert.True(r.IsSuccess);
-        Assert.True(r.Ok(out var a, out var b));
+        Assert.True(r.TryGet(out var a, out var b));
         Assert.Equal(2, a);
         Assert.Equal(3, b);
     }
@@ -90,8 +90,8 @@ public sealed class ResultEnsureTests {
                                                 b) => await ValueTask.FromResult(new Exception($"{a}+{b} != 6")));
 
         Assert.True(r.IsFaulted);
-        Assert.False(r.Ok(out _, out _));
-        Assert.False(r.Ok(out _, out _, out var error));
+        Assert.False(r.TryGet(out _, out _));
+        Assert.False(r.TryGet(out _, out _, out var error));
         Assert.NotNull(error);
         Assert.Equal("2+3 != 6", error.Message);
     }
@@ -125,7 +125,7 @@ public sealed class ResultEnsureTests {
                                                 _) => await ValueTask.FromResult(new Exception("sum mismatch")));
 
         Assert.True(r.IsSuccess);
-        Assert.True(r.Ok(out var a, out var b, out var c));
+        Assert.True(r.TryGet(out var a, out var b, out var c));
         Assert.Equal(1, a);
         Assert.Equal(2, b);
         Assert.Equal(3, c);
@@ -143,8 +143,8 @@ public sealed class ResultEnsureTests {
                                                 c) => await ValueTask.FromResult(new Exception($"{a}+{b}+{c} != 7")));
 
         Assert.True(r.IsFaulted);
-        Assert.False(r.Ok(out _, out _, out _));
-        Assert.False(r.Ok(out _, out _, out _, out var error));
+        Assert.False(r.TryGet(out _, out _, out _));
+        Assert.False(r.TryGet(out _, out _, out _, out var error));
         Assert.NotNull(error);
         Assert.Equal("1+2+3 != 7", error.Message);
     }
@@ -182,7 +182,7 @@ public sealed class ResultEnsureTests {
                                                 _) => await ValueTask.FromResult(new Exception("sum mismatch")));
 
         Assert.True(r.IsSuccess);
-        Assert.True(r.Ok(out var a, out var b, out var c, out var d));
+        Assert.True(r.TryGet(out var a, out var b, out var c, out var d));
         Assert.Equal(1, a);
         Assert.Equal(2, b);
         Assert.Equal(3, c);
@@ -203,8 +203,8 @@ public sealed class ResultEnsureTests {
                                                 d) => await ValueTask.FromResult(new Exception($"{a}+{b}+{c}+{d} != 11")));
 
         Assert.True(r.IsFaulted);
-        Assert.False(r.Ok(out _, out _, out _, out _));
-        Assert.False(r.Ok(out _, out _, out _, out _, out var error));
+        Assert.False(r.TryGet(out _, out _, out _, out _));
+        Assert.False(r.TryGet(out _, out _, out _, out _, out var error));
         Assert.NotNull(error);
         Assert.Equal("1+2+3+4 != 11", error.Message);
     }
@@ -246,7 +246,7 @@ public sealed class ResultEnsureTests {
                                                 _) => await ValueTask.FromResult(new Exception("sum mismatch")));
 
         Assert.True(r.IsSuccess);
-        Assert.True(r.Ok(out var a, out var b, out var c, out var d, out var e));
+        Assert.True(r.TryGet(out var a, out var b, out var c, out var d, out var e));
         Assert.Equal(1, a);
         Assert.Equal(2, b);
         Assert.Equal(3, c);
@@ -270,8 +270,8 @@ public sealed class ResultEnsureTests {
                                                 e) => await ValueTask.FromResult(new Exception($"{a}+{b}+{c}+{d}+{e} != 16")));
 
         Assert.True(r.IsFaulted);
-        Assert.False(r.Ok(out _, out _, out _, out _, out _));
-        Assert.False(r.Ok(out _, out _, out _, out _, out _, out var error));
+        Assert.False(r.TryGet(out _, out _, out _, out _, out _));
+        Assert.False(r.TryGet(out _, out _, out _, out _, out _, out var error));
         Assert.NotNull(error);
         Assert.Equal("1+2+3+4+5 != 16", error.Message);
     }
@@ -317,7 +317,7 @@ public sealed class ResultEnsureTests {
                                                 _) => await ValueTask.FromResult(new Exception("sum mismatch")));
 
         Assert.True(r.IsSuccess);
-        Assert.True(r.Ok(out var a, out var b, out var c, out var d, out var e, out var f));
+        Assert.True(r.TryGet(out var a, out var b, out var c, out var d, out var e, out var f));
         Assert.Equal(1, a);
         Assert.Equal(2, b);
         Assert.Equal(3, c);
@@ -344,8 +344,8 @@ public sealed class ResultEnsureTests {
                                                 f) => await ValueTask.FromResult(new Exception($"{a}+{b}+{c}+{d}+{e}+{f} != 22")));
 
         Assert.True(r.IsFaulted);
-        Assert.False(r.Ok(out _, out _, out _, out _, out _, out _));
-        Assert.False(r.Ok(out _, out _, out _, out _, out _, out _, out var error));
+        Assert.False(r.TryGet(out _, out _, out _, out _, out _, out _));
+        Assert.False(r.TryGet(out _, out _, out _, out _, out _, out _, out var error));
         Assert.NotNull(error);
         Assert.Equal("1+2+3+4+5+6 != 22", error.Message);
     }
@@ -395,7 +395,7 @@ public sealed class ResultEnsureTests {
                                                 _) => await ValueTask.FromResult(new Exception("sum mismatch")));
 
         Assert.True(r.IsSuccess);
-        Assert.True(r.Ok(out var a, out var b, out var c, out var d, out var e, out var f, out var g));
+        Assert.True(r.TryGet(out var a, out var b, out var c, out var d, out var e, out var f, out var g));
         Assert.Equal(1, a);
         Assert.Equal(2, b);
         Assert.Equal(3, c);
@@ -425,8 +425,8 @@ public sealed class ResultEnsureTests {
                                                 g) => await ValueTask.FromResult(new Exception($"{a}+{b}+{c}+{d}+{e}+{f}+{g} != 29")));
 
         Assert.True(r.IsFaulted);
-        Assert.False(r.Ok(out _, out _, out _, out _, out _, out _, out _));
-        Assert.False(r.Ok(out _, out _, out _, out _, out _, out _, out _, out var error));
+        Assert.False(r.TryGet(out _, out _, out _, out _, out _, out _, out _));
+        Assert.False(r.TryGet(out _, out _, out _, out _, out _, out _, out _, out var error));
         Assert.NotNull(error);
         Assert.Equal("1+2+3+4+5+6+7 != 29", error.Message);
     }
@@ -480,7 +480,7 @@ public sealed class ResultEnsureTests {
                                                 _) => await ValueTask.FromResult(new Exception("sum mismatch")));
 
         Assert.True(r.IsSuccess);
-        Assert.True(r.Ok(out var a, out var b, out var c, out var d, out var e, out var f, out var g, out var h));
+        Assert.True(r.TryGet(out var a, out var b, out var c, out var d, out var e, out var f, out var g, out var h));
         Assert.Equal(1, a);
         Assert.Equal(2, b);
         Assert.Equal(3, c);
@@ -513,8 +513,8 @@ public sealed class ResultEnsureTests {
                                                 h) => await ValueTask.FromResult(new Exception($"{a}+{b}+{c}+{d}+{e}+{f}+{g}+{h} != 37")));
 
         Assert.True(r.IsFaulted);
-        Assert.False(r.Ok(out _, out _, out _, out _, out _, out _, out _, out _));
-        Assert.False(r.Ok(out _, out _, out _, out _, out _, out _, out _, out _, out var error));
+        Assert.False(r.TryGet(out _, out _, out _, out _, out _, out _, out _, out _));
+        Assert.False(r.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var error));
         Assert.NotNull(error);
         Assert.Equal("1+2+3+4+5+6+7+8 != 37", error.Message);
     }
@@ -557,7 +557,7 @@ public sealed class ResultEnsureTests {
                                                    _) => await ValueTask.FromResult(new Exception("nope")));
 
         Assert.True(r.IsSuccess);
-        Assert.True(r.Ok(out var a1, out var b1));
+        Assert.True(r.TryGet(out var a1, out var b1));
         Assert.Equal(2, a1);
         Assert.Equal(3, b1);
     }
@@ -574,7 +574,7 @@ public sealed class ResultEnsureTests {
                                                    _) => await ValueTask.FromResult(new Exception("nope")));
 
         Assert.True(r.IsSuccess);
-        Assert.True(r.Ok(out var a1, out var b1, out var c1));
+        Assert.True(r.TryGet(out var a1, out var b1, out var c1));
         Assert.Equal(1, a1);
         Assert.Equal(2, b1);
         Assert.Equal(3, c1);
@@ -594,7 +594,7 @@ public sealed class ResultEnsureTests {
                                                    _) => await ValueTask.FromResult(new Exception("nope")));
 
         Assert.True(r.IsSuccess);
-        Assert.True(r.Ok(out var a1, out var b1, out var c1, out var d1));
+        Assert.True(r.TryGet(out var a1, out var b1, out var c1, out var d1));
         Assert.Equal(1, a1);
         Assert.Equal(2, b1);
         Assert.Equal(3, c1);
@@ -617,7 +617,7 @@ public sealed class ResultEnsureTests {
                                                    _) => await ValueTask.FromResult(new Exception("nope")));
 
         Assert.True(r.IsSuccess);
-        Assert.True(r.Ok(out var a1, out var b1, out var c1, out var d1, out var e1));
+        Assert.True(r.TryGet(out var a1, out var b1, out var c1, out var d1, out var e1));
         Assert.Equal(1, a1);
         Assert.Equal(2, b1);
         Assert.Equal(3, c1);
@@ -643,7 +643,7 @@ public sealed class ResultEnsureTests {
                                                    _) => await ValueTask.FromResult(new Exception("nope")));
 
         Assert.True(r.IsSuccess);
-        Assert.True(r.Ok(out var a1, out var b1, out var c1, out var d1, out var e1, out var f1));
+        Assert.True(r.TryGet(out var a1, out var b1, out var c1, out var d1, out var e1, out var f1));
         Assert.Equal(1, a1);
         Assert.Equal(2, b1);
         Assert.Equal(3, c1);
@@ -672,7 +672,7 @@ public sealed class ResultEnsureTests {
                                                    _) => await ValueTask.FromResult(new Exception("nope")));
 
         Assert.True(r.IsSuccess);
-        Assert.True(r.Ok(out var a1, out var b1, out var c1, out var d1, out var e1, out var f1, out var g1));
+        Assert.True(r.TryGet(out var a1, out var b1, out var c1, out var d1, out var e1, out var f1, out var g1));
         Assert.Equal(1, a1);
         Assert.Equal(2, b1);
         Assert.Equal(3, c1);
@@ -704,7 +704,7 @@ public sealed class ResultEnsureTests {
                                                    _) => await ValueTask.FromResult(new Exception("nope")));
 
         Assert.True(r.IsSuccess);
-        Assert.True(r.Ok(out var a1, out var b1, out var c1, out var d1, out var e1, out var f1, out var g1, out var h1));
+        Assert.True(r.TryGet(out var a1, out var b1, out var c1, out var d1, out var e1, out var f1, out var g1, out var h1));
         Assert.Equal(1, a1);
         Assert.Equal(2, b1);
         Assert.Equal(3, c1);

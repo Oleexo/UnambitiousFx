@@ -206,7 +206,7 @@ public sealed class ResultArity3Tests {
     public void Success_Ok_ReturnsValue() {
         var r = Result.Success(42, "foo", true);
 
-        if (r.Ok(out var value1, out var value2, out var value3)) {
+        if (r.TryGet(out var value1, out var value2, out var value3)) {
             Assert.Equal(42,    value1);
             Assert.Equal("foo", value2);
             Assert.True(value3);
@@ -220,18 +220,18 @@ public sealed class ResultArity3Tests {
     public void Failure_Ok_ReturnsErrorMessage() {
         var r = Result.Failure<int, string, bool>(new Exception("boom"));
 
-        if (!r.Ok(out _, out _, out _, out var err)) {
+        if (!r.TryGet(out _, out _, out _, out var err)) {
             Assert.Equal("boom", err.Message);
         }
         else {
             Assert.Fail("Expected failure");
         }
 
-        if (r.Ok(out _)) {
+        if (r.TryGet(out _)) {
             Assert.Fail("Expected failure");
         }
 
-        if (!r.Ok(out var err2)) {
+        if (!r.TryGet(out var err2)) {
             Assert.Equal("boom", err2.Message);
         }
         else {

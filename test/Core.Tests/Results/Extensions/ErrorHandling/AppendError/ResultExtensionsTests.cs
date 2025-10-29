@@ -21,7 +21,7 @@ public sealed class ResultExtensionsTests {
 
         var appended = r.AppendError("!");
 
-        if (!appended.Ok(out var err)) {
+        if (!appended.TryGet(out var err)) {
             Assert.Equal("boom!", err.Message);
         }
         else {
@@ -44,7 +44,7 @@ public sealed class ResultExtensionsTests {
 
         var appended = r.AppendError("_suffix");
 
-        appended.Ok(out var value, out _);
+        appended.TryGet(out var value, out _);
         Assert.Equal(123, value);
     }
 
@@ -55,7 +55,7 @@ public sealed class ResultExtensionsTests {
 
         var appended = r.AppendError("?");
 
-        if (!appended.Ok(out _, out var err)) {
+        if (!appended.TryGet(out _, out var err)) {
             Assert.Equal("bad?", err.Message);
         }
         else {
@@ -78,7 +78,7 @@ public sealed class ResultExtensionsTests {
 
         var appended = r.AppendError("_t");
 
-        appended.Ok(out var value1, out var value2, out _);
+        appended.TryGet(out var value1, out var value2, out _);
         Assert.Equal(1, value1);
         Assert.Equal(2, value2);
     }
@@ -90,7 +90,7 @@ public sealed class ResultExtensionsTests {
 
         var appended = r.AppendError("+");
 
-        if (!appended.Ok(out _, out _, out var err)) {
+        if (!appended.TryGet(out _, out _, out var err)) {
             Assert.Equal("ouch+", err.Message);
         }
         else {
@@ -113,7 +113,7 @@ public sealed class ResultExtensionsTests {
 
         var appended = r.AppendError("_t");
 
-        appended.Ok(out var value1, out var value2, out var value3, out _);
+        appended.TryGet(out var value1, out var value2, out var value3, out _);
         Assert.Equal(1, value1);
         Assert.Equal(2, value2);
         Assert.Equal(3, value3);
@@ -126,7 +126,7 @@ public sealed class ResultExtensionsTests {
 
         var appended = r.AppendError("*");
 
-        if (!appended.Ok(out _, out _, out _, out var err)) {
+        if (!appended.TryGet(out _, out _, out _, out var err)) {
             Assert.Equal("trip*", err.Message);
         }
         else {
@@ -149,7 +149,7 @@ public sealed class ResultExtensionsTests {
 
         var appended = r.AppendError("_t");
 
-        appended.Ok(out var value1, out var value2, out var value3, out var value4, out _);
+        appended.TryGet(out var value1, out var value2, out var value3, out var value4, out _);
         Assert.Equal(1, value1);
         Assert.Equal(2, value2);
         Assert.Equal(3, value3);
@@ -163,7 +163,7 @@ public sealed class ResultExtensionsTests {
 
         var appended = r.AppendError("#");
 
-        if (!appended.Ok(out _, out _,out _,out _, out var err)) {
+        if (!appended.TryGet(out _, out _,out _,out _, out var err)) {
             Assert.Equal("quad#", err.Message);
         }
         else {
@@ -186,7 +186,7 @@ public sealed class ResultExtensionsTests {
 
         var appended = r.AppendError("_t");
 
-        appended.Ok(out var value1, out var value2, out var value3, out var value4, out var value5,  out _);
+        appended.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5,  out _);
         Assert.Equal(1, value1);
         Assert.Equal(2, value2);
         Assert.Equal(3, value3);
@@ -201,7 +201,7 @@ public sealed class ResultExtensionsTests {
 
         var appended = r.AppendError("@");
 
-        if (!appended.Ok(out _,out _,out _,out _,out _, out var err)) {
+        if (!appended.TryGet(out _,out _,out _,out _,out _, out var err)) {
             Assert.Equal("penta@", err.Message);
         }
         else {
@@ -224,7 +224,7 @@ public sealed class ResultExtensionsTests {
 
         var appended = r.AppendError("_t");
 
-        appended.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out _);
+        appended.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out _);
         Assert.Equal(1, value1);
         Assert.Equal(2, value2);
         Assert.Equal(3, value3);
@@ -240,7 +240,7 @@ public sealed class ResultExtensionsTests {
 
         var appended = r.AppendError("%");
 
-        if (!appended.Ok(out _,out _,out _,out _,out _,out _, out var err)) {
+        if (!appended.TryGet(out _,out _,out _,out _,out _,out _, out var err)) {
             Assert.Equal("hexa%", err.Message);
         }
         else {
@@ -263,7 +263,7 @@ public sealed class ResultExtensionsTests {
 
         var appended = r.AppendError("_t");
 
-        appended.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out _);
+        appended.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out _);
         Assert.Equal(1, value1);
         Assert.Equal(2, value2);
         Assert.Equal(3, value3);
@@ -280,7 +280,7 @@ public sealed class ResultExtensionsTests {
 
         var appended = r.AppendError("=");
 
-        if (!appended.Ok(out _,out _,out _,out _,out _,out _,out _, out var err)) {
+        if (!appended.TryGet(out _,out _,out _,out _,out _,out _,out _, out var err)) {
             Assert.Equal("hepta=", err.Message);
         }
         else {
@@ -303,7 +303,7 @@ public sealed class ResultExtensionsTests {
 
         var appended = r.AppendError("_t");
 
-        appended.Ok(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out var value8, out _);
+        appended.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out var value8, out _);
         Assert.Equal(1, value1);
         Assert.Equal(2, value2);
         Assert.Equal(3, value3);
@@ -321,7 +321,7 @@ public sealed class ResultExtensionsTests {
 
         var appended = r.AppendError("^");
 
-        if (!appended.Ok(out _,out _,out _,out _,out _,out _,out _,out _, out var err)) {
+        if (!appended.TryGet(out _,out _,out _,out _,out _,out _,out _,out _, out var err)) {
             Assert.Equal("octa^", err.Message);
         }
         else {

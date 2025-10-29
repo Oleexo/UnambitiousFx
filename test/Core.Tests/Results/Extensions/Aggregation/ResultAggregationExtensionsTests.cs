@@ -64,7 +64,7 @@ public sealed class ResultExtensionsTests {
 
         var merged = new[] { r1, r2 }.Merge();
 
-        Assert.True(merged.Ok(out _));
+        Assert.True(merged.TryGet(out _));
         Assert.Equal(2, merged.Reasons.OfType<ISuccess>()
                               .Count());
         Assert.Equal(2, merged.Metadata.Count); // a + b
@@ -81,7 +81,7 @@ public sealed class ResultExtensionsTests {
 
         var merged = new[] { f1, f2 }.Merge();
 
-        Assert.False(merged.Ok(out var primary));
+        Assert.False(merged.TryGet(out var primary));
         var agg = Assert.IsType<AggregateException>(primary);
         // two primary exceptions captured
         Assert.Equal(2, agg.InnerExceptions.Count);
@@ -105,7 +105,7 @@ public sealed class ResultExtensionsTests {
 
         var merged = new[] { first, failing, after }.Merge(MergeFailureStrategy.FirstFailure);
 
-        Assert.False(merged.Ok(out var primary));
+        Assert.False(merged.TryGet(out var primary));
         Assert.IsType<ValidationError>(merged.Errors()
                                              .First());
         Assert.True(merged.Metadata.ContainsKey("a"));
@@ -126,7 +126,7 @@ public sealed class ResultExtensionsTests {
 
         var merged = new[] { r1, r2, r3 }.Merge(MergeFailureStrategy.AccumulateAll);
 
-        Assert.True(merged.Ok(out _));
+        Assert.True(merged.TryGet(out _));
         Assert.Equal(3, merged.Metadata["k"]);
     }
 
@@ -137,14 +137,14 @@ public sealed class ResultExtensionsTests {
         var r2 = Result.Success()
                        .WithSuccess("b");
         var ff = new[] { r1, r2 }.FirstFailureOrSuccess();
-        Assert.True(ff.Ok(out _));
+        Assert.True(ff.TryGet(out _));
     }
 
     [Fact]
     public void FirstFailureOrSuccess_Empty_ReturnsSuccess() {
         var ff = Array.Empty<Result>()
                       .FirstFailureOrSuccess();
-        Assert.True(ff.Ok(out _));
+        Assert.True(ff.TryGet(out _));
     }
 
     [Fact]

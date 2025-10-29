@@ -17,7 +17,7 @@ public class ResultExtensionsTests {
             return x + 1;
         });
 
-        if (mapped.Ok(out var v, out _)) {
+        if (mapped.TryGet(out var v, out _)) {
             Assert.Equal(2, v);
         }
         else {
@@ -35,7 +35,7 @@ public class ResultExtensionsTests {
             return x + 1;
         });
 
-        if (!mapped.Ok(out _, out var err)) {
+        if (!mapped.TryGet(out _, out var err)) {
             Assert.Equal(ex, err);
         }
         else {
@@ -69,7 +69,7 @@ public class ResultExtensionsTests {
             throw thrown;
         });
 
-        if (!mapped.Ok(out _, out var err)) {
+        if (!mapped.TryGet(out _, out var err)) {
             Assert.Same(thrown, err);
         }
         else {
@@ -86,7 +86,7 @@ public class ResultExtensionsTests {
             return x + 1;
         });
 
-        if (mapped.Ok(out var v, out _)) {
+        if (mapped.TryGet(out var v, out _)) {
             Assert.Equal(2, v);
         }
         else {
@@ -104,7 +104,7 @@ public class ResultExtensionsTests {
             return x + 1;
         });
 
-        if (!mapped.Ok(out _, out var err)) {
+        if (!mapped.TryGet(out _, out var err)) {
             Assert.Equal(ex, err);
         }
         else {
@@ -138,7 +138,7 @@ public class ResultExtensionsTests {
             throw thrown;
         });
 
-        if (!mapped.Ok(out _, out var err)) {
+        if (!mapped.TryGet(out _, out var err)) {
             Assert.Same(thrown, err);
         }
         else {
@@ -160,7 +160,7 @@ public class ResultExtensionsTests {
             return (a + 10, b * 2);
         });
 
-        if (mapped.Ok(out var v1, out var v2, out _)) {
+        if (mapped.TryGet(out var v1, out var v2, out _)) {
             Assert.Equal((11, 4), (v1, v2));
         }
         else {
@@ -179,7 +179,7 @@ public class ResultExtensionsTests {
             return (a + 10, b * 2);
         });
 
-        if (!mapped.Ok(out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out var err)) {
             Assert.Equal(ex, err);
         }
         else {
@@ -215,7 +215,7 @@ public class ResultExtensionsTests {
             throw thrown;
         });
 
-        if (!mapped.Ok(out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out var err)) {
             Assert.Same(thrown, err);
         }
         else {
@@ -233,7 +233,7 @@ public class ResultExtensionsTests {
             return (a + 10, b * 2);
         });
 
-        if (mapped.Ok(out var v1, out var v2, out _)) {
+        if (mapped.TryGet(out var v1, out var v2, out _)) {
             Assert.Equal((11, 4), (v1, v2));
         }
         else {
@@ -252,7 +252,7 @@ public class ResultExtensionsTests {
             return (a + 10, b * 2);
         });
 
-        if (!mapped.Ok(out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out var err)) {
             Assert.Equal(ex, err);
         }
         else {
@@ -288,7 +288,7 @@ public class ResultExtensionsTests {
             throw thrown;
         });
 
-        if (!mapped.Ok(out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out var err)) {
             Assert.Same(thrown, err);
         }
         else {
@@ -311,7 +311,7 @@ public class ResultExtensionsTests {
             return (a + 1, b + 2, c + 3);
         });
 
-        if (mapped.Ok(out var v1, out var v2, out var v3, out _)) {
+        if (mapped.TryGet(out var v1, out var v2, out var v3, out _)) {
             Assert.Equal((2, 4, 6), (v1, v2, v3));
         }
         else {
@@ -331,7 +331,7 @@ public class ResultExtensionsTests {
             return (a + 1, b + 2, c + 3);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
         }
         else {
@@ -369,7 +369,7 @@ public class ResultExtensionsTests {
             throw thrown;
         });
 
-        if (!mapped.Ok(out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out var err)) {
             Assert.Same(thrown, err);
         }
         else {
@@ -388,7 +388,7 @@ public class ResultExtensionsTests {
             return (a + 1, b + 2, c + 3);
         });
 
-        if (mapped.Ok(out var v1, out var v2, out var v3, out _)) {
+        if (mapped.TryGet(out var v1, out var v2, out var v3, out _)) {
             Assert.Equal((2, 4, 6), (v1, v2, v3));
         }
         else {
@@ -408,7 +408,7 @@ public class ResultExtensionsTests {
             return (a + 1, b + 2, c + 3);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
         }
         else {
@@ -446,7 +446,7 @@ public class ResultExtensionsTests {
             throw thrown;
         });
 
-        if (!mapped.Ok(out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out var err)) {
             Assert.Same(thrown, err);
         }
         else {
@@ -470,7 +470,7 @@ public class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1);
         });
 
-        if (mapped.Ok(out var v1, out var v2, out var v3, out var v4, out _)) {
+        if (mapped.TryGet(out var v1, out var v2, out var v3, out var v4, out _)) {
             Assert.Equal((2, 3, 4, 5), (v1, v2, v3, v4));
         }
         else {
@@ -491,7 +491,7 @@ public class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
         }
         else {
@@ -531,7 +531,7 @@ public class ResultExtensionsTests {
             throw thrown;
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out var err)) {
             Assert.Same(thrown, err);
         }
         else {
@@ -551,7 +551,7 @@ public class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1);
         });
 
-        if (mapped.Ok(out var v1, out var v2, out var v3, out var v4, out _)) {
+        if (mapped.TryGet(out var v1, out var v2, out var v3, out var v4, out _)) {
             Assert.Equal((2, 3, 4, 5), (v1, v2, v3, v4));
         }
         else {
@@ -572,7 +572,7 @@ public class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
         }
         else {
@@ -612,7 +612,7 @@ public class ResultExtensionsTests {
             throw thrown;
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out var err)) {
             Assert.Same(thrown, err);
         }
         else {
@@ -637,7 +637,7 @@ public class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1, e + 1);
         });
 
-        if (mapped.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out _)) {
+        if (mapped.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out _)) {
             Assert.Equal((2, 3, 4, 5, 6), (v1, v2, v3, v4, v5));
         }
         else {
@@ -659,7 +659,7 @@ public class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1, e + 1);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
         }
         else {
@@ -701,7 +701,7 @@ public class ResultExtensionsTests {
             throw thrown;
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out var err)) {
             Assert.Same(thrown, err);
         }
         else {
@@ -722,7 +722,7 @@ public class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1, e + 1);
         });
 
-        if (mapped.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out _)) {
+        if (mapped.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out _)) {
             Assert.Equal((2, 3, 4, 5, 6), (v1, v2, v3, v4, v5));
         }
         else {
@@ -744,7 +744,7 @@ public class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1, e + 1);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
         }
         else {
@@ -786,7 +786,7 @@ public class ResultExtensionsTests {
             throw thrown;
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out var err)) {
             Assert.Same(thrown, err);
         }
         else {
@@ -812,7 +812,7 @@ public class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1);
         });
 
-        if (mapped.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out _)) {
+        if (mapped.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out _)) {
             Assert.Equal((2, 3, 4, 5, 6, 7), (v1, v2, v3, v4, v5, v6));
         }
         else {
@@ -835,7 +835,7 @@ public class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
         }
         else {
@@ -879,7 +879,7 @@ public class ResultExtensionsTests {
             throw thrown;
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Same(thrown, err);
         }
         else {
@@ -901,7 +901,7 @@ public class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1);
         });
 
-        if (mapped.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out _)) {
+        if (mapped.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out _)) {
             Assert.Equal((2, 3, 4, 5, 6, 7), (v1, v2, v3, v4, v5, v6));
         }
         else {
@@ -924,7 +924,7 @@ public class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
         }
         else {
@@ -968,7 +968,7 @@ public class ResultExtensionsTests {
             throw thrown;
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Same(thrown, err);
         }
         else {
@@ -995,7 +995,7 @@ public class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1, g + 1);
         });
 
-        if (mapped.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7, out _)) {
+        if (mapped.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7, out _)) {
             Assert.Equal((2, 3, 4, 5, 6, 7, 8), (v1, v2, v3, v4, v5, v6, v7));
         }
         else {
@@ -1019,7 +1019,7 @@ public class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1, g + 1);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
         }
         else {
@@ -1065,7 +1065,7 @@ public class ResultExtensionsTests {
             throw thrown;
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Same(thrown, err);
         }
         else {
@@ -1088,7 +1088,7 @@ public class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1, g + 1);
         });
 
-        if (mapped.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7, out _)) {
+        if (mapped.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7, out _)) {
             Assert.Equal((2, 3, 4, 5, 6, 7, 8), (v1, v2, v3, v4, v5, v6, v7));
         }
         else {
@@ -1112,7 +1112,7 @@ public class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1, g + 1);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
         }
         else {
@@ -1158,7 +1158,7 @@ public class ResultExtensionsTests {
             throw thrown;
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Same(thrown, err);
         }
         else {
@@ -1186,7 +1186,7 @@ public class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1, g + 1, h + 1);
         });
 
-        if (mapped.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7, out var v8, out _)) {
+        if (mapped.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7, out var v8, out _)) {
             Assert.Equal((2, 3, 4, 5, 6, 7, 8, 9), (v1, v2, v3, v4, v5, v6, v7, v8));
         }
         else {
@@ -1211,7 +1211,7 @@ public class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1, g + 1, h + 1);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
         }
         else {
@@ -1259,7 +1259,7 @@ public class ResultExtensionsTests {
                                                                                                                           throw thrown;
                                                                                                                       });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Same(thrown, err);
         }
         else {
@@ -1283,7 +1283,7 @@ public class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1, g + 1, h + 1);
         });
 
-        if (mapped.Ok(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7, out var v8, out _)) {
+        if (mapped.TryGet(out var v1, out var v2, out var v3, out var v4, out var v5, out var v6, out var v7, out var v8, out _)) {
             Assert.Equal((2, 3, 4, 5, 6, 7, 8, 9), (v1, v2, v3, v4, v5, v6, v7, v8));
         }
         else {
@@ -1308,7 +1308,7 @@ public class ResultExtensionsTests {
             return (a + 1, b + 1, c + 1, d + 1, e + 1, f + 1, g + 1, h + 1);
         });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Equal(ex, err);
         }
         else {
@@ -1356,7 +1356,7 @@ public class ResultExtensionsTests {
                              throw thrown;
                          });
 
-        if (!mapped.Ok(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
+        if (!mapped.TryGet(out _, out _, out _, out _, out _, out _, out _, out _, out var err)) {
             Assert.Same(thrown, err);
         }
         else {

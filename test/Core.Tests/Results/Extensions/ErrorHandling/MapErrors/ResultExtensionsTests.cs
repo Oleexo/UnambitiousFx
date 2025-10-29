@@ -28,7 +28,7 @@ public sealed class ResultExtensionsTests {
 
         var mapped = r.MapErrors(errs => new InvalidOperationException("wrapped", errs[0]));
 
-        if (!mapped.Ok(out var err)) {
+        if (!mapped.TryGet(out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
         }
@@ -48,7 +48,7 @@ public sealed class ResultExtensionsTests {
             return new InvalidOperationException("wrapped");
         });
 
-        if (mapped.Ok(out var value, out _)) {
+        if (mapped.TryGet(out var value, out _)) {
             Assert.Equal(123, value);
             Assert.Equal(0, called);
         }
@@ -64,7 +64,7 @@ public sealed class ResultExtensionsTests {
 
         var mapped = r.MapErrors(errs => new InvalidOperationException("wrapped", errs[0]));
 
-        if (!mapped.Ok(out _, out var err)) {
+        if (!mapped.TryGet(out _, out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
         }
@@ -84,7 +84,7 @@ public sealed class ResultExtensionsTests {
             return new InvalidOperationException("wrapped");
         });
 
-        if (mapped.Ok(out var a, out var b, out _)) {
+        if (mapped.TryGet(out var a, out var b, out _)) {
             Assert.Equal(1, a);
             Assert.Equal(2, b);
             Assert.Equal(0, called);
@@ -101,7 +101,7 @@ public sealed class ResultExtensionsTests {
 
         var mapped = r.MapErrors(errs => new InvalidOperationException("wrapped", errs[0]));
 
-        if (!mapped.Ok(out _,out _, out var err)) {
+        if (!mapped.TryGet(out _,out _, out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
         }
@@ -121,7 +121,7 @@ public sealed class ResultExtensionsTests {
             return new InvalidOperationException("wrapped");
         });
 
-        if (mapped.Ok(out var a, out var b, out var c, out _)) {
+        if (mapped.TryGet(out var a, out var b, out var c, out _)) {
             Assert.Equal(1, a);
             Assert.Equal(2, b);
             Assert.Equal(3, c);
@@ -139,7 +139,7 @@ public sealed class ResultExtensionsTests {
 
         var mapped = r.MapErrors(errs => new InvalidOperationException("wrapped", errs[0]));
 
-        if (!mapped.Ok(out _,out _,out _,out var err)) {
+        if (!mapped.TryGet(out _,out _,out _,out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
         }
@@ -159,7 +159,7 @@ public sealed class ResultExtensionsTests {
             return new InvalidOperationException("wrapped");
         });
 
-        if (mapped.Ok(out var a, out var b, out var c, out var d, out _)) {
+        if (mapped.TryGet(out var a, out var b, out var c, out var d, out _)) {
             Assert.Equal(1, a);
             Assert.Equal(2, b);
             Assert.Equal(3, c);
@@ -178,7 +178,7 @@ public sealed class ResultExtensionsTests {
 
         var mapped = r.MapErrors(errs => new InvalidOperationException("wrapped", errs[0]));
 
-        if (!mapped.Ok(out _,out _,out _,out _, out var err)) {
+        if (!mapped.TryGet(out _,out _,out _,out _, out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
         }
@@ -198,7 +198,7 @@ public sealed class ResultExtensionsTests {
             return new InvalidOperationException("wrapped");
         });
 
-        if (mapped.Ok(out var a, out var b, out var c, out var d, out var e, out _)) {
+        if (mapped.TryGet(out var a, out var b, out var c, out var d, out var e, out _)) {
             Assert.Equal(1, a);
             Assert.Equal(2, b);
             Assert.Equal(3, c);
@@ -218,7 +218,7 @@ public sealed class ResultExtensionsTests {
 
         var mapped = r.MapErrors(errs => new InvalidOperationException("wrapped", errs[0]));
 
-        if (!mapped.Ok(out _,out _,out _,out _,out _, out var err)) {
+        if (!mapped.TryGet(out _,out _,out _,out _,out _, out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
         }
@@ -238,7 +238,7 @@ public sealed class ResultExtensionsTests {
             return new InvalidOperationException("wrapped");
         });
 
-        if (mapped.Ok(out var a, out var b, out var c, out var d, out var e, out var f, out _)) {
+        if (mapped.TryGet(out var a, out var b, out var c, out var d, out var e, out var f, out _)) {
             Assert.Equal(1, a);
             Assert.Equal(2, b);
             Assert.Equal(3, c);
@@ -259,7 +259,7 @@ public sealed class ResultExtensionsTests {
 
         var mapped = r.MapErrors(errs => new InvalidOperationException("wrapped", errs[0]));
 
-        if (!mapped.Ok(out _,out _,out _,out _,out _,out _, out var err)) {
+        if (!mapped.TryGet(out _,out _,out _,out _,out _,out _, out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
         }
@@ -279,7 +279,7 @@ public sealed class ResultExtensionsTests {
             return new InvalidOperationException("wrapped");
         });
 
-        if (mapped.Ok(out var a, out var b, out var c, out var d, out var e, out var f, out var g, out _)) {
+        if (mapped.TryGet(out var a, out var b, out var c, out var d, out var e, out var f, out var g, out _)) {
             Assert.Equal(1, a);
             Assert.Equal(2, b);
             Assert.Equal(3, c);
@@ -301,7 +301,7 @@ public sealed class ResultExtensionsTests {
 
         var mapped = r.MapErrors(errs => new InvalidOperationException("wrapped", errs[0]));
 
-        if (!mapped.Ok(out _,out _,out _,out _,out _,out _,out _, out var err)) {
+        if (!mapped.TryGet(out _,out _,out _,out _,out _,out _,out _, out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
         }
@@ -321,7 +321,7 @@ public sealed class ResultExtensionsTests {
             return new InvalidOperationException("wrapped");
         });
 
-        if (mapped.Ok(out var a, out var b, out var c, out var d, out var e, out var f, out var g, out var h, out _)) {
+        if (mapped.TryGet(out var a, out var b, out var c, out var d, out var e, out var f, out var g, out var h, out _)) {
             Assert.Equal(1, a);
             Assert.Equal(2, b);
             Assert.Equal(3, c);
@@ -344,7 +344,7 @@ public sealed class ResultExtensionsTests {
 
         var mapped = r.MapErrors(errs => new InvalidOperationException("wrapped", errs[0]));
 
-        if (!mapped.Ok(out _,out _,out _,out _,out _,out _,out _,out _, out var err)) {
+        if (!mapped.TryGet(out _,out _,out _,out _,out _,out _,out _,out _, out var err)) {
             Assert.IsType<InvalidOperationException>(err);
             Assert.Equal(ex, err.InnerException);
         }

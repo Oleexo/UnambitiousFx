@@ -42,7 +42,7 @@ public sealed class ResultEnsureNotNullTests {
         var r = await awaitable.EnsureNotNullAsync(u => u.Name, "is required");
 
         Assert.True(r.IsSuccess);
-        Assert.True(r.Ok(out var u));
+        Assert.True(r.TryGet(out var u));
         Assert.Equal("Jane", u.Name);
     }
 
