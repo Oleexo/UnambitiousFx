@@ -45,6 +45,8 @@ internal sealed class ResultValueAccessExtensionsCodeGenerator : ICodeGenerator
         GenerateToNullablePartialFiles(numberOfArity, outputPath);
         GenerateValueOrPartialFiles(numberOfArity, outputPath);
         GenerateValueOrThrowPartialFiles(numberOfArity, outputPath);
+        GenerateValueOrAsyncPartialFiles(numberOfArity, tasksOutputPath, valueTasksOutputPath);
+        GenerateValueOrThrowAsyncPartialFiles(numberOfArity, tasksOutputPath, valueTasksOutputPath);
 
         for (ushort i = StartArity; i <= numberOfArity; i++)
         {
@@ -134,6 +136,15 @@ internal sealed class ResultValueAccessExtensionsCodeGenerator : ICodeGenerator
         }
 
         var methodName = "ToNullable";
+        var docBuilder = DocumentationWriter.Create()
+            .WithSummary(arity == 1 ? "Returns the value as nullable if success; otherwise default." : "Returns the tuple of values as nullable if success; otherwise default.")
+            .WithParameter("result", "The result instance.")
+            .WithReturns("The nullable value or null/default.");
+        foreach (var i in Enumerable.Range(1, arity))
+        {
+            docBuilder.WithTypeParameter($"TValue{i}", $"Value type {i}.");
+        }
+        var doc = docBuilder.Build();
         var methodWriter = new MethodWriter(
             name: methodName,
             returnType: returnType,
@@ -141,7 +152,8 @@ internal sealed class ResultValueAccessExtensionsCodeGenerator : ICodeGenerator
             visibility: Visibility.Public,
             modifier: MethodModifier.Static,
             parameters: [new MethodParameter($"this {resultType}", "result")],
-            genericParameters: genericParams
+            genericParameters: genericParams,
+            documentation: doc
         );
         return methodWriter;
     }
@@ -305,6 +317,16 @@ internal sealed class ResultValueAccessExtensionsCodeGenerator : ICodeGenerator
         }
         var parameters = new List<MethodParameter> { new MethodParameter($"this {resultType}", "result") };
         parameters.AddRange(Enumerable.Range(1, arity).Select(n => new MethodParameter($"TValue{n}", $"fallback{n}")));
+        var docValueOrDefaultBuilder = DocumentationWriter.Create()
+            .WithSummary("Returns contained values when successful; otherwise provided fallback(s).")
+            .WithParameter("result", "The result instance.")
+            .WithReturns("The value(s) or fallback(s).");
+        foreach (var i in Enumerable.Range(1, arity))
+        {
+            docValueOrDefaultBuilder.WithTypeParameter($"TValue{i}", $"Value type {i}.");
+            docValueOrDefaultBuilder.WithParameter($"fallback{i}", $"Fallback value {i}.");
+        }
+        var doc = docValueOrDefaultBuilder.Build();
         return new MethodWriter(
             name: methodName,
             returnType: returnType,
@@ -312,7 +334,8 @@ internal sealed class ResultValueAccessExtensionsCodeGenerator : ICodeGenerator
             visibility: Visibility.Public,
             modifier: MethodModifier.Static,
             parameters: parameters.ToArray(),
-            genericParameters: genericParams
+            genericParameters: genericParams,
+            documentation: doc
         );
     }
 
@@ -335,6 +358,16 @@ internal sealed class ResultValueAccessExtensionsCodeGenerator : ICodeGenerator
             var valueParams = string.Join(", ", Enumerable.Range(1, arity).Select(n => $"value{n}"));
             bodyBuilder.AppendLine($"return result.Match<{returnType}>(({valueParams}) => ({valueParams}), _ => fallbackFactory());");
         }
+        var docFactoryBuilder = DocumentationWriter.Create()
+            .WithSummary("Returns contained values when successful; otherwise value(s) from factory.")
+            .WithParameter("result", "The result instance.")
+            .WithParameter("fallbackFactory", "Factory producing fallback value(s).")
+            .WithReturns("The value(s) or factory value(s).");
+        foreach (var i in Enumerable.Range(1, arity))
+        {
+            docFactoryBuilder.WithTypeParameter($"TValue{i}", $"Value type {i}.");
+        }
+        var docFactory = docFactoryBuilder.Build();
         return new MethodWriter(
             name: methodName,
             returnType: returnType,
@@ -343,7 +376,8 @@ internal sealed class ResultValueAccessExtensionsCodeGenerator : ICodeGenerator
             modifier: MethodModifier.Static,
             parameters: [new MethodParameter($"this {resultType}", "result"), new MethodParameter($"Func<{factoryReturn}>", "fallbackFactory")],
             genericParameters: genericParams,
-            usings: ["System"]
+            usings: ["System"],
+            documentation: docFactory
         );
     }
 
@@ -364,6 +398,15 @@ internal sealed class ResultValueAccessExtensionsCodeGenerator : ICodeGenerator
         {
             bodyBuilder.AppendLine("return result.ValueOrThrow(errors => throw errors.ToException());");
         }
+        var docThrowDefaultBuilder = DocumentationWriter.Create()
+            .WithSummary("Returns contained value(s); throws aggregated exception when failure.")
+            .WithParameter("result", "The result instance.")
+            .WithReturns("The value(s) or throws.");
+        foreach (var i in Enumerable.Range(1, arity))
+        {
+            docThrowDefaultBuilder.WithTypeParameter($"TValue{i}", $"Value type {i}.");
+        }
+        var docThrowDefault = docThrowDefaultBuilder.Build();
         return new MethodWriter(
             name: methodName,
             returnType: returnType,
@@ -372,7 +415,8 @@ internal sealed class ResultValueAccessExtensionsCodeGenerator : ICodeGenerator
             modifier: MethodModifier.Static,
             parameters: [new MethodParameter($"this {resultType}", "result")],
             genericParameters: genericParams,
-            usings: ["System", $"{_baseNamespace}.Results.Reasons"]
+            usings: ["System", $"{_baseNamespace}.Results.Reasons"],
+            documentation: docThrowDefault
         );
     }
 
@@ -394,6 +438,16 @@ internal sealed class ResultValueAccessExtensionsCodeGenerator : ICodeGenerator
             var valueParams = string.Join(", ", Enumerable.Range(1, arity).Select(n => $"value{n}"));
             bodyBuilder.AppendLine($"return result.Match<{returnType}>(({valueParams}) => ({valueParams}), e => throw exceptionFactory(e));");
         }
+        var docThrowFactoryBuilder = DocumentationWriter.Create()
+            .WithSummary("Returns contained value(s); otherwise throws exception from factory.")
+            .WithParameter("result", "The result instance.")
+            .WithParameter("exceptionFactory", "Factory creating exception from errors.")
+            .WithReturns("The value(s) or throws custom exception.");
+        foreach (var i in Enumerable.Range(1, arity))
+        {
+            docThrowFactoryBuilder.WithTypeParameter($"TValue{i}", $"Value type {i}.");
+        }
+        var docThrowFactory = docThrowFactoryBuilder.Build();
         return new MethodWriter(
             name: methodName,
             returnType: returnType,
@@ -402,7 +456,170 @@ internal sealed class ResultValueAccessExtensionsCodeGenerator : ICodeGenerator
             modifier: MethodModifier.Static,
             parameters: [new MethodParameter($"this {resultType}", "result"), new MethodParameter("Func<IEnumerable<IError>, Exception>", "exceptionFactory")],
             genericParameters: genericParams,
-            usings: ["System", $"{_baseNamespace}.Results.Reasons"]
+            usings: ["System", $"{_baseNamespace}.Results.Reasons"],
+            documentation: docThrowFactory
+        );
+    }
+
+    // Async partial generation for ValueOr / ValueOrThrow
+    private void GenerateValueOrAsyncPartialFiles(ushort numberOfArity, string tasksPath, string valueTasksPath)
+    {
+        for (ushort arity = StartArity; arity <= numberOfArity; arity++)
+        {
+            // Task partial
+            var taskWriter = new FileWriter($"{_baseNamespace}.Results.Extensions.ValueAccess");
+            var taskClass = new ClassWriter("ResultValueOrExtensions", Visibility.Public, ClassModifier.Static | ClassModifier.Partial);
+            taskClass.AddMethod(BuildStandaloneValueOrDefaultAsyncMethod(arity, isValueTask: false));
+            taskClass.AddMethod(BuildStandaloneValueOrFactoryAsyncMethod(arity, isValueTask: false));
+            taskWriter.AddClass(taskClass);
+            WriteFile(taskWriter, Path.Combine(tasksPath, $"ResultValueOrExtensions.Arity{arity}.Task.cs"));
+
+            // ValueTask partial
+            var vtWriter = new FileWriter($"{_baseNamespace}.Results.Extensions.ValueAccess");
+            var vtClass = new ClassWriter("ResultValueOrExtensions", Visibility.Public, ClassModifier.Static | ClassModifier.Partial);
+            vtClass.AddMethod(BuildStandaloneValueOrDefaultAsyncMethod(arity, isValueTask: true));
+            vtClass.AddMethod(BuildStandaloneValueOrFactoryAsyncMethod(arity, isValueTask: true));
+            vtWriter.AddClass(vtClass);
+            WriteFile(vtWriter, Path.Combine(valueTasksPath, $"ResultValueOrExtensions.Arity{arity}.ValueTask.cs"));
+        }
+    }
+
+    private void GenerateValueOrThrowAsyncPartialFiles(ushort numberOfArity, string tasksPath, string valueTasksPath)
+    {
+        for (ushort arity = StartArity; arity <= numberOfArity; arity++)
+        {
+            var taskWriter = new FileWriter($"{_baseNamespace}.Results.Extensions.ValueAccess");
+            var taskClass = new ClassWriter("ResultValueOrThrowExtensions", Visibility.Public, ClassModifier.Static | ClassModifier.Partial);
+            taskClass.AddMethod(BuildStandaloneValueOrThrowDefaultAsyncMethod(arity, isValueTask: false));
+            taskClass.AddMethod(BuildStandaloneValueOrThrowFactoryAsyncMethod(arity, isValueTask: false));
+            taskWriter.AddClass(taskClass);
+            WriteFile(taskWriter, Path.Combine(tasksPath, $"ResultValueOrThrowExtensions.Arity{arity}.Task.cs"));
+
+            var vtWriter = new FileWriter($"{_baseNamespace}.Results.Extensions.ValueAccess");
+            var vtClass = new ClassWriter("ResultValueOrThrowExtensions", Visibility.Public, ClassModifier.Static | ClassModifier.Partial);
+            vtClass.AddMethod(BuildStandaloneValueOrThrowDefaultAsyncMethod(arity, isValueTask: true));
+            vtClass.AddMethod(BuildStandaloneValueOrThrowFactoryAsyncMethod(arity, isValueTask: true));
+            vtWriter.AddClass(vtClass);
+            WriteFile(vtWriter, Path.Combine(valueTasksPath, $"ResultValueOrThrowExtensions.Arity{arity}.ValueTask.cs"));
+        }
+    }
+
+    // Async builders
+    private MethodWriter BuildStandaloneValueOrDefaultAsyncMethod(ushort arity, bool isValueTask)
+    {
+        var genericTypes = string.Join(", ", Enumerable.Range(1, arity).Select(n => $"TValue{n}"));
+        var genericParams = Enumerable.Range(1, arity).Select(n => new GenericParameter($"TValue{n}", "notnull"));
+        var tupleInner = string.Join(", ", Enumerable.Range(1, arity).Select(n => $"TValue{n}"));
+        var resultType = $"Result<{genericTypes}>";
+        var taskResultType = $"Task<{resultType}>";
+        var vtResultType = $"ValueTask<{resultType}>";
+        var returnType = arity == 1 ? "TValue1" : $"({tupleInner})";
+        var parameters = new List<MethodParameter> { new MethodParameter($"this {(isValueTask ? vtResultType : taskResultType)}", "resultTask") };
+        parameters.AddRange(Enumerable.Range(1, arity).Select(n => new MethodParameter($"TValue{n}", $"fallback{n}")));
+        var body = new System.Text.StringBuilder();
+        body.AppendLine("var result = await resultTask.ConfigureAwait(false);");
+        if (arity == 1)
+        {
+            body.AppendLine("return result.Match<TValue1>(value1 => value1, _ => fallback1);");
+        }
+        else
+        {
+            var valueParams = string.Join(", ", Enumerable.Range(1, arity).Select(n => $"value{n}"));
+            var fallbackArgs = string.Join(", ", Enumerable.Range(1, arity).Select(n => $"fallback{n}"));
+            body.AppendLine($"return result.Match<{returnType}>(({valueParams}) => ({valueParams}), _ => ({fallbackArgs}));");
+        }
+        var asyncReturn = (isValueTask ? $"ValueTask<{returnType}>" : $"Task<{returnType}>");
+        return new MethodWriter(
+            name: "ValueOr",
+            returnType: asyncReturn,
+            body: body.ToString(),
+            visibility: Visibility.Public,
+            modifier: MethodModifier.Async,
+            parameters: parameters.ToArray(),
+            genericParameters: genericParams,
+            usings: ["System", "System.Threading.Tasks"],
+            documentation: DocumentationWriter.Create().WithSummary("Async ValueOr returning fallback(s) when failure.").Build()
+        );
+    }
+
+    private MethodWriter BuildStandaloneValueOrFactoryAsyncMethod(ushort arity, bool isValueTask)
+    {
+        var genericTypes = string.Join(", ", Enumerable.Range(1, arity).Select(n => $"TValue{n}"));
+        var genericParams = Enumerable.Range(1, arity).Select(n => new GenericParameter($"TValue{n}", "notnull"));
+        var tupleInner = string.Join(", ", Enumerable.Range(1, arity).Select(n => $"TValue{n}"));
+        var resultType = $"Result<{genericTypes}>";
+        var taskResultType = $"Task<{resultType}>";
+        var vtResultType = $"ValueTask<{resultType}>";
+        var returnType = arity == 1 ? "TValue1" : $"({tupleInner})";
+        var valueParams = string.Join(", ", Enumerable.Range(1, arity).Select(n => $"value{n}"));
+        var factoryReturn = arity == 1 ? "TValue1" : $"({tupleInner})";
+        var body = new System.Text.StringBuilder();
+        body.AppendLine("var result = await resultTask.ConfigureAwait(false);");
+        body.AppendLine($"return result.Match<{returnType}>(({valueParams}) => ({valueParams}), _ => fallbackFactory());");
+        var asyncReturn = (isValueTask ? $"ValueTask<{returnType}>" : $"Task<{returnType}>");
+        return new MethodWriter(
+            name: "ValueOr",
+            returnType: asyncReturn,
+            body: body.ToString(),
+            visibility: Visibility.Public,
+            modifier: MethodModifier.Async,
+            parameters: [new MethodParameter($"this {(isValueTask ? vtResultType : taskResultType)}", "resultTask"), new MethodParameter($"Func<{factoryReturn}>", "fallbackFactory")],
+            genericParameters: genericParams,
+            usings: ["System", "System.Threading.Tasks"],
+            documentation: DocumentationWriter.Create().WithSummary("Async ValueOr using fallback factory when failure.").Build()
+        );
+    }
+
+    private MethodWriter BuildStandaloneValueOrThrowDefaultAsyncMethod(ushort arity, bool isValueTask)
+    {
+        var genericTypes = string.Join(", ", Enumerable.Range(1, arity).Select(n => $"TValue{n}"));
+        var genericParams = Enumerable.Range(1, arity).Select(n => new GenericParameter($"TValue{n}", "notnull"));
+        var tupleInner = string.Join(", ", Enumerable.Range(1, arity).Select(n => $"TValue{n}"));
+        var resultType = $"Result<{genericTypes}>";
+        var taskResultType = $"Task<{resultType}>";
+        var vtResultType = $"ValueTask<{resultType}>";
+        var returnType = arity == 1 ? "TValue1" : $"({tupleInner})";
+        var body = new System.Text.StringBuilder();
+        body.AppendLine("var result = await resultTask.ConfigureAwait(false);");
+        body.AppendLine("return result.ValueOrThrow(errors => throw errors.ToException());");
+        var asyncReturn = (isValueTask ? $"ValueTask<{returnType}>" : $"Task<{returnType}>");
+        return new MethodWriter(
+            name: "ValueOrThrow",
+            returnType: asyncReturn,
+            body: body.ToString(),
+            visibility: Visibility.Public,
+            modifier: MethodModifier.Async,
+            parameters: [new MethodParameter($"this {(isValueTask ? vtResultType : taskResultType)}", "resultTask")],
+            genericParameters: genericParams,
+            usings: ["System", "System.Threading.Tasks", $"{_baseNamespace}.Results.Reasons"],
+            documentation: DocumentationWriter.Create().WithSummary("Async ValueOrThrow throwing aggregated exception when failure.").Build()
+        );
+    }
+
+    private MethodWriter BuildStandaloneValueOrThrowFactoryAsyncMethod(ushort arity, bool isValueTask)
+    {
+        var genericTypes = string.Join(", ", Enumerable.Range(1, arity).Select(n => $"TValue{n}"));
+        var genericParams = Enumerable.Range(1, arity).Select(n => new GenericParameter($"TValue{n}", "notnull"));
+        var tupleInner = string.Join(", ", Enumerable.Range(1, arity).Select(n => $"TValue{n}"));
+        var resultType = $"Result<{genericTypes}>";
+        var taskResultType = $"Task<{resultType}>";
+        var vtResultType = $"ValueTask<{resultType}>";
+        var returnType = arity == 1 ? "TValue1" : $"({tupleInner})";
+        var valueParams = string.Join(", ", Enumerable.Range(1, arity).Select(n => $"value{n}"));
+        var body = new System.Text.StringBuilder();
+        body.AppendLine("var result = await resultTask.ConfigureAwait(false);");
+        body.AppendLine($"return result.Match<{returnType}>(({valueParams}) => ({valueParams}), e => throw exceptionFactory(e));");
+        var asyncReturn = (isValueTask ? $"ValueTask<{returnType}>" : $"Task<{returnType}>");
+        return new MethodWriter(
+            name: "ValueOrThrow",
+            returnType: asyncReturn,
+            body: body.ToString(),
+            visibility: Visibility.Public,
+            modifier: MethodModifier.Async,
+            parameters: [new MethodParameter($"this {(isValueTask ? vtResultType : taskResultType)}", "resultTask"), new MethodParameter("Func<IEnumerable<IError>, Exception>", "exceptionFactory")],
+            genericParameters: genericParams,
+            usings: ["System", "System.Threading.Tasks", $"{_baseNamespace}.Results.Reasons"],
+            documentation: DocumentationWriter.Create().WithSummary("Async ValueOrThrow using exception factory when failure.").Build()
         );
     }
 
