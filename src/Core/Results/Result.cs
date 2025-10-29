@@ -25,6 +25,10 @@ public abstract partial class Result : BaseResult {
         return new FailureResult(message);
     }
 
+    public static Result Failure(IEnumerable<IError> errors) {
+        return new FailureResult(errors);
+    }
+
     public abstract void Deconstruct(out bool       isSuccess,
                                      out IEnumerable<IError>? error);
 }

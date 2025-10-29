@@ -11,6 +11,10 @@ internal sealed class FailureResult : Result, IFailureResult {
         }
     }
 
+    public FailureResult(IEnumerable<IError> errors) {
+        AddReasons(errors);
+    }
+
     public FailureResult(string message)
         : this(new Exception(message)) {
     }
