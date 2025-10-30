@@ -1,4 +1,6 @@
 using UnambitiousFx.Core.CodeGen.Common;
+using UnambitiousFx.Core.CodeGen.Configuration;
+using UnambitiousFx.Core.CodeGen.Generators;
 
 namespace UnambitiousFx.Core.CodeGen;
 
@@ -12,17 +14,20 @@ internal sealed class CodeGenerationOrchestrator
     private readonly string _sourceDirectory;
     private readonly string _testDirectory;
     private readonly ushort _targetArity;
+    private readonly FileOrganizationMode _fileOrganization;
 
     public CodeGenerationOrchestrator(
         string baseNamespace,
         string sourceDirectory,
         string testDirectory,
-        ushort targetArity)
+        ushort targetArity,
+        FileOrganizationMode fileOrganization = FileOrganizationMode.SeparateFiles)
     {
         _baseNamespace = baseNamespace ?? throw new ArgumentNullException(nameof(baseNamespace));
         _sourceDirectory = sourceDirectory ?? throw new ArgumentNullException(nameof(sourceDirectory));
         _testDirectory = testDirectory ?? throw new ArgumentNullException(nameof(testDirectory));
         _targetArity = targetArity;
+        _fileOrganization = fileOrganization;
     }
 
     /// <summary>
@@ -35,6 +40,7 @@ internal sealed class CodeGenerationOrchestrator
         Console.WriteLine($"Source Directory: {_sourceDirectory}");
         Console.WriteLine($"Test Directory: {_testDirectory}");
         Console.WriteLine($"Target Arity: {_targetArity}");
+        Console.WriteLine($"File Organization: {_fileOrganization}");
         Console.WriteLine();
 
         PreparePaths(out var sourceDirectoryPath, out var testDirectoryPath);
@@ -66,7 +72,7 @@ internal sealed class CodeGenerationOrchestrator
     {
         Console.WriteLine("Generating OneOf types...");
 
-        foreach (var generator in CodeGeneratorFactory.CreateOneOfGenerators(_baseNamespace))
+        foreach (var generator in CodeGeneratorFactory.CreateOneOfGenerators(_baseNamespace, _fileOrganization))
         {
             var outputPath = generator is OneOfTestsGenerator ? testDirectoryPath : sourceDirectoryPath;
             generator.Generate(_targetArity, outputPath);
@@ -79,7 +85,7 @@ internal sealed class CodeGenerationOrchestrator
     {
         Console.WriteLine("Generating Result types...");
 
-        foreach (var generator in CodeGeneratorFactory.CreateResultGenerators(_baseNamespace))
+        foreach (var generator in CodeGeneratorFactory.CreateResultGenerators(_baseNamespace, _fileOrganization))
         {
             var outputPath = generator is ResultTestGenerator ? testDirectoryPath : sourceDirectoryPath;
             generator.Generate(_targetArity, outputPath);

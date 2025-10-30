@@ -136,6 +136,8 @@ internal sealed class MethodWriter : IMethodWriter {
         writer.WriteLine("}");
     }
 
+    public IEnumerable<GenericParameter> GenericParameters => _genericParameters ?? [];
+
     private static string GetVisibilityString(Visibility visibility) => visibility switch {
         Visibility.Public            => "public",
         Visibility.Internal          => "internal",

@@ -1,16 +1,20 @@
 namespace UnambitiousFx.Core.Results.Extensions.Transformations.ValueTasks;
 
-public static class ResultThenExtensions {
-    public static async ValueTask<Result<T1>> ThenAsync<T1>(this Result<T1>                 result,
+public static partial class ResultThenExtensions
+{
+    public static async ValueTask<Result<T1>> ThenAsync<T1>(this Result<T1> result,
                                                             Func<T1, ValueTask<Result<T1>>> then,
-                                                            bool                            copyReasonsAndMetadata = true)
-        where T1 : notnull {
-        if (!result.TryGet(out var value)) {
+                                                            bool copyReasonsAndMetadata = true)
+        where T1 : notnull
+    {
+        if (!result.TryGet(out var value))
+        {
             return result;
         }
 
         var response = await then(value);
-        if (copyReasonsAndMetadata) {
+        if (copyReasonsAndMetadata)
+        {
             result.CopyReasonsAndMetadata(response);
         }
 
@@ -18,32 +22,37 @@ public static class ResultThenExtensions {
     }
 
     public static async ValueTask<Result<T1>> ThenAsync<T1>(this ValueTask<Result<T1>> awaitable,
-                                                            Func<T1, Result<T1>>       then,
-                                                            bool                       copyReasonsAndMetadata = true)
-        where T1 : notnull {
+                                                            Func<T1, Result<T1>> then,
+                                                            bool copyReasonsAndMetadata = true)
+        where T1 : notnull
+    {
         var result = await awaitable;
         return result.Then(then, copyReasonsAndMetadata);
     }
 
-    public static async ValueTask<Result<T1>> ThenAsync<T1>(this ValueTask<Result<T1>>      awaitable,
+    public static async ValueTask<Result<T1>> ThenAsync<T1>(this ValueTask<Result<T1>> awaitable,
                                                             Func<T1, ValueTask<Result<T1>>> then,
-                                                            bool                            copyReasonsAndMetadata = true)
-        where T1 : notnull {
+                                                            bool copyReasonsAndMetadata = true)
+        where T1 : notnull
+    {
         var result = await awaitable;
         return await result.ThenAsync(then, copyReasonsAndMetadata);
     }
 
-    public static async ValueTask<Result<T1, T2>> ThenAsync<T1, T2>(this Result<T1, T2>                     result,
+    public static async ValueTask<Result<T1, T2>> ThenAsync<T1, T2>(this Result<T1, T2> result,
                                                                     Func<T1, T2, ValueTask<Result<T1, T2>>> then,
-                                                                    bool                                    copyReasonsAndMetadata = true)
+                                                                    bool copyReasonsAndMetadata = true)
         where T1 : notnull
-        where T2 : notnull {
-        if (!result.TryGet(out var value1, out var value2)) {
+        where T2 : notnull
+    {
+        if (!result.TryGet(out var value1, out var value2))
+        {
             return result;
         }
 
         var response = await then(value1, value2);
-        if (copyReasonsAndMetadata) {
+        if (copyReasonsAndMetadata)
+        {
             result.CopyReasonsAndMetadata(response);
         }
 
@@ -51,98 +60,110 @@ public static class ResultThenExtensions {
     }
 
     public static async ValueTask<Result<T1, T2>> ThenAsync<T1, T2>(this ValueTask<Result<T1, T2>> awaitable,
-                                                                    Func<T1, T2, Result<T1, T2>>   then,
-                                                                    bool                           copyReasonsAndMetadata = true)
+                                                                    Func<T1, T2, Result<T1, T2>> then,
+                                                                    bool copyReasonsAndMetadata = true)
         where T1 : notnull
-        where T2 : notnull {
+        where T2 : notnull
+    {
         var result = await awaitable;
         return result.Then(then, copyReasonsAndMetadata);
     }
 
-    public static async ValueTask<Result<T1, T2>> ThenAsync<T1, T2>(this ValueTask<Result<T1, T2>>          awaitable,
+    public static async ValueTask<Result<T1, T2>> ThenAsync<T1, T2>(this ValueTask<Result<T1, T2>> awaitable,
                                                                     Func<T1, T2, ValueTask<Result<T1, T2>>> then,
-                                                                    bool                                    copyReasonsAndMetadata = true)
+                                                                    bool copyReasonsAndMetadata = true)
         where T1 : notnull
-        where T2 : notnull {
+        where T2 : notnull
+    {
         var result = await awaitable;
         return await result.ThenAsync(then, copyReasonsAndMetadata);
     }
 
-    public static async ValueTask<Result<T1, T2, T3>> ThenAsync<T1, T2, T3>(this Result<T1, T2, T3>                         result,
+    public static async ValueTask<Result<T1, T2, T3>> ThenAsync<T1, T2, T3>(this Result<T1, T2, T3> result,
                                                                             Func<T1, T2, T3, ValueTask<Result<T1, T2, T3>>> then,
-                                                                            bool                                            copyReasonsAndMetadata = true)
+                                                                            bool copyReasonsAndMetadata = true)
         where T1 : notnull
         where T2 : notnull
-        where T3 : notnull {
-        if (!result.TryGet(out var value1, out var value2, out var value3)) {
+        where T3 : notnull
+    {
+        if (!result.TryGet(out var value1, out var value2, out var value3))
+        {
             return result;
         }
 
         var response = await then(value1, value2, value3);
-        if (copyReasonsAndMetadata) {
+        if (copyReasonsAndMetadata)
+        {
             result.CopyReasonsAndMetadata(response);
         }
 
         return response;
     }
 
-    public static async ValueTask<Result<T1, T2, T3>> ThenAsync<T1, T2, T3>(this ValueTask<Result<T1, T2, T3>>   awaitable,
+    public static async ValueTask<Result<T1, T2, T3>> ThenAsync<T1, T2, T3>(this ValueTask<Result<T1, T2, T3>> awaitable,
                                                                             Func<T1, T2, T3, Result<T1, T2, T3>> then,
-                                                                            bool                                 copyReasonsAndMetadata = true)
+                                                                            bool copyReasonsAndMetadata = true)
         where T1 : notnull
         where T2 : notnull
-        where T3 : notnull {
+        where T3 : notnull
+    {
         var result = await awaitable;
         return result.Then(then, copyReasonsAndMetadata);
     }
 
-    public static async ValueTask<Result<T1, T2, T3>> ThenAsync<T1, T2, T3>(this ValueTask<Result<T1, T2, T3>>              awaitable,
+    public static async ValueTask<Result<T1, T2, T3>> ThenAsync<T1, T2, T3>(this ValueTask<Result<T1, T2, T3>> awaitable,
                                                                             Func<T1, T2, T3, ValueTask<Result<T1, T2, T3>>> then,
-                                                                            bool                                            copyReasonsAndMetadata = true)
+                                                                            bool copyReasonsAndMetadata = true)
         where T1 : notnull
         where T2 : notnull
-        where T3 : notnull {
+        where T3 : notnull
+    {
         var result = await awaitable;
         return await result.ThenAsync(then, copyReasonsAndMetadata);
     }
 
-    public static async ValueTask<Result<T1, T2, T3, T4>> ThenAsync<T1, T2, T3, T4>(this Result<T1, T2, T3, T4>                             result,
+    public static async ValueTask<Result<T1, T2, T3, T4>> ThenAsync<T1, T2, T3, T4>(this Result<T1, T2, T3, T4> result,
                                                                                     Func<T1, T2, T3, T4, ValueTask<Result<T1, T2, T3, T4>>> then,
-                                                                                    bool                                                    copyReasonsAndMetadata = true)
+                                                                                    bool copyReasonsAndMetadata = true)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
-        where T4 : notnull {
-        if (!result.TryGet(out var value1, out var value2, out var value3, out var value4)) {
+        where T4 : notnull
+    {
+        if (!result.TryGet(out var value1, out var value2, out var value3, out var value4))
+        {
             return result;
         }
 
         var response = await then(value1, value2, value3, value4);
-        if (copyReasonsAndMetadata) {
+        if (copyReasonsAndMetadata)
+        {
             result.CopyReasonsAndMetadata(response);
         }
 
         return response;
     }
 
-    public static async ValueTask<Result<T1, T2, T3, T4>> ThenAsync<T1, T2, T3, T4>(this ValueTask<Result<T1, T2, T3, T4>>       awaitable,
+    public static async ValueTask<Result<T1, T2, T3, T4>> ThenAsync<T1, T2, T3, T4>(this ValueTask<Result<T1, T2, T3, T4>> awaitable,
                                                                                     Func<T1, T2, T3, T4, Result<T1, T2, T3, T4>> then,
-                                                                                    bool                                         copyReasonsAndMetadata = true)
+                                                                                    bool copyReasonsAndMetadata = true)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
-        where T4 : notnull {
+        where T4 : notnull
+    {
         var result = await awaitable;
         return result.Then(then, copyReasonsAndMetadata);
     }
 
-    public static async ValueTask<Result<T1, T2, T3, T4>> ThenAsync<T1, T2, T3, T4>(this ValueTask<Result<T1, T2, T3, T4>>                  awaitable,
+    public static async ValueTask<Result<T1, T2, T3, T4>> ThenAsync<T1, T2, T3, T4>(this ValueTask<Result<T1, T2, T3, T4>> awaitable,
                                                                                     Func<T1, T2, T3, T4, ValueTask<Result<T1, T2, T3, T4>>> then,
-                                                                                    bool                                                    copyReasonsAndMetadata = true)
+                                                                                    bool copyReasonsAndMetadata = true)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
-        where T4 : notnull {
+        where T4 : notnull
+    {
         var result = await awaitable;
         return await result.ThenAsync(then, copyReasonsAndMetadata);
     }
@@ -154,27 +175,31 @@ public static class ResultThenExtensions {
         where T2 : notnull
         where T3 : notnull
         where T4 : notnull
-        where T5 : notnull {
-        if (!result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5)) {
+        where T5 : notnull
+    {
+        if (!result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5))
+        {
             return result;
         }
 
         var response = await then(value1, value2, value3, value4, value5);
-        if (copyReasonsAndMetadata) {
+        if (copyReasonsAndMetadata)
+        {
             result.CopyReasonsAndMetadata(response);
         }
 
         return response;
     }
 
-    public static async ValueTask<Result<T1, T2, T3, T4, T5>> ThenAsync<T1, T2, T3, T4, T5>(this ValueTask<Result<T1, T2, T3, T4, T5>>           awaitable,
+    public static async ValueTask<Result<T1, T2, T3, T4, T5>> ThenAsync<T1, T2, T3, T4, T5>(this ValueTask<Result<T1, T2, T3, T4, T5>> awaitable,
                                                                                             Func<T1, T2, T3, T4, T5, Result<T1, T2, T3, T4, T5>> then,
-                                                                                            bool                                                 copyReasonsAndMetadata = true)
+                                                                                            bool copyReasonsAndMetadata = true)
         where T1 : notnull
         where T2 : notnull
         where T3 : notnull
         where T4 : notnull
-        where T5 : notnull {
+        where T5 : notnull
+    {
         var result = await awaitable;
         return result.Then(then, copyReasonsAndMetadata);
     }
@@ -186,7 +211,8 @@ public static class ResultThenExtensions {
         where T2 : notnull
         where T3 : notnull
         where T4 : notnull
-        where T5 : notnull {
+        where T5 : notnull
+    {
         var result = await awaitable;
         return await result.ThenAsync(then, copyReasonsAndMetadata);
     }
@@ -199,13 +225,16 @@ public static class ResultThenExtensions {
         where T3 : notnull
         where T4 : notnull
         where T5 : notnull
-        where T6 : notnull {
-        if (!result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6)) {
+        where T6 : notnull
+    {
+        if (!result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6))
+        {
             return result;
         }
 
         var response = await then(value1, value2, value3, value4, value5, value6);
-        if (copyReasonsAndMetadata) {
+        if (copyReasonsAndMetadata)
+        {
             result.CopyReasonsAndMetadata(response);
         }
 
@@ -220,7 +249,8 @@ public static class ResultThenExtensions {
         where T3 : notnull
         where T4 : notnull
         where T5 : notnull
-        where T6 : notnull {
+        where T6 : notnull
+    {
         var result = await awaitable;
         return result.Then(then, copyReasonsAndMetadata);
     }
@@ -233,7 +263,8 @@ public static class ResultThenExtensions {
         where T3 : notnull
         where T4 : notnull
         where T5 : notnull
-        where T6 : notnull {
+        where T6 : notnull
+    {
         var result = await awaitable;
         return await result.ThenAsync(then, copyReasonsAndMetadata);
     }
@@ -249,13 +280,16 @@ public static class ResultThenExtensions {
         where T4 : notnull
         where T5 : notnull
         where T6 : notnull
-        where T7 : notnull {
-        if (!result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7)) {
+        where T7 : notnull
+    {
+        if (!result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7))
+        {
             return result;
         }
 
         var response = await then(value1, value2, value3, value4, value5, value6, value7);
-        if (copyReasonsAndMetadata) {
+        if (copyReasonsAndMetadata)
+        {
             result.CopyReasonsAndMetadata(response);
         }
 
@@ -272,7 +306,8 @@ public static class ResultThenExtensions {
         where T4 : notnull
         where T5 : notnull
         where T6 : notnull
-        where T7 : notnull {
+        where T7 : notnull
+    {
         var result = await awaitable;
         return result.Then(then, copyReasonsAndMetadata);
     }
@@ -288,7 +323,8 @@ public static class ResultThenExtensions {
         where T4 : notnull
         where T5 : notnull
         where T6 : notnull
-        where T7 : notnull {
+        where T7 : notnull
+    {
         var result = await awaitable;
         return await result.ThenAsync(then, copyReasonsAndMetadata);
     }
@@ -304,13 +340,16 @@ public static class ResultThenExtensions {
         where T5 : notnull
         where T6 : notnull
         where T7 : notnull
-        where T8 : notnull {
-        if (!result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out var value8)) {
+        where T8 : notnull
+    {
+        if (!result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out var value8))
+        {
             return result;
         }
 
         var response = await then(value1, value2, value3, value4, value5, value6, value7, value8);
-        if (copyReasonsAndMetadata) {
+        if (copyReasonsAndMetadata)
+        {
             result.CopyReasonsAndMetadata(response);
         }
 
@@ -329,7 +368,8 @@ public static class ResultThenExtensions {
         where T5 : notnull
         where T6 : notnull
         where T7 : notnull
-        where T8 : notnull {
+        where T8 : notnull
+    {
         var result = await awaitable;
         return result.Then(then, copyReasonsAndMetadata);
     }
@@ -346,7 +386,8 @@ public static class ResultThenExtensions {
         where T5 : notnull
         where T6 : notnull
         where T7 : notnull
-        where T8 : notnull {
+        where T8 : notnull
+    {
         var result = await awaitable;
         return await result.ThenAsync(then, copyReasonsAndMetadata);
     }

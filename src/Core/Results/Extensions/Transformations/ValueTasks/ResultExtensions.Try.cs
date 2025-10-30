@@ -1,71 +1,86 @@
 ﻿namespace UnambitiousFx.Core.Results.Extensions.Transformations.ValueTasks;
 
-public static class ResultTryExtensions {
-    public static ValueTask<Result<TOut>> TryAsync<TValue, TOut>(this Result<TValue>      result,
+public static partial class ResultTryExtensions
+{
+    public static ValueTask<Result<TOut>> TryAsync<TValue, TOut>(this Result<TValue> result,
                                                             Func<TValue, ValueTask<TOut>> func)
         where TValue : notnull
-        where TOut : notnull {
-        return result.BindAsync(async value => {
-            try {
+        where TOut : notnull
+    {
+        return result.BindAsync(async value =>
+        {
+            try
+            {
                 var newValue = await func(value);
                 return Result.Success(newValue);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return Result.Failure<TOut>(ex);
             }
         });
     }
 
     public static async ValueTask<Result<TOut>> TryAsync<TValue, TOut>(this ValueTask<Result<TValue>> awaitableResult,
-                                                                  Func<TValue, ValueTask<TOut>>  func)
+                                                                  Func<TValue, ValueTask<TOut>> func)
         where TValue : notnull
-        where TOut : notnull {
+        where TOut : notnull
+    {
         var result = await awaitableResult;
         return await result.TryAsync(func);
     }
 
-    public static ValueTask<Result<TOut1, TOut2>> TryAsync<TValue1, TValue2, TOut1, TOut2>(this Result<TValue1, TValue2>                result,
+    public static ValueTask<Result<TOut1, TOut2>> TryAsync<TValue1, TValue2, TOut1, TOut2>(this Result<TValue1, TValue2> result,
                                                                                       Func<TValue1, TValue2, ValueTask<(TOut1, TOut2)>> func)
         where TValue1 : notnull
         where TValue2 : notnull
         where TOut1 : notnull
-        where TOut2 : notnull {
+        where TOut2 : notnull
+    {
         return result.BindAsync(async (value1,
-                                       value2) => {
-            try {
+                                       value2) =>
+        {
+            try
+            {
                 var items = await func(value1, value2);
                 return Result.Success(items.Item1, items.Item2);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return Result.Failure<TOut1, TOut2>(ex);
             }
         });
     }
 
-    public static async ValueTask<Result<TOut1, TOut2>> TryAsync<TValue1, TValue2, TOut1, TOut2>(this ValueTask<Result<TValue1, TValue2>>          awaitableResult,
+    public static async ValueTask<Result<TOut1, TOut2>> TryAsync<TValue1, TValue2, TOut1, TOut2>(this ValueTask<Result<TValue1, TValue2>> awaitableResult,
                                                                                             Func<TValue1, TValue2, ValueTask<(TOut1, TOut2)>> func)
         where TValue1 : notnull
         where TValue2 : notnull
         where TOut1 : notnull
-        where TOut2 : notnull {
+        where TOut2 : notnull
+    {
         var result = await awaitableResult;
         return await result.TryAsync(func);
     }
 
-    public static ValueTask<Result<TOut1, TOut2, TOut3>> TryAsync<TValue1, TValue2, TValue3, TOut1, TOut2, TOut3>(this Result<TValue1, TValue2, TValue3>           result,
+    public static ValueTask<Result<TOut1, TOut2, TOut3>> TryAsync<TValue1, TValue2, TValue3, TOut1, TOut2, TOut3>(this Result<TValue1, TValue2, TValue3> result,
                                                                                                               Func<TValue1, TValue2, TValue3, ValueTask<(TOut1, TOut2, TOut3)>> func)
         where TValue1 : notnull
         where TValue2 : notnull
         where TValue3 : notnull
         where TOut1 : notnull
         where TOut2 : notnull
-        where TOut3 : notnull {
-        return result.BindAsync(async (value1, value2, value3) => {
-            try {
+        where TOut3 : notnull
+    {
+        return result.BindAsync(async (value1, value2, value3) =>
+        {
+            try
+            {
                 var items = await func(value1, value2, value3);
                 return Result.Success(items.Item1, items.Item2, items.Item3);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return Result.Failure<TOut1, TOut2, TOut3>(ex);
             }
         });
@@ -78,7 +93,8 @@ public static class ResultTryExtensions {
         where TValue3 : notnull
         where TOut1 : notnull
         where TOut2 : notnull
-        where TOut3 : notnull {
+        where TOut3 : notnull
+    {
         var result = await awaitableResult;
         return await result.TryAsync(func);
     }
@@ -92,13 +108,17 @@ public static class ResultTryExtensions {
         where TOut1 : notnull
         where TOut2 : notnull
         where TOut3 : notnull
-        where TOut4 : notnull {
-        return result.BindAsync(async (value1, value2, value3, value4) => {
-            try {
+        where TOut4 : notnull
+    {
+        return result.BindAsync(async (value1, value2, value3, value4) =>
+        {
+            try
+            {
                 var items = await func(value1, value2, value3, value4);
                 return Result.Success(items.Item1, items.Item2, items.Item3, items.Item4);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return Result.Failure<TOut1, TOut2, TOut3, TOut4>(ex);
             }
         });
@@ -113,7 +133,8 @@ public static class ResultTryExtensions {
         where TOut1 : notnull
         where TOut2 : notnull
         where TOut3 : notnull
-        where TOut4 : notnull {
+        where TOut4 : notnull
+    {
         var result = await awaitableResult;
         return await result.TryAsync(func);
     }
@@ -129,13 +150,17 @@ public static class ResultTryExtensions {
         where TOut2 : notnull
         where TOut3 : notnull
         where TOut4 : notnull
-        where TOut5 : notnull {
-        return result.BindAsync(async (value1, value2, value3, value4, value5) => {
-            try {
+        where TOut5 : notnull
+    {
+        return result.BindAsync(async (value1, value2, value3, value4, value5) =>
+        {
+            try
+            {
                 var items = await func(value1, value2, value3, value4, value5);
                 return Result.Success(items.Item1, items.Item2, items.Item3, items.Item4, items.Item5);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return Result.Failure<TOut1, TOut2, TOut3, TOut4, TOut5>(ex);
             }
         });
@@ -152,7 +177,8 @@ public static class ResultTryExtensions {
         where TOut2 : notnull
         where TOut3 : notnull
         where TOut4 : notnull
-        where TOut5 : notnull {
+        where TOut5 : notnull
+    {
         var result = await awaitableResult;
         return await result.TryAsync(func);
     }
@@ -170,13 +196,17 @@ public static class ResultTryExtensions {
         where TOut3 : notnull
         where TOut4 : notnull
         where TOut5 : notnull
-        where TOut6 : notnull {
-        return result.BindAsync(async (value1, value2, value3, value4, value5, value6) => {
-            try {
+        where TOut6 : notnull
+    {
+        return result.BindAsync(async (value1, value2, value3, value4, value5, value6) =>
+        {
+            try
+            {
                 var items = await func(value1, value2, value3, value4, value5, value6);
                 return Result.Success(items.Item1, items.Item2, items.Item3, items.Item4, items.Item5, items.Item6);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return Result.Failure<TOut1, TOut2, TOut3, TOut4, TOut5, TOut6>(ex);
             }
         });
@@ -195,7 +225,8 @@ public static class ResultTryExtensions {
         where TOut3 : notnull
         where TOut4 : notnull
         where TOut5 : notnull
-        where TOut6 : notnull {
+        where TOut6 : notnull
+    {
         var result = await awaitableResult;
         return await result.TryAsync(func);
     }
@@ -215,13 +246,17 @@ public static class ResultTryExtensions {
         where TOut4 : notnull
         where TOut5 : notnull
         where TOut6 : notnull
-        where TOut7 : notnull {
-        return result.BindAsync(async (value1, value2, value3, value4, value5, value6, value7) => {
-            try {
+        where TOut7 : notnull
+    {
+        return result.BindAsync(async (value1, value2, value3, value4, value5, value6, value7) =>
+        {
+            try
+            {
                 var items = await func(value1, value2, value3, value4, value5, value6, value7);
                 return Result.Success(items.Item1, items.Item2, items.Item3, items.Item4, items.Item5, items.Item6, items.Item7);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return Result.Failure<TOut1, TOut2, TOut3, TOut4, TOut5, TOut6, TOut7>(ex);
             }
         });
@@ -242,7 +277,8 @@ public static class ResultTryExtensions {
         where TOut4 : notnull
         where TOut5 : notnull
         where TOut6 : notnull
-        where TOut7 : notnull {
+        where TOut7 : notnull
+    {
         var result = await awaitableResult;
         return await result.TryAsync(func);
     }
@@ -264,13 +300,17 @@ public static class ResultTryExtensions {
         where TOut5 : notnull
         where TOut6 : notnull
         where TOut7 : notnull
-        where TOut8 : notnull {
-        return result.BindAsync(async (value1, value2, value3, value4, value5, value6, value7, value8) => {
-            try {
+        where TOut8 : notnull
+    {
+        return result.BindAsync(async (value1, value2, value3, value4, value5, value6, value7, value8) =>
+        {
+            try
+            {
                 var (o1, o2, o3, o4, o5, o6, o7, o8) = await func(value1, value2, value3, value4, value5, value6, value7, value8);
                 return Result.Success(o1, o2, o3, o4, o5, o6, o7, o8);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return Result.Failure<TOut1, TOut2, TOut3, TOut4, TOut5, TOut6, TOut7, TOut8>(ex);
             }
         });
@@ -293,7 +333,8 @@ public static class ResultTryExtensions {
         where TOut5 : notnull
         where TOut6 : notnull
         where TOut7 : notnull
-        where TOut8 : notnull {
+        where TOut8 : notnull
+    {
         var result = await awaitableResult;
         return await result.TryAsync(func);
     }

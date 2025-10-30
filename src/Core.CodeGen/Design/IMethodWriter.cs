@@ -5,4 +5,6 @@ namespace UnambitiousFx.Core.CodeGen.Design;
 internal interface IMethodWriter {
     IEnumerable<string> Usings { get; }
     void Write(IndentedTextWriter writer);
+
+    IEnumerable<GenericParameter> GenericParameters { get; }
 }

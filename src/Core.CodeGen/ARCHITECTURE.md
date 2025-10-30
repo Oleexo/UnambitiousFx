@@ -272,3 +272,41 @@ Each box in the diagrams has ONE clear responsibility
 - Builders: Method construction
 - Generators: File orchestration
 - Orchestrator: Workflow coordination
+
+## Code Generation Rules
+
+### 1. One Generator Per Class
+Each generator should be responsible for generating **only one class**. This ensures clear separation of concerns and maintainable code.
+
+**✅ Correct:**
+- `ToNullableExtensionsGenerator` - generates `ToNullableExtensions` class
+- `ValueOrExtensionsGenerator` - generates `ValueOrExtensions` class
+- `ValueOrThrowExtensionsGenerator` - generates `ValueOrThrowExtensions` class
+
+**❌ Incorrect:**
+- `ValueAccessExtensionsGenerator` - generating multiple extension classes in one generator
+
+### 2. RegionFile Generation Structure
+When generating a RegionFile, create **one class containing all methods**, with methods organized by **regions based on arity**.
+
+**Structure:**
+```csharp
+public static class ExtensionClass
+{
+    #region Arity 2
+    // All methods for arity 2
+    #endregion
+
+    #region Arity 3
+    // All methods for arity 3
+    #endregion
+
+    // ... and so on
+}
+```
+
+This approach:
+- Keeps all related methods in a single class
+- Provides clear organization by arity
+- Makes navigation easier with collapsible regions
+- Maintains a single file per generated class

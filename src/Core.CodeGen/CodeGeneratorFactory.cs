@@ -1,3 +1,9 @@
+using UnambitiousFx.Core.CodeGen.Configuration;
+using UnambitiousFx.Core.CodeGen.Generators;
+using UnambitiousFx.Core.CodeGen.Generators.Transformations;
+using UnambitiousFx.Core.CodeGen.Generators.Validations;
+using UnambitiousFx.Core.CodeGen.Generators.ValueAccess;
+
 namespace UnambitiousFx.Core.CodeGen;
 
 /// <summary>
@@ -7,35 +13,39 @@ namespace UnambitiousFx.Core.CodeGen;
 internal static class CodeGeneratorFactory
 {
     /// <summary>
-    /// Creates all generators needed for code generation.
-    /// </summary>
-    /// <param name="baseNamespace">The base namespace for generated code.</param>
-    /// <returns>Collection of code generators.</returns>
-    public static IEnumerable<ICodeGenerator> CreateGenerators(string baseNamespace)
-    {
-        yield return new OneOfCodeGenerator(baseNamespace);
-        yield return new OneOfTestsGenerator(baseNamespace);
-        yield return new ResultCodeGenerator(baseNamespace);
-        yield return new ResultTestGenerator(baseNamespace);
-        yield return new ResultValueAccessExtensionsCodeGenerator(baseNamespace);
-    }
-
-    /// <summary>
     /// Creates generators for OneOf types only.
     /// </summary>
-    public static IEnumerable<ICodeGenerator> CreateOneOfGenerators(string baseNamespace)
+    public static IEnumerable<ICodeGenerator> CreateOneOfGenerators(
+        string baseNamespace,
+        FileOrganizationMode fileOrganization = FileOrganizationMode.SeparateFiles)
     {
-        yield return new OneOfCodeGenerator(baseNamespace);
+        yield return new OneOfCodeGenerator(baseNamespace, fileOrganization);
         yield return new OneOfTestsGenerator(baseNamespace);
     }
 
     /// <summary>
     /// Creates generators for Result types only.
     /// </summary>
-    public static IEnumerable<ICodeGenerator> CreateResultGenerators(string baseNamespace)
+    public static IEnumerable<ICodeGenerator> CreateResultGenerators(
+        string baseNamespace,
+        FileOrganizationMode fileOrganization = FileOrganizationMode.SeparateFiles)
     {
-        yield return new ResultCodeGenerator(baseNamespace);
+        yield return new ResultCodeGenerator(baseNamespace, fileOrganization);
         yield return new ResultTestGenerator(baseNamespace);
-        yield return new ResultValueAccessExtensionsCodeGenerator(baseNamespace);
+
+        // ValueAccess extensions
+        yield return new ResultToNullableExtensionsCodeGenerator(baseNamespace);
+        yield return new ResultValueOrExtensionsCodeGenerator(baseNamespace);
+        yield return new ResultValueOrThrowExtensionsCodeGenerator(baseNamespace);
+        yield return new ResultMatchExtensionsCodeGenerator(baseNamespace);
+
+        // Validation extensions
+        yield return new ResultEnsureExtensionsCodeGenerator(baseNamespace);
+
+        // Transformation extensions
+        yield return new ResultMapExtensionsCodeGenerator(baseNamespace);
+        yield return new ResultThenExtensionsCodeGenerator(baseNamespace);
+        yield return new ResultTryExtensionsCodeGenerator(baseNamespace);
+        yield return new ResultZipExtensionsCodeGenerator(baseNamespace);
     }
 }

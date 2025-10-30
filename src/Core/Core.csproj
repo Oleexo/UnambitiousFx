@@ -4,5 +4,5 @@
         <TargetFramework>net9.0</TargetFramework>
         <NoWarn>$(NoWarn);1591</NoWarn>
     </PropertyGroup>
-
+    
 </Project>

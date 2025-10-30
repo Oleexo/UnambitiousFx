@@ -9,6 +9,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="OneOf\" />
       <Folder Include="Results\Extensions\ErrorHandling\" />
       <Folder Include="Results\Extensions\SideEffects\" />
       <Folder Include="Results\Extensions\Validations\" />

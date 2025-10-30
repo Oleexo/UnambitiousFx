@@ -3,7 +3,6 @@ using System.CodeDom.Compiler;
 namespace UnambitiousFx.Core.CodeGen.Design;
 
 internal sealed class ClassWriter : IConcreteTypeWriter {
-    private readonly string                        _name;
     private readonly Visibility                    _visibility;
     private readonly ClassModifier                 _classModifiers;
     private readonly GenericParameter[]            _genericParameters;
@@ -15,6 +14,7 @@ internal sealed class ClassWriter : IConcreteTypeWriter {
     private readonly List<ConstructorWriter>       _constructors;
     private readonly List<PropertyWriter>          _properties;
     private readonly List<IMethodWriter>           _methods;
+    private readonly List<RegionGroup>             _regions;
 
     public ClassWriter(string                                name,
                        Visibility                            visibility        = Visibility.Internal,
@@ -24,7 +24,7 @@ internal sealed class ClassWriter : IConcreteTypeWriter {
                        IEnumerable<TypeDefinitionReference>? interfaces        = null,
                        DocumentationWriter?                  documentation     = null,
                        IEnumerable<AttributeReference>?      attributes        = null) {
-        _name              = name;
+        Name               = name;
         _visibility        = visibility;
         _classModifiers    = classModifiers;
         _genericParameters = genericParameters?.ToArray() ?? [];
@@ -36,22 +36,72 @@ internal sealed class ClassWriter : IConcreteTypeWriter {
         _constructors      = [];
         _properties        = [];
         _methods           = [];
+        _regions           = [];
     }
+
+    public string? Region     { get; set; }
+    public string? Namespace  { get; set; }
+    public string? UnderClass { get; set; }
+    public string  Name       { get; }
 
     public void AddField(FieldWriter field) {
         _fields.Add(field);
+    }
+
+    public void AddField(FieldWriter field,
+                         string      region) {
+        GetOrAddRegion(region)
+           .Fields.Add(field);
     }
 
     public void AddConstructor(ConstructorWriter constructor) {
         _constructors.Add(constructor);
     }
 
+    public void AddConstructor(ConstructorWriter constructor,
+                               string            region) {
+        GetOrAddRegion(region)
+           .Constructors.Add(constructor);
+    }
+
     public void AddProperty(PropertyWriter property) {
         _properties.Add(property);
     }
 
-    public void AddMethod(IMethodWriter method) {
-        _methods.Add(method);
+    public void AddProperty(PropertyWriter property,
+                            string         region) {
+        GetOrAddRegion(region)
+           .Properties.Add(property);
+    }
+
+    public void AddMethod(IMethodWriter method,
+                          string?       region = null) {
+        if (region is null) {
+            _methods.Add(method);
+            return;
+        }
+
+        GetOrAddRegion(region)
+           .Methods.Add(method);
+    }
+
+    public void AddRegion(string name) {
+        GetOrAddRegion(name); // Ensure region exists
+    }
+
+    private RegionGroup GetOrAddRegion(string name) {
+        if (string.IsNullOrWhiteSpace(name)) {
+            throw new ArgumentException("Region name cannot be null or whitespace", nameof(name));
+        }
+
+        var existing = _regions.FirstOrDefault(r => r.Name.Equals(name, StringComparison.Ordinal));
+        if (existing is not null) {
+            return existing;
+        }
+
+        var region = new RegionGroup(name);
+        _regions.Add(region);
+        return region;
     }
 
     private HashSet<string> GetUsings() {
@@ -85,13 +135,23 @@ internal sealed class ClassWriter : IConcreteTypeWriter {
             usings.Add(@using);
         }
 
+        // Region based constructors & methods
+        foreach (var region in _regions) {
+            foreach (var @using in region.Constructors.SelectMany(c => c.Usings)) {
+                usings.Add(@using);
+            }
+
+            foreach (var @using in region.Methods.SelectMany(m => m.Usings)) {
+                usings.Add(@using);
+            }
+        }
+
         return usings;
     }
 
     public IEnumerable<string> Usings => GetUsings();
 
     public void Write(IndentedTextWriter writer) {
-
         _documentation?.Write(writer);
 
         foreach (var attribute in _attributes) {
@@ -121,7 +181,7 @@ internal sealed class ClassWriter : IConcreteTypeWriter {
         var modifiersString = modifierParts.Count > 0
                                   ? string.Join(" ", modifierParts) + " "
                                   : string.Empty;
-        var classDeclaration = $"{_visibility.ToString().ToLower()} {modifiersString}class {_name}{genericPart}";
+        var classDeclaration = $"{_visibility.ToString().ToLower()} {modifiersString}class {Name}{genericPart}";
         if (_baseClass is not null) {
             classDeclaration += $" : {_baseClass.Name}";
         }
@@ -179,7 +239,91 @@ internal sealed class ClassWriter : IConcreteTypeWriter {
             writer.WriteLine();
         }
 
+        // Write regions (if any). Regions appear after non-region members.
+        if (_regions.Count > 0) {
+            // Extra blank line if previous section had members
+            if (_fields.Count       > 0 ||
+                _constructors.Count > 0 ||
+                _properties.Count   > 0 ||
+                _methods.Count      > 0) {
+                writer.WriteLine();
+            }
+
+            foreach (var region in _regions) {
+                writer.WriteLine($"#region {region.Name}");
+                writer.WriteLine();
+
+                // Fields
+                foreach (var field in region.Fields) {
+                    field.Write(writer);
+                }
+
+                if (region.Fields.Count > 0 &&
+                    (region.Constructors.Count > 0 || region.Properties.Count > 0 || region.Methods.Count > 0)) {
+                    writer.WriteLine();
+                }
+
+                // Constructors
+                foreach (var ctor in region.Constructors) {
+                    ctor.Write(writer);
+                    writer.WriteLine();
+                }
+
+                // Properties
+                foreach (var property in region.Properties) {
+                    property.Write(writer);
+                }
+
+                if (region.Properties.Count > 0 &&
+                    region.Methods.Count    > 0) {
+                    writer.WriteLine();
+                }
+
+                // Methods
+                foreach (var method in region.Methods) {
+                    method.Write(writer);
+                    writer.WriteLine();
+                }
+
+                writer.WriteLine($"#endregion // {region.Name}");
+
+                // Blank line between regions but not after last
+                if (!ReferenceEquals(region, _regions[^1])) {
+                    writer.WriteLine();
+                }
+            }
+        }
+
         writer.Indent--;
         writer.WriteLine("}");
+    }
+
+    public static ClassWriter Merge(IReadOnlyCollection<ClassWriter> classes) {
+        if (classes.Count == 0) {
+            throw new ArgumentException("Cannot merge empty classes", nameof(classes));
+        }
+
+        var f      = classes.First();
+        var groups = classes.GroupBy(x => x.Region);
+        var result = new ClassWriter(f.Name,
+                                     visibility: f._visibility,
+                                     classModifiers: f._classModifiers);
+        foreach (var g in groups) {
+            foreach (var method in g.SelectMany(x => x.Methods)) {
+                result.AddMethod(method, g.Key);
+            }
+        }
+
+        return result;
+    }
+
+    public IEnumerable<IMethodWriter> Methods => _methods.Concat(_regions.SelectMany(r => r.Methods));
+
+    private sealed class RegionGroup(string name) {
+        public string                  Name         { get; } = name;
+        public List<FieldWriter>       Fields       { get; } = [];
+        public List<ConstructorWriter> Constructors { get; } = [];
+        public List<PropertyWriter>    Properties   { get; } = [];
+        public List<IMethodWriter>     Methods      { get; } = [];
     }
 }

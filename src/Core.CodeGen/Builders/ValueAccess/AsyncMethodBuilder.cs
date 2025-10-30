@@ -248,7 +248,7 @@ internal sealed class AsyncMethodBuilder
             modifier: MethodModifier.Async | MethodModifier.Static,
             parameters: [new MethodParameter($"this {asyncResultType}", "awaitable")],
             genericParameters: genericParams,
-            usings: ["System", "System.Threading.Tasks"],
+            usings: ["System", "System.Threading.Tasks", "UnambitiousFx.Core.Results.Extensions.ValueAccess"],
             documentation: DocumentationWriter.Create()
                                               .WithSummary("Async ToNullable returning nullable value(s) when success, null when failure.")
                                               .Build()

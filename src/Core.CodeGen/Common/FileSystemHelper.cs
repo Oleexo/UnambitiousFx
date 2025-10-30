@@ -34,6 +34,19 @@ internal static class FileSystemHelper
     }
 
     /// <summary>
+    /// Writes a RegionFileWriter to disk.
+    /// </summary>
+    /// <param name="regionWriter">The RegionFileWriter containing the code to write.</param>
+    /// <param name="filePath">The absolute path where the file should be written.</param>
+    public static void WriteRegionFile(RegionFileWriter regionWriter, string filePath)
+    {
+        using var stringWriter = new StringWriter();
+        using var indentedWriter = new IndentedTextWriter(stringWriter, Constant.Spacing);
+        regionWriter.Write(indentedWriter);
+        File.WriteAllText(filePath, stringWriter.ToString());
+    }
+
+    /// <summary>
     /// Creates a subdirectory within the given output path and ensures it exists.
     /// </summary>
     /// <param name="outputPath">The base output path.</param>
