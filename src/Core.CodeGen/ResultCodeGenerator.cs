@@ -1,6 +1,6 @@
 using System.CodeDom.Compiler;
+using UnambitiousFx.Core.CodeGen.Builders.Results;
 using UnambitiousFx.Core.CodeGen.Design;
-using UnambitiousFx.Core.CodeGen.Results.Builders;
 
 namespace UnambitiousFx.Core.CodeGen;
 

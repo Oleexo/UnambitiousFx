@@ -1,3 +1,5 @@
+#nullable enable
+
 using UnambitiousFx.Core.OneOf;
 
 namespace UnambitiousFx.Core.Tests.OneOf;

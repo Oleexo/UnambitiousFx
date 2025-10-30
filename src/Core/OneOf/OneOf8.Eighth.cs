@@ -1,3 +1,5 @@
+#nullable enable
+
 using System.Diagnostics.CodeAnalysis;
 
 namespace UnambitiousFx.Core.OneOf;

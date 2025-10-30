@@ -1,3 +1,5 @@
+#nullable enable
+
 using System.Diagnostics.CodeAnalysis;
 using UnambitiousFx.Core.Results.Reasons;
 

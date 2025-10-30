@@ -75,24 +75,24 @@ internal sealed class MethodWriter : IMethodWriter {
         writer.Write(GetVisibilityString(_visibility));
         writer.Write(' ');
 
-        if (_modifier == MethodModifier.Static) {
+        if (_modifier.HasFlag(MethodModifier.Static)) {
             writer.Write("static ");
         }
 
-        if (_modifier == MethodModifier.Async) {
+        if (_modifier.HasFlag(MethodModifier.Async)) {
             writer.Write("async ");
         }
 
-        if (_modifier == MethodModifier.Virtual) {
+        if (_modifier.HasFlag(MethodModifier.Virtual)) {
             writer.Write("virtual ");
         }
 
-        if (_modifier == MethodModifier.Override) {
+        if (_modifier.HasFlag(MethodModifier.Override)) {
             writer.Write("override ");
         }
 
-        if (_modifier == MethodModifier.Sealed) {
-            writer.Write("sealed override ");
+        if (_modifier.HasFlag(MethodModifier.Sealed)) {
+            writer.Write("sealed ");
         }
 
         writer.Write(_returnType);

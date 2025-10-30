@@ -1,3 +1,5 @@
+#nullable enable
+
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Reasons;
 

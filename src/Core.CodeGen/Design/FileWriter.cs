@@ -4,12 +4,15 @@ namespace UnambitiousFx.Core.CodeGen.Design;
 
 internal sealed class FileWriter {
     private readonly string                      _namespace;
+    private readonly bool                        _useNullable;
     private readonly List<ITypeDefinitionWriter> _typeBuilders;
     private readonly List<string>                _usings;
 
     public FileWriter(string                              @namespace,
-                      IEnumerable<ITypeDefinitionWriter>? typeBuilders = null) {
-        _namespace = @namespace;
+                      IEnumerable<ITypeDefinitionWriter>? typeBuilders = null,
+                      bool                                useNullable  = true) {
+        _namespace   = @namespace;
+        _useNullable = useNullable;
         _typeBuilders = typeBuilders is not null
                             ? typeBuilders.ToList()
                             : [];
@@ -22,6 +25,11 @@ internal sealed class FileWriter {
     }
 
     public void Write(IndentedTextWriter writer) {
+        if (_useNullable) {
+            writer.WriteLine("#nullable enable");
+            writer.WriteLine();
+        }
+
         var usings = _typeBuilders.SelectMany(x => x.Usings)
                                   .Concat(_usings)
                                   .Distinct()
