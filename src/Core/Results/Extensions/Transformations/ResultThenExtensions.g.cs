@@ -7,8 +7,6 @@
 
 #nullable enable
 
-using System;
-using System.Threading.Tasks;
 
 namespace UnambitiousFx.Core.Results.Extensions.Transformations;
 
@@ -35,44 +33,6 @@ public static partial class ResultThenExtensions
         return response;
     }
     
-    /// <summary>
-    /// Async Then chaining an async transformation that returns a Result of the same type.
-    /// </summary>
-    /// <typeparam name="T1">Value type 1.</typeparam>
-    /// <param name="result">The result instance.</param>
-    /// <param name="then">The async transformation function.</param>
-    /// <param name="copyReasonsAndMetadata">Whether to copy reasons and metadata from original result.</param>
-    /// <returns>A task with the new result.</returns>
-    public static async Task<Result<T1>> ThenAsync<T1>(this Result<T1> result, Func<T1, Task<Result<T1>>> then, bool copyReasonsAndMetadata = true) where T1 : notnull {
-        if (!result.TryGet(out var value)) {
-            return result;
-        }
-        var response = await then(value).ConfigureAwait(false);
-        if (copyReasonsAndMetadata) {
-            result.CopyReasonsAndMetadata(response);
-        }
-        return response;
-    }
-    
-    /// <summary>
-    /// Async Then chaining an async transformation that returns a Result of the same type.
-    /// </summary>
-    /// <typeparam name="T1">Value type 1.</typeparam>
-    /// <param name="result">The result instance.</param>
-    /// <param name="then">The async transformation function.</param>
-    /// <param name="copyReasonsAndMetadata">Whether to copy reasons and metadata from original result.</param>
-    /// <returns>A task with the new result.</returns>
-    public static async ValueTask<Result<T1>> ThenAsync<T1>(this Result<T1> result, Func<T1, ValueTask<Result<T1>>> then, bool copyReasonsAndMetadata = true) where T1 : notnull {
-        if (!result.TryGet(out var value)) {
-            return result;
-        }
-        var response = await then(value).ConfigureAwait(false);
-        if (copyReasonsAndMetadata) {
-            result.CopyReasonsAndMetadata(response);
-        }
-        return response;
-    }
-    
     #endregion // Arity 1
     
     #region Arity 2
@@ -91,46 +51,6 @@ public static partial class ResultThenExtensions
             return result;
         }
         var response = then(value1, value2);
-        if (copyReasonsAndMetadata) {
-            result.CopyReasonsAndMetadata(response);
-        }
-        return response;
-    }
-    
-    /// <summary>
-    /// Async Then chaining an async transformation that returns a Result of the same type.
-    /// </summary>
-    /// <typeparam name="T1">Value type 1.</typeparam>
-    /// <typeparam name="T2">Value type 2.</typeparam>
-    /// <param name="result">The result instance.</param>
-    /// <param name="then">The async transformation function.</param>
-    /// <param name="copyReasonsAndMetadata">Whether to copy reasons and metadata from original result.</param>
-    /// <returns>A task with the new result.</returns>
-    public static async Task<Result<T1, T2>> ThenAsync<T1, T2>(this Result<T1, T2> result, Func<T1, T2, Task<Result<T1, T2>>> then, bool copyReasonsAndMetadata = true) where T1 : notnull where T2 : notnull {
-        if (!result.TryGet(out var value1, out var value2)) {
-            return result;
-        }
-        var response = await then(value1, value2).ConfigureAwait(false);
-        if (copyReasonsAndMetadata) {
-            result.CopyReasonsAndMetadata(response);
-        }
-        return response;
-    }
-    
-    /// <summary>
-    /// Async Then chaining an async transformation that returns a Result of the same type.
-    /// </summary>
-    /// <typeparam name="T1">Value type 1.</typeparam>
-    /// <typeparam name="T2">Value type 2.</typeparam>
-    /// <param name="result">The result instance.</param>
-    /// <param name="then">The async transformation function.</param>
-    /// <param name="copyReasonsAndMetadata">Whether to copy reasons and metadata from original result.</param>
-    /// <returns>A task with the new result.</returns>
-    public static async ValueTask<Result<T1, T2>> ThenAsync<T1, T2>(this Result<T1, T2> result, Func<T1, T2, ValueTask<Result<T1, T2>>> then, bool copyReasonsAndMetadata = true) where T1 : notnull where T2 : notnull {
-        if (!result.TryGet(out var value1, out var value2)) {
-            return result;
-        }
-        var response = await then(value1, value2).ConfigureAwait(false);
         if (copyReasonsAndMetadata) {
             result.CopyReasonsAndMetadata(response);
         }
@@ -162,48 +82,6 @@ public static partial class ResultThenExtensions
         return response;
     }
     
-    /// <summary>
-    /// Async Then chaining an async transformation that returns a Result of the same type.
-    /// </summary>
-    /// <typeparam name="T1">Value type 1.</typeparam>
-    /// <typeparam name="T2">Value type 2.</typeparam>
-    /// <typeparam name="T3">Value type 3.</typeparam>
-    /// <param name="result">The result instance.</param>
-    /// <param name="then">The async transformation function.</param>
-    /// <param name="copyReasonsAndMetadata">Whether to copy reasons and metadata from original result.</param>
-    /// <returns>A task with the new result.</returns>
-    public static async Task<Result<T1, T2, T3>> ThenAsync<T1, T2, T3>(this Result<T1, T2, T3> result, Func<T1, T2, T3, Task<Result<T1, T2, T3>>> then, bool copyReasonsAndMetadata = true) where T1 : notnull where T2 : notnull where T3 : notnull {
-        if (!result.TryGet(out var value1, out var value2, out var value3)) {
-            return result;
-        }
-        var response = await then(value1, value2, value3).ConfigureAwait(false);
-        if (copyReasonsAndMetadata) {
-            result.CopyReasonsAndMetadata(response);
-        }
-        return response;
-    }
-    
-    /// <summary>
-    /// Async Then chaining an async transformation that returns a Result of the same type.
-    /// </summary>
-    /// <typeparam name="T1">Value type 1.</typeparam>
-    /// <typeparam name="T2">Value type 2.</typeparam>
-    /// <typeparam name="T3">Value type 3.</typeparam>
-    /// <param name="result">The result instance.</param>
-    /// <param name="then">The async transformation function.</param>
-    /// <param name="copyReasonsAndMetadata">Whether to copy reasons and metadata from original result.</param>
-    /// <returns>A task with the new result.</returns>
-    public static async ValueTask<Result<T1, T2, T3>> ThenAsync<T1, T2, T3>(this Result<T1, T2, T3> result, Func<T1, T2, T3, ValueTask<Result<T1, T2, T3>>> then, bool copyReasonsAndMetadata = true) where T1 : notnull where T2 : notnull where T3 : notnull {
-        if (!result.TryGet(out var value1, out var value2, out var value3)) {
-            return result;
-        }
-        var response = await then(value1, value2, value3).ConfigureAwait(false);
-        if (copyReasonsAndMetadata) {
-            result.CopyReasonsAndMetadata(response);
-        }
-        return response;
-    }
-    
     #endregion // Arity 3
     
     #region Arity 4
@@ -224,50 +102,6 @@ public static partial class ResultThenExtensions
             return result;
         }
         var response = then(value1, value2, value3, value4);
-        if (copyReasonsAndMetadata) {
-            result.CopyReasonsAndMetadata(response);
-        }
-        return response;
-    }
-    
-    /// <summary>
-    /// Async Then chaining an async transformation that returns a Result of the same type.
-    /// </summary>
-    /// <typeparam name="T1">Value type 1.</typeparam>
-    /// <typeparam name="T2">Value type 2.</typeparam>
-    /// <typeparam name="T3">Value type 3.</typeparam>
-    /// <typeparam name="T4">Value type 4.</typeparam>
-    /// <param name="result">The result instance.</param>
-    /// <param name="then">The async transformation function.</param>
-    /// <param name="copyReasonsAndMetadata">Whether to copy reasons and metadata from original result.</param>
-    /// <returns>A task with the new result.</returns>
-    public static async Task<Result<T1, T2, T3, T4>> ThenAsync<T1, T2, T3, T4>(this Result<T1, T2, T3, T4> result, Func<T1, T2, T3, T4, Task<Result<T1, T2, T3, T4>>> then, bool copyReasonsAndMetadata = true) where T1 : notnull where T2 : notnull where T3 : notnull where T4 : notnull {
-        if (!result.TryGet(out var value1, out var value2, out var value3, out var value4)) {
-            return result;
-        }
-        var response = await then(value1, value2, value3, value4).ConfigureAwait(false);
-        if (copyReasonsAndMetadata) {
-            result.CopyReasonsAndMetadata(response);
-        }
-        return response;
-    }
-    
-    /// <summary>
-    /// Async Then chaining an async transformation that returns a Result of the same type.
-    /// </summary>
-    /// <typeparam name="T1">Value type 1.</typeparam>
-    /// <typeparam name="T2">Value type 2.</typeparam>
-    /// <typeparam name="T3">Value type 3.</typeparam>
-    /// <typeparam name="T4">Value type 4.</typeparam>
-    /// <param name="result">The result instance.</param>
-    /// <param name="then">The async transformation function.</param>
-    /// <param name="copyReasonsAndMetadata">Whether to copy reasons and metadata from original result.</param>
-    /// <returns>A task with the new result.</returns>
-    public static async ValueTask<Result<T1, T2, T3, T4>> ThenAsync<T1, T2, T3, T4>(this Result<T1, T2, T3, T4> result, Func<T1, T2, T3, T4, ValueTask<Result<T1, T2, T3, T4>>> then, bool copyReasonsAndMetadata = true) where T1 : notnull where T2 : notnull where T3 : notnull where T4 : notnull {
-        if (!result.TryGet(out var value1, out var value2, out var value3, out var value4)) {
-            return result;
-        }
-        var response = await then(value1, value2, value3, value4).ConfigureAwait(false);
         if (copyReasonsAndMetadata) {
             result.CopyReasonsAndMetadata(response);
         }
@@ -301,52 +135,6 @@ public static partial class ResultThenExtensions
         return response;
     }
     
-    /// <summary>
-    /// Async Then chaining an async transformation that returns a Result of the same type.
-    /// </summary>
-    /// <typeparam name="T1">Value type 1.</typeparam>
-    /// <typeparam name="T2">Value type 2.</typeparam>
-    /// <typeparam name="T3">Value type 3.</typeparam>
-    /// <typeparam name="T4">Value type 4.</typeparam>
-    /// <typeparam name="T5">Value type 5.</typeparam>
-    /// <param name="result">The result instance.</param>
-    /// <param name="then">The async transformation function.</param>
-    /// <param name="copyReasonsAndMetadata">Whether to copy reasons and metadata from original result.</param>
-    /// <returns>A task with the new result.</returns>
-    public static async Task<Result<T1, T2, T3, T4, T5>> ThenAsync<T1, T2, T3, T4, T5>(this Result<T1, T2, T3, T4, T5> result, Func<T1, T2, T3, T4, T5, Task<Result<T1, T2, T3, T4, T5>>> then, bool copyReasonsAndMetadata = true) where T1 : notnull where T2 : notnull where T3 : notnull where T4 : notnull where T5 : notnull {
-        if (!result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5)) {
-            return result;
-        }
-        var response = await then(value1, value2, value3, value4, value5).ConfigureAwait(false);
-        if (copyReasonsAndMetadata) {
-            result.CopyReasonsAndMetadata(response);
-        }
-        return response;
-    }
-    
-    /// <summary>
-    /// Async Then chaining an async transformation that returns a Result of the same type.
-    /// </summary>
-    /// <typeparam name="T1">Value type 1.</typeparam>
-    /// <typeparam name="T2">Value type 2.</typeparam>
-    /// <typeparam name="T3">Value type 3.</typeparam>
-    /// <typeparam name="T4">Value type 4.</typeparam>
-    /// <typeparam name="T5">Value type 5.</typeparam>
-    /// <param name="result">The result instance.</param>
-    /// <param name="then">The async transformation function.</param>
-    /// <param name="copyReasonsAndMetadata">Whether to copy reasons and metadata from original result.</param>
-    /// <returns>A task with the new result.</returns>
-    public static async ValueTask<Result<T1, T2, T3, T4, T5>> ThenAsync<T1, T2, T3, T4, T5>(this Result<T1, T2, T3, T4, T5> result, Func<T1, T2, T3, T4, T5, ValueTask<Result<T1, T2, T3, T4, T5>>> then, bool copyReasonsAndMetadata = true) where T1 : notnull where T2 : notnull where T3 : notnull where T4 : notnull where T5 : notnull {
-        if (!result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5)) {
-            return result;
-        }
-        var response = await then(value1, value2, value3, value4, value5).ConfigureAwait(false);
-        if (copyReasonsAndMetadata) {
-            result.CopyReasonsAndMetadata(response);
-        }
-        return response;
-    }
-    
     #endregion // Arity 5
     
     #region Arity 6
@@ -369,54 +157,6 @@ public static partial class ResultThenExtensions
             return result;
         }
         var response = then(value1, value2, value3, value4, value5, value6);
-        if (copyReasonsAndMetadata) {
-            result.CopyReasonsAndMetadata(response);
-        }
-        return response;
-    }
-    
-    /// <summary>
-    /// Async Then chaining an async transformation that returns a Result of the same type.
-    /// </summary>
-    /// <typeparam name="T1">Value type 1.</typeparam>
-    /// <typeparam name="T2">Value type 2.</typeparam>
-    /// <typeparam name="T3">Value type 3.</typeparam>
-    /// <typeparam name="T4">Value type 4.</typeparam>
-    /// <typeparam name="T5">Value type 5.</typeparam>
-    /// <typeparam name="T6">Value type 6.</typeparam>
-    /// <param name="result">The result instance.</param>
-    /// <param name="then">The async transformation function.</param>
-    /// <param name="copyReasonsAndMetadata">Whether to copy reasons and metadata from original result.</param>
-    /// <returns>A task with the new result.</returns>
-    public static async Task<Result<T1, T2, T3, T4, T5, T6>> ThenAsync<T1, T2, T3, T4, T5, T6>(this Result<T1, T2, T3, T4, T5, T6> result, Func<T1, T2, T3, T4, T5, T6, Task<Result<T1, T2, T3, T4, T5, T6>>> then, bool copyReasonsAndMetadata = true) where T1 : notnull where T2 : notnull where T3 : notnull where T4 : notnull where T5 : notnull where T6 : notnull {
-        if (!result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6)) {
-            return result;
-        }
-        var response = await then(value1, value2, value3, value4, value5, value6).ConfigureAwait(false);
-        if (copyReasonsAndMetadata) {
-            result.CopyReasonsAndMetadata(response);
-        }
-        return response;
-    }
-    
-    /// <summary>
-    /// Async Then chaining an async transformation that returns a Result of the same type.
-    /// </summary>
-    /// <typeparam name="T1">Value type 1.</typeparam>
-    /// <typeparam name="T2">Value type 2.</typeparam>
-    /// <typeparam name="T3">Value type 3.</typeparam>
-    /// <typeparam name="T4">Value type 4.</typeparam>
-    /// <typeparam name="T5">Value type 5.</typeparam>
-    /// <typeparam name="T6">Value type 6.</typeparam>
-    /// <param name="result">The result instance.</param>
-    /// <param name="then">The async transformation function.</param>
-    /// <param name="copyReasonsAndMetadata">Whether to copy reasons and metadata from original result.</param>
-    /// <returns>A task with the new result.</returns>
-    public static async ValueTask<Result<T1, T2, T3, T4, T5, T6>> ThenAsync<T1, T2, T3, T4, T5, T6>(this Result<T1, T2, T3, T4, T5, T6> result, Func<T1, T2, T3, T4, T5, T6, ValueTask<Result<T1, T2, T3, T4, T5, T6>>> then, bool copyReasonsAndMetadata = true) where T1 : notnull where T2 : notnull where T3 : notnull where T4 : notnull where T5 : notnull where T6 : notnull {
-        if (!result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6)) {
-            return result;
-        }
-        var response = await then(value1, value2, value3, value4, value5, value6).ConfigureAwait(false);
         if (copyReasonsAndMetadata) {
             result.CopyReasonsAndMetadata(response);
         }
@@ -452,56 +192,6 @@ public static partial class ResultThenExtensions
         return response;
     }
     
-    /// <summary>
-    /// Async Then chaining an async transformation that returns a Result of the same type.
-    /// </summary>
-    /// <typeparam name="T1">Value type 1.</typeparam>
-    /// <typeparam name="T2">Value type 2.</typeparam>
-    /// <typeparam name="T3">Value type 3.</typeparam>
-    /// <typeparam name="T4">Value type 4.</typeparam>
-    /// <typeparam name="T5">Value type 5.</typeparam>
-    /// <typeparam name="T6">Value type 6.</typeparam>
-    /// <typeparam name="T7">Value type 7.</typeparam>
-    /// <param name="result">The result instance.</param>
-    /// <param name="then">The async transformation function.</param>
-    /// <param name="copyReasonsAndMetadata">Whether to copy reasons and metadata from original result.</param>
-    /// <returns>A task with the new result.</returns>
-    public static async Task<Result<T1, T2, T3, T4, T5, T6, T7>> ThenAsync<T1, T2, T3, T4, T5, T6, T7>(this Result<T1, T2, T3, T4, T5, T6, T7> result, Func<T1, T2, T3, T4, T5, T6, T7, Task<Result<T1, T2, T3, T4, T5, T6, T7>>> then, bool copyReasonsAndMetadata = true) where T1 : notnull where T2 : notnull where T3 : notnull where T4 : notnull where T5 : notnull where T6 : notnull where T7 : notnull {
-        if (!result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7)) {
-            return result;
-        }
-        var response = await then(value1, value2, value3, value4, value5, value6, value7).ConfigureAwait(false);
-        if (copyReasonsAndMetadata) {
-            result.CopyReasonsAndMetadata(response);
-        }
-        return response;
-    }
-    
-    /// <summary>
-    /// Async Then chaining an async transformation that returns a Result of the same type.
-    /// </summary>
-    /// <typeparam name="T1">Value type 1.</typeparam>
-    /// <typeparam name="T2">Value type 2.</typeparam>
-    /// <typeparam name="T3">Value type 3.</typeparam>
-    /// <typeparam name="T4">Value type 4.</typeparam>
-    /// <typeparam name="T5">Value type 5.</typeparam>
-    /// <typeparam name="T6">Value type 6.</typeparam>
-    /// <typeparam name="T7">Value type 7.</typeparam>
-    /// <param name="result">The result instance.</param>
-    /// <param name="then">The async transformation function.</param>
-    /// <param name="copyReasonsAndMetadata">Whether to copy reasons and metadata from original result.</param>
-    /// <returns>A task with the new result.</returns>
-    public static async ValueTask<Result<T1, T2, T3, T4, T5, T6, T7>> ThenAsync<T1, T2, T3, T4, T5, T6, T7>(this Result<T1, T2, T3, T4, T5, T6, T7> result, Func<T1, T2, T3, T4, T5, T6, T7, ValueTask<Result<T1, T2, T3, T4, T5, T6, T7>>> then, bool copyReasonsAndMetadata = true) where T1 : notnull where T2 : notnull where T3 : notnull where T4 : notnull where T5 : notnull where T6 : notnull where T7 : notnull {
-        if (!result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7)) {
-            return result;
-        }
-        var response = await then(value1, value2, value3, value4, value5, value6, value7).ConfigureAwait(false);
-        if (copyReasonsAndMetadata) {
-            result.CopyReasonsAndMetadata(response);
-        }
-        return response;
-    }
-    
     #endregion // Arity 7
     
     #region Arity 8
@@ -526,58 +216,6 @@ public static partial class ResultThenExtensions
             return result;
         }
         var response = then(value1, value2, value3, value4, value5, value6, value7, value8);
-        if (copyReasonsAndMetadata) {
-            result.CopyReasonsAndMetadata(response);
-        }
-        return response;
-    }
-    
-    /// <summary>
-    /// Async Then chaining an async transformation that returns a Result of the same type.
-    /// </summary>
-    /// <typeparam name="T1">Value type 1.</typeparam>
-    /// <typeparam name="T2">Value type 2.</typeparam>
-    /// <typeparam name="T3">Value type 3.</typeparam>
-    /// <typeparam name="T4">Value type 4.</typeparam>
-    /// <typeparam name="T5">Value type 5.</typeparam>
-    /// <typeparam name="T6">Value type 6.</typeparam>
-    /// <typeparam name="T7">Value type 7.</typeparam>
-    /// <typeparam name="T8">Value type 8.</typeparam>
-    /// <param name="result">The result instance.</param>
-    /// <param name="then">The async transformation function.</param>
-    /// <param name="copyReasonsAndMetadata">Whether to copy reasons and metadata from original result.</param>
-    /// <returns>A task with the new result.</returns>
-    public static async Task<Result<T1, T2, T3, T4, T5, T6, T7, T8>> ThenAsync<T1, T2, T3, T4, T5, T6, T7, T8>(this Result<T1, T2, T3, T4, T5, T6, T7, T8> result, Func<T1, T2, T3, T4, T5, T6, T7, T8, Task<Result<T1, T2, T3, T4, T5, T6, T7, T8>>> then, bool copyReasonsAndMetadata = true) where T1 : notnull where T2 : notnull where T3 : notnull where T4 : notnull where T5 : notnull where T6 : notnull where T7 : notnull where T8 : notnull {
-        if (!result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out var value8)) {
-            return result;
-        }
-        var response = await then(value1, value2, value3, value4, value5, value6, value7, value8).ConfigureAwait(false);
-        if (copyReasonsAndMetadata) {
-            result.CopyReasonsAndMetadata(response);
-        }
-        return response;
-    }
-    
-    /// <summary>
-    /// Async Then chaining an async transformation that returns a Result of the same type.
-    /// </summary>
-    /// <typeparam name="T1">Value type 1.</typeparam>
-    /// <typeparam name="T2">Value type 2.</typeparam>
-    /// <typeparam name="T3">Value type 3.</typeparam>
-    /// <typeparam name="T4">Value type 4.</typeparam>
-    /// <typeparam name="T5">Value type 5.</typeparam>
-    /// <typeparam name="T6">Value type 6.</typeparam>
-    /// <typeparam name="T7">Value type 7.</typeparam>
-    /// <typeparam name="T8">Value type 8.</typeparam>
-    /// <param name="result">The result instance.</param>
-    /// <param name="then">The async transformation function.</param>
-    /// <param name="copyReasonsAndMetadata">Whether to copy reasons and metadata from original result.</param>
-    /// <returns>A task with the new result.</returns>
-    public static async ValueTask<Result<T1, T2, T3, T4, T5, T6, T7, T8>> ThenAsync<T1, T2, T3, T4, T5, T6, T7, T8>(this Result<T1, T2, T3, T4, T5, T6, T7, T8> result, Func<T1, T2, T3, T4, T5, T6, T7, T8, ValueTask<Result<T1, T2, T3, T4, T5, T6, T7, T8>>> then, bool copyReasonsAndMetadata = true) where T1 : notnull where T2 : notnull where T3 : notnull where T4 : notnull where T5 : notnull where T6 : notnull where T7 : notnull where T8 : notnull {
-        if (!result.TryGet(out var value1, out var value2, out var value3, out var value4, out var value5, out var value6, out var value7, out var value8)) {
-            return result;
-        }
-        var response = await then(value1, value2, value3, value4, value5, value6, value7, value8).ConfigureAwait(false);
         if (copyReasonsAndMetadata) {
             result.CopyReasonsAndMetadata(response);
         }

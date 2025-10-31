@@ -6,25 +6,25 @@ using UnambitiousFx.Core.CodeGen.Design;
 namespace UnambitiousFx.Core.CodeGen.Generators.Transformations;
 
 /// <summary>
-/// Generator for ResultMapExtensions class.
-/// Generates ONE class containing all Map methods, organized by arity in regions.
+/// Generator for ResultFlattenExtensions class.
+/// Generates ONE class containing all Flatten methods, organized by arity in regions.
 /// Follows architecture rule: One generator per class.
 /// </summary>
-internal sealed class ResultMapExtensionsCodeGenerator : BaseCodeGenerator
+internal sealed class ResultFlattenExtensionsCodeGenerator : BaseCodeGenerator
 {
     private const string ExtensionsNamespace = "Results.Extensions.Transformations";
 
-    private readonly MapMethodBuilder _mapBuilder;
+    private readonly FlattenMethodBuilder _flattenBuilder;
 
-    public ResultMapExtensionsCodeGenerator(string baseNamespace)
+    public ResultFlattenExtensionsCodeGenerator(string baseNamespace)
         : base(new GenerationConfig(
                    baseNamespace,
                    startArity: 1,
                    subNamespace: ExtensionsNamespace,
-                   className: "ResultMapExtensions",
+                   className: "ResultFlattenExtensions",
                    fileOrganization: FileOrganizationMode.SingleFile))
     {
-        _mapBuilder = new MapMethodBuilder(baseNamespace);
+        _flattenBuilder = new FlattenMethodBuilder(baseNamespace);
     }
 
     protected override string PrepareOutputDirectory(string outputPath)
@@ -51,9 +51,7 @@ internal sealed class ResultMapExtensionsCodeGenerator : BaseCodeGenerator
             classModifiers: ClassModifier.Static | ClassModifier.Partial
         );
 
-        // Sync Map method
-        classWriter.AddMethod(_mapBuilder.BuildStandaloneMethod(arity));
-        
+        classWriter.AddMethod(_flattenBuilder.BuildStandaloneMethod(arity));
         classWriter.Namespace = ns;
         return classWriter;
     }
@@ -72,15 +70,7 @@ internal sealed class ResultMapExtensionsCodeGenerator : BaseCodeGenerator
             classModifiers: ClassModifier.Static | ClassModifier.Partial
         );
 
-        // Task + sync func overload
-        classWriter.AddMethod(_mapBuilder.BuildTaskSyncFuncMethod(arity, isValueTask));
-
-        // Task + async func overload
-        classWriter.AddMethod(_mapBuilder.BuildTaskAsyncFuncMethod(arity, isValueTask));
-
-        // Result + async func overloads (MapAsync on Result<T>)
-        classWriter.AddMethod(_mapBuilder.BuildAsyncFuncMethod(arity, isValueTask: isValueTask));
-
+        classWriter.AddMethod(_flattenBuilder.BuildAsyncMethod(arity, isValueTask));
         classWriter.Namespace = ns;
         return classWriter;
     }

@@ -1,5 +1,6 @@
 using UnambitiousFx.Core.CodeGen.Configuration;
 using UnambitiousFx.Core.CodeGen.Generators;
+using UnambitiousFx.Core.CodeGen.Generators.SideEffects;
 using UnambitiousFx.Core.CodeGen.Generators.Transformations;
 using UnambitiousFx.Core.CodeGen.Generators.Validations;
 using UnambitiousFx.Core.CodeGen.Generators.ValueAccess;
@@ -43,9 +44,16 @@ internal static class CodeGeneratorFactory
         yield return new ResultEnsureExtensionsCodeGenerator(baseNamespace);
 
         // Transformation extensions
+        yield return new ResultBindExtensionsCodeGenerator(baseNamespace);
         yield return new ResultMapExtensionsCodeGenerator(baseNamespace);
         yield return new ResultThenExtensionsCodeGenerator(baseNamespace);
         yield return new ResultTryExtensionsCodeGenerator(baseNamespace);
         yield return new ResultZipExtensionsCodeGenerator(baseNamespace);
+        yield return new ResultFlattenExtensionsCodeGenerator(baseNamespace);
+
+        // SideEffects extensions
+        yield return new ResultTapExtensionsCodeGenerator(baseNamespace);
+        yield return new ResultTapBothExtensionsCodeGenerator(baseNamespace);
+        yield return new ResultTapErrorExtensionsCodeGenerator(baseNamespace);
     }
 }

@@ -118,10 +118,11 @@ internal sealed class MapMethodBuilder
         {
             funcSignature = $"Func<TValue1, {asyncType}<TOut1>>";
             body = """
-                   return await result.Match(
-                       async v => Result.Success(await map(v).ConfigureAwait(false)),
-                       e => {asyncType}.FromResult(Result.Failure<TOut1>(e))
-                   ).ConfigureAwait(false);
+                   return result.BindAsync(async value =>
+                   {
+                       var newValue = await map(value).ConfigureAwait(false);
+                       return Result.Success(newValue);
+                   });
                    """.Replace("{asyncType}", asyncType);
         }
         else
@@ -134,13 +135,12 @@ internal sealed class MapMethodBuilder
             var successParams = string.Join(", ", Enumerable.Range(1, arity).Select(n => $"mapped.Item{n}"));
 
             body = $$"""
-                     return await result.Match(
+                     return result.BindAsync(
                          async ({{matchParams}}) => {
                              var mapped = await map({{matchParams}}).ConfigureAwait(false);
                              return Result.Success({{successParams}});
-                         },
-                         e => {{asyncType}}.FromResult(Result.Failure<{{outTypes}}>(e))
-                     ).ConfigureAwait(false);
+                         }
+                     );
                      """;
         }
 
@@ -168,7 +168,7 @@ internal sealed class MapMethodBuilder
             returnType: asyncReturn,
             body: body,
             visibility: Visibility.Public,
-            modifier: MethodModifier.Async | MethodModifier.Static,
+            modifier: MethodModifier.Static,
             parameters: [
                 new MethodParameter($"this {resultType}", "result"),
                 new MethodParameter(funcSignature, "map")
@@ -283,8 +283,7 @@ internal sealed class MapMethodBuilder
         }
 
         var body = """
-                   var result = await awaitableResult.ConfigureAwait(false);
-                   return await result.MapAsync(map).ConfigureAwait(false);
+                   return await awaitableResult.MapAsync(map).ConfigureAwait(false);
                    """;
 
         var asyncReturn = isValueTask

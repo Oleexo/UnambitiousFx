@@ -24,7 +24,7 @@ internal sealed class ResultZipExtensionsCodeGenerator : BaseCodeGenerator
                    className: "ResultZipExtensions",
                    fileOrganization: FileOrganizationMode.SingleFile))
     {
-        _zipBuilder = new ZipMethodBuilder(baseNamespace);
+        _zipBuilder = new ZipMethodBuilder();
     }
 
     protected override string PrepareOutputDirectory(string outputPath)

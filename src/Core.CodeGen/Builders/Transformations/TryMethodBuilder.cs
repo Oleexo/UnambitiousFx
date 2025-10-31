@@ -134,17 +134,19 @@ value => {
         {
             funcSignature = $"Func<TValue1, {asyncType}<TOut1>>";
             body = """
-                   return await result.Match(
-                       async v => {
-                           try {
-                               return Result.Success(await func(v).ConfigureAwait(false));
-                           } catch (Exception ex) {
-                               return Result.Failure<TOut1>(ex);
-                           }
-                       },
-                       e => {asyncType}.FromResult(Result.Failure<TOut1>(e))
-                   ).ConfigureAwait(false);
-                   """.Replace("{asyncType}", asyncType);
+                   return result.BindAsync(async value =>
+                   {
+                       try
+                       {
+                           var newValue = await func(value).ConfigureAwait(false);;
+                           return Result.Success(newValue);
+                       }
+                       catch (Exception ex)
+                       {
+                           return Result.Failure<TOut1>(ex);
+                       }
+                   });
+                   """;
         }
         else
         {
@@ -156,17 +158,18 @@ value => {
             var successParams = string.Join(", ", Enumerable.Range(1, arity).Select(n => $"value.Item{n}"));
 
             body = $$"""
-                     return await result.Match(
-                         async ({{matchParams}}) => {
-                             try {
-                                 var value = await func({{matchParams}}).ConfigureAwait(false);
-                                 return Result.Success({{successParams}});
-                             } catch (Exception ex) {
-                                 return Result.Failure<{{outTypes}}>(ex);
-                             }
-                         },
-                         e => {{asyncType}}.FromResult(Result.Failure<{{outTypes}}>(e))
-                     ).ConfigureAwait(false);
+                     return result.BindAsync(async ({{matchParams}}) =>
+                     {
+                         try
+                         {
+                             var value = await func({{matchParams}}).ConfigureAwait(false);;
+                             return Result.Success({{successParams}});
+                         }
+                         catch (Exception ex)
+                         {
+                             return Result.Failure<{{outTypes}}>(ex);
+                         }
+                     });
                      """;
         }
 
@@ -194,7 +197,7 @@ value => {
             returnType: asyncReturn,
             body: body,
             visibility: Visibility.Public,
-            modifier: MethodModifier.Async | MethodModifier.Static,
+            modifier:  MethodModifier.Static,
             parameters: [
                 new MethodParameter($"this {resultType}", "result"),
                 new MethodParameter(funcSignature, "func")

@@ -12,7 +12,7 @@ public sealed class ResultFlattenExtensionsTests {
     [Fact]
     public async Task FlattenAsync_Arity1_Success_ProjectsInner() {
         var inner = Result.Success(42);
-        var outer = Task.FromResult(Result.Success(inner));
+        var outer = ValueTask.FromResult(Result.Success(inner));
 
         var flat = await outer.FlattenAsync();
 
@@ -23,7 +23,7 @@ public sealed class ResultFlattenExtensionsTests {
     [Fact]
     public async Task FlattenAsync_Arity1_OuterFailure_IsFaulted() {
         var ex    = new InvalidOperationException("outer");
-        var outer = Task.FromResult(Result.Failure<Result<int>>(ex));
+        var outer = ValueTask.FromResult(Result.Failure<Result<int>>(ex));
 
         var flat = await outer.FlattenAsync();
 
@@ -34,7 +34,7 @@ public sealed class ResultFlattenExtensionsTests {
     public async Task FlattenAsync_Arity1_InnerFailure_IsFaulted() {
         var ex    = new Exception("inner");
         var inner = Result.Failure<int>(ex);
-        var outer = Task.FromResult(Result.Success(inner));
+        var outer = ValueTask.FromResult(Result.Success(inner));
 
         var flat = await outer.FlattenAsync();
 
@@ -48,7 +48,7 @@ public sealed class ResultFlattenExtensionsTests {
     [Fact]
     public async Task FlattenAsync_Arity2_Success_ProjectsInner() {
         var inner = Result.Success(1, 2);
-        var outer = Task.FromResult(Result.Success(inner));
+        var outer = ValueTask.FromResult(Result.Success(inner));
 
         var flat = await outer.FlattenAsync();
 
@@ -59,7 +59,7 @@ public sealed class ResultFlattenExtensionsTests {
     [Fact]
     public async Task FlattenAsync_Arity2_OuterFailure_IsFaulted() {
         var ex    = new InvalidOperationException("outer");
-        var outer = Task.FromResult(Result.Failure<Result<int, int>>(ex));
+        var outer = ValueTask.FromResult(Result.Failure<Result<int, int>>(ex));
 
         var flat = await outer.FlattenAsync();
 
@@ -70,7 +70,7 @@ public sealed class ResultFlattenExtensionsTests {
     public async Task FlattenAsync_Arity2_InnerFailure_IsFaulted() {
         var ex    = new ArgumentException("inner");
         var inner = Result.Failure<int, int>(ex);
-        var outer = Task.FromResult(Result.Success(inner));
+        var outer = ValueTask.FromResult(Result.Success(inner));
 
         var flat = await outer.FlattenAsync();
 
@@ -84,7 +84,7 @@ public sealed class ResultFlattenExtensionsTests {
     [Fact]
     public async Task FlattenAsync_Arity3_Success_ProjectsInner() {
         var inner = Result.Success(1, 2, 3);
-        var outer = Task.FromResult(Result.Success(inner));
+        var outer = ValueTask.FromResult(Result.Success(inner));
 
         var flat = await outer.FlattenAsync();
 
@@ -95,7 +95,7 @@ public sealed class ResultFlattenExtensionsTests {
     [Fact]
     public async Task FlattenAsync_Arity3_OuterFailure_IsFaulted() {
         var ex    = new InvalidOperationException("outer");
-        var outer = Task.FromResult(Result.Failure<Result<int, int, int>>(ex));
+        var outer = ValueTask.FromResult(Result.Failure<Result<int, int, int>>(ex));
 
         var flat = await outer.FlattenAsync();
 
@@ -106,7 +106,7 @@ public sealed class ResultFlattenExtensionsTests {
     public async Task FlattenAsync_Arity3_InnerFailure_IsFaulted() {
         var ex    = new Exception("inner");
         var inner = Result.Failure<int, int, int>(ex);
-        var outer = Task.FromResult(Result.Success(inner));
+        var outer = ValueTask.FromResult(Result.Success(inner));
 
         var flat = await outer.FlattenAsync();
 
@@ -120,7 +120,7 @@ public sealed class ResultFlattenExtensionsTests {
     [Fact]
     public async Task FlattenAsync_Arity4_Success_ProjectsInner() {
         var inner = Result.Success(1, 2, 3, 4);
-        var outer = Task.FromResult(Result.Success(inner));
+        var outer = ValueTask.FromResult(Result.Success(inner));
 
         var flat = await outer.FlattenAsync();
 
@@ -131,7 +131,7 @@ public sealed class ResultFlattenExtensionsTests {
     [Fact]
     public async Task FlattenAsync_Arity4_OuterFailure_IsFaulted() {
         var ex    = new InvalidOperationException("outer");
-        var outer = Task.FromResult(Result.Failure<Result<int, int, int, int>>(ex));
+        var outer = ValueTask.FromResult(Result.Failure<Result<int, int, int, int>>(ex));
 
         var flat = await outer.FlattenAsync();
 
@@ -142,7 +142,7 @@ public sealed class ResultFlattenExtensionsTests {
     public async Task FlattenAsync_Arity4_InnerFailure_IsFaulted() {
         var ex    = new Exception("inner");
         var inner = Result.Failure<int, int, int, int>(ex);
-        var outer = Task.FromResult(Result.Success(inner));
+        var outer = ValueTask.FromResult(Result.Success(inner));
 
         var flat = await outer.FlattenAsync();
 
@@ -156,7 +156,7 @@ public sealed class ResultFlattenExtensionsTests {
     [Fact]
     public async Task FlattenAsync_Arity5_Success_ProjectsInner() {
         var inner = Result.Success(1, 2, 3, 4, 5);
-        var outer = Task.FromResult(Result.Success(inner));
+        var outer = ValueTask.FromResult(Result.Success(inner));
 
         var flat = await outer.FlattenAsync();
 
@@ -167,7 +167,7 @@ public sealed class ResultFlattenExtensionsTests {
     [Fact]
     public async Task FlattenAsync_Arity5_OuterFailure_IsFaulted() {
         var ex    = new InvalidOperationException("outer");
-        var outer = Task.FromResult(Result.Failure<Result<int, int, int, int, int>>(ex));
+        var outer = ValueTask.FromResult(Result.Failure<Result<int, int, int, int, int>>(ex));
 
         var flat = await outer.FlattenAsync();
 
@@ -178,7 +178,7 @@ public sealed class ResultFlattenExtensionsTests {
     public async Task FlattenAsync_Arity5_InnerFailure_IsFaulted() {
         var ex    = new Exception("inner");
         var inner = Result.Failure<int, int, int, int, int>(ex);
-        var outer = Task.FromResult(Result.Success(inner));
+        var outer = ValueTask.FromResult(Result.Success(inner));
 
         var flat = await outer.FlattenAsync();
 
@@ -192,7 +192,7 @@ public sealed class ResultFlattenExtensionsTests {
     [Fact]
     public async Task FlattenAsync_Arity6_Success_ProjectsInner() {
         var inner = Result.Success(1, 2, 3, 4, 5, 6);
-        var outer = Task.FromResult(Result.Success(inner));
+        var outer = ValueTask.FromResult(Result.Success(inner));
 
         var flat = await outer.FlattenAsync();
 
@@ -203,7 +203,7 @@ public sealed class ResultFlattenExtensionsTests {
     [Fact]
     public async Task FlattenAsync_Arity6_OuterFailure_IsFaulted() {
         var ex    = new InvalidOperationException("outer");
-        var outer = Task.FromResult(Result.Failure<Result<int, int, int, int, int, int>>(ex));
+        var outer = ValueTask.FromResult(Result.Failure<Result<int, int, int, int, int, int>>(ex));
 
         var flat = await outer.FlattenAsync();
 
@@ -214,7 +214,7 @@ public sealed class ResultFlattenExtensionsTests {
     public async Task FlattenAsync_Arity6_InnerFailure_IsFaulted() {
         var ex    = new Exception("inner");
         var inner = Result.Failure<int, int, int, int, int, int>(ex);
-        var outer = Task.FromResult(Result.Success(inner));
+        var outer = ValueTask.FromResult(Result.Success(inner));
 
         var flat = await outer.FlattenAsync();
 
@@ -228,7 +228,7 @@ public sealed class ResultFlattenExtensionsTests {
     [Fact]
     public async Task FlattenAsync_Arity7_Success_ProjectsInner() {
         var inner = Result.Success(1, 2, 3, 4, 5, 6, 7);
-        var outer = Task.FromResult(Result.Success(inner));
+        var outer = ValueTask.FromResult(Result.Success(inner));
 
         var flat = await outer.FlattenAsync();
 
@@ -239,7 +239,7 @@ public sealed class ResultFlattenExtensionsTests {
     [Fact]
     public async Task FlattenAsync_Arity7_OuterFailure_IsFaulted() {
         var ex    = new InvalidOperationException("outer");
-        var outer = Task.FromResult(Result.Failure<Result<int, int, int, int, int, int, int>>(ex));
+        var outer = ValueTask.FromResult(Result.Failure<Result<int, int, int, int, int, int, int>>(ex));
 
         var flat = await outer.FlattenAsync();
 
@@ -250,7 +250,7 @@ public sealed class ResultFlattenExtensionsTests {
     public async Task FlattenAsync_Arity7_InnerFailure_IsFaulted() {
         var ex    = new Exception("inner");
         var inner = Result.Failure<int, int, int, int, int, int, int>(ex);
-        var outer = Task.FromResult(Result.Success(inner));
+        var outer = ValueTask.FromResult(Result.Success(inner));
 
         var flat = await outer.FlattenAsync();
 
@@ -264,7 +264,7 @@ public sealed class ResultFlattenExtensionsTests {
     [Fact]
     public async Task FlattenAsync_Arity8_Success_ProjectsInner() {
         var inner = Result.Success(1, 2, 3, 4, 5, 6, 7, 8);
-        var outer = Task.FromResult(Result.Success(inner));
+        var outer = ValueTask.FromResult(Result.Success(inner));
 
         var flat = await outer.FlattenAsync();
 
@@ -275,7 +275,7 @@ public sealed class ResultFlattenExtensionsTests {
     [Fact]
     public async Task FlattenAsync_Arity8_OuterFailure_IsFaulted() {
         var ex    = new InvalidOperationException("outer");
-        var outer = Task.FromResult(Result.Failure<Result<int, int, int, int, int, int, int, int>>(ex));
+        var outer = ValueTask.FromResult(Result.Failure<Result<int, int, int, int, int, int, int, int>>(ex));
 
         var flat = await outer.FlattenAsync();
 
@@ -286,7 +286,7 @@ public sealed class ResultFlattenExtensionsTests {
     public async Task FlattenAsync_Arity8_InnerFailure_IsFaulted() {
         var ex    = new Exception("inner");
         var inner = Result.Failure<int, int, int, int, int, int, int, int>(ex);
-        var outer = Task.FromResult(Result.Success(inner));
+        var outer = ValueTask.FromResult(Result.Success(inner));
 
         var flat = await outer.FlattenAsync();
 

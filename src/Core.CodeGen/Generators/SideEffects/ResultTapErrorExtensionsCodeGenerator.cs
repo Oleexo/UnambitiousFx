@@ -1,30 +1,30 @@
-using UnambitiousFx.Core.CodeGen.Builders.Transformations;
+using UnambitiousFx.Core.CodeGen.Builders.SideEffects;
 using UnambitiousFx.Core.CodeGen.Common;
 using UnambitiousFx.Core.CodeGen.Configuration;
 using UnambitiousFx.Core.CodeGen.Design;
 
-namespace UnambitiousFx.Core.CodeGen.Generators.Transformations;
+namespace UnambitiousFx.Core.CodeGen.Generators.SideEffects;
 
 /// <summary>
-/// Generator for ResultMapExtensions class.
-/// Generates ONE class containing all Map methods, organized by arity in regions.
+/// Generator for ResultTapErrorExtensions class.
+/// Generates ONE class containing all TapError methods, organized by arity in regions.
 /// Follows architecture rule: One generator per class.
 /// </summary>
-internal sealed class ResultMapExtensionsCodeGenerator : BaseCodeGenerator
+internal sealed class ResultTapErrorExtensionsCodeGenerator : BaseCodeGenerator
 {
-    private const string ExtensionsNamespace = "Results.Extensions.Transformations";
+    private const string ExtensionsNamespace = "Results.Extensions.SideEffects";
 
-    private readonly MapMethodBuilder _mapBuilder;
+    private readonly TapErrorMethodBuilder _tapErrorBuilder;
 
-    public ResultMapExtensionsCodeGenerator(string baseNamespace)
+    public ResultTapErrorExtensionsCodeGenerator(string baseNamespace)
         : base(new GenerationConfig(
                    baseNamespace,
-                   startArity: 1,
+                   startArity: 0,
                    subNamespace: ExtensionsNamespace,
-                   className: "ResultMapExtensions",
+                   className: "ResultTapErrorExtensions",
                    fileOrganization: FileOrganizationMode.SingleFile))
     {
-        _mapBuilder = new MapMethodBuilder(baseNamespace);
+        _tapErrorBuilder = new TapErrorMethodBuilder();
     }
 
     protected override string PrepareOutputDirectory(string outputPath)
@@ -51,19 +51,15 @@ internal sealed class ResultMapExtensionsCodeGenerator : BaseCodeGenerator
             classModifiers: ClassModifier.Static | ClassModifier.Partial
         );
 
-        // Sync Map method
-        classWriter.AddMethod(_mapBuilder.BuildStandaloneMethod(arity));
-        
+        // Generate sync TapError method
+        classWriter.AddMethod(_tapErrorBuilder.BuildStandaloneMethod(arity));
         classWriter.Namespace = ns;
         return classWriter;
     }
 
-    private ClassWriter GenerateAsyncMethods(ushort arity,
-                                             bool isValueTask)
+    private ClassWriter GenerateAsyncMethods(ushort arity, bool isValueTask)
     {
-        var subNamespace = isValueTask
-                               ? "ValueTasks"
-                               : "Tasks";
+        var subNamespace = isValueTask ? "ValueTasks" : "Tasks";
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}.{subNamespace}";
 
         var classWriter = new ClassWriter(
@@ -72,14 +68,10 @@ internal sealed class ResultMapExtensionsCodeGenerator : BaseCodeGenerator
             classModifiers: ClassModifier.Static | ClassModifier.Partial
         );
 
-        // Task + sync func overload
-        classWriter.AddMethod(_mapBuilder.BuildTaskSyncFuncMethod(arity, isValueTask));
-
-        // Task + async func overload
-        classWriter.AddMethod(_mapBuilder.BuildTaskAsyncFuncMethod(arity, isValueTask));
-
-        // Result + async func overloads (MapAsync on Result<T>)
-        classWriter.AddMethod(_mapBuilder.BuildAsyncFuncMethod(arity, isValueTask: isValueTask));
+        // Generate 3 async overloads
+        classWriter.AddMethod(_tapErrorBuilder.BuildAsyncFuncMethod(arity, isValueTask));
+        classWriter.AddMethod(_tapErrorBuilder.BuildTaskSyncFuncMethod(arity, isValueTask));
+        classWriter.AddMethod(_tapErrorBuilder.BuildTaskAsyncFuncMethod(arity, isValueTask));
 
         classWriter.Namespace = ns;
         return classWriter;

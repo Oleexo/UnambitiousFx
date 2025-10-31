@@ -52,9 +52,6 @@ internal sealed class ResultThenExtensionsCodeGenerator : BaseCodeGenerator
         );
 
         classWriter.AddMethod(_thenBuilder.BuildStandaloneMethod(arity));
-        // Also add the Result + async func overload in the main namespace
-        classWriter.AddMethod(_thenBuilder.BuildAsyncFuncMethod(arity, isValueTask: false));
-        classWriter.AddMethod(_thenBuilder.BuildAsyncFuncMethod(arity, isValueTask: true));
         classWriter.Namespace = ns;
         return classWriter;
     }
@@ -76,6 +73,9 @@ internal sealed class ResultThenExtensionsCodeGenerator : BaseCodeGenerator
         // Generate both Task + sync func and Task + async func overloads
         classWriter.AddMethod(_thenBuilder.BuildTaskSyncFuncMethod(arity, isValueTask));
         classWriter.AddMethod(_thenBuilder.BuildTaskAsyncFuncMethod(arity, isValueTask));
+        // Also add the Result + async func overload in the main namespace
+        classWriter.AddMethod(_thenBuilder.BuildAsyncFuncMethod(arity, isValueTask: isValueTask));
+
         classWriter.Namespace = ns;
         return classWriter;
     }

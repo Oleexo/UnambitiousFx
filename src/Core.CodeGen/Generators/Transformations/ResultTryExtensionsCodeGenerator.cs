@@ -54,9 +54,6 @@ internal sealed class ResultTryExtensionsCodeGenerator : BaseCodeGenerator
         // Sync Try method
         classWriter.AddMethod(_tryBuilder.BuildStandaloneMethod(arity));
 
-        // Result + async func overloads (TryAsync on Result<T>)
-        classWriter.AddMethod(_tryBuilder.BuildAsyncFuncMethod(arity, isValueTask: false));
-        classWriter.AddMethod(_tryBuilder.BuildAsyncFuncMethod(arity, isValueTask: true));
 
         classWriter.Namespace = ns;
         return classWriter;
@@ -81,6 +78,10 @@ internal sealed class ResultTryExtensionsCodeGenerator : BaseCodeGenerator
 
         // Task + async func overload
         classWriter.AddMethod(_tryBuilder.BuildTaskAsyncFuncMethod(arity, isValueTask));
+        
+        // Result + async func overloads (TryAsync on Result<T>)
+        classWriter.AddMethod(_tryBuilder.BuildAsyncFuncMethod(arity, isValueTask: isValueTask));
+
 
         classWriter.Namespace = ns;
         return classWriter;
