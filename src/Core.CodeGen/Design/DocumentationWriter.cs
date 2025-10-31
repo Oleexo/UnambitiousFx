@@ -6,25 +6,28 @@ namespace UnambitiousFx.Core.CodeGen.Design;
 /// Represents XML documentation comments for C# code elements.
 /// </summary>
 internal sealed class DocumentationWriter {
-    private readonly string?              _summary;
-    private readonly Dictionary<string, string> _parameters;
-    private readonly Dictionary<string, string> _typeParameters;
-    private readonly string?              _returns;
-    private readonly string?              _remarks;
-    private readonly List<string>         _examples;
+    private readonly string?                           _summary;
+    private readonly IReadOnlyDictionary<string, string> _parameters;
+    private readonly IReadOnlyDictionary<string, string> _typeParameters;
+    private readonly string?                           _returns;
+    private readonly string?                           _remarks;
+    private readonly IReadOnlyList<string>             _examples;
+    private readonly IReadOnlyDictionary<string, string> _exceptions;
 
-    private DocumentationWriter(string?                        summary,
-                                Dictionary<string, string>     parameters,
-                                Dictionary<string, string>     typeParameters,
-                                string?                        returns,
-                                string?                        remarks,
-                                List<string>                   examples) {
+    private DocumentationWriter(string?                           summary,
+                                IReadOnlyDictionary<string, string> parameters,
+                                IReadOnlyDictionary<string, string> typeParameters,
+                                string?                           returns,
+                                string?                           remarks,
+                                IReadOnlyList<string>             examples,
+                                IReadOnlyDictionary<string, string> exceptions) {
         _summary        = summary;
         _parameters     = parameters;
         _typeParameters = typeParameters;
         _returns        = returns;
         _remarks        = remarks;
         _examples       = examples;
+        _exceptions     = exceptions;
     }
 
     public void Write(IndentedTextWriter writer) {
@@ -33,7 +36,8 @@ internal sealed class DocumentationWriter {
             _typeParameters.Count == 0 &&
             string.IsNullOrWhiteSpace(_returns) &&
             string.IsNullOrWhiteSpace(_remarks) &&
-            _examples.Count == 0) {
+            _examples.Count == 0 &&
+            _exceptions.Count == 0) {
             return;
         }
 
@@ -44,15 +48,19 @@ internal sealed class DocumentationWriter {
         writer.WriteLine("/// </summary>");
 
         foreach (var typeParam in _typeParameters) {
-            writer.WriteLine($"/// <typeparam name=\"{typeParam.Key}\">{EscapeXml(typeParam.Value)}</typeparam>");
+            writer.WriteLine($"/// <typeparam name=\"{EscapeXmlAttribute(typeParam.Key)}\">{EscapeXml(typeParam.Value)}</typeparam>");
         }
 
         foreach (var param in _parameters) {
-            writer.WriteLine($"/// <param name=\"{param.Key}\">{EscapeXml(param.Value)}</param>");
+            writer.WriteLine($"/// <param name=\"{EscapeXmlAttribute(param.Key)}\">{EscapeXml(param.Value)}</param>");
         }
 
         if (!string.IsNullOrWhiteSpace(_returns)) {
             writer.WriteLine($"/// <returns>{EscapeXml(_returns)}</returns>");
+        }
+
+        foreach (var exception in _exceptions) {
+            writer.WriteLine($"/// <exception cref=\"{EscapeXmlAttribute(exception.Key)}\">{EscapeXml(exception.Value)}</exception>");
         }
 
         if (!string.IsNullOrWhiteSpace(_remarks)) {
@@ -81,6 +89,18 @@ internal sealed class DocumentationWriter {
     }
 
     private static string EscapeXml(string text) {
+        if (string.IsNullOrEmpty(text))
+            return text;
+            
+        return text.Replace("&", "&amp;")
+                   .Replace("<", "&lt;")
+                   .Replace(">", "&gt;");
+    }
+
+    private static string EscapeXmlAttribute(string text) {
+        if (string.IsNullOrEmpty(text))
+            return text;
+            
         return text.Replace("&", "&amp;")
                    .Replace("<", "&lt;")
                    .Replace(">", "&gt;")
@@ -97,6 +117,7 @@ internal sealed class DocumentationWriter {
         private string?                        _returns;
         private string?                        _remarks;
         private List<string>                   _examples       = new();
+        private Dictionary<string, string>     _exceptions     = new();
 
         internal Builder() { }
 
@@ -168,14 +189,41 @@ internal sealed class DocumentationWriter {
             return this;
         }
 
+        /// <summary>
+        /// Adds an exception documentation.
+        /// </summary>
+        public Builder WithException<T>(string description) where T : Exception {
+            _exceptions[typeof(T).Name] = description;
+            return this;
+        }
+
+        /// <summary>
+        /// Adds an exception documentation by type name.
+        /// </summary>
+        public Builder WithException(string exceptionTypeName, string description) {
+            _exceptions[exceptionTypeName] = description;
+            return this;
+        }
+
+        /// <summary>
+        /// Adds multiple exception documentations.
+        /// </summary>
+        public Builder WithExceptions(params (string exceptionTypeName, string description)[] exceptions) {
+            foreach (var (exceptionTypeName, description) in exceptions) {
+                _exceptions[exceptionTypeName] = description;
+            }
+            return this;
+        }
+
         public DocumentationWriter Build() {
             return new DocumentationWriter(
                 _summary,
-                _parameters,
-                _typeParameters,
+                _parameters.ToDictionary(kvp => kvp.Key, kvp => kvp.Value),
+                _typeParameters.ToDictionary(kvp => kvp.Key, kvp => kvp.Value),
                 _returns,
                 _remarks,
-                _examples
+                _examples.ToArray(),
+                _exceptions.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
             );
         }
     }
