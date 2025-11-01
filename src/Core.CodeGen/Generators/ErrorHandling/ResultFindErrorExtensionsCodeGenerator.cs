@@ -5,10 +5,10 @@ using UnambitiousFx.Core.CodeGen.Design;
 namespace UnambitiousFx.Core.CodeGen.Generators.ErrorHandling;
 
 /// <summary>
-/// Generator for ResultFindErrorExtensions class.
-/// Generates FindError and TryPickError extension methods for all Result arities.
-/// These methods locate specific attached error reasons via predicate.
-/// Follows architecture rule: One generator per extension method category.
+///     Generator for ResultFindErrorExtensions class.
+///     Generates FindError and TryPickError extension methods for all Result arities.
+///     These methods locate specific attached error reasons via predicate.
+///     Follows architecture rule: One generator per extension method category.
 /// </summary>
 internal sealed class ResultFindErrorExtensionsCodeGenerator : BaseCodeGenerator {
     private const string ExtensionsNamespace = "Results.Extensions.ErrorHandling";
@@ -16,10 +16,10 @@ internal sealed class ResultFindErrorExtensionsCodeGenerator : BaseCodeGenerator
     public ResultFindErrorExtensionsCodeGenerator(string baseNamespace)
         : base(new GenerationConfig(
                    baseNamespace,
-                   startArity: 0, // Start from Result (arity 0)
-                   subNamespace: ExtensionsNamespace,
-                   className: "ResultFindErrorExtensions",
-                   fileOrganization: FileOrganizationMode.SingleFile)) {
+                   0, // Start from Result (arity 0)
+                   ExtensionsNamespace,
+                   "ResultFindErrorExtensions",
+                   FileOrganizationMode.SingleFile)) {
     }
 
     protected override string PrepareOutputDirectory(string outputPath) {
@@ -28,20 +28,24 @@ internal sealed class ResultFindErrorExtensionsCodeGenerator : BaseCodeGenerator
     }
 
     protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
-        return [GenerateFindErrorMethods(arity)];
+        return [
+            GenerateFindErrorMethods(arity),
+            GenerateAsyncMethods(arity, false),
+            GenerateAsyncMethods(arity, true)
+        ];
     }
 
     private ClassWriter GenerateFindErrorMethods(ushort arity) {
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
         var classWriter = new ClassWriter(
-            name: Config.ClassName,
-            visibility: Visibility.Public,
-            classModifiers: ClassModifier.Static | ClassModifier.Partial
+            Config.ClassName,
+            Visibility.Public,
+            ClassModifier.Static | ClassModifier.Partial
         );
 
         // Generate FindError method
         classWriter.AddMethod(GenerateFindErrorMethod(arity));
-        
+
         // Generate TryPickError method
         classWriter.AddMethod(GenerateTryPickErrorMethod(arity));
 
@@ -55,7 +59,7 @@ internal sealed class ResultFindErrorExtensionsCodeGenerator : BaseCodeGenerator
 
         var documentation = DocumentationWriter.Create()
                                                .WithSummary("Locates a specific attached error reason via predicate.")
-                                               .WithParameter("result", "The result to search for errors.")
+                                               .WithParameter("result",    "The result to search for errors.")
                                                .WithParameter("predicate", "The predicate function to match errors.")
                                                .WithReturns("The first error matching the predicate, or null if no match is found.")
                                                .Build();
@@ -101,7 +105,7 @@ internal sealed class ResultFindErrorExtensionsCodeGenerator : BaseCodeGenerator
                                   .WithVisibility(Visibility.Public)
                                   .WithExtensionMethod(resultType, "result")
                                   .WithParameter("Func<IError, bool>", "predicate")
-                                  .WithParameter("out IError?", "error")
+                                  .WithParameter("out IError?",        "error")
                                   .WithDocumentation(documentation)
                                   .WithUsings("UnambitiousFx.Core.Results.Reasons");
 
@@ -139,8 +143,6 @@ internal sealed class ResultFindErrorExtensionsCodeGenerator : BaseCodeGenerator
 
     private string GenerateFindErrorBody() {
         return """
-               ArgumentNullException.ThrowIfNull(predicate);
-
                return result.Reasons.OfType<IError>()
                             .FirstOrDefault(predicate);
                """;
@@ -148,11 +150,227 @@ internal sealed class ResultFindErrorExtensionsCodeGenerator : BaseCodeGenerator
 
     private string GenerateTryPickErrorBody() {
         return """
-               ArgumentNullException.ThrowIfNull(predicate);
-
                error = result.Reasons.OfType<IError>()
                              .FirstOrDefault(predicate);
                return error is not null;
                """;
+    }
+
+    private ClassWriter GenerateAsyncMethods(ushort arity,
+                                             bool   isValueTask) {
+        var subNamespace = isValueTask
+                               ? "ValueTasks"
+                               : "Tasks";
+        var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}.{subNamespace}";
+
+        var classWriter = new ClassWriter(
+            "ResultExtensions",
+            Visibility.Public,
+            ClassModifier.Static | ClassModifier.Partial
+        );
+
+        // Generate FindErrorAsync method for Result -> Task/ValueTask
+        classWriter.AddMethod(GenerateFindErrorAsyncMethod(arity, isValueTask, false));
+
+        // Generate FindErrorAsync method for Task/ValueTask<Result> -> Task/ValueTask
+        classWriter.AddMethod(GenerateFindErrorAsyncMethod(arity, isValueTask, true));
+
+        // Generate TryPickErrorAsync method for Result -> Task/ValueTask
+        classWriter.AddMethod(GenerateTryPickErrorAsyncMethod(arity, isValueTask, false));
+
+        // Generate TryPickErrorAsync method for Task/ValueTask<Result> -> Task/ValueTask
+        classWriter.AddMethod(GenerateTryPickErrorAsyncMethod(arity, isValueTask, true));
+
+        classWriter.Namespace = ns;
+        return classWriter;
+    }
+
+    private MethodWriter GenerateFindErrorAsyncMethod(ushort arity,
+                                                      bool   isValueTask,
+                                                      bool   isAwaitable) {
+        var (resultType, genericParams, constraints) = GetResultTypeInfo(arity);
+        var methodName = "FindErrorAsync";
+
+        var taskType = isValueTask
+                           ? "ValueTask"
+                           : "Task";
+        var returnType = $"{taskType}<IError?>";
+        var parameterType = isAwaitable
+                                ? $"{taskType}<{resultType}>"
+                                : resultType;
+        var predicateType = $"Func<IError, {taskType}<bool>>";
+
+        var documentationBuilder = DocumentationWriter.Create()
+                                                      .WithSummary("Asynchronously locates a specific attached error reason via predicate.")
+                                                      .WithParameter(isAwaitable
+                                                                         ? "awaitableResult"
+                                                                         : "result", isAwaitable
+                                                                                         ? "The awaitable result to search for errors."
+                                                                                         : "The result to search for errors.")
+                                                      .WithParameter("predicate", "The async predicate function to match errors.")
+                                                      .WithReturns("A task containing the first error matching the predicate, or null if no match is found.");
+
+        // Add documentation for all value type parameters
+        for (var i = 0; i < genericParams.Length; i++) {
+            var paramName = genericParams[i];
+            var ordinal   = GetOrdinalString(i + 1);
+            documentationBuilder.WithTypeParameter(paramName, $"The type of the {ordinal} value.");
+        }
+
+        var documentation = documentationBuilder.Build();
+
+        var body = GenerateFindErrorAsyncBody(arity, isValueTask, isAwaitable);
+
+        var modifiers = MethodModifier.Static | MethodModifier.Async;
+
+        var builder = MethodWriter.Create(methodName, returnType, body)
+                                  .WithModifier(modifiers)
+                                  .WithExtensionMethod(parameterType, isAwaitable
+                                                                          ? "awaitableResult"
+                                                                          : "result")
+                                  .WithParameter(predicateType, "predicate")
+                                  .WithDocumentation(documentation)
+                                  .WithUsings("UnambitiousFx.Core.Results.Reasons");
+
+        // Add using for ValueAccess extensions
+        if (isValueTask) {
+            builder.WithUsings("UnambitiousFx.Core.Results.Extensions.ValueAccess.ValueTasks");
+        }
+        else {
+            builder.WithUsings("UnambitiousFx.Core.Results.Extensions.ValueAccess.Tasks");
+        }
+
+        // Add generic parameters and constraints for value types
+        foreach (var param in genericParams) {
+            builder.WithGenericParameter(param);
+        }
+
+        foreach (var constraint in constraints) {
+            builder.WithGenericConstraint(constraint);
+        }
+
+        return builder.Build();
+    }
+
+    private MethodWriter GenerateTryPickErrorAsyncMethod(ushort arity,
+                                                         bool   isValueTask,
+                                                         bool   isAwaitable) {
+        var (resultType, genericParams, constraints) = GetResultTypeInfo(arity);
+        var methodName = "TryPickErrorAsync";
+
+        var taskType = isValueTask
+                           ? "ValueTask"
+                           : "Task";
+        var returnType = $"{taskType}<(bool Success, IError? Error)>";
+        var parameterType = isAwaitable
+                                ? $"{taskType}<{resultType}>"
+                                : resultType;
+        var predicateType = $"Func<IError, {taskType}<bool>>";
+
+        var documentationBuilder = DocumentationWriter.Create()
+                                                      .WithSummary("Asynchronously attempts to locate a specific attached error reason via predicate.")
+                                                      .WithParameter(isAwaitable
+                                                                         ? "awaitableResult"
+                                                                         : "result", isAwaitable
+                                                                                         ? "The awaitable result to search for errors."
+                                                                                         : "The result to search for errors.")
+                                                      .WithParameter("predicate", "The async predicate function to match errors.")
+                                                      .WithReturns(
+                                                           "A task containing a tuple with success flag and the first error matching the predicate, or null if no match is found.");
+
+        // Add documentation for all value type parameters
+        for (var i = 0; i < genericParams.Length; i++) {
+            var paramName = genericParams[i];
+            var ordinal   = GetOrdinalString(i + 1);
+            documentationBuilder.WithTypeParameter(paramName, $"The type of the {ordinal} value.");
+        }
+
+        var documentation = documentationBuilder.Build();
+
+        var body = GenerateTryPickErrorAsyncBody(arity, isValueTask, isAwaitable);
+
+        var modifiers = MethodModifier.Static | MethodModifier.Async;
+
+        var builder = MethodWriter.Create(methodName, returnType, body)
+                                  .WithModifier(modifiers)
+                                  .WithExtensionMethod(parameterType, isAwaitable
+                                                                          ? "awaitableResult"
+                                                                          : "result")
+                                  .WithParameter(predicateType, "predicate")
+                                  .WithDocumentation(documentation)
+                                  .WithUsings("UnambitiousFx.Core.Results.Reasons");
+
+        // Add using for ValueAccess extensions
+        if (isValueTask) {
+            builder.WithUsings("UnambitiousFx.Core.Results.Extensions.ValueAccess.ValueTasks");
+        }
+        else {
+            builder.WithUsings("UnambitiousFx.Core.Results.Extensions.ValueAccess.Tasks");
+        }
+
+        // Add generic parameters and constraints for value types
+        foreach (var param in genericParams) {
+            builder.WithGenericParameter(param);
+        }
+
+        foreach (var constraint in constraints) {
+            builder.WithGenericConstraint(constraint);
+        }
+
+        return builder.Build();
+    }
+
+    private string GenerateFindErrorAsyncBody(ushort arity,
+                                              bool   isValueTask,
+                                              bool   isAwaitable) {
+        if (isAwaitable) {
+            return """
+                   var result = await awaitableResult;
+                   return await result.FindErrorAsync(predicate);
+                   """;
+        }
+
+        return """
+               foreach (var error in result.Reasons.OfType<IError>()) {
+                   if (await predicate(error)) {
+                       return error;
+                   }
+               }
+               return null;
+               """;
+    }
+
+    private string GenerateTryPickErrorAsyncBody(ushort arity,
+                                                 bool   isValueTask,
+                                                 bool   isAwaitable) {
+        if (isAwaitable) {
+            return """
+                   var result = await awaitableResult;
+                   return await result.TryPickErrorAsync(predicate);
+                   """;
+        }
+
+        return """
+               foreach (var error in result.Reasons.OfType<IError>()) {
+                   if (await predicate(error)) {
+                       return (true, error);
+                   }
+               }
+               return (false, null);
+               """;
+    }
+
+    private static string GetOrdinalString(int number) {
+        return number switch {
+            1 => "first",
+            2 => "second",
+            3 => "third",
+            4 => "fourth",
+            5 => "fifth",
+            6 => "sixth",
+            7 => "seventh",
+            8 => "eighth",
+            _ => $"{number}th"
+        };
     }
 }

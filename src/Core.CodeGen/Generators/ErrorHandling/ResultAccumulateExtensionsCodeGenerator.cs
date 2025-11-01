@@ -29,7 +29,11 @@ internal sealed class ResultAccumulateExtensionsCodeGenerator : BaseCodeGenerato
     }
 
     protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
-        return [GenerateAccumulateMethods(arity)];
+        return [
+            GenerateAccumulateMethods(arity),
+            GenerateAsyncMethods(arity, isValueTask: false),
+            GenerateAsyncMethods(arity, isValueTask: true)
+        ];
     }
 
     private ClassWriter GenerateAccumulateMethods(ushort arity) {
@@ -143,4 +147,118 @@ internal sealed class ResultAccumulateExtensionsCodeGenerator : BaseCodeGenerato
         var genericParams = string.Join(", ", Enumerable.Range(1, arity).Select(i => $"T{i}"));
         return $"Result.Failure<{genericParams}>(newEx)";
     }
+
+    private ClassWriter GenerateAsyncMethods(ushort arity, bool isValueTask) {
+        var subNamespace = isValueTask ? "ValueTasks" : "Tasks";
+        var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}.{subNamespace}";
+
+        var classWriter = new ClassWriter(
+            name: "ResultExtensions",
+            visibility: Visibility.Public,
+            classModifiers: ClassModifier.Static | ClassModifier.Partial
+        );
+
+        // Generate AccumulateAsync method for Result -> Task/ValueTask
+        classWriter.AddMethod(GenerateAccumulateAsyncMethod(arity, isValueTask, isAwaitable: false));
+
+        // Generate AccumulateAsync method for Task/ValueTask<Result> -> Task/ValueTask
+        classWriter.AddMethod(GenerateAccumulateAsyncMethod(arity, isValueTask, isAwaitable: true));
+
+        classWriter.Namespace = ns;
+        return classWriter;
+    }
+
+    private MethodWriter GenerateAccumulateAsyncMethod(ushort arity, bool isValueTask, bool isAwaitable) {
+        var (resultType, genericParams, constraints) = GetResultTypeInfo(arity);
+        var methodName = "AccumulateAsync";
+        
+        var taskType = isValueTask ? "ValueTask" : "Task";
+        var returnType = $"{taskType}<{resultType}>";
+        var parameterType = isAwaitable ? $"{taskType}<{resultType}>" : resultType;
+        var mapErrorType = $"Func<IEnumerable<IError>, {taskType}<IEnumerable<IError>>>";
+
+        var documentationBuilder = DocumentationWriter.Create()
+            .WithSummary("Asynchronously accumulates errors by applying a mapping function to existing errors and preserving all reasons and metadata.")
+            .WithParameter(isAwaitable ? "awaitableOriginal" : "original", isAwaitable ? "The awaitable original result to accumulate errors from." : "The original result to accumulate errors from.")
+            .WithParameter("mapError", "The async function to map and accumulate errors.")
+            .WithReturns("A task with a new result containing accumulated errors, preserving all reasons and metadata from the original result.");
+
+        // Add documentation for all value type parameters
+        for (int i = 0; i < genericParams.Length; i++) {
+            var paramName = genericParams[i];
+            var ordinal = GetOrdinalString(i + 1);
+            documentationBuilder.WithTypeParameter(paramName, $"The type of the {ordinal} value.");
+        }
+
+        var documentation = documentationBuilder.Build();
+
+        var body = GenerateAccumulateAsyncBody(arity, isValueTask, isAwaitable);
+
+        var modifiers = MethodModifier.Static | MethodModifier.Async;
+
+        var builder = MethodWriter.Create(methodName, returnType, body)
+                                  .WithModifier(modifiers)
+                                  .WithVisibility(Visibility.Internal)
+                                  .WithExtensionMethod(parameterType, isAwaitable ? "awaitableOriginal" : "original")
+                                  .WithParameter(mapErrorType, "mapError")
+                                  .WithDocumentation(documentation)
+                                  .WithUsings("UnambitiousFx.Core.Results.Reasons");
+
+        // Add using for ValueAccess extensions
+        if (isValueTask) {
+            builder.WithUsings("UnambitiousFx.Core.Results.Extensions.ValueAccess.ValueTasks");
+        } else {
+            builder.WithUsings("UnambitiousFx.Core.Results.Extensions.ValueAccess.Tasks");
+        }
+
+        // Add generic parameters and constraints for value types
+        foreach (var param in genericParams) {
+            builder.WithGenericParameter(param);
+        }
+
+        foreach (var constraint in constraints) {
+            builder.WithGenericConstraint(constraint);
+        }
+
+        return builder.Build();
+    }
+
+    private string GenerateAccumulateAsyncBody(ushort arity, bool isValueTask, bool isAwaitable) {
+        if (isAwaitable) {
+            return """
+                   var original = await awaitableOriginal;
+                   return await original.AccumulateAsync(mapError);
+                   """;
+        } else {
+            var tryGetCall = GenerateTryGetCall(arity);
+            var failureCall = GenerateFailureCall(arity);
+            var taskType = isValueTask ? "ValueTask" : "Task";
+            var returnType = $"{taskType}<{GetResultTypeInfo(arity).resultType}>";
+
+            return $$"""
+                    {{tryGetCall}}
+                    var newEx = await mapError(existingError!);
+                    var mapped = {{failureCall}};
+                    foreach (var r in original.Reasons) {
+                        mapped.AddReason(r);
+                    }
+                    foreach (var kv in original.Metadata) {
+                        mapped.AddMetadata(kv.Key, kv.Value);
+                    }
+                    return mapped;
+                    """;
+        }
+    }
+
+    private static string GetOrdinalString(int number) => number switch {
+        1 => "first",
+        2 => "second", 
+        3 => "third",
+        4 => "fourth",
+        5 => "fifth",
+        6 => "sixth",
+        7 => "seventh",
+        8 => "eighth",
+        _ => $"{number}th"
+    };
 }

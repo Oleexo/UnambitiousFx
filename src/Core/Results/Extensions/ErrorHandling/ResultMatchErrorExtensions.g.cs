@@ -25,8 +25,6 @@ public static partial class ResultMatchErrorExtensions
     /// <param name="onElse">The function to execute when no matching error is found.</param>
     /// <returns>The result of executing either onMatch or onElse function.</returns>
     public static TOut MatchError<TError, TOut>(this Result result, Func<TError, TOut> onMatch, Func<TOut> onElse) where TError : class, IError {
-        ArgumentNullException.ThrowIfNull(onMatch);
-        ArgumentNullException.ThrowIfNull(onElse);
         var match = result.Reasons.OfType<TError>()
                           .FirstOrDefault();
         return match is not null
@@ -49,8 +47,6 @@ public static partial class ResultMatchErrorExtensions
     /// <param name="onElse">The function to execute when no matching error is found.</param>
     /// <returns>The result of executing either onMatch or onElse function.</returns>
     public static TOut MatchError<TError, TValue1, TOut>(this Result<TValue1> result, Func<TError, TOut> onMatch, Func<TOut> onElse) where TError : class, IError where TValue1 : notnull {
-        ArgumentNullException.ThrowIfNull(onMatch);
-        ArgumentNullException.ThrowIfNull(onElse);
         var match = result.Reasons.OfType<TError>()
                           .FirstOrDefault();
         return match is not null
@@ -74,8 +70,6 @@ public static partial class ResultMatchErrorExtensions
     /// <param name="onElse">The function to execute when no matching error is found.</param>
     /// <returns>The result of executing either onMatch or onElse function.</returns>
     public static TOut MatchError<TError, TValue1, TValue2, TOut>(this Result<TValue1, TValue2> result, Func<TError, TOut> onMatch, Func<TOut> onElse) where TError : class, IError where TValue1 : notnull where TValue2 : notnull {
-        ArgumentNullException.ThrowIfNull(onMatch);
-        ArgumentNullException.ThrowIfNull(onElse);
         var match = result.Reasons.OfType<TError>()
                           .FirstOrDefault();
         return match is not null
@@ -100,8 +94,6 @@ public static partial class ResultMatchErrorExtensions
     /// <param name="onElse">The function to execute when no matching error is found.</param>
     /// <returns>The result of executing either onMatch or onElse function.</returns>
     public static TOut MatchError<TError, TValue1, TValue2, TValue3, TOut>(this Result<TValue1, TValue2, TValue3> result, Func<TError, TOut> onMatch, Func<TOut> onElse) where TError : class, IError where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull {
-        ArgumentNullException.ThrowIfNull(onMatch);
-        ArgumentNullException.ThrowIfNull(onElse);
         var match = result.Reasons.OfType<TError>()
                           .FirstOrDefault();
         return match is not null
@@ -127,8 +119,6 @@ public static partial class ResultMatchErrorExtensions
     /// <param name="onElse">The function to execute when no matching error is found.</param>
     /// <returns>The result of executing either onMatch or onElse function.</returns>
     public static TOut MatchError<TError, TValue1, TValue2, TValue3, TValue4, TOut>(this Result<TValue1, TValue2, TValue3, TValue4> result, Func<TError, TOut> onMatch, Func<TOut> onElse) where TError : class, IError where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull {
-        ArgumentNullException.ThrowIfNull(onMatch);
-        ArgumentNullException.ThrowIfNull(onElse);
         var match = result.Reasons.OfType<TError>()
                           .FirstOrDefault();
         return match is not null
@@ -155,8 +145,6 @@ public static partial class ResultMatchErrorExtensions
     /// <param name="onElse">The function to execute when no matching error is found.</param>
     /// <returns>The result of executing either onMatch or onElse function.</returns>
     public static TOut MatchError<TError, TValue1, TValue2, TValue3, TValue4, TValue5, TOut>(this Result<TValue1, TValue2, TValue3, TValue4, TValue5> result, Func<TError, TOut> onMatch, Func<TOut> onElse) where TError : class, IError where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull {
-        ArgumentNullException.ThrowIfNull(onMatch);
-        ArgumentNullException.ThrowIfNull(onElse);
         var match = result.Reasons.OfType<TError>()
                           .FirstOrDefault();
         return match is not null
@@ -184,8 +172,6 @@ public static partial class ResultMatchErrorExtensions
     /// <param name="onElse">The function to execute when no matching error is found.</param>
     /// <returns>The result of executing either onMatch or onElse function.</returns>
     public static TOut MatchError<TError, TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TOut>(this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6> result, Func<TError, TOut> onMatch, Func<TOut> onElse) where TError : class, IError where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull {
-        ArgumentNullException.ThrowIfNull(onMatch);
-        ArgumentNullException.ThrowIfNull(onElse);
         var match = result.Reasons.OfType<TError>()
                           .FirstOrDefault();
         return match is not null
@@ -214,8 +200,6 @@ public static partial class ResultMatchErrorExtensions
     /// <param name="onElse">The function to execute when no matching error is found.</param>
     /// <returns>The result of executing either onMatch or onElse function.</returns>
     public static TOut MatchError<TError, TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TOut>(this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> result, Func<TError, TOut> onMatch, Func<TOut> onElse) where TError : class, IError where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull {
-        ArgumentNullException.ThrowIfNull(onMatch);
-        ArgumentNullException.ThrowIfNull(onElse);
         var match = result.Reasons.OfType<TError>()
                           .FirstOrDefault();
         return match is not null
@@ -245,8 +229,6 @@ public static partial class ResultMatchErrorExtensions
     /// <param name="onElse">The function to execute when no matching error is found.</param>
     /// <returns>The result of executing either onMatch or onElse function.</returns>
     public static TOut MatchError<TError, TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8, TOut>(this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8> result, Func<TError, TOut> onMatch, Func<TOut> onElse) where TError : class, IError where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull where TValue8 : notnull {
-        ArgumentNullException.ThrowIfNull(onMatch);
-        ArgumentNullException.ThrowIfNull(onElse);
         var match = result.Reasons.OfType<TError>()
                           .FirstOrDefault();
         return match is not null

@@ -27,7 +27,11 @@ internal sealed class ResultShapeErrorExtensionsCodeGenerator : BaseCodeGenerato
     }
 
     protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
-        return [GenerateShapeErrorMethods(arity)];
+        return [
+            GenerateShapeErrorMethods(arity),
+            GenerateAsyncMethods(arity, false),
+            GenerateAsyncMethods(arity, true)
+        ];
     }
 
     private ClassWriter GenerateShapeErrorMethods(ushort arity) {
@@ -112,5 +116,139 @@ internal sealed class ResultShapeErrorExtensionsCodeGenerator : BaseCodeGenerato
                    ? result
                    : Helper.Preserve(result, result.MapError(shape));
                """;
+    }
+
+    private ClassWriter GenerateAsyncMethods(ushort arity,
+                                             bool   isValueTask) {
+        var subNamespace = isValueTask
+                               ? "ValueTasks"
+                               : "Tasks";
+        var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}.{subNamespace}";
+
+        var classWriter = new ClassWriter(
+            "ResultExtensions",
+            Visibility.Public,
+            ClassModifier.Static | ClassModifier.Partial
+        );
+
+        // Generate ShapeErrorAsync method for Result -> Task/ValueTask
+        classWriter.AddMethod(GenerateShapeErrorAsyncMethod(arity, isValueTask, false));
+
+        // Generate ShapeErrorAsync method for Task/ValueTask<Result> -> Task/ValueTask
+        classWriter.AddMethod(GenerateShapeErrorAsyncMethod(arity, isValueTask, true));
+
+        classWriter.Namespace = ns;
+        return classWriter;
+    }
+
+    private MethodWriter GenerateShapeErrorAsyncMethod(ushort arity,
+                                                       bool   isValueTask,
+                                                       bool   isAwaitable) {
+        var (resultType, genericParams, constraints) = GetResultTypeInfo(arity);
+        var methodName = "ShapeErrorAsync";
+
+        var taskType = isValueTask
+                           ? "ValueTask"
+                           : "Task";
+        var returnType = $"{taskType}<{resultType}>";
+        var parameterType = isAwaitable
+                                ? $"{taskType}<{resultType}>"
+                                : resultType;
+        var shapeType = $"Func<IEnumerable<IError>, {taskType}<IEnumerable<IError>>>";
+
+        var documentationBuilder = DocumentationWriter.Create()
+                                                      .WithSummary("Asynchronously transforms the error structure of the result using the specified shaping function.")
+                                                      .WithParameter(isAwaitable
+                                                                         ? "awaitableResult"
+                                                                         : "result", isAwaitable
+                                                                                         ? "The awaitable result to shape errors for."
+                                                                                         : "The result to shape errors for.")
+                                                      .WithParameter("shape", "The async function to transform the error structure.")
+                                                      .WithReturns(
+                                                           "A task with a new result containing transformed error structure if the original result failed, otherwise the original successful result.");
+
+        // Add documentation for all value type parameters
+        for (var i = 0; i < genericParams.Length; i++) {
+            var paramName = genericParams[i];
+            var ordinal   = GetOrdinalString(i + 1);
+            documentationBuilder.WithTypeParameter(paramName, $"The type of the {ordinal} value.");
+        }
+
+        var documentation = documentationBuilder.Build();
+
+        var body = GenerateShapeErrorAsyncBody(arity, isValueTask, isAwaitable);
+
+        var modifiers = MethodModifier.Static | MethodModifier.Async;
+
+        var builder = MethodWriter.Create(methodName, returnType, body)
+                                  .WithModifier(modifiers)
+                                  .WithExtensionMethod(parameterType, isAwaitable
+                                                                          ? "awaitableResult"
+                                                                          : "result")
+                                  .WithParameter(shapeType, "shape")
+                                  .WithDocumentation(documentation)
+                                  .WithUsings("UnambitiousFx.Core.Results.Reasons");
+
+        // Add using for ValueAccess extensions
+        if (isValueTask) {
+            builder.WithUsings("UnambitiousFx.Core.Results.Extensions.ValueAccess.ValueTasks");
+        }
+        else {
+            builder.WithUsings("UnambitiousFx.Core.Results.Extensions.ValueAccess.Tasks");
+        }
+
+        // Add generic parameters and constraints for value types
+        foreach (var param in genericParams) {
+            builder.WithGenericParameter(param);
+        }
+
+        foreach (var constraint in constraints) {
+            builder.WithGenericConstraint(constraint);
+        }
+
+        return builder.Build();
+    }
+
+    private string GenerateShapeErrorAsyncBody(ushort arity,
+                                               bool   isValueTask,
+                                               bool   isAwaitable) {
+        if (isAwaitable) {
+            return """
+                   var result = await awaitableResult;
+                   return await result.ShapeErrorAsync(shape);
+                   """;
+        }
+
+        var taskType = isValueTask
+                           ? "ValueTask"
+                           : "Task";
+        var returnCall = isValueTask
+                             ? "new ValueTask<"
+                             : "Task.FromResult(";
+        var returnSuffix = isValueTask
+                               ? ">"
+                               : ")";
+
+        return """
+               if (result.IsSuccess) {
+                   return result;
+               }
+               var mappedResult = await result.MapErrorAsync(shape);
+               return Helper.Preserve(result, mappedResult);
+               """;
+    }
+
+    private static string GetOrdinalString(int number) {
+        return number switch {
+            1 => "first",
+            2 => "second",
+            3 => "third",
+            4 => "fourth",
+            5 => "fifth",
+            6 => "sixth",
+            7 => "seventh",
+            8 => "eighth",
+            _ => $"{number}th"
+        };
     }
 }
