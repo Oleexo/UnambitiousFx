@@ -88,8 +88,10 @@ public sealed class ResultCollectionTests {
         var combined = results.Combine();
 
         Assert.False(combined.TryGet(out var err));
-        var agg = Assert.IsType<AggregateException>(err);
-        Assert.Contains(e1, agg.InnerExceptions);
-        Assert.Contains(e2, agg.InnerExceptions);
+
+        var errors = err.ToArray();
+        Assert.Equal(2,  errors.Length);
+        Assert.Equal(e1, errors[0].Exception);
+        Assert.Equal(e2, errors[1].Exception);
     }
 }

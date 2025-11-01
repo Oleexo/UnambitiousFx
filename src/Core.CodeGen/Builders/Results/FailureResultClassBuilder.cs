@@ -134,8 +134,8 @@ internal static class FailureResultClassBuilder
                                   name: "TryGet",
                                   returnType: "bool",
                                   body: """
-                                        errors = null;
-                                        return true;   
+                                        errors = Errors;
+                                        return false;   
                                         """,
                                   visibility: Visibility.Public,
                                   modifier: MethodModifier.Override,

@@ -38,8 +38,12 @@ public static partial class ResultMapExtensions
     /// <param name="awaitableResult">The awaitable result instance.</param>
     /// <param name="map">The async mapping function.</param>
     /// <returns>A task with the transformed result.</returns>
-    public static async Task<Result<TOut1>> MapAsync<TValue1, TOut1>(this Task<Result<TValue1>> awaitableResult, Func<TValue1, Task<TOut1>> map) where TValue1 : notnull where TOut1 : notnull {
-        return await awaitableResult.MapAsync(map).ConfigureAwait(false);
+    public static Task<Result<TOut1>> MapAsync<TValue1, TOut1>(this Task<Result<TValue1>> awaitableResult, Func<TValue1, Task<TOut1>> map) where TValue1 : notnull where TOut1 : notnull {
+        return awaitableResult.BindAsync(async value =>
+        {
+            var newValue = await map(value).ConfigureAwait(false);
+            return Result.Success(newValue);
+        });
     }
     
     /// <summary>
@@ -87,8 +91,13 @@ public static partial class ResultMapExtensions
     /// <param name="awaitableResult">The awaitable result instance.</param>
     /// <param name="map">The async mapping function.</param>
     /// <returns>A task with the transformed result.</returns>
-    public static async Task<Result<TOut1, TOut2>> MapAsync<TValue1, TValue2, TOut1, TOut2>(this Task<Result<TValue1, TValue2>> awaitableResult, Func<TValue1, TValue2, Task<(TOut1, TOut2)>> map) where TValue1 : notnull where TValue2 : notnull where TOut1 : notnull where TOut2 : notnull {
-        return await awaitableResult.MapAsync(map).ConfigureAwait(false);
+    public static Task<Result<TOut1, TOut2>> MapAsync<TValue1, TValue2, TOut1, TOut2>(this Task<Result<TValue1, TValue2>> awaitableResult, Func<TValue1, TValue2, Task<(TOut1, TOut2)>> map) where TValue1 : notnull where TValue2 : notnull where TOut1 : notnull where TOut2 : notnull {
+        return awaitableResult.BindAsync(
+            async (v1, v2) => {
+                var mapped = await map(v1, v2).ConfigureAwait(false);
+                return Result.Success(mapped.Item1, mapped.Item2);
+            }
+        );
     }
     
     /// <summary>
@@ -143,8 +152,13 @@ public static partial class ResultMapExtensions
     /// <param name="awaitableResult">The awaitable result instance.</param>
     /// <param name="map">The async mapping function.</param>
     /// <returns>A task with the transformed result.</returns>
-    public static async Task<Result<TOut1, TOut2, TOut3>> MapAsync<TValue1, TValue2, TValue3, TOut1, TOut2, TOut3>(this Task<Result<TValue1, TValue2, TValue3>> awaitableResult, Func<TValue1, TValue2, TValue3, Task<(TOut1, TOut2, TOut3)>> map) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TOut1 : notnull where TOut2 : notnull where TOut3 : notnull {
-        return await awaitableResult.MapAsync(map).ConfigureAwait(false);
+    public static Task<Result<TOut1, TOut2, TOut3>> MapAsync<TValue1, TValue2, TValue3, TOut1, TOut2, TOut3>(this Task<Result<TValue1, TValue2, TValue3>> awaitableResult, Func<TValue1, TValue2, TValue3, Task<(TOut1, TOut2, TOut3)>> map) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TOut1 : notnull where TOut2 : notnull where TOut3 : notnull {
+        return awaitableResult.BindAsync(
+            async (v1, v2, v3) => {
+                var mapped = await map(v1, v2, v3).ConfigureAwait(false);
+                return Result.Success(mapped.Item1, mapped.Item2, mapped.Item3);
+            }
+        );
     }
     
     /// <summary>
@@ -205,8 +219,13 @@ public static partial class ResultMapExtensions
     /// <param name="awaitableResult">The awaitable result instance.</param>
     /// <param name="map">The async mapping function.</param>
     /// <returns>A task with the transformed result.</returns>
-    public static async Task<Result<TOut1, TOut2, TOut3, TOut4>> MapAsync<TValue1, TValue2, TValue3, TValue4, TOut1, TOut2, TOut3, TOut4>(this Task<Result<TValue1, TValue2, TValue3, TValue4>> awaitableResult, Func<TValue1, TValue2, TValue3, TValue4, Task<(TOut1, TOut2, TOut3, TOut4)>> map) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TOut1 : notnull where TOut2 : notnull where TOut3 : notnull where TOut4 : notnull {
-        return await awaitableResult.MapAsync(map).ConfigureAwait(false);
+    public static Task<Result<TOut1, TOut2, TOut3, TOut4>> MapAsync<TValue1, TValue2, TValue3, TValue4, TOut1, TOut2, TOut3, TOut4>(this Task<Result<TValue1, TValue2, TValue3, TValue4>> awaitableResult, Func<TValue1, TValue2, TValue3, TValue4, Task<(TOut1, TOut2, TOut3, TOut4)>> map) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TOut1 : notnull where TOut2 : notnull where TOut3 : notnull where TOut4 : notnull {
+        return awaitableResult.BindAsync(
+            async (v1, v2, v3, v4) => {
+                var mapped = await map(v1, v2, v3, v4).ConfigureAwait(false);
+                return Result.Success(mapped.Item1, mapped.Item2, mapped.Item3, mapped.Item4);
+            }
+        );
     }
     
     /// <summary>
@@ -273,8 +292,13 @@ public static partial class ResultMapExtensions
     /// <param name="awaitableResult">The awaitable result instance.</param>
     /// <param name="map">The async mapping function.</param>
     /// <returns>A task with the transformed result.</returns>
-    public static async Task<Result<TOut1, TOut2, TOut3, TOut4, TOut5>> MapAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TOut1, TOut2, TOut3, TOut4, TOut5>(this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5>> awaitableResult, Func<TValue1, TValue2, TValue3, TValue4, TValue5, Task<(TOut1, TOut2, TOut3, TOut4, TOut5)>> map) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TOut1 : notnull where TOut2 : notnull where TOut3 : notnull where TOut4 : notnull where TOut5 : notnull {
-        return await awaitableResult.MapAsync(map).ConfigureAwait(false);
+    public static Task<Result<TOut1, TOut2, TOut3, TOut4, TOut5>> MapAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TOut1, TOut2, TOut3, TOut4, TOut5>(this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5>> awaitableResult, Func<TValue1, TValue2, TValue3, TValue4, TValue5, Task<(TOut1, TOut2, TOut3, TOut4, TOut5)>> map) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TOut1 : notnull where TOut2 : notnull where TOut3 : notnull where TOut4 : notnull where TOut5 : notnull {
+        return awaitableResult.BindAsync(
+            async (v1, v2, v3, v4, v5) => {
+                var mapped = await map(v1, v2, v3, v4, v5).ConfigureAwait(false);
+                return Result.Success(mapped.Item1, mapped.Item2, mapped.Item3, mapped.Item4, mapped.Item5);
+            }
+        );
     }
     
     /// <summary>
@@ -347,8 +371,13 @@ public static partial class ResultMapExtensions
     /// <param name="awaitableResult">The awaitable result instance.</param>
     /// <param name="map">The async mapping function.</param>
     /// <returns>A task with the transformed result.</returns>
-    public static async Task<Result<TOut1, TOut2, TOut3, TOut4, TOut5, TOut6>> MapAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TOut1, TOut2, TOut3, TOut4, TOut5, TOut6>(this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>> awaitableResult, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, Task<(TOut1, TOut2, TOut3, TOut4, TOut5, TOut6)>> map) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TOut1 : notnull where TOut2 : notnull where TOut3 : notnull where TOut4 : notnull where TOut5 : notnull where TOut6 : notnull {
-        return await awaitableResult.MapAsync(map).ConfigureAwait(false);
+    public static Task<Result<TOut1, TOut2, TOut3, TOut4, TOut5, TOut6>> MapAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TOut1, TOut2, TOut3, TOut4, TOut5, TOut6>(this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>> awaitableResult, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, Task<(TOut1, TOut2, TOut3, TOut4, TOut5, TOut6)>> map) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TOut1 : notnull where TOut2 : notnull where TOut3 : notnull where TOut4 : notnull where TOut5 : notnull where TOut6 : notnull {
+        return awaitableResult.BindAsync(
+            async (v1, v2, v3, v4, v5, v6) => {
+                var mapped = await map(v1, v2, v3, v4, v5, v6).ConfigureAwait(false);
+                return Result.Success(mapped.Item1, mapped.Item2, mapped.Item3, mapped.Item4, mapped.Item5, mapped.Item6);
+            }
+        );
     }
     
     /// <summary>
@@ -427,8 +456,13 @@ public static partial class ResultMapExtensions
     /// <param name="awaitableResult">The awaitable result instance.</param>
     /// <param name="map">The async mapping function.</param>
     /// <returns>A task with the transformed result.</returns>
-    public static async Task<Result<TOut1, TOut2, TOut3, TOut4, TOut5, TOut6, TOut7>> MapAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TOut1, TOut2, TOut3, TOut4, TOut5, TOut6, TOut7>(this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>> awaitableResult, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, Task<(TOut1, TOut2, TOut3, TOut4, TOut5, TOut6, TOut7)>> map) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull where TOut1 : notnull where TOut2 : notnull where TOut3 : notnull where TOut4 : notnull where TOut5 : notnull where TOut6 : notnull where TOut7 : notnull {
-        return await awaitableResult.MapAsync(map).ConfigureAwait(false);
+    public static Task<Result<TOut1, TOut2, TOut3, TOut4, TOut5, TOut6, TOut7>> MapAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TOut1, TOut2, TOut3, TOut4, TOut5, TOut6, TOut7>(this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>> awaitableResult, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, Task<(TOut1, TOut2, TOut3, TOut4, TOut5, TOut6, TOut7)>> map) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull where TOut1 : notnull where TOut2 : notnull where TOut3 : notnull where TOut4 : notnull where TOut5 : notnull where TOut6 : notnull where TOut7 : notnull {
+        return awaitableResult.BindAsync(
+            async (v1, v2, v3, v4, v5, v6, v7) => {
+                var mapped = await map(v1, v2, v3, v4, v5, v6, v7).ConfigureAwait(false);
+                return Result.Success(mapped.Item1, mapped.Item2, mapped.Item3, mapped.Item4, mapped.Item5, mapped.Item6, mapped.Item7);
+            }
+        );
     }
     
     /// <summary>
@@ -513,8 +547,13 @@ public static partial class ResultMapExtensions
     /// <param name="awaitableResult">The awaitable result instance.</param>
     /// <param name="map">The async mapping function.</param>
     /// <returns>A task with the transformed result.</returns>
-    public static async Task<Result<TOut1, TOut2, TOut3, TOut4, TOut5, TOut6, TOut7, TOut8>> MapAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8, TOut1, TOut2, TOut3, TOut4, TOut5, TOut6, TOut7, TOut8>(this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>> awaitableResult, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8, Task<(TOut1, TOut2, TOut3, TOut4, TOut5, TOut6, TOut7, TOut8)>> map) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull where TValue8 : notnull where TOut1 : notnull where TOut2 : notnull where TOut3 : notnull where TOut4 : notnull where TOut5 : notnull where TOut6 : notnull where TOut7 : notnull where TOut8 : notnull {
-        return await awaitableResult.MapAsync(map).ConfigureAwait(false);
+    public static Task<Result<TOut1, TOut2, TOut3, TOut4, TOut5, TOut6, TOut7, TOut8>> MapAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8, TOut1, TOut2, TOut3, TOut4, TOut5, TOut6, TOut7, TOut8>(this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>> awaitableResult, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8, Task<(TOut1, TOut2, TOut3, TOut4, TOut5, TOut6, TOut7, TOut8)>> map) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull where TValue8 : notnull where TOut1 : notnull where TOut2 : notnull where TOut3 : notnull where TOut4 : notnull where TOut5 : notnull where TOut6 : notnull where TOut7 : notnull where TOut8 : notnull {
+        return awaitableResult.BindAsync(
+            async (v1, v2, v3, v4, v5, v6, v7, v8) => {
+                var mapped = await map(v1, v2, v3, v4, v5, v6, v7, v8).ConfigureAwait(false);
+                return Result.Success(mapped.Item1, mapped.Item2, mapped.Item3, mapped.Item4, mapped.Item5, mapped.Item6, mapped.Item7, mapped.Item8);
+            }
+        );
     }
     
     /// <summary>

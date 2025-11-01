@@ -82,9 +82,9 @@ public sealed class ResultExtensionsTests {
         var merged = new[] { f1, f2 }.Merge();
 
         Assert.False(merged.TryGet(out var primary));
-        var agg = Assert.IsType<AggregateException>(primary);
+        var errors = primary.ToArray();
         // two primary exceptions captured
-        Assert.Equal(2, agg.InnerExceptions.Count);
+        Assert.Equal(2, errors.Length);
         var errorCodes = merged.Errors()
                                .Select(e => e.Code)
                                .ToList();

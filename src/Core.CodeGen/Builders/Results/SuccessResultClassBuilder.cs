@@ -149,8 +149,8 @@ internal static class SuccessResultClassBuilder {
                                   name: "TryGet",
                                   returnType: "bool",
                                   body: """
-                                        errors = Errors;
-                                        return false;
+                                        errors = null;
+                                        return true;
                                         """,
                                   visibility: Visibility.Public,
                                   modifier: MethodModifier.Override,

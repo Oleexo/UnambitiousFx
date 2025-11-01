@@ -16,9 +16,15 @@ public abstract record ErrorBase : IError {
                        : new Dictionary<string, object?>(metadata, StringComparer.OrdinalIgnoreCase);
     }
 
-    public string                               Code      { get; }
-    public string                               Message   { get; }
-    public Exception?                           Exception { get; }
+    public string     Code      { get; }
+    public string     Message   { get; private init; }
+    public Exception? Exception { get; }
+    public IError WithMessage(string message) {
+        return this with {
+            Message = message
+        };
+    }
+
     public IReadOnlyDictionary<string, object?> Metadata  { get; init; }
 
     protected static IReadOnlyDictionary<string, object?> Merge(IReadOnlyDictionary<string, object?>?      left,

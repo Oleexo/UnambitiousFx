@@ -73,8 +73,8 @@ internal sealed class SuccessResult<TValue1, TValue2, TValue3> : Result<TValue1,
     }
     
     public override bool TryGet([NotNullWhen(false)] out IEnumerable<IError>? errors) {
-        errors = Errors;
-        return false;
+        errors = null;
+        return true;
     }
     
     public override void Deconstruct(out bool isSuccess, out (TValue1, TValue2, TValue3)? value, out IEnumerable<IError>? error) {

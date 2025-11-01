@@ -1,7 +1,7 @@
 namespace UnambitiousFx.Core.Results.Extensions.ErrorHandling;
 
 public static partial class ResultExtensions {
-    private static T Preserve<T>(BaseResult original,
+    internal static T Preserve<T>(BaseResult original,
                                  T          mapped)
         where T : BaseResult {
         if (!ReferenceEquals(original, mapped)) {

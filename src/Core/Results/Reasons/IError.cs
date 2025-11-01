@@ -13,4 +13,6 @@ public interface IError : IReason {
     ///     Underlying exception if this error originates from one, otherwise null.
     /// </summary>
     Exception? Exception { get; }
+
+    IError WithMessage(string message);
 }
