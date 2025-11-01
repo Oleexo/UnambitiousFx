@@ -103,14 +103,14 @@ internal sealed class ResultShapeErrorExtensionsCodeGenerator : BaseCodeGenerato
             return """
                    return result.IsSuccess
                        ? result
-                       : ResultExtensions.Preserve(result, result.MapError(shape));
+                       : Helper.Preserve(result, result.MapError(shape));
                    """;
         }
 
         return """
                return result.IsSuccess
                    ? result
-                   : ResultExtensions.Preserve(result, result.MapError(shape));
+                   : Helper.Preserve(result, result.MapError(shape));
                """;
     }
 }
