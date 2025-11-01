@@ -16,7 +16,7 @@ public sealed class BasicHttpTests
 
         var response = await client.PostAsJsonAsync("/todos", new {
             Name = "Test"
-        }, TestContext.Current.CancellationToken);
+        });
 
         response.EnsureSuccessStatusCode();
         var location = response.Headers.Location;
@@ -35,7 +35,7 @@ public sealed class BasicHttpTests
         // Act
         var response = await client.PostAsJsonAsync("/todos", new {
             Name = "Test"
-        }, TestContext.Current.CancellationToken);
+        });
 
         // Assert
         response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -49,7 +49,7 @@ public sealed class BasicHttpTests
         var client = _factory.CreateClient();
 
         // Act
-        var response = await client.GetAsync("/todos", TestContext.Current.CancellationToken);
+        var response = await client.GetAsync("/todos");
 
         // Assert
         response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -62,7 +62,7 @@ public sealed class BasicHttpTests
         var client = _factory.CreateClient();
 
         // Act
-        var response = await client.GetAsync($"/todos/{id}", TestContext.Current.CancellationToken);
+        var response = await client.GetAsync($"/todos/{id}");
 
         // Assert
         response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -77,7 +77,7 @@ public sealed class BasicHttpTests
         // Act
         var response = await client.PutAsJsonAsync($"/todos/{id}", new {
             Name = "Updated"
-        }, TestContext.Current.CancellationToken);
+        });
 
         // Assert
         response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -90,7 +90,7 @@ public sealed class BasicHttpTests
         var client = _factory.CreateClient();
 
         // Act
-        var response = await client.DeleteAsync($"/todos/{id}", TestContext.Current.CancellationToken);
+        var response = await client.DeleteAsync($"/todos/{id}");
 
         // Assert
         response.EnsureSuccessStatusCode(); // Status Code 200-299

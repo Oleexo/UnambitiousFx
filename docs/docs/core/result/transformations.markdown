@@ -394,6 +394,191 @@ public class CacheService
 
 ---
 
+## Zip - Combine Independent Results
+
+`Zip` combines multiple independent Results into a tuple or applies a projection function. Unlike `Bind`, which chains dependent operations, `Zip` is for combining Results that don't depend on each other.
+
+### Basic Zip
+
+```csharp
+Result<string> name = Result.Success("Alice");
+Result<int> age = Result.Success(30);
+
+// Combine into tuple
+Result<string, int> nameAge = name.Zip(age);
+// Success: ("Alice", 30)
+
+// Both must succeed
+Result<string> failedName = Result.Failure<string>("No name");
+Result<int> goodAge = Result.Success(30);
+
+Result<string, int> failed = failedName.Zip(goodAge);
+// Failure: "No name"
+```
+
+### Zip Signature
+
+```csharp
+// Combine into tuple (up to 8 Results)
+Result<T1, T2> Zip<T1, T2>(this Result<T1> r1, Result<T2> r2)
+Result<T1, T2, T3> Zip<T1, T2, T3>(this Result<T1> r1, Result<T2> r2, Result<T3> r3)
+// ... up to Result<T1, T2, T3, T4, T5, T6, T7, T8>
+
+// Combine with projection function
+Result<TOut> Zip<T1, T2, TOut>(
+    this Result<T1> r1,
+    Result<T2> r2,
+    Func<T1, T2, TOut> projector)
+```
+
+### Zip with Projection
+
+```csharp
+Result<string> firstName = Result.Success("Alice");
+Result<string> lastName = Result.Success("Smith");
+
+Result<string> fullName = firstName.Zip(lastName, (first, last) => $"{first} {last}");
+// Success: "Alice Smith"
+
+// Create complex objects
+Result<string> name = GetName();
+Result<int> age = GetAge();
+Result<string> email = GetEmail();
+
+Result<User> user = name.Zip(age, email, (n, a, e) => new User
+{
+    Name = n,
+    Age = a,
+    Email = e
+});
+```
+
+### Multiple Zips
+
+```csharp
+// Combine many independent Results
+Result<string> name = GetName();
+Result<int> age = GetAge();
+Result<string> email = GetEmail();
+Result<string> phone = GetPhone();
+Result<string> address = GetAddress();
+
+Result<UserProfile> profile = name
+    .Zip(age)
+    .Zip(email)
+    .Zip(phone)
+    .Zip(address)
+    .Map((n, a, e, p, ad) => new UserProfile
+    {
+        Name = n,
+        Age = a,
+        Email = e,
+        Phone = p,
+        Address = ad
+    });
+```
+
+### Practical Zip Examples
+
+**Example 1: Form Validation**
+
+```csharp
+public Result<Registration> ValidateRegistration(RegistrationForm form)
+{
+    var nameResult = ValidateName(form.Name);
+    var emailResult = ValidateEmail(form.Email);
+    var passwordResult = ValidatePassword(form.Password);
+    var ageResult = ValidateAge(form.Age);
+    
+    // Combine all validations
+    return nameResult.Zip(
+        emailResult,
+        passwordResult,
+        ageResult,
+        (name, email, password, age) => new Registration
+        {
+            Name = name,
+            Email = email,
+            Password = password,
+            Age = age
+        }
+    );
+}
+```
+
+**Example 2: Parallel Data Loading**
+
+```csharp
+public async Task<Result<Dashboard>> GetDashboardAsync(string userId)
+{
+    // Load data in parallel
+    var userTask = GetUserAsync(userId);
+    var statsTask = GetStatsAsync(userId);
+    var notificationsTask = GetNotificationsAsync(userId);
+    
+    await Task.WhenAll(userTask, statsTask, notificationsTask);
+    
+    var user = await userTask;
+    var stats = await statsTask;
+    var notifications = await notificationsTask;
+    
+    // Combine into dashboard
+    return user.Zip(
+        stats,
+        notifications,
+        (u, s, n) => new Dashboard
+        {
+            User = u,
+            Stats = s,
+            Notifications = n
+        }
+    );
+}
+```
+
+**Example 3: Configuration Assembly**
+
+```csharp
+public Result<AppConfig> LoadConfig()
+{
+    var dbConfig = LoadDatabaseConfig();
+    var cacheConfig = LoadCacheConfig();
+    var loggingConfig = LoadLoggingConfig();
+    var apiConfig = LoadApiConfig();
+    
+    return dbConfig.Zip(
+        cacheConfig,
+        loggingConfig,
+        apiConfig,
+        (db, cache, logging, api) => new AppConfig
+        {
+            Database = db,
+            Cache = cache,
+            Logging = logging,
+            Api = api
+        }
+    );
+}
+```
+
+### Zip vs Bind Comparison
+
+```csharp
+// Zip: Independent operations (can run in parallel)
+Result<User> user = GetName()
+    .Zip(GetAge(), GetEmail(), (name, age, email) => 
+        new User(name, age, email));
+// GetName(), GetAge(), GetEmail() don't depend on each other
+
+// Bind: Dependent operations (must run sequentially)
+Result<Order> order = GetUser(userId)
+    .Bind(user => GetOrder(user.CurrentOrderId))
+    .Bind(order => CalculateTotal(order));
+// Each step depends on the previous one
+```
+
+---
+
 ## Combining Transformations
 
 ### Real-World Pipeline Example

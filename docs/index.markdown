@@ -78,6 +78,33 @@ Each library is meticulously designed with Native AOT (Ahead-of-Time) compilatio
   </div>
 </div>
 
+---
+
+## ResultPolicy: Retry & Timeout
+
+The `ResultPolicy` class provides robust mechanisms for retrying operations and enforcing timeouts when working with `Result` types.
+
+### Usage
+
+**Retry:**
+```csharp
+var result = ResultPolicy.Retry(() => DoSomething(), maxRetries: 3);
+```
+**Async Retry:**
+```csharp
+var result = await ResultPolicy.RetryAsync(() => DoSomethingAsync(), maxRetries: 3);
+```
+**Timeout:**
+```csharp
+var result = ResultPolicy.Timeout(() => DoSomething(), TimeSpan.FromSeconds(1));
+```
+**Async Timeout:**
+```csharp
+var result = await ResultPolicy.TimeoutAsync(() => DoSomethingAsync(), TimeSpan.FromSeconds(1));
+```
+
+These policies help ensure reliability and responsiveness in your code by automatically retrying transient failures and preventing long-running operations from hanging indefinitely.
+
 <style>
 .grid-container {
   display: grid;

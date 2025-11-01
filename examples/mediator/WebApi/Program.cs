@@ -1,3 +1,5 @@
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using Application.Application.Todos;
 using Application.Domain.Entities;
 using Application.Domain.Events;
@@ -24,7 +26,6 @@ builder.Services.AddMediator(cfg => {
 });
 builder.Services.AddScoped<ITodoRepository, TodoRepository>();
 var app = builder.Build();
-
 app.MapGet("/", () => "Hello World!");
 
 var todoEndpoints = app.MapGroup("/todos");
@@ -74,7 +75,7 @@ todoEndpoints.MapPut("/{id:guid}", async ([FromServices] IRequestHandler<UpdateT
     var ctx    = contextFactory.Create();
     var result = await handler.HandleAsync(ctx, command, cancellationToken);
 
-    return result.Match(() => Results.Ok(),
+    return result.Match(() => Results.TryGet(),
                         error => Results.BadRequest(error.Message));
 });
 
@@ -85,7 +86,7 @@ todoEndpoints.MapDelete("/{id:guid}", async ([FromServices] ISender sender,
 
     var result = await sender.SendAsync(command, cancellationToken);
 
-    return result.Match(() => Results.Ok(),
+    return result.Match(() => Results.TryGet(),
                         error => Results.BadRequest(error.Message));
 });
 

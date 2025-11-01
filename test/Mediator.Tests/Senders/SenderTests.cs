@@ -38,7 +38,7 @@ public sealed class SenderTests {
 
         // Assert
         Assert.True(result.IsSuccess);
-        if (result.Ok(out var value)) {
+        if (result.TryGet(out var value)) {
             Assert.Equal(42, value);
         }
         else {

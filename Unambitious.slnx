@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/benchmarks/">
+    <Project Path="benchmarks\CoreBenchmark\CoreBenchmark.csproj" Type="Classic C#" />
+    <Project Path="benchmarks\MediatorBenchmark\MediatorBenchmark.csproj" Type="Classic C#" />
+  </Folder>
   <Folder Name="/examples/" />
   <Folder Name="/examples/mediator/">
     <Project Path="examples\mediator\Application\Application.csproj" Type="Classic C#" />
@@ -7,8 +11,7 @@
     <Project Path="examples\mediator\WebApi\WebApi.csproj" Type="Classic C#" />
   </Folder>
   <Folder Name="/src/">
-    <Project Path="src\Core.Generator\Core.Generator.csproj" Type="Classic C#" />
-    <Project Path="src\Core.XUnit.Generator\Core.XUnit.Generator.csproj" Type="Classic C#" />
+    <Project Path="src\Core.CodeGen\Core.CodeGen.csproj" Type="Classic C#" />
     <Project Path="src\Core.XUnit\Core.XUnit.csproj" Type="Classic C#" />
     <Project Path="src\Core\Core.csproj" Type="Classic C#" />
     <Project Path="src\Mediator.Abstractions\Mediator.Abstractions.csproj" Type="Classic C#" />
@@ -19,6 +22,9 @@
     <Project Path="test\Core.Tests\Core.Tests.csproj" Type="Classic C#" />
     <Project Path="test\Core.XUnit.Tests\Core.XUnit.Tests.csproj" Type="Classic C#" />
     <Project Path="test\Mediator.Tests\Mediator.Tests.csproj" Type="Classic C#" />
+  </Folder>
+  <Folder Name="/test/_/">
+    <File Path="test\Directory.Build.props" />
   </Folder>
   <Folder Name="/_/">
     <File Path=".gitignore" />

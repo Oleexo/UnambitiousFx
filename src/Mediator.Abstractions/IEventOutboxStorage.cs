@@ -66,4 +66,30 @@ public interface IEventOutboxStorage {
     ///     object indicating whether the operation was successful.
     /// </returns>
     ValueTask<Result> ClearAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     Marks the specified event as failed and optionally schedules the next attempt.
+    /// </summary>
+    /// <param name="event">The event that failed to dispatch.</param>
+    /// <param name="reason">The reason of the failure.</param>
+    /// <param name="deadLetter">True to move the event to the dead-letter queue.</param>
+    /// <param name="nextAttemptAt">Optional next attempt date. Ignored when <paramref name="deadLetter"/> is true.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A result indicating success or failure.</returns>
+    ValueTask<Result> MarkAsFailedAsync(IEvent               @event,
+                                        string               reason,
+                                        bool                 deadLetter,
+                                        DateTimeOffset?      nextAttemptAt     = null,
+                                        CancellationToken    cancellationToken = default);
+
+    /// <summary>
+    ///     Gets events that have been moved to the dead-letter queue.
+    /// </summary>
+    ValueTask<IEnumerable<IEvent>> GetDeadLetterEventsAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     Gets the current attempt count for an event (number of failures already recorded).
+    /// </summary>
+    ValueTask<int?> GetAttemptCountAsync(IEvent            @event,
+                                         CancellationToken cancellationToken = default);
 }

@@ -5,6 +5,7 @@
       <Path>.github</Path>
       <Path>docs</Path>
       <Path>local_packages</Path>
+      <Path>output</Path>
     </attachedFolders>
     <explicitIncludes />
     <explicitExcludes />

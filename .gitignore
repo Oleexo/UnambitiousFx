@@ -401,3 +401,5 @@ FodyWeavers.xsd
 
 # AI Assistant & Agent
 .idea/**/copilot*
+
+output

@@ -72,7 +72,7 @@ todoEndpoints.MapPut("/{id:guid}", async ([FromServices] IRequestHandler<UpdateT
     var ctx    = contextFactory.Create();
     var result = await handler.HandleAsync(ctx, command, cancellationToken);
 
-    return result.Match(() => Results.Ok(),
+    return result.Match(() => Results.TryGet(),
                         error => Results.BadRequest(error.Message));
 });
 
@@ -83,7 +83,7 @@ todoEndpoints.MapDelete("/{id:guid}", async ([FromServices] ISender sender,
 
     var result = await sender.SendAsync(command, cancellationToken);
 
-    return result.Match(() => Results.Ok(),
+    return result.Match(() => Results.TryGet(),
                         error => Results.BadRequest(error.Message));
 });
 
