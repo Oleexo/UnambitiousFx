@@ -24,7 +24,7 @@ public static partial class ResultExtensions
     public static Result ShapeError(this Result result, Func<IEnumerable<IError>, IEnumerable<IError>> shape) {
         return result.IsSuccess
             ? result
-            : ResultExtensions.Preserve(result, result.MapError(shape));
+            : Helper.Preserve(result, result.MapError(shape));
     }
     
     #endregion // Arity 0
@@ -40,7 +40,7 @@ public static partial class ResultExtensions
     public static Result<T1> ShapeError<T1>(this Result<T1> result, Func<IEnumerable<IError>, IEnumerable<IError>> shape) where T1 : notnull {
         return result.IsSuccess
             ? result
-            : ResultExtensions.Preserve(result, result.MapError(shape));
+            : Helper.Preserve(result, result.MapError(shape));
     }
     
     #endregion // Arity 1
@@ -56,7 +56,7 @@ public static partial class ResultExtensions
     public static Result<T1, T2> ShapeError<T1, T2>(this Result<T1, T2> result, Func<IEnumerable<IError>, IEnumerable<IError>> shape) where T1 : notnull where T2 : notnull {
         return result.IsSuccess
             ? result
-            : ResultExtensions.Preserve(result, result.MapError(shape));
+            : Helper.Preserve(result, result.MapError(shape));
     }
     
     #endregion // Arity 2
@@ -72,7 +72,7 @@ public static partial class ResultExtensions
     public static Result<T1, T2, T3> ShapeError<T1, T2, T3>(this Result<T1, T2, T3> result, Func<IEnumerable<IError>, IEnumerable<IError>> shape) where T1 : notnull where T2 : notnull where T3 : notnull {
         return result.IsSuccess
             ? result
-            : ResultExtensions.Preserve(result, result.MapError(shape));
+            : Helper.Preserve(result, result.MapError(shape));
     }
     
     #endregion // Arity 3
@@ -88,7 +88,7 @@ public static partial class ResultExtensions
     public static Result<T1, T2, T3, T4> ShapeError<T1, T2, T3, T4>(this Result<T1, T2, T3, T4> result, Func<IEnumerable<IError>, IEnumerable<IError>> shape) where T1 : notnull where T2 : notnull where T3 : notnull where T4 : notnull {
         return result.IsSuccess
             ? result
-            : ResultExtensions.Preserve(result, result.MapError(shape));
+            : Helper.Preserve(result, result.MapError(shape));
     }
     
     #endregion // Arity 4
@@ -104,7 +104,7 @@ public static partial class ResultExtensions
     public static Result<T1, T2, T3, T4, T5> ShapeError<T1, T2, T3, T4, T5>(this Result<T1, T2, T3, T4, T5> result, Func<IEnumerable<IError>, IEnumerable<IError>> shape) where T1 : notnull where T2 : notnull where T3 : notnull where T4 : notnull where T5 : notnull {
         return result.IsSuccess
             ? result
-            : ResultExtensions.Preserve(result, result.MapError(shape));
+            : Helper.Preserve(result, result.MapError(shape));
     }
     
     #endregion // Arity 5
@@ -120,7 +120,7 @@ public static partial class ResultExtensions
     public static Result<T1, T2, T3, T4, T5, T6> ShapeError<T1, T2, T3, T4, T5, T6>(this Result<T1, T2, T3, T4, T5, T6> result, Func<IEnumerable<IError>, IEnumerable<IError>> shape) where T1 : notnull where T2 : notnull where T3 : notnull where T4 : notnull where T5 : notnull where T6 : notnull {
         return result.IsSuccess
             ? result
-            : ResultExtensions.Preserve(result, result.MapError(shape));
+            : Helper.Preserve(result, result.MapError(shape));
     }
     
     #endregion // Arity 6
@@ -136,7 +136,7 @@ public static partial class ResultExtensions
     public static Result<T1, T2, T3, T4, T5, T6, T7> ShapeError<T1, T2, T3, T4, T5, T6, T7>(this Result<T1, T2, T3, T4, T5, T6, T7> result, Func<IEnumerable<IError>, IEnumerable<IError>> shape) where T1 : notnull where T2 : notnull where T3 : notnull where T4 : notnull where T5 : notnull where T6 : notnull where T7 : notnull {
         return result.IsSuccess
             ? result
-            : ResultExtensions.Preserve(result, result.MapError(shape));
+            : Helper.Preserve(result, result.MapError(shape));
     }
     
     #endregion // Arity 7
@@ -152,7 +152,7 @@ public static partial class ResultExtensions
     public static Result<T1, T2, T3, T4, T5, T6, T7, T8> ShapeError<T1, T2, T3, T4, T5, T6, T7, T8>(this Result<T1, T2, T3, T4, T5, T6, T7, T8> result, Func<IEnumerable<IError>, IEnumerable<IError>> shape) where T1 : notnull where T2 : notnull where T3 : notnull where T4 : notnull where T5 : notnull where T6 : notnull where T7 : notnull where T8 : notnull {
         return result.IsSuccess
             ? result
-            : ResultExtensions.Preserve(result, result.MapError(shape));
+            : Helper.Preserve(result, result.MapError(shape));
     }
     
     #endregion // Arity 8

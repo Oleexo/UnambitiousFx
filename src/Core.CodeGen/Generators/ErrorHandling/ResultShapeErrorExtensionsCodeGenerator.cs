@@ -5,9 +5,9 @@ using UnambitiousFx.Core.CodeGen.Design;
 namespace UnambitiousFx.Core.CodeGen.Generators.ErrorHandling;
 
 /// <summary>
-/// Generator for ResultShapeErrorExtensions class.
-/// Generates ShapeError extension methods for all Result arities to transform error structure.
-/// Follows architecture rule: One generator per extension method category.
+///     Generator for ResultShapeErrorExtensions class.
+///     Generates ShapeError extension methods for all Result arities to transform error structure.
+///     Follows architecture rule: One generator per extension method category.
 /// </summary>
 internal sealed class ResultShapeErrorExtensionsCodeGenerator : BaseCodeGenerator {
     private const string ExtensionsNamespace = "Results.Extensions.ErrorHandling";
@@ -15,10 +15,10 @@ internal sealed class ResultShapeErrorExtensionsCodeGenerator : BaseCodeGenerato
     public ResultShapeErrorExtensionsCodeGenerator(string baseNamespace)
         : base(new GenerationConfig(
                    baseNamespace,
-                   startArity: 0, // Start from Result (arity 0)
-                   subNamespace: ExtensionsNamespace,
-                   className: "ResultShapeErrorExtensions",
-                   fileOrganization: FileOrganizationMode.SingleFile)) {
+                   0,
+                   ExtensionsNamespace,
+                   "ResultShapeErrorExtensions",
+                   FileOrganizationMode.SingleFile)) {
     }
 
     protected override string PrepareOutputDirectory(string outputPath) {
@@ -33,9 +33,9 @@ internal sealed class ResultShapeErrorExtensionsCodeGenerator : BaseCodeGenerato
     private ClassWriter GenerateShapeErrorMethods(ushort arity) {
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
         var classWriter = new ClassWriter(
-            name: "ResultExtensions",
-            visibility: Visibility.Public,
-            classModifiers: ClassModifier.Static | ClassModifier.Partial
+            Config.ClassName,
+            Visibility.Public,
+            ClassModifier.Static | ClassModifier.Partial
         );
 
         // Generate ShapeError method
@@ -52,8 +52,9 @@ internal sealed class ResultShapeErrorExtensionsCodeGenerator : BaseCodeGenerato
         var documentation = DocumentationWriter.Create()
                                                .WithSummary("Transforms the error structure of the result using the specified shaping function.")
                                                .WithParameter("result", "The result to shape errors for.")
-                                               .WithParameter("shape", "The function to transform the error structure.")
-                                               .WithReturns($"A new result with transformed error structure if the original result failed, otherwise the original successful result.")
+                                               .WithParameter("shape",  "The function to transform the error structure.")
+                                               .WithReturns(
+                                                    "A new result with transformed error structure if the original result failed, otherwise the original successful result.")
                                                .Build();
 
         var body = GenerateShapeErrorBody(arity);
