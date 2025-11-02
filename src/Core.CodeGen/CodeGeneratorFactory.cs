@@ -5,6 +5,7 @@ using UnambitiousFx.Core.CodeGen.Generators.SideEffects;
 using UnambitiousFx.Core.CodeGen.Generators.Transformations;
 using UnambitiousFx.Core.CodeGen.Generators.Validations;
 using UnambitiousFx.Core.CodeGen.Generators.ValueAccess;
+using UnambitiousFx.Core.CodeGen.TestBuilders.Results;
 
 namespace UnambitiousFx.Core.CodeGen;
 
@@ -65,5 +66,14 @@ internal static class CodeGeneratorFactory {
         yield return new ResultFindErrorExtensionsCodeGenerator(baseNamespace);
         yield return new ResultMatchErrorExtensionsCodeGenerator(baseNamespace);
         yield return new ResultShapeErrorExtensionsCodeGenerator(baseNamespace);
+    }
+
+    /// <summary>
+    ///     Creates test generators for Result types.
+    /// </summary>
+    public static IEnumerable<ICodeGenerator> CreateResultTestGenerators(string               baseNamespace,
+                                                                         FileOrganizationMode fileOrganization = FileOrganizationMode.SingleFile) {
+        // Simple direct methods test generator - generates all test types (sync, Task, ValueTask)
+        yield return new ResultDirectMethodsTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
     }
 }

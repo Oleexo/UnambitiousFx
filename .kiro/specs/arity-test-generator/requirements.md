@@ -8,7 +8,10 @@ The Arity Test Generator is a specialized test generation system that operates s
 
 - **Arity Test Generator**: A standalone system that generates focused unit tests for Result types across multiple arity scenarios
 - **Result Type**: The Core library's Result<T1, T2, ...> type that represents success or failure with multiple value types
-- **Result Extensions**: Extension methods that operate on Result types with multiple arities
+- **Result Extensions**: Extension methods that operate on Result types with multiple arities, organized into categories: Transformations, Validation, Side Effects, Error Handling, and Value Access
+- **Result Classes**: The specific Result class implementations including Result<T>, Result<T1, T2>, Result<T1, T2, T3>, up to the maximum supported arity
+- **Result Direct Methods**: Core Result instance methods including Match, IfSuccess, IfFailure, and TryGet
+- **Result Extension Methods**: Specific extension methods requiring arity testing across all categories with both synchronous and asynchronous variants
 - **Arity**: The number of generic type parameters in a Result type (e.g., Result<T1, T2> has arity 2)
 - **Test Scenario**: A single, focused test case covering one specific Result condition (success, failure, exception, or edge case) for one method
 - **Test Pattern**: A template that defines how a single Result test method should be structured to test one specific behavior
@@ -19,6 +22,13 @@ The Arity Test Generator is a specialized test generation system that operates s
 - **Assertion Generator**: Component that creates proper Result test assertions for different scenarios
 - **Edge Case**: Boundary conditions and unusual scenarios specific to Result operations that need special test coverage
 - **Result Test Orchestrator**: Component that coordinates the generation of all Result test categories
+- **Async Result Extensions**: Asynchronous variants of Result extension methods with both Task and ValueTask implementations for all methods except Match (which only has async variants)
+- **Result Factory Methods**: Static factory methods for creating Result instances including Success, Failure, and Try methods across all arities
+- **Transformation Methods**: Extension methods for transforming Result values including Map, Bind, Flatten, Zip, and Try
+- **Validation Methods**: Extension methods for validating Result values including Ensure
+- **Side Effect Methods**: Extension methods for performing side effects including Tap, TapBoth, and TapError
+- **Error Handling Methods**: Extension methods for handling Result errors including MapError, MapErrors, PrependError, AppendError, HasError, HasException, FindError, MatchError, FilterError, and Recover
+- **Value Access Methods**: Extension methods for accessing Result values including ValueOr, ValueOrThrow, and ToNullable
 
 ## Requirements
 
@@ -143,6 +153,42 @@ The Arity Test Generator is a specialized test generation system that operates s
 5. WHEN organizing test code, THE Arity Test Generator SHALL clearly separate Given-When-Then sections with comments or code organization
 
 ### Requirement 11
+
+**User Story:** As a developer working with specific Result classes and methods, I want comprehensive test coverage for all explicitly defined Result types and their direct methods, so that every Result class, method, and arity combination is thoroughly validated.
+
+#### Acceptance Criteria
+
+1. WHEN generating tests for Result classes, THE Arity Test Generator SHALL create tests for Result<T>, Result<T1, T2>, Result<T1, T2, T3>, Result<T1, T2, T3, T4>, and Result<T1, T2, T3, T4, T5> classes
+2. WHEN testing Result direct methods, THE Arity Test Generator SHALL generate tests for Match, IfSuccess, IfFailure, and TryGet methods across all supported arities
+3. WHEN testing transformation extension methods, THE Arity Test Generator SHALL generate tests for Map, Bind, Flatten, Zip, and Try methods across all supported arities
+4. WHEN testing validation extension methods, THE Arity Test Generator SHALL generate tests for Ensure methods across all supported arities
+5. WHEN testing side effect extension methods, THE Arity Test Generator SHALL generate tests for Tap, TapBoth, and TapError methods across all supported arities
+
+### Requirement 12
+
+**User Story:** As a developer working with Result error handling and value access methods, I want comprehensive test coverage for all Result error handling and value access extension methods, so that all Result functionality is validated across different arities.
+
+#### Acceptance Criteria
+
+1. WHEN testing error handling extension methods, THE Arity Test Generator SHALL generate tests for MapError, MapErrors, PrependError, AppendError methods across all Result arities
+2. WHEN testing error query extension methods, THE Arity Test Generator SHALL generate tests for HasError, HasException, FindError, MatchError, FilterError methods across all Result arities
+3. WHEN testing error recovery extension methods, THE Arity Test Generator SHALL generate tests for Recover methods across all Result arities
+4. WHEN testing value access extension methods, THE Arity Test Generator SHALL generate tests for ValueOr, ValueOrThrow, ToNullable methods across all Result arities
+5. WHEN testing async Match variants, THE Arity Test Generator SHALL generate tests for Match async variants (which are the only async variants for Match methods) across all Result arities
+
+### Requirement 13
+
+**User Story:** As a developer working with asynchronous Result operations, I want comprehensive test coverage for all synchronous and asynchronous variants of Result extension methods, so that both Task and ValueTask implementations are properly validated.
+
+#### Acceptance Criteria
+
+1. WHEN testing synchronous Result extension methods, THE Arity Test Generator SHALL generate tests for all extension methods in their synchronous form across all supported arities
+2. WHEN testing asynchronous Result extension methods, THE Arity Test Generator SHALL generate tests for Task-based async variants of all extension methods (except Match) across all supported arities
+3. WHEN testing ValueTask Result extension methods, THE Arity Test Generator SHALL generate tests for ValueTask-based async variants of all extension methods (except Match) across all supported arities
+4. WHEN testing Match async variants, THE Arity Test Generator SHALL generate tests only for the async variants of Match methods (as Match has no synchronous async variants)
+5. WHEN validating async method behavior, THE Arity Test Generator SHALL ensure proper async/await patterns and exception handling for all async Result extension method variants
+
+### Requirement 14
 
 **User Story:** As a developer analyzing Result test performance, I want generated Result tests to be efficient and well-organized, so that Result test execution time remains reasonable even with comprehensive coverage.
 

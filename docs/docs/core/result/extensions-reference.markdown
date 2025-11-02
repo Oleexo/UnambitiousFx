@@ -41,7 +41,7 @@ Jump to any extension category or specific method:
 [Tap](#tap) · [TapError](#taperror) · [TapBoth](#tapboth)
 
 ### Error Handling
-[MapError](#maperror) · [MapErrors](#maperrors) · [PrependError](#prependerror) · [AppendError](#appenderror) · [WithContext](#withcontext) · [HasError](#haserror) · [HasException](#hasexception) · [FindError](#finderror) · [TryPickError](#trypickerror) · [MatchError](#matcherror) · [FilterError](#filtererror) · [Recover](#recover)
+[MapError](#maperror) · [MapErrors](#maperrors) · [PrependError](#prependerror) · [AppendError](#appenderror)  · [HasError](#haserror) · [HasException](#hasexception) · [FindError](#finderror)  · [MatchError](#matcherror) · [FilterError](#filtererror) · [Recover](#recover)
 
 ### Collections
 [Traverse](#traverse) · [Sequence](#sequence) · [Combine](#combine) · [Apply](#apply)

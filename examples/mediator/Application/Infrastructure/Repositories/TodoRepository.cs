@@ -1,6 +1,6 @@
 ﻿using Application.Domain.Entities;
 using Application.Domain.Repositories;
-using UnambitiousFx.Core.Options;
+using UnambitiousFx.Core.Maybe;
 
 namespace Application.Infrastructure.Repositories;
 
@@ -19,13 +19,13 @@ public sealed class TodoRepository : ITodoRepository {
         return ValueTask.CompletedTask;
     }
 
-    public ValueTask<Option<Todo>> GetAsync(Guid              id,
-                                            CancellationToken cancellationToken = default) {
+    public ValueTask<Maybe<Todo>> GetAsync(Guid              id,
+                                           CancellationToken cancellationToken = default) {
         if (Todos.TryGetValue(id, out var todo)) {
-            return ValueTask.FromResult(Option<Todo>.Some(todo));
+            return ValueTask.FromResult(Maybe<Todo>.Some(todo));
         }
 
-        return ValueTask.FromResult(Option<Todo>.None());
+        return ValueTask.FromResult(Maybe<Todo>.None());
     }
 
     public ValueTask<IEnumerable<Todo>> GetAllAsync(CancellationToken cancellationToken = default) {

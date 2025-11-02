@@ -1,5 +1,5 @@
 using NSubstitute;
-using UnambitiousFx.Core.Options;
+using UnambitiousFx.Core.Maybe;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 using UnambitiousFx.Mediator.Resolvers;
@@ -27,7 +27,7 @@ public sealed class SenderTests {
         var context = Substitute.For<IContext>();
 
         _resolver.GetService<IRequestHandler<RequestWithResponseExample, int>>()
-                 .Returns(Option.Some(handler));
+                 .Returns(Maybe.Some(handler));
         _contextFactory.Create()
                        .Returns(context);
         handler.HandleAsync(context, request, CancellationToken.None)
@@ -51,7 +51,7 @@ public sealed class SenderTests {
         // Arrange
         var request = new RequestWithResponseExample();
         _resolver.GetService<IRequestHandler<RequestWithResponseExample, int>>()
-                 .Returns(Option<IRequestHandler<RequestWithResponseExample, int>>.None());
+                 .Returns(Maybe<IRequestHandler<RequestWithResponseExample, int>>.None());
 
         // Act & Assert
         await Assert.ThrowsAsync<MissingHandlerException>(() => _sender.SendAsync<RequestWithResponseExample, int>(request, CancellationToken.None)
@@ -66,7 +66,7 @@ public sealed class SenderTests {
         var context = Substitute.For<IContext>();
 
         _resolver.GetService<IRequestHandler<RequestExample>>()
-                 .Returns(Option.Some(handler));
+                 .Returns(Maybe.Some(handler));
         _contextFactory.Create()
                        .Returns(context);
         handler.HandleAsync(context, request, CancellationToken.None)
@@ -84,7 +84,7 @@ public sealed class SenderTests {
         // Arrange
         var request = new RequestWithResponseExample();
         _resolver.GetService<IRequestHandler<RequestWithResponseExample, int>>()
-                 .Returns(Option.None<IRequestHandler<RequestWithResponseExample, int>>());
+                 .Returns(Maybe.None<IRequestHandler<RequestWithResponseExample, int>>());
 
         // Act & Assert
         await Assert.ThrowsAsync<MissingHandlerException>(() => _sender.SendAsync<RequestWithResponseExample, int>(request, CancellationToken.None)

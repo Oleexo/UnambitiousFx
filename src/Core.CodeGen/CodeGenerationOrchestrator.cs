@@ -82,8 +82,15 @@ internal sealed class CodeGenerationOrchestrator {
                                  string testDirectoryPath) {
         Console.WriteLine("Generating Result types...");
 
+        // Generate Result production code
         foreach (var generator in CodeGeneratorFactory.CreateResultGenerators(_baseNamespace, _fileOrganization)) {
             var outputPath = sourceDirectoryPath;
+            generator.Generate(_targetArity, outputPath);
+        }
+
+        // Generate Result test code
+        foreach (var generator in CodeGeneratorFactory.CreateResultTestGenerators(_baseNamespace, _fileOrganization)) {
+            var outputPath = testDirectoryPath;
             generator.Generate(_targetArity, outputPath);
         }
 

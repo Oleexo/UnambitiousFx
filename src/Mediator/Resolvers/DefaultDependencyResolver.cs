@@ -1,5 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using UnambitiousFx.Core.Options;
+using UnambitiousFx.Core.Maybe;
 
 namespace UnambitiousFx.Mediator.Resolvers;
 
@@ -10,12 +10,12 @@ internal sealed class DefaultDependencyResolver : IDependencyResolver {
         _serviceProvider = serviceProvider;
     }
 
-    public Option<TService> GetService<TService>()
+    public Maybe<TService> GetService<TService>()
         where TService : class {
         var service = _serviceProvider.GetService<TService>();
         return service is not null
-                   ? Option.Some(service)
-                   : Option.None<TService>();
+                   ? Maybe.Some(service)
+                   : Maybe.None<TService>();
     }
 
     public IEnumerable<TService> GetServices<TService>()

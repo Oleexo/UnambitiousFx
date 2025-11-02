@@ -27,6 +27,13 @@ internal static class FileSystemHelper
     /// <param name="filePath">The absolute path where the file should be written.</param>
     public static void WriteFile(FileWriter fileWriter, string filePath)
     {
+        // Ensure the directory exists before writing the file
+        var directory = Path.GetDirectoryName(filePath);
+        if (!string.IsNullOrEmpty(directory))
+        {
+            EnsureDirectoryExists(directory);
+        }
+
         using var stringWriter = new StringWriter();
         using var indentedWriter = new IndentedTextWriter(stringWriter, Constant.Spacing);
         fileWriter.Write(indentedWriter);
@@ -40,6 +47,13 @@ internal static class FileSystemHelper
     /// <param name="filePath">The absolute path where the file should be written.</param>
     public static void WriteRegionFile(RegionFileWriter regionWriter, string filePath)
     {
+        // Ensure the directory exists before writing the file
+        var directory = Path.GetDirectoryName(filePath);
+        if (!string.IsNullOrEmpty(directory))
+        {
+            EnsureDirectoryExists(directory);
+        }
+
         using var stringWriter = new StringWriter();
         using var indentedWriter = new IndentedTextWriter(stringWriter, Constant.Spacing);
         regionWriter.Write(indentedWriter);

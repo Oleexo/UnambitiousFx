@@ -115,15 +115,13 @@
 
 - [x] 3.1 Create async error handling generators
   - Create async versions of all error handling extension generators
-  - Support both Task and ValueTask variants for MapError, MapErrors, HasError, FilterError, Recovery, etc.
+  - Support both Task and ValueTask variants for MapError, MapErrors, HasError, FilterError, Recovery, AppendError, PrependError, FindError, MatchError, ShapeError.
   - Generate proper async method naming conventions (e.g., MapErrorAsync)
   - Generate proper XML documentation for all async methods
   - _Requirements: 3.1, 3.4, 3.5_
 
-- [ ] 3.2 Create async transformation and side-effect generators
+- [x] 3.2 Create async transformation and side-effect generators
   - Create async versions for transformation methods (Bind, Map, Then, Try, Zip, Flatten)
-  - Create async versions for side-effect methods (Tap, TapBoth, TapError)
-  - Create async versions for validation methods (Ensure)
   - Generate Task and ValueTask versions with proper naming conventions
   - Generate proper XML documentation for all async methods
   - _Requirements: 3.2, 3.3, 3.4, 3.5_
@@ -134,7 +132,7 @@
   - Ensure tests follow existing patterns and use Core.XUnit assertion patterns
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
 
-- [ ] 4.1 Enhance existing test generators for new extension categories
+- [x] 4.1 Enhance existing test generators for new extension categories
   - Update ResultTestGenerator to handle error handling extensions
   - Update ResultTestGenerator to handle async extensions
   - Generate tests that follow existing patterns in test/Core.Tests/Results/Extensions

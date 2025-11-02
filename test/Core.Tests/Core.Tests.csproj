@@ -13,6 +13,8 @@
       <Folder Include="Results\Extensions\ErrorHandling\" />
       <Folder Include="Results\Extensions\SideEffects\" />
       <Folder Include="Results\Extensions\Validations\" />
+      <Folder Include="Results\Tasks\" />
+      <Folder Include="Results\ValueTasks\" />
     </ItemGroup>
 
 </Project>

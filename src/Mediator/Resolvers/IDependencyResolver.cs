@@ -1,4 +1,4 @@
-using UnambitiousFx.Core.Options;
+using UnambitiousFx.Core.Maybe;
 
 namespace UnambitiousFx.Mediator.Resolvers;
 
@@ -11,7 +11,7 @@ public interface IDependencyResolver {
     /// <returns>
     ///     An Option that contains the retrieved service if it exists; otherwise, an empty Option.
     /// </returns>
-    Option<TService> GetService<TService>()
+    Maybe<TService> GetService<TService>()
         where TService : class;
 
     /// Retrieves all services of the specified type from the dependency resolver.
