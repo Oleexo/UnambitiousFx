@@ -1,8 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace UnambitiousFx.Core.Options;
+namespace UnambitiousFx.Core.Maybe;
 
-internal sealed class NoneOption<TValue> : Option<TValue>
+internal sealed class NoneMaybe<TValue> : Maybe<TValue>
     where TValue : notnull {
     public override bool    IsSome => false;
     public override bool    IsNone => true;

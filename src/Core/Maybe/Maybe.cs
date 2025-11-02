@@ -1,43 +1,43 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace UnambitiousFx.Core.Options;
+namespace UnambitiousFx.Core.Maybe;
 
 /// <summary>
-///     Provides a static class to create and work with instances of <see cref="Option{TValue}" />,
+///     Provides a static class to create and work with instances of <see cref="Maybe{TValue}" />,
 ///     which represents a value or the absence of a value.
 /// </summary>
-public static class Option {
+public static class Maybe {
     /// Creates an Option instance that represents a value.
     /// <param name="value">The value to be wrapped inside the Option. It must be a non-null value of type TValue.</param>
-    /// <returns>An <see cref="Option{TValue}" /> instance containing the provided value.</returns>
-    public static Option<TValue> Some<TValue>(TValue value)
+    /// <returns>An <see cref="Maybe{TValue}" /> instance containing the provided value.</returns>
+    public static Maybe<TValue> Some<TValue>(TValue value)
         where TValue : notnull {
-        return new SomeOption<TValue>(value);
+        return new SomeMaybe<TValue>(value);
     }
 
     /// <summary>
-    ///     Creates an instance of <see cref="Option{TValue}" /> that represents no value.
+    ///     Creates an instance of <see cref="Maybe{TValue}" /> that represents no value.
     /// </summary>
     /// <typeparam name="TValue">The type of the service represented by the option.</typeparam>
-    /// <returns>An <see cref="Option{TValue}" /> instance that indicates no value.</returns>
-    public static Option<TValue> None<TValue>()
+    /// <returns>An <see cref="Maybe{TValue}" /> instance that indicates no value.</returns>
+    public static Maybe<TValue> None<TValue>()
         where TValue : notnull {
-        return Option<TValue>.None();
+        return Maybe<TValue>.None();
     }
 }
 
 /// <summary>
-///     Provides a static class to create instances of <see cref="Option{TValue}" />, representing a value or no value.
+///     Provides a static class to create instances of <see cref="Maybe{TValue}" />, representing a value or no value.
 /// </summary>
-public abstract class Option<TValue>
+public abstract class Maybe<TValue>
     where TValue : notnull {
     /// <summary>
-    ///     Represents the singleton instance of <see cref="NoneOption{TValue}" />, used to indicate the absence of a value.
+    ///     Represents the singleton instance of <see cref="NoneMaybe{TValue}" />, used to indicate the absence of a value.
     /// </summary>
-    private static readonly Option<TValue> NoneInstance = new NoneOption<TValue>();
+    private static readonly Maybe<TValue> NoneInstance = new NoneMaybe<TValue>();
 
     /// <summary>
-    ///     Indicates whether the current <see cref="Option{TValue}" /> instance contains a value.
+    ///     Indicates whether the current <see cref="Maybe{TValue}" /> instance contains a value.
     ///     Returns <c>true</c> if the instance represents a value, otherwise <c>false</c>.
     /// </summary>
     public abstract bool IsSome { get; }
@@ -99,28 +99,28 @@ public abstract class Option<TValue>
                                Action         none);
 
     /// Creates an Option instance that represents no value.
-    /// <returns>An <see cref="Option{TValue}" /> instance representing no value.</returns>
-    public static Option<TValue> None() {
+    /// <returns>An <see cref="Maybe{TValue}" /> instance representing no value.</returns>
+    public static Maybe<TValue> None() {
         return NoneInstance;
     }
 
     /// <summary>
-    ///     Creates a new instance of <see cref="Option{TValue}" /> with a value wrapped in a SomeOption.
+    ///     Creates a new instance of <see cref="Maybe{TValue}" /> with a value wrapped in a SomeOption.
     /// </summary>
     /// <param name="value">The value to wrap within the SomeOption. This value cannot be null.</param>
-    /// <returns>An <see cref="Option{TValue}" /> containing the specified value.</returns>
-    public static Option<TValue> Some(TValue value) {
-        return new SomeOption<TValue>(value);
+    /// <returns>An <see cref="Maybe{TValue}" /> containing the specified value.</returns>
+    public static Maybe<TValue> Some(TValue value) {
+        return new SomeMaybe<TValue>(value);
     }
 
     /// Defines an implicit conversion from a value of type
     /// <typeparamref name="TValue" />
     /// to an
-    /// <see cref="Option{TValue}" />
+    /// <see cref="Maybe{TValue}" />
     /// .
     /// <param name="value">The value to convert into an Option. The value cannot be null.</param>
-    /// <returns>An <see cref="Option{TValue}" /> instance containing the provided value.</returns>
-    public static implicit operator Option<TValue>(TValue value) {
+    /// <returns>An <see cref="Maybe{TValue}" /> instance containing the provided value.</returns>
+    public static implicit operator Maybe<TValue>(TValue value) {
         return Some(value);
     }
 }

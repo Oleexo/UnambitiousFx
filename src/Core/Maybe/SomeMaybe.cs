@@ -1,12 +1,12 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace UnambitiousFx.Core.Options;
+namespace UnambitiousFx.Core.Maybe;
 
-internal sealed class SomeOption<TValue> : Option<TValue>
+internal sealed class SomeMaybe<TValue> : Maybe<TValue>
     where TValue : notnull {
     private readonly TValue _value;
 
-    public SomeOption(TValue value) {
+    public SomeMaybe(TValue value) {
         _value = value;
     }
 
