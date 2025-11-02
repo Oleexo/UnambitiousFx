@@ -1,13 +1,13 @@
 using JetBrains.Annotations;
-using UnambitiousFx.Core.Options;
+using UnambitiousFx.Core.Maybe;
 
 namespace UnambitiousFx.Core.Tests.Options;
 
-[TestSubject(typeof(Option<>))]
-public sealed class OptionTests {
+[TestSubject(typeof(Maybe<>))]
+public sealed class MaybeTests {
     [Fact]
     public void GivenASomeOption_WhenCallingSome_ThenReturnsTrue() {
-        var option = Option<int>.Some(42);
+        var option = Maybe<int>.Some(42);
 
         var b = option.Some(out _);
 
@@ -16,7 +16,7 @@ public sealed class OptionTests {
 
     [Fact]
     public void GivenASomeOption_WhenCallingSome_ThenReturnsTheValue() {
-        var option = Option<int>.Some(42);
+        var option = Maybe<int>.Some(42);
 
         if (option.Some(out var value)) {
             Assert.Equal(42, value);
@@ -28,7 +28,7 @@ public sealed class OptionTests {
 
     [Fact]
     public void GivenANoneOption_WhenCallingSome_ThenReturnsFalse() {
-        var option = Option<int>.None();
+        var option = Maybe<int>.None();
 
         var b = option.Some(out _);
 
@@ -37,7 +37,7 @@ public sealed class OptionTests {
 
     [Fact]
     public void GivenASomeOption_WhenCallingIfSome_ThenCallsTheAction() {
-        var option = Option<int>.Some(42);
+        var option = Maybe<int>.Some(42);
 
         var called = false;
         option.IfSome(_ => called = true);
@@ -47,7 +47,7 @@ public sealed class OptionTests {
 
     [Fact]
     public void GivenANoneOption_WhenCallingIfSome_ThenDoesNotCallTheAction() {
-        var option = Option<int>.None();
+        var option = Maybe<int>.None();
 
         var called = false;
         option.IfSome(_ => called = true);
@@ -57,7 +57,7 @@ public sealed class OptionTests {
 
     [Fact]
     public void GivenASomeOption_WhenCallingIfNone_ThenDoesNotCallTheAction() {
-        var option = Option<int>.Some(42);
+        var option = Maybe<int>.Some(42);
 
         var called = false;
         option.IfNone(() => called = true);
@@ -67,7 +67,7 @@ public sealed class OptionTests {
 
     [Fact]
     public void GivenANoneOption_WhenCallingIfNone_ThenCallsTheAction() {
-        var option = Option<int>.None();
+        var option = Maybe<int>.None();
 
         var called = false;
         option.IfNone(() => called = true);
@@ -77,35 +77,35 @@ public sealed class OptionTests {
 
     [Fact]
     public void GivenASomeOption_IsSomeShouldBeTrue() {
-        var option = Option<int>.Some(42);
+        var option = Maybe<int>.Some(42);
 
         Assert.True(option.IsSome);
     }
 
     [Fact]
     public void GivenASomeOption_IsNoneShouldBeFalse() {
-        var option = Option<int>.Some(42);
+        var option = Maybe<int>.Some(42);
 
         Assert.False(option.IsNone);
     }
 
     [Fact]
     public void GivenANoneOption_IsSomeShouldBeFalse() {
-        var option = Option<int>.None();
+        var option = Maybe<int>.None();
 
         Assert.False(option.IsSome);
     }
 
     [Fact]
     public void GivenANoneOption_IsNoneShouldBeTrue() {
-        var option = Option<int>.None();
+        var option = Maybe<int>.None();
 
         Assert.True(option.IsNone);
     }
 
     [Fact]
     public async Task GivenASomeOption_WhenCallingAsyncIfSome_ThenCallsTheAction() {
-        var option = Option<int>.Some(42);
+        var option = Maybe<int>.Some(42);
 
         var called = false;
         await option.IfSome(_ => {
@@ -118,7 +118,7 @@ public sealed class OptionTests {
 
     [Fact]
     public async Task GivenANoneOption_WhenCallingAsyncIfSome_ThenDoesNotCallTheAction() {
-        var option = Option<int>.None();
+        var option = Maybe<int>.None();
 
         var called = false;
         await option.IfSome(_ => {
@@ -131,7 +131,7 @@ public sealed class OptionTests {
 
     [Fact]
     public async Task GivenASomeOption_WhenCallingAsyncIfNone_ThenDoesNotCallTheAction() {
-        var option = Option<int>.Some(42);
+        var option = Maybe<int>.Some(42);
 
         var called = false;
         await option.IfNone(() => {
@@ -144,7 +144,7 @@ public sealed class OptionTests {
 
     [Fact]
     public async Task GivenANoneOption_WhenCallingAsyncIfNone_ThenCallsTheAction() {
-        var option = Option<int>.None();
+        var option = Maybe<int>.None();
 
         var called = false;
         await option.IfNone(() => {
@@ -157,14 +157,14 @@ public sealed class OptionTests {
 
     [Fact]
     public void GivenASomeOption_CaseShouldReturnTheValue() {
-        var option = Option<int>.Some(42);
+        var option = Maybe<int>.Some(42);
 
         Assert.Equal(42, option.Case);
     }
 
     [Fact]
     public void GivenANoneOption_CaseShouldReturnNull() {
-        var option = Option<int>.None();
+        var option = Maybe<int>.None();
 
         Assert.Null(option.Case);
     }
@@ -173,7 +173,7 @@ public sealed class OptionTests {
     
     [Fact]
     public void GivenASomeOption_WhenCallingMatch_ThenCallsSomeAction() {
-        var option = Option<int>.Some(42);
+        var option = Maybe<int>.Some(42);
         var someCalled = false;
 
         option.Match(
@@ -186,7 +186,7 @@ public sealed class OptionTests {
 
     [Fact]
     public void GivenASomeOption_WhenCallingMatch_ThenDoesNotCallNoneAction() {
-        var option = Option<int>.Some(42);
+        var option = Maybe<int>.Some(42);
         var noneCalled = false;
 
         option.Match(
@@ -199,7 +199,7 @@ public sealed class OptionTests {
 
     [Fact]
     public void GivenANoneOption_WhenCallingMatch_ThenCallsNoneAction() {
-        var option = Option<int>.None();
+        var option = Maybe<int>.None();
         var noneCalled = false;
 
         option.Match(
@@ -212,7 +212,7 @@ public sealed class OptionTests {
 
     [Fact]
     public void GivenANoneOption_WhenCallingMatch_ThenDoesNotCallSomeAction() {
-        var option = Option<int>.None();
+        var option = Maybe<int>.None();
         var someCalled = false;
 
         option.Match(
@@ -225,7 +225,7 @@ public sealed class OptionTests {
     
     [Fact]
     public void GivenANoneOption_WhenCallingMatchWithReturn_ThenReturnsNoneValue() {
-        var option = Option<int>.None();
+        var option = Maybe<int>.None();
         const string expectedValue = "none";
 
         var result = option.Match(
