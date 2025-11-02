@@ -5,9 +5,9 @@ using UnambitiousFx.Core.CodeGen.Design;
 namespace UnambitiousFx.Core.CodeGen.Generators.ErrorHandling;
 
 /// <summary>
-/// Generator for ResultRecoveryExtensions class.
-/// Generates Recovery extension methods for all Result arities with error recovery scenarios.
-/// Follows architecture rule: One generator per extension method category.
+///     Generator for ResultRecoveryExtensions class.
+///     Generates Recovery extension methods for all Result arities with error recovery scenarios.
+///     Follows architecture rule: One generator per extension method category.
 /// </summary>
 internal sealed class ResultRecoveryExtensionsCodeGenerator : BaseCodeGenerator {
     private const string ExtensionsNamespace = "Results.Extensions.ErrorHandling";
@@ -15,10 +15,10 @@ internal sealed class ResultRecoveryExtensionsCodeGenerator : BaseCodeGenerator 
     public ResultRecoveryExtensionsCodeGenerator(string baseNamespace)
         : base(new GenerationConfig(
                    baseNamespace,
-                   startArity: 1, // Start from Result<T> (arity 1)
-                   subNamespace: ExtensionsNamespace,
-                   className: "ResultRecoveryExtensions",
-                   fileOrganization: FileOrganizationMode.SingleFile)) {
+                   1,
+                   ExtensionsNamespace,
+                   "ResultRecoveryExtensions",
+                   FileOrganizationMode.SingleFile)) {
     }
 
     protected override string PrepareOutputDirectory(string outputPath) {
@@ -29,17 +29,17 @@ internal sealed class ResultRecoveryExtensionsCodeGenerator : BaseCodeGenerator 
     protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
         return [
             GenerateSyncMethods(arity),
-            GenerateAsyncMethods(arity, isValueTask: false),
-            GenerateAsyncMethods(arity, isValueTask: true)
+            GenerateAsyncMethods(arity, false),
+            GenerateAsyncMethods(arity, true)
         ];
     }
 
     private ClassWriter GenerateSyncMethods(ushort arity) {
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
         var classWriter = new ClassWriter(
-            name: Config.ClassName,
-            visibility: Visibility.Public,
-            classModifiers: ClassModifier.Static | ClassModifier.Partial
+            Config.ClassName,
+            Visibility.Public,
+            ClassModifier.Static | ClassModifier.Partial
         );
 
         // Generate both overloads for each arity
@@ -58,9 +58,9 @@ internal sealed class ResultRecoveryExtensionsCodeGenerator : BaseCodeGenerator 
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}.{subNamespace}";
 
         var classWriter = new ClassWriter(
-            name: "ResultExtensions",
-            visibility: Visibility.Public,
-            classModifiers: ClassModifier.Static | ClassModifier.Partial
+            "ResultExtensions",
+            Visibility.Public,
+            ClassModifier.Static | ClassModifier.Partial
         );
 
         // Generate RecoverAsync method for Task/ValueTask<Result> -> Task/ValueTask<Result>
@@ -81,7 +81,7 @@ internal sealed class ResultRecoveryExtensionsCodeGenerator : BaseCodeGenerator 
                                                       .WithReturns("A successful result with the fallback values if the original result failed; otherwise, the original result.");
 
         // Add documentation for all value type parameters
-        for (int i = 0; i < genericParams.Length; i++) {
+        for (var i = 0; i < genericParams.Length; i++) {
             var paramName = genericParams[i];
             var ordinal = OrdinalHelper.GetOrdinalName(i + 1)
                                        .ToLowerInvariant();
@@ -121,7 +121,7 @@ internal sealed class ResultRecoveryExtensionsCodeGenerator : BaseCodeGenerator 
                                                       .WithReturns("A successful result with the fallback values if the original result failed; otherwise, the original result.");
 
         // Add documentation for all value type parameters
-        for (int i = 0; i < genericParams.Length; i++) {
+        for (var i = 0; i < genericParams.Length; i++) {
             var paramName = genericParams[i];
             var ordinal = OrdinalHelper.GetOrdinalName(i + 1)
                                        .ToLowerInvariant();
@@ -142,7 +142,7 @@ internal sealed class ResultRecoveryExtensionsCodeGenerator : BaseCodeGenerator 
                                   .WithUsings("UnambitiousFx.Core.Results.Reasons");
 
         // Add fallback parameters
-        for (int i = 0; i < arity; i++) {
+        for (var i = 0; i < arity; i++) {
             var paramName = $"fallback{i + 1}";
             var paramType = genericParams[i];
             builder.WithParameter(paramType, paramName);
@@ -169,9 +169,11 @@ internal sealed class ResultRecoveryExtensionsCodeGenerator : BaseCodeGenerator 
                          .Select(param => GenericConstraint.NotNull(param))
                          .ToArray();
 
-        var resultType = arity == 1
-                             ? "Result<TValue1>"
-                             : $"Result<{string.Join(", ", genericParams)}>";
+        var resultType = arity switch {
+            0 => "Result",
+            1 => "Result<TValue1>",
+            _ => $"Result<{string.Join(", ", genericParams)}>"
+        };
 
         var tupleType = arity == 1
                             ? "TValue1"
@@ -230,14 +232,14 @@ internal sealed class ResultRecoveryExtensionsCodeGenerator : BaseCodeGenerator 
         var recoveryType  = $"Func<IEnumerable<IError>, {taskType}<{tupleType}>>";
 
         var documentationBuilder = DocumentationWriter.Create()
-                                                      .WithSummary($"Asynchronously recovers from a failed result by providing fallback values through a recovery function.")
+                                                      .WithSummary("Asynchronously recovers from a failed result by providing fallback values through a recovery function.")
                                                       .WithParameter("awaitableResult", "The awaitable result to recover from.")
                                                       .WithParameter("recover",         "The async function that takes the errors and returns fallback values.")
                                                       .WithReturns(
-                                                           $"A task with a successful result containing the fallback values if the original result failed; otherwise, the original result.");
+                                                           "A task with a successful result containing the fallback values if the original result failed; otherwise, the original result.");
 
         // Add documentation for all value type parameters
-        for (int i = 0; i < genericParams.Length; i++) {
+        for (var i = 0; i < genericParams.Length; i++) {
             var paramName = genericParams[i];
             var ordinal = OrdinalHelper.GetOrdinalName(i + 1)
                                        .ToLowerInvariant();

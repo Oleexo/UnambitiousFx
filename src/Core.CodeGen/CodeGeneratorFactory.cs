@@ -9,31 +9,26 @@ using UnambitiousFx.Core.CodeGen.Generators.ValueAccess;
 namespace UnambitiousFx.Core.CodeGen;
 
 /// <summary>
-/// Factory for creating code generators.
-/// Implements Factory pattern for better maintainability and testability.
+///     Factory for creating code generators.
+///     Implements Factory pattern for better maintainability and testability.
 /// </summary>
-internal static class CodeGeneratorFactory
-{
+internal static class CodeGeneratorFactory {
     /// <summary>
-    /// Creates generators for OneOf types only.
+    ///     Creates generators for OneOf types only.
     /// </summary>
-    public static IEnumerable<ICodeGenerator> CreateOneOfGenerators(
-        string baseNamespace,
-        FileOrganizationMode fileOrganization = FileOrganizationMode.SeparateFiles)
-    {
+    public static IEnumerable<ICodeGenerator> CreateOneOfGenerators(string               baseNamespace,
+                                                                    FileOrganizationMode fileOrganization = FileOrganizationMode.SeparateFiles) {
         yield return new OneOfCodeGenerator(baseNamespace, fileOrganization);
         yield return new OneOfTestsGenerator(baseNamespace);
     }
 
     /// <summary>
-    /// Creates generators for Result types only.
+    ///     Creates generators for Result types only.
     /// </summary>
-    public static IEnumerable<ICodeGenerator> CreateResultGenerators(
-        string baseNamespace,
-        FileOrganizationMode fileOrganization = FileOrganizationMode.SeparateFiles)
-    {
+    public static IEnumerable<ICodeGenerator> CreateResultGenerators(string               baseNamespace,
+                                                                     FileOrganizationMode fileOrganization = FileOrganizationMode.SeparateFiles) {
         yield return new ResultCodeGenerator(baseNamespace, fileOrganization);
-        yield return new ResultTestGenerator(baseNamespace);
+
 
         // ValueAccess extensions
         yield return new ResultToNullableExtensionsCodeGenerator(baseNamespace);
