@@ -13,12 +13,14 @@ namespace UnambitiousFx.Core.CodeGen;
 ///     Factory for creating code generators.
 ///     Implements Factory pattern for better maintainability and testability.
 /// </summary>
-internal static class CodeGeneratorFactory {
+internal static class CodeGeneratorFactory
+{
     /// <summary>
     ///     Creates generators for OneOf types only.
     /// </summary>
-    public static IEnumerable<ICodeGenerator> CreateOneOfGenerators(string               baseNamespace,
-                                                                    FileOrganizationMode fileOrganization = FileOrganizationMode.SeparateFiles) {
+    public static IEnumerable<ICodeGenerator> CreateOneOfGenerators(string baseNamespace,
+                                                                    FileOrganizationMode fileOrganization = FileOrganizationMode.SeparateFiles)
+    {
         yield return new OneOfCodeGenerator(baseNamespace, fileOrganization);
         yield return new OneOfTestsGenerator(baseNamespace);
     }
@@ -26,8 +28,9 @@ internal static class CodeGeneratorFactory {
     /// <summary>
     ///     Creates generators for Result types only.
     /// </summary>
-    public static IEnumerable<ICodeGenerator> CreateResultGenerators(string               baseNamespace,
-                                                                     FileOrganizationMode fileOrganization = FileOrganizationMode.SeparateFiles) {
+    public static IEnumerable<ICodeGenerator> CreateResultGenerators(string baseNamespace,
+                                                                     FileOrganizationMode fileOrganization = FileOrganizationMode.SeparateFiles)
+    {
         yield return new ResultCodeGenerator(baseNamespace, fileOrganization);
 
 
@@ -71,9 +74,48 @@ internal static class CodeGeneratorFactory {
     /// <summary>
     ///     Creates test generators for Result types.
     /// </summary>
-    public static IEnumerable<ICodeGenerator> CreateResultTestGenerators(string               baseNamespace,
-                                                                         FileOrganizationMode fileOrganization = FileOrganizationMode.SingleFile) {
-        // Simple direct methods test generator - generates all test types (sync, Task, ValueTask)
-        yield return new ResultDirectMethodsTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+    public static IEnumerable<ICodeGenerator> CreateResultTestGenerators(string baseNamespace,
+                                                                         FileOrganizationMode fileOrganization = FileOrganizationMode.SingleFile)
+    {
+        // Direct method specific generators
+        yield return new ResultIfSuccessTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+        yield return new ResultIfFailureTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+        yield return new ResultTryGetTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+        yield return new ResultMatchTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+
+        // Transformation method specific generators
+        yield return new ResultMapTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+        yield return new ResultBindTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+        yield return new ResultThenTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+        yield return new ResultTryTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+        yield return new ResultFlattenTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+        yield return new ResultZipTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+
+        // Validation method specific generators
+        yield return new ResultEnsureTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+
+        // Side effects method specific generators
+        yield return new ResultTapTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+        yield return new ResultTapBothTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+        yield return new ResultTapErrorTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+
+        // Error handling method specific generators
+        yield return new ResultMapErrorTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+        yield return new ResultMapErrorsTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+        yield return new ResultPrependErrorTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+        yield return new ResultAppendErrorTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+        yield return new ResultHasErrorTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+        yield return new ResultHasExceptionTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+        yield return new ResultFindErrorTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+        yield return new ResultMatchErrorTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+        yield return new ResultFilterErrorTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+        yield return new ResultRecoverTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+        yield return new ResultTryPickErrorTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+        yield return new ResultShapeErrorTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+
+        // Value access method specific generators
+        yield return new ResultValueOrTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+        yield return new ResultValueOrThrowTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
+        yield return new ResultToNullableTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
     }
 }

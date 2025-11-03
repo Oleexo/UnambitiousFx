@@ -5,9 +5,9 @@ using UnambitiousFx.Core.CodeGen.Design;
 namespace UnambitiousFx.Core.CodeGen.Generators.ErrorHandling;
 
 /// <summary>
-/// Generator for ResultFilterErrorExtensions class.
-/// Generates FilterError extension methods for all Result arities.
-/// Follows architecture rule: One generator per extension method category.
+///     Generator for ResultFilterErrorExtensions class.
+///     Generates FilterError extension methods for all Result arities.
+///     Follows architecture rule: One generator per extension method category.
 /// </summary>
 internal sealed class ResultFilterErrorExtensionsCodeGenerator : BaseCodeGenerator {
     private const string ExtensionsNamespace = "Results.Extensions.ErrorHandling";
@@ -15,10 +15,10 @@ internal sealed class ResultFilterErrorExtensionsCodeGenerator : BaseCodeGenerat
     public ResultFilterErrorExtensionsCodeGenerator(string baseNamespace)
         : base(new GenerationConfig(
                    baseNamespace,
-                   startArity: 0, // Start from Result (arity 0)
-                   subNamespace: ExtensionsNamespace,
-                   className: "ResultFilterErrorExtensions",
-                   fileOrganization: FileOrganizationMode.SingleFile)) {
+                   0, // Start from Result (arity 0)
+                   ExtensionsNamespace,
+                   "ResultFilterErrorExtensions",
+                   FileOrganizationMode.SingleFile)) {
     }
 
     protected override string PrepareOutputDirectory(string outputPath) {
@@ -29,17 +29,17 @@ internal sealed class ResultFilterErrorExtensionsCodeGenerator : BaseCodeGenerat
     protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
         return [
             GenerateSyncMethods(arity),
-            GenerateAsyncMethods(arity, isValueTask: false),
-            GenerateAsyncMethods(arity, isValueTask: true)
+            GenerateAsyncMethods(arity, false),
+            GenerateAsyncMethods(arity, true)
         ];
     }
 
     private ClassWriter GenerateSyncMethods(ushort arity) {
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
         var classWriter = new ClassWriter(
-            name: Config.ClassName,
-            visibility: Visibility.Public,
-            classModifiers: ClassModifier.Static | ClassModifier.Partial
+            Config.ClassName,
+            Visibility.Public,
+            ClassModifier.Static | ClassModifier.Partial
         );
 
         // Generate FilterErrorCore method only for arity 0 to avoid duplication
@@ -62,9 +62,9 @@ internal sealed class ResultFilterErrorExtensionsCodeGenerator : BaseCodeGenerat
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}.{subNamespace}";
 
         var classWriter = new ClassWriter(
-            name: "ResultExtensions",
-            visibility: Visibility.Public,
-            classModifiers: ClassModifier.Static | ClassModifier.Partial
+            "ResultExtensions",
+            Visibility.Public,
+            ClassModifier.Static | ClassModifier.Partial
         );
 
         // Generate FilterErrorAsync method for Task/ValueTask<Result> -> Task/ValueTask<Result>
@@ -85,7 +85,7 @@ internal sealed class ResultFilterErrorExtensionsCodeGenerator : BaseCodeGenerat
                                                       .WithReturns("A result with only the errors that match the predicate. If no errors match, returns a success result.");
 
         // Add documentation for all value type parameters
-        for (int i = 0; i < genericParams.Length; i++) {
+        for (var i = 0; i < genericParams.Length; i++) {
             var paramName = genericParams[i];
             var ordinal   = GetOrdinalString(i + 1);
             documentationBuilder.WithTypeParameter(paramName, $"The type of the {ordinal} value.");
@@ -116,7 +116,7 @@ internal sealed class ResultFilterErrorExtensionsCodeGenerator : BaseCodeGenerat
 
     private (string resultType, string[] genericParams, GenericConstraint[] constraints) GetResultTypeInfo(ushort arity) {
         if (arity == 0) {
-            return ("Result", Array.Empty<string>(), Array.Empty<GenericConstraint>());
+            return ("Result", [], []);
         }
 
         var genericParams = Enumerable.Range(1, arity)
@@ -257,14 +257,14 @@ internal sealed class ResultFilterErrorExtensionsCodeGenerator : BaseCodeGenerat
         var predicateType = "Func<IError, bool>";
 
         var documentationBuilder = DocumentationWriter.Create()
-                                                      .WithSummary($"Asynchronously filters errors from the result based on the specified predicate.")
+                                                      .WithSummary("Asynchronously filters errors from the result based on the specified predicate.")
                                                       .WithParameter("awaitableResult", "The awaitable result to filter errors from.")
                                                       .WithParameter("predicate",       "The async predicate to determine which errors to keep.")
                                                       .WithReturns(
-                                                           $"A task with a result containing only the errors that match the predicate. If no errors match, returns a success result.");
+                                                           "A task with a result containing only the errors that match the predicate. If no errors match, returns a success result.");
 
         // Add documentation for all value type parameters
-        for (int i = 0; i < genericParams.Length; i++) {
+        for (var i = 0; i < genericParams.Length; i++) {
             var paramName = genericParams[i];
             var ordinal   = GetOrdinalString(i + 1);
             documentationBuilder.WithTypeParameter(paramName, $"The type of the {ordinal} value.");
@@ -295,20 +295,22 @@ internal sealed class ResultFilterErrorExtensionsCodeGenerator : BaseCodeGenerat
 
     private string GenerateFilterErrorAsyncBody() {
         return """
-                var result = await awaitableResult;
-                return result.FilterError(predicate);
-                """;
+               var result = await awaitableResult;
+               return result.FilterError(predicate);
+               """;
     }
-    
-    private static string GetOrdinalString(int number) => number switch {
-        1 => "first",
-        2 => "second",
-        3 => "third",
-        4 => "fourth",
-        5 => "fifth",
-        6 => "sixth",
-        7 => "seventh",
-        8 => "eighth",
-        _ => $"{number}th"
-    };
+
+    private static string GetOrdinalString(int number) {
+        return number switch {
+            1 => "first",
+            2 => "second",
+            3 => "third",
+            4 => "fourth",
+            5 => "fifth",
+            6 => "sixth",
+            7 => "seventh",
+            8 => "eighth",
+            _ => $"{number}th"
+        };
+    }
 }

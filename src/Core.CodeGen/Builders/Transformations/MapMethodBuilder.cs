@@ -4,7 +4,7 @@ using UnambitiousFx.Core.CodeGen.Design;
 namespace UnambitiousFx.Core.CodeGen.Builders.Transformations;
 
 /// <summary>
-/// Builds Map extension methods for Result types.
+///     Builds Map extension methods for Result types.
 /// </summary>
 internal sealed class MapMethodBuilder {
     private readonly string _baseNamespace;
@@ -14,7 +14,7 @@ internal sealed class MapMethodBuilder {
     }
 
     /// <summary>
-    /// Builds a standalone Map method for a specific arity.
+    ///     Builds a standalone Map method for a specific arity.
     /// </summary>
     public MethodWriter BuildStandaloneMethod(ushort arity) {
         var valueTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
@@ -78,22 +78,22 @@ internal sealed class MapMethodBuilder {
         }
 
         return new MethodWriter(
-            name: "Map",
-            returnType: returnType,
-            body: body,
-            visibility: Visibility.Public,
-            modifier: MethodModifier.Static,
-            parameters: [
+            "Map",
+            returnType,
+            body,
+            Visibility.Public,
+            MethodModifier.Static,
+            [
                 new MethodParameter($"this {resultType}", "result"),
                 new MethodParameter(funcSignature,        "map")
             ],
-            genericParameters: genericParams.ToArray(),
-            documentation: docBuilder.Build()
+            genericParams.ToArray(),
+            docBuilder.Build()
         );
     }
 
     /// <summary>
-    /// Builds async Map method: Result + async func.
+    ///     Builds async Map method: Result + async func.
     /// </summary>
     public MethodWriter BuildAsyncFuncMethod(ushort arity,
                                              bool   isValueTask) {
@@ -164,23 +164,23 @@ internal sealed class MapMethodBuilder {
         }
 
         return new MethodWriter(
-            name: "MapAsync",
-            returnType: asyncReturn,
-            body: body,
-            visibility: Visibility.Public,
-            modifier: MethodModifier.Static,
-            parameters: [
+            "MapAsync",
+            asyncReturn,
+            body,
+            Visibility.Public,
+            MethodModifier.Static,
+            [
                 new MethodParameter($"this {resultType}", "result"),
                 new MethodParameter(funcSignature,        "map")
             ],
-            genericParameters: genericParams.ToArray(),
+            genericParams.ToArray(),
             usings: ["System", "System.Threading.Tasks"],
             documentation: docBuilder.Build()
         );
     }
 
     /// <summary>
-    /// Builds async Map method: Task + sync func.
+    ///     Builds async Map method: Task + sync func.
     /// </summary>
     public MethodWriter BuildTaskSyncFuncMethod(ushort arity,
                                                 bool   isValueTask) {
@@ -233,23 +233,23 @@ internal sealed class MapMethodBuilder {
         }
 
         return new MethodWriter(
-            name: "MapAsync",
-            returnType: asyncReturn,
-            body: body,
-            visibility: Visibility.Public,
-            modifier: MethodModifier.Async | MethodModifier.Static,
-            parameters: [
+            "MapAsync",
+            asyncReturn,
+            body,
+            Visibility.Public,
+            MethodModifier.Async | MethodModifier.Static,
+            [
                 new MethodParameter($"this {asyncResultType}", "awaitableResult"),
                 new MethodParameter(funcSignature,             "map")
             ],
-            genericParameters: genericParams.ToArray(),
+            genericParams.ToArray(),
             usings: ["System", "System.Threading.Tasks", "UnambitiousFx.Core.Results.Extensions.Transformations"],
             documentation: docBuilder.Build()
         );
     }
 
     /// <summary>
-    /// Builds async Map method: Task + async func.
+    ///     Builds async Map method: Task + async func.
     /// </summary>
     public MethodWriter BuildTaskAsyncFuncMethod(ushort arity,
                                                  bool   isValueTask) {
@@ -323,16 +323,16 @@ internal sealed class MapMethodBuilder {
         }
 
         return new MethodWriter(
-            name: "MapAsync",
-            returnType: asyncReturn,
-            body: body,
-            visibility: Visibility.Public,
-            modifier: MethodModifier.Static,
-            parameters: [
+            "MapAsync",
+            asyncReturn,
+            body,
+            Visibility.Public,
+            MethodModifier.Static,
+            [
                 new MethodParameter($"this {asyncResultType}", "awaitableResult"),
                 new MethodParameter(funcSignature,             "map")
             ],
-            genericParameters: genericParams.ToArray(),
+            genericParams.ToArray(),
             usings: ["System", "System.Threading.Tasks", "UnambitiousFx.Core.Results.Extensions.Transformations"],
             documentation: docBuilder.Build()
         );

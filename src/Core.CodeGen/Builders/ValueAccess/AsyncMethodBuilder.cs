@@ -4,26 +4,23 @@ using UnambitiousFx.Core.CodeGen.Design;
 namespace UnambitiousFx.Core.CodeGen.Builders.ValueAccess;
 
 /// <summary>
-/// Builds async extension methods for Task and ValueTask Result types.
+///     Builds async extension methods for Task and ValueTask Result types.
 /// </summary>
-internal sealed class AsyncMethodBuilder
-{
+internal sealed class AsyncMethodBuilder {
     private readonly string _baseNamespace;
 
-    public AsyncMethodBuilder(string baseNamespace)
-    {
+    public AsyncMethodBuilder(string baseNamespace) {
         _baseNamespace = baseNamespace ?? throw new ArgumentNullException(nameof(baseNamespace));
     }
 
     /// <summary>
-    /// Builds async ValueOr method with default fallback.
+    ///     Builds async ValueOr method with default fallback.
     /// </summary>
     public MethodWriter BuildValueOrDefaultAsync(ushort arity,
-                                                 bool isValueTask)
-    {
-        var genericTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
+                                                 bool   isValueTask) {
+        var genericTypes  = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
         var genericParams = GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull");
-        var resultType = $"Result<{genericTypes}>";
+        var resultType    = $"Result<{genericTypes}>";
         var asyncResultType = isValueTask
                                   ? $"ValueTask<{resultType}>"
                                   : $"Task<{resultType}>";
@@ -40,15 +37,13 @@ internal sealed class AsyncMethodBuilder
                                                  .Select(n => $"fallback{n}"));
 
         string body;
-        if (arity == 1)
-        {
+        if (arity == 1) {
             body = """
                    var result = await awaitableResult.ConfigureAwait(false);
                    return result.ValueOr(fallback1);
                    """;
         }
-        else
-        {
+        else {
             body = $"""
                     var result = await awaitableResult.ConfigureAwait(false);
                     return result.ValueOr({fallbackArgs});
@@ -60,13 +55,13 @@ internal sealed class AsyncMethodBuilder
                               : $"Task<{returnType}>";
 
         return new MethodWriter(
-            name: "ValueOrAsync",
-            returnType: asyncReturn,
-            body: body,
-            visibility: Visibility.Public,
-            modifier: MethodModifier.Async | MethodModifier.Static,
-            parameters: parameters.ToArray(),
-            genericParameters: genericParams,
+            "ValueOrAsync",
+            asyncReturn,
+            body,
+            Visibility.Public,
+            MethodModifier.Async | MethodModifier.Static,
+            parameters.ToArray(),
+            genericParams,
             usings: ["System", "System.Threading.Tasks"],
             documentation: DocumentationWriter.Create()
                                               .WithSummary("Async ValueOr returning fallback(s) when failure.")
@@ -75,44 +70,43 @@ internal sealed class AsyncMethodBuilder
     }
 
     /// <summary>
-    /// Builds async ValueOr method with factory.
+    ///     Builds async ValueOr method with factory.
     /// </summary>
     public MethodWriter BuildValueOrFactoryAsync(ushort arity,
-                                                 bool isValueTask)
-    {
-        var genericTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
+                                                 bool   isValueTask) {
+        var genericTypes  = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
         var genericParams = GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull");
-        var resultType = $"Result<{genericTypes}>";
+        var resultType    = $"Result<{genericTypes}>";
         var asyncResultType = isValueTask
                                   ? $"ValueTask<{resultType}>"
                                   : $"Task<{resultType}>";
-        var returnType = GenericTypeHelper.BuildTupleTypeString(arity, "TValue");
+        var returnType    = GenericTypeHelper.BuildTupleTypeString(arity, "TValue");
         var factoryReturn = GenericTypeHelper.BuildTupleTypeString(arity, "TValue");
 
         var valueParams = string.Join(", ",
                                       Enumerable.Range(1, arity)
                                                 .Select(n => $"value{n}"));
 
-        var body = $"""
-                    var result = await awaitableResult.ConfigureAwait(false);
-                    return result.ValueOr(fallbackFactory);
-                    """;
+        var body = """
+                   var result = await awaitableResult.ConfigureAwait(false);
+                   return result.ValueOr(fallbackFactory);
+                   """;
 
         var asyncReturn = isValueTask
                               ? $"ValueTask<{returnType}>"
                               : $"Task<{returnType}>";
 
         return new MethodWriter(
-            name: "ValueOrAsync",
-            returnType: asyncReturn,
-            body: body,
-            visibility: Visibility.Public,
-            modifier: MethodModifier.Async | MethodModifier.Static,
-            parameters: [
+            "ValueOrAsync",
+            asyncReturn,
+            body,
+            Visibility.Public,
+            MethodModifier.Async | MethodModifier.Static,
+            [
                 new MethodParameter($"this {asyncResultType}", "awaitableResult"),
                 new MethodParameter($"Func<{factoryReturn}>",  "fallbackFactory")
             ],
-            genericParameters: genericParams,
+            genericParams,
             usings: ["System", "System.Threading.Tasks"],
             documentation: DocumentationWriter.Create()
                                               .WithSummary("Async ValueOr using fallback factory when failure.")
@@ -121,29 +115,26 @@ internal sealed class AsyncMethodBuilder
     }
 
     /// <summary>
-    /// Builds async ValueOrThrow method with default exception.
+    ///     Builds async ValueOrThrow method with default exception.
     /// </summary>
     public MethodWriter BuildValueOrThrowDefaultAsync(ushort arity,
-                                                      bool isValueTask)
-    {
-        var genericTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
+                                                      bool   isValueTask) {
+        var genericTypes  = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
         var genericParams = GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull");
-        var resultType = $"Result<{genericTypes}>";
+        var resultType    = $"Result<{genericTypes}>";
         var asyncResultType = isValueTask
                                   ? $"ValueTask<{resultType}>"
                                   : $"Task<{resultType}>";
         var returnType = GenericTypeHelper.BuildTupleTypeString(arity, "TValue");
 
         string body;
-        if (arity == 1)
-        {
+        if (arity == 1) {
             body = """
                    var result = await resultTask.ConfigureAwait(false);
                    return result.ValueOrThrow();
                    """;
         }
-        else
-        {
+        else {
             body = """
                    var result = await resultTask.ConfigureAwait(false);
                    return result.ValueOrThrow(errors => throw errors.ToException());
@@ -155,13 +146,13 @@ internal sealed class AsyncMethodBuilder
                               : $"Task<{returnType}>";
 
         return new MethodWriter(
-            name: "ValueOrThrowAsync",
-            returnType: asyncReturn,
-            body: body,
-            visibility: Visibility.Public,
-            modifier: MethodModifier.Async | MethodModifier.Static,
-            parameters: [new MethodParameter($"this {asyncResultType}", "resultTask")],
-            genericParameters: genericParams,
+            "ValueOrThrowAsync",
+            asyncReturn,
+            body,
+            Visibility.Public,
+            MethodModifier.Async | MethodModifier.Static,
+            [new MethodParameter($"this {asyncResultType}", "resultTask")],
+            genericParams,
             usings: ["System", "System.Threading.Tasks", $"{_baseNamespace}.Results.Reasons"],
             documentation: DocumentationWriter.Create()
                                               .WithSummary("Async ValueOrThrow throwing aggregated exception when failure.")
@@ -170,14 +161,13 @@ internal sealed class AsyncMethodBuilder
     }
 
     /// <summary>
-    /// Builds async ValueOrThrow method with custom exception factory.
+    ///     Builds async ValueOrThrow method with custom exception factory.
     /// </summary>
     public MethodWriter BuildValueOrThrowFactoryAsync(ushort arity,
-                                                      bool isValueTask)
-    {
-        var genericTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
+                                                      bool   isValueTask) {
+        var genericTypes  = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
         var genericParams = GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull");
-        var resultType = $"Result<{genericTypes}>";
+        var resultType    = $"Result<{genericTypes}>";
         var asyncResultType = isValueTask
                                   ? $"ValueTask<{resultType}>"
                                   : $"Task<{resultType}>";
@@ -193,16 +183,16 @@ internal sealed class AsyncMethodBuilder
                               : $"Task<{returnType}>";
 
         return new MethodWriter(
-            name: "ValueOrThrowAsync",
-            returnType: asyncReturn,
-            body: body,
-            visibility: Visibility.Public,
-            modifier: MethodModifier.Async | MethodModifier.Static,
-            parameters: [
+            "ValueOrThrowAsync",
+            asyncReturn,
+            body,
+            Visibility.Public,
+            MethodModifier.Async | MethodModifier.Static,
+            [
                 new MethodParameter($"this {asyncResultType}",              "resultTask"),
                 new MethodParameter("Func<IEnumerable<IError>, Exception>", "exceptionFactory")
             ],
-            genericParameters: genericParams,
+            genericParams,
             usings: ["System", "System.Threading.Tasks", $"{_baseNamespace}.Results.Reasons"],
             documentation: DocumentationWriter.Create()
                                               .WithSummary("Async ValueOrThrow using exception factory when failure.")
@@ -211,22 +201,19 @@ internal sealed class AsyncMethodBuilder
     }
 
     public MethodWriter BuildToNullableDefaultAsync(ushort arity,
-                                                    bool isValueTask)
-    {
-        var genericTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
+                                                    bool   isValueTask) {
+        var genericTypes  = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
         var genericParams = GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull");
-        var resultType = $"Result<{genericTypes}>";
+        var resultType    = $"Result<{genericTypes}>";
         var asyncResultType = isValueTask
                                   ? $"ValueTask<{resultType}>"
                                   : $"Task<{resultType}>";
 
         string returnType;
-        if (arity == 1)
-        {
+        if (arity == 1) {
             returnType = "TValue1?";
         }
-        else
-        {
+        else {
             var tupleType = GenericTypeHelper.BuildTupleTypeString(arity, "TValue");
             returnType = $"{tupleType}?";
         }
@@ -241,13 +228,13 @@ internal sealed class AsyncMethodBuilder
                               : $"Task<{returnType}>";
 
         return new MethodWriter(
-            name: "ToNullableAsync",
-            returnType: asyncReturn,
-            body: body,
-            visibility: Visibility.Public,
-            modifier: MethodModifier.Async | MethodModifier.Static,
-            parameters: [new MethodParameter($"this {asyncResultType}", "awaitable")],
-            genericParameters: genericParams,
+            "ToNullableAsync",
+            asyncReturn,
+            body,
+            Visibility.Public,
+            MethodModifier.Async | MethodModifier.Static,
+            [new MethodParameter($"this {asyncResultType}", "awaitable")],
+            genericParams,
             usings: ["System", "System.Threading.Tasks", "UnambitiousFx.Core.Results.Extensions.ValueAccess"],
             documentation: DocumentationWriter.Create()
                                               .WithSummary("Async ToNullable returning nullable value(s) when success, null when failure.")
@@ -256,13 +243,12 @@ internal sealed class AsyncMethodBuilder
     }
 
     /// <summary>
-    /// Builds async Match method for pattern matching on Result.
+    ///     Builds async Match method for pattern matching on Result.
     /// </summary>
     public MethodWriter BuildMatchAsync(ushort arity,
-                                        bool isValueTask)
-    {
+                                        bool   isValueTask) {
         var genericTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
-        var resultType = $"Result<{genericTypes}>";
+        var resultType   = $"Result<{genericTypes}>";
         var asyncResultType = isValueTask
                                   ? $"ValueTask<{resultType}>"
                                   : $"Task<{resultType}>";
@@ -275,8 +261,11 @@ internal sealed class AsyncMethodBuilder
 
         // Build success function signature
         var successValueParams = string.Join(", ",
-            Enumerable.Range(1, arity).Select(n => $"TValue{n}"));
-        var asyncType = isValueTask ? "ValueTask" : "Task";
+                                             Enumerable.Range(1, arity)
+                                                       .Select(n => $"TValue{n}"));
+        var asyncType = isValueTask
+                            ? "ValueTask"
+                            : "Task";
         var successFuncType = $"Func<{successValueParams}, {asyncType}<TOut>>";
 
         const string body = """
@@ -289,17 +278,17 @@ internal sealed class AsyncMethodBuilder
                               : "Task<TOut>";
 
         return new MethodWriter(
-            name: "MatchAsync",
-            returnType: asyncReturn,
-            body: body,
-            visibility: Visibility.Public,
-            modifier: MethodModifier.Async | MethodModifier.Static,
-            parameters: [
-                new MethodParameter($"this {asyncResultType}", "awaitableResult"),
-                new MethodParameter(successFuncType, "success"),
+            "MatchAsync",
+            asyncReturn,
+            body,
+            Visibility.Public,
+            MethodModifier.Async | MethodModifier.Static,
+            [
+                new MethodParameter($"this {asyncResultType}",                       "awaitableResult"),
+                new MethodParameter(successFuncType,                                 "success"),
                 new MethodParameter($"Func<IEnumerable<IError>, {asyncType}<TOut>>", "failure")
             ],
-            genericParameters: genericParams.ToArray(),
+            genericParams.ToArray(),
             usings: ["System", "System.Threading.Tasks", $"{_baseNamespace}.Results.Reasons"],
             documentation: DocumentationWriter.Create()
                                               .WithSummary("Async Match for pattern matching on Result, executing success or failure handler.")

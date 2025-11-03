@@ -5,17 +5,17 @@ using UnambitiousFx.Core.CodeGen.Design;
 namespace UnambitiousFx.Core.CodeGen.Generators;
 
 /// <summary>
-/// Generator for OneOf types using Template Method pattern.
+///     Generator for OneOf types using Template Method pattern.
 /// </summary>
 internal sealed class OneOfCodeGenerator : BaseCodeGenerator {
     public OneOfCodeGenerator(string               baseNamespace,
                               FileOrganizationMode fileOrganization = FileOrganizationMode.SeparateFiles)
         : base(new GenerationConfig(
                    baseNamespace,
-                   startArity: 2,
-                   subNamespace: "OneOf",
-                   className: "OneOf",
-                   fileOrganization: fileOrganization)) {
+                   2,
+                   "OneOf",
+                   "OneOf",
+                   fileOrganization)) {
     }
 
     private ClassWriter GenerateOneOfBase(ushort arity) {

@@ -1,6 +1,6 @@
 using UnambitiousFx.Core.Maybe;
 
-namespace UnambitiousFx.Core.Tests.Options.Extensions.Bind;
+namespace UnambitiousFx.Core.Tests.Maybe.Extensions.Bind;
 
 public sealed class BindTests {
     [Fact]

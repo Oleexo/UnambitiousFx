@@ -5,9 +5,9 @@ using UnambitiousFx.Core.CodeGen.Design;
 namespace UnambitiousFx.Core.CodeGen.Generators.ErrorHandling;
 
 /// <summary>
-/// Generator for ResultMapErrorsExtensions class.
-/// Generates MapErrors extension methods for all Result arities that transform error structure.
-/// Follows architecture rule: One generator per extension method category.
+///     Generator for ResultMapErrorsExtensions class.
+///     Generates MapErrors extension methods for all Result arities that transform error structure.
+///     Follows architecture rule: One generator per extension method category.
 /// </summary>
 internal sealed class ResultMapErrorsExtensionsCodeGenerator : BaseCodeGenerator {
     private const string ExtensionsNamespace = "Results.Extensions.ErrorHandling";
@@ -15,10 +15,10 @@ internal sealed class ResultMapErrorsExtensionsCodeGenerator : BaseCodeGenerator
     public ResultMapErrorsExtensionsCodeGenerator(string baseNamespace)
         : base(new GenerationConfig(
                    baseNamespace,
-                   startArity: 0, // Start from Result (arity 0)
-                   subNamespace: ExtensionsNamespace,
-                   className: "ResultMapErrorsExtensions",
-                   fileOrganization: FileOrganizationMode.SingleFile)) {
+                   0, // Start from Result (arity 0)
+                   ExtensionsNamespace,
+                   "ResultMapErrorsExtensions",
+                   FileOrganizationMode.SingleFile)) {
     }
 
     protected override string PrepareOutputDirectory(string outputPath) {
@@ -29,17 +29,17 @@ internal sealed class ResultMapErrorsExtensionsCodeGenerator : BaseCodeGenerator
     protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
         return [
             GenerateSyncMethods(arity),
-            GenerateAsyncMethods(arity, isValueTask: false),
-            GenerateAsyncMethods(arity, isValueTask: true)
+            GenerateAsyncMethods(arity, false),
+            GenerateAsyncMethods(arity, true)
         ];
     }
 
     private ClassWriter GenerateSyncMethods(ushort arity) {
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
         var classWriter = new ClassWriter(
-            name: Config.ClassName,
-            visibility: Visibility.Public,
-            classModifiers: ClassModifier.Static | ClassModifier.Partial
+            Config.ClassName,
+            Visibility.Public,
+            ClassModifier.Static | ClassModifier.Partial
         );
 
         // Generate MapErrors method
@@ -57,9 +57,9 @@ internal sealed class ResultMapErrorsExtensionsCodeGenerator : BaseCodeGenerator
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}.{subNamespace}";
 
         var classWriter = new ClassWriter(
-            name: "ResultExtensions",
-            visibility: Visibility.Public,
-            classModifiers: ClassModifier.Static | ClassModifier.Partial
+            "ResultExtensions",
+            Visibility.Public,
+            ClassModifier.Static | ClassModifier.Partial
         );
 
         // Generate MapErrorsAsync method for Task/ValueTask<Result> -> Task/ValueTask<Result>
@@ -77,7 +77,7 @@ internal sealed class ResultMapErrorsExtensionsCodeGenerator : BaseCodeGenerator
                                                .WithSummary("Maps all errors in the result using the specified mapping function to transform the error structure.")
                                                .WithParameter("result", "The result to map errors for.")
                                                .WithParameter("map",    "The function to map the collection of exceptions to a single exception.")
-                                               .WithReturns($"A new result with mapped errors if the original result failed, otherwise the original successful result.")
+                                               .WithReturns("A new result with mapped errors if the original result failed, otherwise the original successful result.")
                                                .Build();
 
         var body = GenerateMapErrorsBody(arity, genericParams);
@@ -103,7 +103,7 @@ internal sealed class ResultMapErrorsExtensionsCodeGenerator : BaseCodeGenerator
 
     private (string resultType, string[] genericParams, GenericConstraint[] constraints) GetResultTypeInfo(ushort arity) {
         if (arity == 0) {
-            return ("Result", Array.Empty<string>(), Array.Empty<GenericConstraint>());
+            return ("Result", [], []);
         }
 
         var genericParams = Enumerable.Range(1, arity)
@@ -176,14 +176,14 @@ internal sealed class ResultMapErrorsExtensionsCodeGenerator : BaseCodeGenerator
         var mapType       = $"Func<IEnumerable<IError>, {taskType}<Exception>>";
 
         var documentationBuilder = DocumentationWriter.Create()
-                                                      .WithSummary($"Asynchronously maps errors in the result to a new exception using the specified mapping function.")
+                                                      .WithSummary("Asynchronously maps errors in the result to a new exception using the specified mapping function.")
                                                       .WithParameter("awaitableResult", "The awaitable result to map errors for.")
                                                       .WithParameter("map",             "The async function to map errors to a new exception.")
                                                       .WithReturns(
-                                                           $"A task with a new result containing the mapped exception if the original result failed, otherwise the original successful result.");
+                                                           "A task with a new result containing the mapped exception if the original result failed, otherwise the original successful result.");
 
         // Add documentation for all value type parameters
-        for (int i = 0; i < genericParams.Length; i++) {
+        for (var i = 0; i < genericParams.Length; i++) {
             var paramName = genericParams[i];
             var ordinal   = GetOrdinalString(i + 1);
             documentationBuilder.WithTypeParameter(paramName, $"The type of the {ordinal} value.");
@@ -253,15 +253,17 @@ internal sealed class ResultMapErrorsExtensionsCodeGenerator : BaseCodeGenerator
                  """;
     }
 
-    private static string GetOrdinalString(int number) => number switch {
-        1 => "first",
-        2 => "second",
-        3 => "third",
-        4 => "fourth",
-        5 => "fifth",
-        6 => "sixth",
-        7 => "seventh",
-        8 => "eighth",
-        _ => $"{number}th"
-    };
+    private static string GetOrdinalString(int number) {
+        return number switch {
+            1 => "first",
+            2 => "second",
+            3 => "third",
+            4 => "fourth",
+            5 => "fifth",
+            6 => "sixth",
+            7 => "seventh",
+            8 => "eighth",
+            _ => $"{number}th"
+        };
+    }
 }

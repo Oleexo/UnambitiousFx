@@ -1,7 +1,7 @@
 using JetBrains.Annotations;
 using UnambitiousFx.Core.Maybe;
 
-namespace UnambitiousFx.Core.Tests.Options;
+namespace UnambitiousFx.Core.Tests.Maybe;
 
 [TestSubject(typeof(Maybe<>))]
 public sealed class MaybeTests {

@@ -40,13 +40,13 @@ internal abstract class BaseArityTestGenerator : BaseCodeGenerator, IArityTestGe
     ///     Gets the required using statements for the generated test class.
     /// </summary>
     public virtual IEnumerable<string> GetRequiredUsings() {
-        return new[] {
+        return [
             "System",
             "System.Threading.Tasks",
             "Xunit",
             "UnambitiousFx.Core",
             "UnambitiousFx.Core.XUnit"
-        };
+        ];
     }
 
     /// <summary>

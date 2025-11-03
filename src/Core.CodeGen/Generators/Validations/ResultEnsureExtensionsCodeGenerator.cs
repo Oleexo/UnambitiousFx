@@ -6,21 +6,21 @@ using UnambitiousFx.Core.CodeGen.Design;
 namespace UnambitiousFx.Core.CodeGen.Generators.Validations;
 
 /// <summary>
-/// Generator for Result validation extension methods.
-/// Generates Ensure, EnsureNotEmpty, EnsureNotNull extensions, and their async variants.
+///     Generator for Result validation extension methods.
+///     Generates Ensure, EnsureNotEmpty, EnsureNotNull extensions, and their async variants.
 /// </summary>
 internal sealed class ResultEnsureExtensionsCodeGenerator : BaseCodeGenerator {
-    private readonly EnsureMethodBuilder          _ensureBuilder;
-    private readonly ValidationAsyncMethodBuilder _asyncBuilder;
     private const    string                       ExtensionsNamespace = "Results.Extensions.Validations";
+    private readonly ValidationAsyncMethodBuilder _asyncBuilder;
+    private readonly EnsureMethodBuilder          _ensureBuilder;
 
     public ResultEnsureExtensionsCodeGenerator(string baseNamespace)
         : base(new GenerationConfig(
                    baseNamespace,
-                   startArity: 1,
-                   subNamespace: ExtensionsNamespace,
-                   className: "ResultEnsureExtensions",
-                   fileOrganization: FileOrganizationMode.SingleFile)) {
+                   1,
+                   ExtensionsNamespace,
+                   "ResultEnsureExtensions",
+                   FileOrganizationMode.SingleFile)) {
         _ensureBuilder = new EnsureMethodBuilder(baseNamespace);
         _asyncBuilder  = new ValidationAsyncMethodBuilder(baseNamespace);
     }
@@ -33,8 +33,8 @@ internal sealed class ResultEnsureExtensionsCodeGenerator : BaseCodeGenerator {
     protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
         var results = new List<ClassWriter>();
         results.Add(GenerateEnsurePartial(arity));
-        results.AddRange(GenerateEnsureAsyncMethods(arity, isValueTask: false));
-        results.AddRange(GenerateEnsureAsyncMethods(arity, isValueTask: true));
+        results.AddRange(GenerateEnsureAsyncMethods(arity, false));
+        results.AddRange(GenerateEnsureAsyncMethods(arity, true));
         return results;
     }
 
@@ -42,9 +42,9 @@ internal sealed class ResultEnsureExtensionsCodeGenerator : BaseCodeGenerator {
 
     private ClassWriter GenerateEnsurePartial(ushort arity) {
         var classWriter = new ClassWriter(
-            name: "ResultEnsureExtensions",
-            visibility: Visibility.Public,
-            classModifiers: ClassModifier.Static | ClassModifier.Partial
+            "ResultEnsureExtensions",
+            Visibility.Public,
+            ClassModifier.Static | ClassModifier.Partial
         );
 
         classWriter.AddMethod(_ensureBuilder.BuildStandaloneMethod(arity));
@@ -59,14 +59,14 @@ internal sealed class ResultEnsureExtensionsCodeGenerator : BaseCodeGenerator {
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}.{subNamespace}";
         var taskClass = new ClassWriter("ResultExtensions", Visibility.Public,
                                         ClassModifier.Static | ClassModifier.Partial);
-        taskClass.AddMethod(_asyncBuilder.BuildEnsureAsync(arity, isValueTask: isValueTask));
+        taskClass.AddMethod(_asyncBuilder.BuildEnsureAsync(arity, isValueTask));
         taskClass.Namespace = ns;
         yield return taskClass;
 
         // Task partial - for Task{Result{T}}
         var taskAwaitableClass = new ClassWriter("ResultExtensions", Visibility.Public,
                                                  ClassModifier.Static | ClassModifier.Partial);
-        taskAwaitableClass.AddMethod(_asyncBuilder.BuildEnsureAwaitableAsync(arity, isValueTask: isValueTask));
+        taskAwaitableClass.AddMethod(_asyncBuilder.BuildEnsureAwaitableAsync(arity, isValueTask));
         taskAwaitableClass.Namespace = ns;
         yield return taskAwaitableClass;
     }

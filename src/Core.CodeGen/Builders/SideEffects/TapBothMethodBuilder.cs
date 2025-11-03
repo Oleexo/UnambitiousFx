@@ -4,12 +4,12 @@ using UnambitiousFx.Core.CodeGen.Design;
 namespace UnambitiousFx.Core.CodeGen.Builders.SideEffects;
 
 /// <summary>
-/// Builds TapBoth extension methods for Result types.
-/// TapBoth executes different side effects for success and failure paths.
+///     Builds TapBoth extension methods for Result types.
+///     TapBoth executes different side effects for success and failure paths.
 /// </summary>
 internal sealed class TapBothMethodBuilder {
     /// <summary>
-    /// Builds a sync TapBoth method for a specific arity.
+    ///     Builds a sync TapBoth method for a specific arity.
     /// </summary>
     public MethodWriter BuildStandaloneMethod(ushort arity) {
         var genericParams = GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull");
@@ -45,20 +45,20 @@ internal sealed class TapBothMethodBuilder {
         }
 
         return new MethodWriter(
-            name: "TapBoth",
-            returnType: resultType,
-            body: body,
-            visibility: Visibility.Public,
-            modifier: MethodModifier.Static,
-            parameters: parameters.ToArray(),
-            genericParameters: genericParams,
+            "TapBoth",
+            resultType,
+            body,
+            Visibility.Public,
+            MethodModifier.Static,
+            parameters.ToArray(),
+            genericParams,
             usings: ["UnambitiousFx.Core.Results.Reasons"],
             documentation: docBuilder.Build()
         );
     }
 
     /// <summary>
-    /// Builds async TapBoth method: Result + AsyncFuncs
+    ///     Builds async TapBoth method: Result + AsyncFuncs
     /// </summary>
     public MethodWriter BuildAsyncFuncMethod(ushort arity,
                                              bool   isValueTask) {
@@ -130,20 +130,20 @@ internal sealed class TapBothMethodBuilder {
         }
 
         return new MethodWriter(
-            name: "TapBothAsync",
-            returnType: asyncReturn,
-            body: body,
-            visibility: Visibility.Public,
-            modifier: MethodModifier.Async | MethodModifier.Static,
-            parameters: parameters.ToArray(),
-            genericParameters: genericParams,
+            "TapBothAsync",
+            asyncReturn,
+            body,
+            Visibility.Public,
+            MethodModifier.Async | MethodModifier.Static,
+            parameters.ToArray(),
+            genericParams,
             usings: ["System", "System.Threading.Tasks", "UnambitiousFx.Core.Results.Reasons"],
             documentation: docBuilder.Build()
         );
     }
 
     /// <summary>
-    /// Builds async TapBoth method: Task + SyncFuncs
+    ///     Builds async TapBoth method: Task + SyncFuncs
     /// </summary>
     public MethodWriter BuildTaskSyncFuncMethod(ushort arity,
                                                 bool   isValueTask) {
@@ -186,20 +186,20 @@ internal sealed class TapBothMethodBuilder {
         }
 
         return new MethodWriter(
-            name: "TapBothAsync",
-            returnType: asyncReturn,
-            body: body,
-            visibility: Visibility.Public,
-            modifier: MethodModifier.Async | MethodModifier.Static,
-            parameters: parameters.ToArray(),
-            genericParameters: genericParams,
+            "TapBothAsync",
+            asyncReturn,
+            body,
+            Visibility.Public,
+            MethodModifier.Async | MethodModifier.Static,
+            parameters.ToArray(),
+            genericParams,
             usings: ["System", "System.Threading.Tasks", "UnambitiousFx.Core.Results.Reasons"],
             documentation: docBuilder.Build()
         );
     }
 
     /// <summary>
-    /// Builds async TapBoth method: Task + AsyncFuncs
+    ///     Builds async TapBoth method: Task + AsyncFuncs
     /// </summary>
     public MethodWriter BuildTaskAsyncFuncMethod(ushort arity,
                                                  bool   isValueTask) {
@@ -241,13 +241,13 @@ internal sealed class TapBothMethodBuilder {
         }
 
         return new MethodWriter(
-            name: "TapBothAsync",
-            returnType: asyncReturn,
-            body: body,
-            visibility: Visibility.Public,
-            modifier: MethodModifier.Async | MethodModifier.Static,
-            parameters: parameters.ToArray(),
-            genericParameters: genericParams,
+            "TapBothAsync",
+            asyncReturn,
+            body,
+            Visibility.Public,
+            MethodModifier.Async | MethodModifier.Static,
+            parameters.ToArray(),
+            genericParams,
             usings: ["System", "System.Threading.Tasks", "UnambitiousFx.Core.Results.Reasons"],
             documentation: docBuilder.Build()
         );

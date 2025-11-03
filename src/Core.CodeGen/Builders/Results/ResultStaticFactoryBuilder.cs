@@ -20,24 +20,24 @@ internal static class ResultStaticFactoryBuilder {
 
         // Success<T...>(value1, ..., valueN)
         writer.AddMethod(new MethodWriter(
-                             name: "Success",
-                             returnType: $"Result<{allTypeParams}>",
-                             body: $"return new SuccessResult<{allTypeParams}>({allValueArgs});",
-                             visibility: Visibility.Public,
-                             modifier: MethodModifier.Static,
-                             parameters: valueParameters,
-                             genericParameters: genericParams
+                             "Success",
+                             $"Result<{allTypeParams}>",
+                             $"return new SuccessResult<{allTypeParams}>({allValueArgs});",
+                             Visibility.Public,
+                             MethodModifier.Static,
+                             valueParameters,
+                             genericParams
                          ));
 
         // Failure<T...>(Exception error)
         writer.AddMethod(new MethodWriter(
-                             name: "Failure",
-                             returnType: $"Result<{allTypeParams}>",
-                             body: $"return new FailureResult<{allTypeParams}>(error);",
-                             visibility: Visibility.Public,
-                             modifier: MethodModifier.Static,
-                             parameters: [new MethodParameter("Exception", "error")],
-                             genericParameters: genericParams,
+                             "Failure",
+                             $"Result<{allTypeParams}>",
+                             $"return new FailureResult<{allTypeParams}>(error);",
+                             Visibility.Public,
+                             MethodModifier.Static,
+                             [new MethodParameter("Exception", "error")],
+                             genericParams,
                              usings: ["System"]
                          ));
 
@@ -53,37 +53,37 @@ internal static class ResultStaticFactoryBuilder {
                                   """;
 
         writer.AddMethod(new MethodWriter(
-                             name: "Failure",
-                             returnType: $"Result<{allTypeParams}>",
-                             body: failureIErrorBody,
-                             visibility: Visibility.Public,
-                             modifier: MethodModifier.Static,
-                             parameters: [new MethodParameter("IError", "error")],
-                             genericParameters: genericParams,
+                             "Failure",
+                             $"Result<{allTypeParams}>",
+                             failureIErrorBody,
+                             Visibility.Public,
+                             MethodModifier.Static,
+                             [new MethodParameter("IError", "error")],
+                             genericParams,
                              usings: ["System", "UnambitiousFx.Core.Results.Reasons"]
                          ));
 
         // Failure<T...>(string message)
         writer.AddMethod(new MethodWriter(
-                             name: "Failure",
-                             returnType: $"Result<{allTypeParams}>",
-                             body: $"return new FailureResult<{allTypeParams}>(new Exception(message));",
-                             visibility: Visibility.Public,
-                             modifier: MethodModifier.Static,
-                             parameters: [new MethodParameter("string", "message")],
-                             genericParameters: genericParams,
+                             "Failure",
+                             $"Result<{allTypeParams}>",
+                             $"return new FailureResult<{allTypeParams}>(new Exception(message));",
+                             Visibility.Public,
+                             MethodModifier.Static,
+                             [new MethodParameter("string", "message")],
+                             genericParams,
                              usings: ["System"]
                          ));
 
         // Failure<T...>(IEnumerable<IError> errors)
         writer.AddMethod(new MethodWriter(
-                             name: "Failure",
-                             returnType: $"Result<{allTypeParams}>",
-                             body: $"return new FailureResult<{allTypeParams}>(errors);",
-                             visibility: Visibility.Public,
-                             modifier: MethodModifier.Static,
-                             parameters: [new MethodParameter("IEnumerable<IError>", "errors")],
-                             genericParameters: genericParams,
+                             "Failure",
+                             $"Result<{allTypeParams}>",
+                             $"return new FailureResult<{allTypeParams}>(errors);",
+                             Visibility.Public,
+                             MethodModifier.Static,
+                             [new MethodParameter("IEnumerable<IError>", "errors")],
+                             genericParams,
                              usings: ["System"]
                          ));
 

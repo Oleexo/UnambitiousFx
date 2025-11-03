@@ -1,17 +1,18 @@
 using UnambitiousFx.Core.CodeGen.Common;
 using UnambitiousFx.Core.CodeGen.Design;
+using UnambitiousFx.Core.CodeGen.TestBuilders.AttributeReferences;
 
 namespace UnambitiousFx.Core.CodeGen.TestBuilders.OneOf;
 
 /// <summary>
-/// Builds OneOf test classes with comprehensive test methods.
+///     Builds OneOf test classes with comprehensive test methods.
 /// </summary>
 internal static class OneOfTestClassBuilder {
     public static ClassWriter Build(ushort arity) {
         var classWriter = new ClassWriter(
-            name: $"OneOf{arity}Tests",
-            visibility: Visibility.Public,
-            classModifiers: ClassModifier.Sealed
+            $"OneOf{arity}Tests",
+            Visibility.Public,
+            ClassModifier.Sealed
         );
 
         // Generate different types of tests
@@ -41,11 +42,11 @@ internal static class OneOfTestClassBuilder {
             }
 
             classWriter.AddMethod(new MethodWriter(
-                                      name: $"From{ordinalName}_ShouldSetIs{ordinalName}",
-                                      returnType: "void",
-                                      body: body.TrimEnd(),
-                                      visibility: Visibility.Public,
-                                      attributes: [new AttributeReference("Fact")],
+                                      $"From{ordinalName}_ShouldSetIs{ordinalName}",
+                                      "void",
+                                      body.TrimEnd(),
+                                      Visibility.Public,
+                                      attributes: [new FactAttributeReference()],
                                       usings: ["UnambitiousFx.Core.OneOf"]
                                   ));
         }
@@ -75,10 +76,10 @@ internal static class OneOfTestClassBuilder {
 
             if (TestTypeHelper.IsValueTestable(i)) {
                 classWriter.AddMethod(new MethodWriter(
-                                          name: $"From{ordinalName}_ShouldStoreValue",
-                                          returnType: "void",
-                                          body: body.TrimEnd(),
-                                          visibility: Visibility.Public,
+                                          $"From{ordinalName}_ShouldStoreValue",
+                                          "void",
+                                          body.TrimEnd(),
+                                          Visibility.Public,
                                           attributes: GenerateInlineData(i)
                                              .Concat([new AttributeReference("Theory")]),
                                           parameters: [new MethodParameter(testType, "value")],
@@ -87,12 +88,12 @@ internal static class OneOfTestClassBuilder {
             }
             else {
                 classWriter.AddMethod(new MethodWriter(
-                                          name: $"From{ordinalName}_ShouldStoreValue",
-                                          returnType: "void",
-                                          body: body.Replace("value", testValue)
-                                                    .TrimEnd(),
-                                          visibility: Visibility.Public,
-                                          attributes: [new AttributeReference("Fact")],
+                                          $"From{ordinalName}_ShouldStoreValue",
+                                          "void",
+                                          body.Replace("value", testValue)
+                                              .TrimEnd(),
+                                          Visibility.Public,
+                                          attributes: [new FactAttributeReference()],
                                           usings: ["UnambitiousFx.Core.OneOf"]
                                       ));
             }
@@ -112,7 +113,10 @@ internal static class OneOfTestClassBuilder {
             body += "var result = oneOf.Match(";
 
             for (ushort j = 1; j <= arity; j++) {
-                if (j > 1) body += ", ";
+                if (j > 1) {
+                    body += ", ";
+                }
+
                 if (j == i) {
                     body += "x => x";
                 }
@@ -128,11 +132,11 @@ internal static class OneOfTestClassBuilder {
                         : $"Assert.Equal({testValue}, result);";
 
             classWriter.AddMethod(new MethodWriter(
-                                      name: $"From{ordinalName}_WhenMatchWithResponse_ShouldReturn{ordinalName}Value",
-                                      returnType: "void",
-                                      body: body,
-                                      visibility: Visibility.Public,
-                                      attributes: [new AttributeReference("Fact")],
+                                      $"From{ordinalName}_WhenMatchWithResponse_ShouldReturn{ordinalName}Value",
+                                      "void",
+                                      body,
+                                      Visibility.Public,
+                                      attributes: [new FactAttributeReference()],
                                       usings: ["UnambitiousFx.Core.OneOf"]
                                   ));
         }
@@ -151,7 +155,10 @@ internal static class OneOfTestClassBuilder {
             body += "oneOf.Match(";
 
             for (ushort j = 1; j <= arity; j++) {
-                if (j > 1) body += ", ";
+                if (j > 1) {
+                    body += ", ";
+                }
+
                 if (j == i) {
                     body += testType == "bool"
                                 ? "x => { Assert.True(x); }"
@@ -166,11 +173,11 @@ internal static class OneOfTestClassBuilder {
             body += ");";
 
             classWriter.AddMethod(new MethodWriter(
-                                      name: $"From{ordinalName}_WhenMatch_ShouldCall{ordinalName}Handler",
-                                      returnType: "void",
-                                      body: body,
-                                      visibility: Visibility.Public,
-                                      attributes: [new AttributeReference("Fact")],
+                                      $"From{ordinalName}_WhenMatch_ShouldCall{ordinalName}Handler",
+                                      "void",
+                                      body,
+                                      Visibility.Public,
+                                      attributes: [new FactAttributeReference()],
                                       usings: ["UnambitiousFx.Core.OneOf"]
                                   ));
         }
@@ -195,11 +202,11 @@ internal static class OneOfTestClassBuilder {
                         : $"Assert.Equal({testValue}, value);";
 
             classWriter.AddMethod(new MethodWriter(
-                                      name: $"ImplicitConversion_From{ordinalName}_ShouldWork",
-                                      returnType: "void",
-                                      body: body,
-                                      visibility: Visibility.Public,
-                                      attributes: [new AttributeReference("Fact")],
+                                      $"ImplicitConversion_From{ordinalName}_ShouldWork",
+                                      "void",
+                                      body,
+                                      Visibility.Public,
+                                      attributes: [new FactAttributeReference()],
                                       usings: ["UnambitiousFx.Core.OneOf"]
                                   ));
         }

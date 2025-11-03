@@ -6,12 +6,11 @@ using UnambitiousFx.Core.CodeGen.Design;
 namespace UnambitiousFx.Core.CodeGen.Generators.SideEffects;
 
 /// <summary>
-/// Generator for ResultTapExtensions class.
-/// Generates ONE class containing all Tap methods, organized by arity in regions.
-/// Follows architecture rule: One generator per class.
+///     Generator for ResultTapExtensions class.
+///     Generates ONE class containing all Tap methods, organized by arity in regions.
+///     Follows architecture rule: One generator per class.
 /// </summary>
-internal sealed class ResultTapExtensionsCodeGenerator : BaseCodeGenerator
-{
+internal sealed class ResultTapExtensionsCodeGenerator : BaseCodeGenerator {
     private const string ExtensionsNamespace = "Results.Extensions.SideEffects";
 
     private readonly TapMethodBuilder _tapBuilder;
@@ -19,36 +18,32 @@ internal sealed class ResultTapExtensionsCodeGenerator : BaseCodeGenerator
     public ResultTapExtensionsCodeGenerator(string baseNamespace)
         : base(new GenerationConfig(
                    baseNamespace,
-                   startArity: 0,
-                   subNamespace: ExtensionsNamespace,
-                   className: "ResultTapExtensions",
-                   fileOrganization: FileOrganizationMode.SingleFile))
-    {
+                   0,
+                   ExtensionsNamespace,
+                   "ResultTapExtensions",
+                   FileOrganizationMode.SingleFile)) {
         _tapBuilder = new TapMethodBuilder();
     }
 
-    protected override string PrepareOutputDirectory(string outputPath)
-    {
+    protected override string PrepareOutputDirectory(string outputPath) {
         var mainOutput = FileSystemHelper.CreateSubdirectory(outputPath, Config.SubNamespace);
         return mainOutput;
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
-    {
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
         return [
             GenerateSyncMethods(arity),
-            GenerateAsyncMethods(arity, isValueTask: false),
-            GenerateAsyncMethods(arity, isValueTask: true)
+            GenerateAsyncMethods(arity, false),
+            GenerateAsyncMethods(arity, true)
         ];
     }
 
-    private ClassWriter GenerateSyncMethods(ushort arity)
-    {
+    private ClassWriter GenerateSyncMethods(ushort arity) {
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
         var classWriter = new ClassWriter(
-            name: Config.ClassName,
-            visibility: Visibility.Public,
-            classModifiers: ClassModifier.Static | ClassModifier.Partial
+            Config.ClassName,
+            Visibility.Public,
+            ClassModifier.Static | ClassModifier.Partial
         );
 
         // Generate sync Tap method
@@ -57,15 +52,17 @@ internal sealed class ResultTapExtensionsCodeGenerator : BaseCodeGenerator
         return classWriter;
     }
 
-    private ClassWriter GenerateAsyncMethods(ushort arity, bool isValueTask)
-    {
-        var subNamespace = isValueTask ? "ValueTasks" : "Tasks";
+    private ClassWriter GenerateAsyncMethods(ushort arity,
+                                             bool   isValueTask) {
+        var subNamespace = isValueTask
+                               ? "ValueTasks"
+                               : "Tasks";
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}.{subNamespace}";
 
         var classWriter = new ClassWriter(
-            name: Config.ClassName,
-            visibility: Visibility.Public,
-            classModifiers: ClassModifier.Static | ClassModifier.Partial
+            Config.ClassName,
+            Visibility.Public,
+            ClassModifier.Static | ClassModifier.Partial
         );
 
         // Generate 3 async overloads

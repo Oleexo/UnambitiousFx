@@ -102,7 +102,7 @@ internal sealed class ResultMatchErrorExtensionsCodeGenerator : BaseCodeGenerato
 
     private (string resultType, string[] genericParams, GenericConstraint[] constraints) GetResultTypeInfo(ushort arity) {
         if (arity == 0) {
-            return ("Result", Array.Empty<string>(), Array.Empty<GenericConstraint>());
+            return ("Result", [], []);
         }
 
         var genericParams = Enumerable.Range(1, arity)

@@ -13,10 +13,10 @@ internal sealed class ResultCodeGenerator : BaseCodeGenerator {
                                FileOrganizationMode fileOrganization = FileOrganizationMode.SeparateFiles)
         : base(new GenerationConfig(
                    baseNamespace,
-                   startArity: StartArity,
-                   subNamespace: SubNamespace,
-                   className: ClassName,
-                   fileOrganization: fileOrganization)) {
+                   StartArity,
+                   SubNamespace,
+                   ClassName,
+                   fileOrganization)) {
     }
 
     private IEnumerable<ClassWriter> GenerateResultBase(ushort arity) {

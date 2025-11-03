@@ -6,12 +6,11 @@ using UnambitiousFx.Core.CodeGen.Design;
 namespace UnambitiousFx.Core.CodeGen.Generators.Transformations;
 
 /// <summary>
-/// Generator for ResultFlattenExtensions class.
-/// Generates ONE class containing all Flatten methods, organized by arity in regions.
-/// Follows architecture rule: One generator per class.
+///     Generator for ResultFlattenExtensions class.
+///     Generates ONE class containing all Flatten methods, organized by arity in regions.
+///     Follows architecture rule: One generator per class.
 /// </summary>
-internal sealed class ResultFlattenExtensionsCodeGenerator : BaseCodeGenerator
-{
+internal sealed class ResultFlattenExtensionsCodeGenerator : BaseCodeGenerator {
     private const string ExtensionsNamespace = "Results.Extensions.Transformations";
 
     private readonly FlattenMethodBuilder _flattenBuilder;
@@ -19,36 +18,32 @@ internal sealed class ResultFlattenExtensionsCodeGenerator : BaseCodeGenerator
     public ResultFlattenExtensionsCodeGenerator(string baseNamespace)
         : base(new GenerationConfig(
                    baseNamespace,
-                   startArity: 1,
-                   subNamespace: ExtensionsNamespace,
-                   className: "ResultFlattenExtensions",
-                   fileOrganization: FileOrganizationMode.SingleFile))
-    {
+                   1,
+                   ExtensionsNamespace,
+                   "ResultFlattenExtensions",
+                   FileOrganizationMode.SingleFile)) {
         _flattenBuilder = new FlattenMethodBuilder(baseNamespace);
     }
 
-    protected override string PrepareOutputDirectory(string outputPath)
-    {
+    protected override string PrepareOutputDirectory(string outputPath) {
         var mainOutput = FileSystemHelper.CreateSubdirectory(outputPath, Config.SubNamespace);
         return mainOutput;
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
-    {
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
         return [
             GenerateSyncMethods(arity),
-            GenerateAsyncMethods(arity, isValueTask: false),
-            GenerateAsyncMethods(arity, isValueTask: true)
+            GenerateAsyncMethods(arity, false),
+            GenerateAsyncMethods(arity, true)
         ];
     }
 
-    private ClassWriter GenerateSyncMethods(ushort arity)
-    {
+    private ClassWriter GenerateSyncMethods(ushort arity) {
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
         var classWriter = new ClassWriter(
-            name: Config.ClassName,
-            visibility: Visibility.Public,
-            classModifiers: ClassModifier.Static | ClassModifier.Partial
+            Config.ClassName,
+            Visibility.Public,
+            ClassModifier.Static | ClassModifier.Partial
         );
 
         classWriter.AddMethod(_flattenBuilder.BuildStandaloneMethod(arity));
@@ -57,17 +52,16 @@ internal sealed class ResultFlattenExtensionsCodeGenerator : BaseCodeGenerator
     }
 
     private ClassWriter GenerateAsyncMethods(ushort arity,
-                                             bool isValueTask)
-    {
+                                             bool   isValueTask) {
         var subNamespace = isValueTask
                                ? "ValueTasks"
                                : "Tasks";
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}.{subNamespace}";
 
         var classWriter = new ClassWriter(
-            name: Config.ClassName,
-            visibility: Visibility.Public,
-            classModifiers: ClassModifier.Static | ClassModifier.Partial
+            Config.ClassName,
+            Visibility.Public,
+            ClassModifier.Static | ClassModifier.Partial
         );
 
         classWriter.AddMethod(_flattenBuilder.BuildAsyncMethod(arity, isValueTask));

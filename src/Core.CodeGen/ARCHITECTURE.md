@@ -253,21 +253,26 @@ CodeGenerationOrchestrator ◄── created by ── Program
 ## Key Design Principles Illustrated
 
 ### 1. Single Responsibility
+
 Each box in the diagrams has ONE clear responsibility
 
 ### 2. Open/Closed
+
 - BaseCodeGenerator: Open for extension (inheritance), closed for modification
 - Builders: Can add new builders without changing existing ones
 
 ### 3. Dependency Inversion
+
 - Generators depend on ICodeGenerator abstraction
 - Builders injected via constructor (not created internally)
 
 ### 4. Composition Over Inheritance
+
 - ResultValueAccessExtensionsCodeGenerator composes 5 builders
 - Rather than inheriting complex behavior
 
 ### 5. Separation of Concerns
+
 - Utilities: Shared functionality
 - Builders: Method construction
 - Generators: File orchestration
@@ -276,20 +281,27 @@ Each box in the diagrams has ONE clear responsibility
 ## Code Generation Rules
 
 ### 1. One Generator Per Class
-Each generator should be responsible for generating **only one class**. This ensures clear separation of concerns and maintainable code.
+
+Each generator should be responsible for generating **only one class**. This ensures clear separation of concerns and
+maintainable code.
 
 **✅ Correct:**
+
 - `ToNullableExtensionsGenerator` - generates `ToNullableExtensions` class
 - `ValueOrExtensionsGenerator` - generates `ValueOrExtensions` class
 - `ValueOrThrowExtensionsGenerator` - generates `ValueOrThrowExtensions` class
 
 **❌ Incorrect:**
+
 - `ValueAccessExtensionsGenerator` - generating multiple extension classes in one generator
 
 ### 2. RegionFile Generation Structure
-When generating a RegionFile, create **one class containing all methods**, with methods organized by **regions based on arity**.
+
+When generating a RegionFile, create **one class containing all methods**, with methods organized by **regions based on
+arity**.
 
 **Structure:**
+
 ```csharp
 public static class ExtensionClass
 {
@@ -306,6 +318,7 @@ public static class ExtensionClass
 ```
 
 This approach:
+
 - Keeps all related methods in a single class
 - Provides clear organization by arity
 - Makes navigation easier with collapsible regions

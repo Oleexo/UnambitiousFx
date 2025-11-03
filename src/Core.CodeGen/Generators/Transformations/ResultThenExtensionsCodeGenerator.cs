@@ -6,12 +6,11 @@ using UnambitiousFx.Core.CodeGen.Design;
 namespace UnambitiousFx.Core.CodeGen.Generators.Transformations;
 
 /// <summary>
-/// Generator for ResultThenExtensions class.
-/// Generates ONE class containing all Then methods, organized by arity in regions.
-/// Follows architecture rule: One generator per class.
+///     Generator for ResultThenExtensions class.
+///     Generates ONE class containing all Then methods, organized by arity in regions.
+///     Follows architecture rule: One generator per class.
 /// </summary>
-internal sealed class ResultThenExtensionsCodeGenerator : BaseCodeGenerator
-{
+internal sealed class ResultThenExtensionsCodeGenerator : BaseCodeGenerator {
     private const string ExtensionsNamespace = "Results.Extensions.Transformations";
 
     private readonly ThenMethodBuilder _thenBuilder;
@@ -19,36 +18,32 @@ internal sealed class ResultThenExtensionsCodeGenerator : BaseCodeGenerator
     public ResultThenExtensionsCodeGenerator(string baseNamespace)
         : base(new GenerationConfig(
                    baseNamespace,
-                   startArity: 1,
-                   subNamespace: ExtensionsNamespace,
-                   className: "ResultThenExtensions",
-                   fileOrganization: FileOrganizationMode.SingleFile))
-    {
+                   1,
+                   ExtensionsNamespace,
+                   "ResultThenExtensions",
+                   FileOrganizationMode.SingleFile)) {
         _thenBuilder = new ThenMethodBuilder(baseNamespace);
     }
 
-    protected override string PrepareOutputDirectory(string outputPath)
-    {
+    protected override string PrepareOutputDirectory(string outputPath) {
         var mainOutput = FileSystemHelper.CreateSubdirectory(outputPath, Config.SubNamespace);
         return mainOutput;
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
-    {
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
         return [
             GenerateSyncMethods(arity),
-            GenerateAsyncMethodsForTasks(arity, isValueTask: false),
-            GenerateAsyncMethodsForTasks(arity, isValueTask: true)
+            GenerateAsyncMethodsForTasks(arity, false),
+            GenerateAsyncMethodsForTasks(arity, true)
         ];
     }
 
-    private ClassWriter GenerateSyncMethods(ushort arity)
-    {
+    private ClassWriter GenerateSyncMethods(ushort arity) {
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
         var classWriter = new ClassWriter(
-            name: Config.ClassName,
-            visibility: Visibility.Public,
-            classModifiers: ClassModifier.Static | ClassModifier.Partial
+            Config.ClassName,
+            Visibility.Public,
+            ClassModifier.Static | ClassModifier.Partial
         );
 
         classWriter.AddMethod(_thenBuilder.BuildStandaloneMethod(arity));
@@ -57,24 +52,23 @@ internal sealed class ResultThenExtensionsCodeGenerator : BaseCodeGenerator
     }
 
     private ClassWriter GenerateAsyncMethodsForTasks(ushort arity,
-                                                      bool isValueTask)
-    {
+                                                     bool   isValueTask) {
         var subNamespace = isValueTask
                                ? "ValueTasks"
                                : "Tasks";
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}.{subNamespace}";
 
         var classWriter = new ClassWriter(
-            name: Config.ClassName,
-            visibility: Visibility.Public,
-            classModifiers: ClassModifier.Static | ClassModifier.Partial
+            Config.ClassName,
+            Visibility.Public,
+            ClassModifier.Static | ClassModifier.Partial
         );
 
         // Generate both Task + sync func and Task + async func overloads
         classWriter.AddMethod(_thenBuilder.BuildTaskSyncFuncMethod(arity, isValueTask));
         classWriter.AddMethod(_thenBuilder.BuildTaskAsyncFuncMethod(arity, isValueTask));
         // Also add the Result + async func overload in the main namespace
-        classWriter.AddMethod(_thenBuilder.BuildAsyncFuncMethod(arity, isValueTask: isValueTask));
+        classWriter.AddMethod(_thenBuilder.BuildAsyncFuncMethod(arity, isValueTask));
 
         classWriter.Namespace = ns;
         return classWriter;

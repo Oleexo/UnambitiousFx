@@ -8,6 +8,7 @@
 #nullable enable
 
 using UnambitiousFx.Core.OneOf;
+using Xunit;
 
 namespace UnambitiousFx.Core.Tests.OneOf;
 

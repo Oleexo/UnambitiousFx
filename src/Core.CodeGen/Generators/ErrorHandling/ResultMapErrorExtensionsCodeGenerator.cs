@@ -5,9 +5,9 @@ using UnambitiousFx.Core.CodeGen.Design;
 namespace UnambitiousFx.Core.CodeGen.Generators.ErrorHandling;
 
 /// <summary>
-/// Generator for ResultMapErrorExtensions class.
-/// Generates MapError extension methods for all Result arities with both basic and policy-based overloads.
-/// Follows architecture rule: One generator per extension method category.
+///     Generator for ResultMapErrorExtensions class.
+///     Generates MapError extension methods for all Result arities with both basic and policy-based overloads.
+///     Follows architecture rule: One generator per extension method category.
 /// </summary>
 internal sealed class ResultMapErrorExtensionsCodeGenerator : BaseCodeGenerator {
     private const string ExtensionsNamespace = "Results.Extensions.ErrorHandling";
@@ -15,10 +15,10 @@ internal sealed class ResultMapErrorExtensionsCodeGenerator : BaseCodeGenerator 
     public ResultMapErrorExtensionsCodeGenerator(string baseNamespace)
         : base(new GenerationConfig(
                    baseNamespace,
-                   startArity: 0, // Start from Result (arity 0)
-                   subNamespace: ExtensionsNamespace,
-                   className: "ResultMapErrorExtensions",
-                   fileOrganization: FileOrganizationMode.SingleFile)) {
+                   0, // Start from Result (arity 0)
+                   ExtensionsNamespace,
+                   "ResultMapErrorExtensions",
+                   FileOrganizationMode.SingleFile)) {
     }
 
     protected override string PrepareOutputDirectory(string outputPath) {
@@ -29,17 +29,17 @@ internal sealed class ResultMapErrorExtensionsCodeGenerator : BaseCodeGenerator 
     protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
         return [
             GenerateSyncMethods(arity),
-            GenerateAsyncMethods(arity, isValueTask: false),
-            GenerateAsyncMethods(arity, isValueTask: true)
+            GenerateAsyncMethods(arity, false),
+            GenerateAsyncMethods(arity, true)
         ];
     }
 
     private ClassWriter GenerateSyncMethods(ushort arity) {
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
         var classWriter = new ClassWriter(
-            name: Config.ClassName,
-            visibility: Visibility.Public,
-            classModifiers: ClassModifier.Static | ClassModifier.Partial
+            Config.ClassName,
+            Visibility.Public,
+            ClassModifier.Static | ClassModifier.Partial
         );
 
         // Generate basic MapError method
@@ -52,21 +52,24 @@ internal sealed class ResultMapErrorExtensionsCodeGenerator : BaseCodeGenerator 
         return classWriter;
     }
 
-    private ClassWriter GenerateAsyncMethods(ushort arity, bool isValueTask) {
-        var subNamespace = isValueTask ? "ValueTasks" : "Tasks";
+    private ClassWriter GenerateAsyncMethods(ushort arity,
+                                             bool   isValueTask) {
+        var subNamespace = isValueTask
+                               ? "ValueTasks"
+                               : "Tasks";
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}.{subNamespace}";
 
         var classWriter = new ClassWriter(
-            name: "ResultExtensions",
-            visibility: Visibility.Public,
-            classModifiers: ClassModifier.Static | ClassModifier.Partial
+            "ResultExtensions",
+            Visibility.Public,
+            ClassModifier.Static | ClassModifier.Partial
         );
 
         // Generate MapErrorAsync method for Result -> Task/ValueTask
-        classWriter.AddMethod(GenerateMapErrorAsyncMethod(arity, isValueTask, isAwaitable: false));
+        classWriter.AddMethod(GenerateMapErrorAsyncMethod(arity, isValueTask, false));
 
         // Generate MapErrorAsync method for Task/ValueTask<Result> -> Task/ValueTask
-        classWriter.AddMethod(GenerateMapErrorAsyncMethod(arity, isValueTask, isAwaitable: true));
+        classWriter.AddMethod(GenerateMapErrorAsyncMethod(arity, isValueTask, true));
 
         classWriter.Namespace = ns;
         return classWriter;
@@ -80,7 +83,7 @@ internal sealed class ResultMapErrorExtensionsCodeGenerator : BaseCodeGenerator 
                                                .WithSummary("Maps errors in the result using the specified mapping function.")
                                                .WithParameter("result",   "The result to map errors for.")
                                                .WithParameter("mapError", "The function to map errors.")
-                                               .WithReturns($"A new result with mapped errors if the original result failed, otherwise the original successful result.")
+                                               .WithReturns("A new result with mapped errors if the original result failed, otherwise the original successful result.")
                                                .Build();
 
         var body = GenerateBasicMapErrorBody(arity);
@@ -113,7 +116,7 @@ internal sealed class ResultMapErrorExtensionsCodeGenerator : BaseCodeGenerator 
                                                .WithParameter("result",   "The result to map errors for.")
                                                .WithParameter("mapError", "The function to map errors.")
                                                .WithParameter("policy",   "The policy controlling how successive MapError operations behave.")
-                                               .WithReturns($"A new result with mapped errors if the original result failed, otherwise the original successful result.")
+                                               .WithReturns("A new result with mapped errors if the original result failed, otherwise the original successful result.")
                                                .Build();
 
         var body = GeneratePolicyMapErrorBody(arity);
@@ -140,7 +143,7 @@ internal sealed class ResultMapErrorExtensionsCodeGenerator : BaseCodeGenerator 
 
     private (string resultType, string[] genericParams, GenericConstraint[] constraints) GetResultTypeInfo(ushort arity) {
         if (arity == 0) {
-            return ("Result", Array.Empty<string>(), Array.Empty<GenericConstraint>());
+            return ("Result", [], []);
         }
 
         var genericParams = Enumerable.Range(1, arity)
@@ -194,25 +197,36 @@ internal sealed class ResultMapErrorExtensionsCodeGenerator : BaseCodeGenerator 
                """;
     }
 
-    private MethodWriter GenerateMapErrorAsyncMethod(ushort arity, bool isValueTask, bool isAwaitable) {
+    private MethodWriter GenerateMapErrorAsyncMethod(ushort arity,
+                                                     bool   isValueTask,
+                                                     bool   isAwaitable) {
         var (resultType, genericParams, constraints) = GetResultTypeInfo(arity);
         var methodName = "MapErrorAsync";
-        
-        var taskType = isValueTask ? "ValueTask" : "Task";
+
+        var taskType = isValueTask
+                           ? "ValueTask"
+                           : "Task";
         var returnType = $"{taskType}<{resultType}>";
-        var parameterType = isAwaitable ? $"{taskType}<{resultType}>" : resultType;
+        var parameterType = isAwaitable
+                                ? $"{taskType}<{resultType}>"
+                                : resultType;
         var mapErrorType = $"Func<IEnumerable<IError>, {taskType}<IEnumerable<IError>>>";
 
         var documentationBuilder = DocumentationWriter.Create()
-            .WithSummary($"Asynchronously maps errors in the result using the specified mapping function.")
-            .WithParameter(isAwaitable ? "awaitableResult" : "result", isAwaitable ? $"The awaitable result to map errors for." : "The result to map errors for.")
-            .WithParameter("mapError", "The async function to map errors.")
-            .WithReturns($"A task with a new result containing mapped errors if the original result failed, otherwise the original successful result.");
+                                                      .WithSummary("Asynchronously maps errors in the result using the specified mapping function.")
+                                                      .WithParameter(isAwaitable
+                                                                         ? "awaitableResult"
+                                                                         : "result", isAwaitable
+                                                                                         ? "The awaitable result to map errors for."
+                                                                                         : "The result to map errors for.")
+                                                      .WithParameter("mapError", "The async function to map errors.")
+                                                      .WithReturns(
+                                                           "A task with a new result containing mapped errors if the original result failed, otherwise the original successful result.");
 
         // Add documentation for all value type parameters
-        for (int i = 0; i < genericParams.Length; i++) {
+        for (var i = 0; i < genericParams.Length; i++) {
             var paramName = genericParams[i];
-            var ordinal = GetOrdinalString(i + 1);
+            var ordinal   = GetOrdinalString(i + 1);
             documentationBuilder.WithTypeParameter(paramName, $"The type of the {ordinal} value.");
         }
 
@@ -224,9 +238,12 @@ internal sealed class ResultMapErrorExtensionsCodeGenerator : BaseCodeGenerator 
         if (isAwaitable) {
             modifiers |= MethodModifier.Async;
         }
+
         var builder = MethodWriter.Create(methodName, returnType, body)
                                   .WithModifier(modifiers)
-                                  .WithExtensionMethod(parameterType, isAwaitable ? "awaitableResult" : "result")
+                                  .WithExtensionMethod(parameterType, isAwaitable
+                                                                          ? "awaitableResult"
+                                                                          : "result")
                                   .WithParameter(mapErrorType, "mapError")
                                   .WithDocumentation(documentation)
                                   .WithUsings("UnambitiousFx.Core.Results.Reasons");
@@ -234,7 +251,8 @@ internal sealed class ResultMapErrorExtensionsCodeGenerator : BaseCodeGenerator 
         // Add using for ValueAccess extensions
         if (isValueTask) {
             builder.WithUsings("UnambitiousFx.Core.Results.Extensions.ValueAccess.ValueTasks");
-        } else {
+        }
+        else {
             builder.WithUsings("UnambitiousFx.Core.Results.Extensions.ValueAccess.Tasks");
         }
 
@@ -250,9 +268,13 @@ internal sealed class ResultMapErrorExtensionsCodeGenerator : BaseCodeGenerator 
         return builder.Build();
     }
 
-    private string GenerateMapErrorAsyncBody(ushort arity, bool isValueTask, bool isAwaitable) {
+    private string GenerateMapErrorAsyncBody(ushort arity,
+                                             bool   isValueTask,
+                                             bool   isAwaitable) {
         var (resultType, _, _) = GetResultTypeInfo(arity);
-        var taskType = isValueTask ? "ValueTask" : "Task";
+        var taskType = isValueTask
+                           ? "ValueTask"
+                           : "Task";
         var returnType = $"{taskType}<{resultType}>";
 
         if (isAwaitable) {
@@ -261,15 +283,18 @@ internal sealed class ResultMapErrorExtensionsCodeGenerator : BaseCodeGenerator 
                    var result = await awaitableResult;
                    return await result.MapErrorAsync(mapError);
                    """;
-        } else {
-            // For non-awaitable results, use Match
-            return GenerateNonAwaitableMapErrorBody(arity, isValueTask);
         }
+
+        // For non-awaitable results, use Match
+        return GenerateNonAwaitableMapErrorBody(arity, isValueTask);
     }
 
-    private string GenerateNonAwaitableMapErrorBody(ushort arity, bool isValueTask) {
+    private string GenerateNonAwaitableMapErrorBody(ushort arity,
+                                                    bool   isValueTask) {
         var (resultType, _, _) = GetResultTypeInfo(arity);
-        var taskType = isValueTask ? "ValueTask" : "Task";
+        var taskType = isValueTask
+                           ? "ValueTask"
+                           : "Task";
         var returnType = $"{taskType}<{resultType}>";
 
         var successCall = GenerateSuccessCall(arity, isValueTask);
@@ -283,12 +308,12 @@ internal sealed class ResultMapErrorExtensionsCodeGenerator : BaseCodeGenerator 
         }
 
         var valueParams = Enumerable.Range(1, arity)
-                                   .Select(i => $"value{i}")
-                                   .ToArray();
+                                    .Select(i => $"value{i}")
+                                    .ToArray();
 
-        var matchParams = arity == 1 
-            ? "value1" 
-            : $"({string.Join(",\n             ", valueParams)})";
+        var matchParams = arity == 1
+                              ? "value1"
+                              : $"({string.Join(",\n             ", valueParams)})";
 
         return $@"return result.Match<{returnType}>(
                     {matchParams} => {successCall},
@@ -296,9 +321,12 @@ internal sealed class ResultMapErrorExtensionsCodeGenerator : BaseCodeGenerator 
                 );";
     }
 
-    private string GenerateAwaitableMapErrorBody(ushort arity, bool isValueTask) {
+    private string GenerateAwaitableMapErrorBody(ushort arity,
+                                                 bool   isValueTask) {
         var (resultType, _, _) = GetResultTypeInfo(arity);
-        var taskType = isValueTask ? "ValueTask" : "Task";
+        var taskType = isValueTask
+                           ? "ValueTask"
+                           : "Task";
 
         var successCall = GenerateSuccessCall(arity, isValueTask);
         var failureCall = GenerateFailureCall(arity, "await mapError(ex)");
@@ -311,12 +339,12 @@ internal sealed class ResultMapErrorExtensionsCodeGenerator : BaseCodeGenerator 
         }
 
         var valueParams = Enumerable.Range(1, arity)
-                                   .Select(i => $"value{i}")
-                                   .ToArray();
+                                    .Select(i => $"value{i}")
+                                    .ToArray();
 
-        var matchParams = arity == 1 
-            ? "value1" 
-            : $"({string.Join(",\n             ", valueParams)})";
+        var matchParams = arity == 1
+                              ? "value1"
+                              : $"({string.Join(",\n             ", valueParams)})";
 
         return $@"return awaitableResult.MatchAsync(
                     {matchParams} => {successCall},
@@ -324,23 +352,27 @@ internal sealed class ResultMapErrorExtensionsCodeGenerator : BaseCodeGenerator 
                 );";
     }
 
-    private string GenerateSuccessCall(ushort arity, bool isValueTask) {
+    private string GenerateSuccessCall(ushort arity,
+                                       bool   isValueTask) {
         if (arity == 0) {
-            return isValueTask ? "new ValueTask<Result>(Result.Success())" : "Task.FromResult(Result.Success())";
+            return isValueTask
+                       ? "new ValueTask<Result>(Result.Success())"
+                       : "Task.FromResult(Result.Success())";
         }
 
         var valueParams = Enumerable.Range(1, arity)
-                                   .Select(i => $"value{i}")
-                                   .ToArray();
+                                    .Select(i => $"value{i}")
+                                    .ToArray();
 
         var successCall = $"Result.Success({string.Join(", ", valueParams)})";
-        
-        return isValueTask 
-            ? $"new ValueTask<{GetResultTypeInfo(arity).resultType}>({successCall})" 
-            : $"Task.FromResult({successCall})";
+
+        return isValueTask
+                   ? $"new ValueTask<{GetResultTypeInfo(arity).resultType}>({successCall})"
+                   : $"Task.FromResult({successCall})";
     }
 
-    private string GenerateFailureCall(ushort arity, string errorParam) {
+    private string GenerateFailureCall(ushort arity,
+                                       string errorParam) {
         if (arity == 0) {
             return $"Result.Failure({errorParam})";
         }
@@ -352,15 +384,17 @@ internal sealed class ResultMapErrorExtensionsCodeGenerator : BaseCodeGenerator 
         return $"Result.Failure<{string.Join(", ", genericParams)}>({errorParam})";
     }
 
-    private static string GetOrdinalString(int number) => number switch {
-        1 => "first",
-        2 => "second", 
-        3 => "third",
-        4 => "fourth",
-        5 => "fifth",
-        6 => "sixth",
-        7 => "seventh",
-        8 => "eighth",
-        _ => $"{number}th"
-    };
+    private static string GetOrdinalString(int number) {
+        return number switch {
+            1 => "first",
+            2 => "second",
+            3 => "third",
+            4 => "fourth",
+            5 => "fifth",
+            6 => "sixth",
+            7 => "seventh",
+            8 => "eighth",
+            _ => $"{number}th"
+        };
+    }
 }

@@ -4,7 +4,7 @@ using UnambitiousFx.Core.CodeGen.Design;
 namespace UnambitiousFx.Core.CodeGen.Builders.Validations;
 
 /// <summary>
-/// Builds Ensure extension methods for Result types.
+///     Builds Ensure extension methods for Result types.
 /// </summary>
 internal sealed class EnsureMethodBuilder {
     private readonly string _baseNamespace;
@@ -14,7 +14,7 @@ internal sealed class EnsureMethodBuilder {
     }
 
     /// <summary>
-    /// Builds a standalone Ensure method for a specific arity.
+    ///     Builds a standalone Ensure method for a specific arity.
     /// </summary>
     public MethodWriter BuildStandaloneMethod(ushort arity) {
         var genericTypes  = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
@@ -54,18 +54,18 @@ internal sealed class EnsureMethodBuilder {
         }
 
         return new MethodWriter(
-            name: "Ensure",
-            returnType: resultType,
-            body: body,
-            visibility: Visibility.Public,
-            modifier: MethodModifier.Static,
-            parameters: [
+            "Ensure",
+            resultType,
+            body,
+            Visibility.Public,
+            MethodModifier.Static,
+            [
                 new MethodParameter($"this {resultType}", "result"),
                 new MethodParameter(predicateType,        "predicate"),
                 new MethodParameter(errorFactoryType,     "errorFactory")
             ],
-            genericParameters: genericParams,
-            documentation: docBuilder.Build(),
+            genericParams,
+            docBuilder.Build(),
             usings: ["UnambitiousFx.Core.Results.Extensions.Transformations"]
         );
     }

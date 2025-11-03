@@ -3,47 +3,11 @@ using UnambitiousFx.Core.CodeGen.Configuration;
 namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results.ArityTests.Configuration;
 
 /// <summary>
-/// Configuration for arity test generation operations, using composition with GenerationConfig.
+///     Configuration for arity test generation operations, using composition with GenerationConfig.
 /// </summary>
-internal sealed class ArityTestGenerationConfig
-{
+internal sealed class ArityTestGenerationConfig {
     /// <summary>
-    /// Gets the base generation configuration.
-    /// </summary>
-    public GenerationConfig BaseConfig { get; init; }
-
-    /// <summary>
-    /// Gets the directory where test files will be generated.
-    /// </summary>
-    public string TestDirectory { get; init; }
-
-    /// <summary>
-    /// Gets a value indicating whether async tests should be generated.
-    /// </summary>
-    public bool GenerateAsyncTests { get; init; } = true;
-
-    /// <summary>
-    /// Gets a value indicating whether error handling tests should be generated.
-    /// </summary>
-    public bool GenerateErrorHandlingTests { get; init; } = true;
-
-    /// <summary>
-    /// Gets the naming pattern for generated tests.
-    /// </summary>
-    public TestNamingPattern NamingPattern { get; init; }
-
-    /// <summary>
-    /// Gets the enabled test scenario categories.
-    /// </summary>
-    public IEnumerable<TestScenarioCategory> EnabledScenarios { get; init; }
-
-    /// <summary>
-    /// Gets the test generation mode.
-    /// </summary>
-    public TestGenerationMode Mode { get; init; } = TestGenerationMode.Comprehensive;
-
-    /// <summary>
-    /// Initializes a new instance of the ArityTestGenerationConfig class.
+    ///     Initializes a new instance of the ArityTestGenerationConfig class.
     /// </summary>
     /// <param name="baseNamespace">The base namespace for generated tests.</param>
     /// <param name="testDirectory">The directory where test files will be generated.</param>
@@ -56,39 +20,71 @@ internal sealed class ArityTestGenerationConfig
     /// <param name="mode">The test generation mode.</param>
     /// <param name="generateAsyncTests">Whether to generate async tests.</param>
     /// <param name="generateErrorHandlingTests">Whether to generate error handling tests.</param>
-    public ArityTestGenerationConfig(
-        string baseNamespace,
-        string testDirectory,
-        int startArity = 1,
-        string subNamespace = "",
-        string className = "",
-        FileOrganizationMode fileOrganization = FileOrganizationMode.SeparateFiles,
-        TestNamingPattern? namingPattern = null,
-        IEnumerable<TestScenarioCategory>? enabledScenarios = null,
-        TestGenerationMode mode = TestGenerationMode.Comprehensive,
-        bool generateAsyncTests = true,
-        bool generateErrorHandlingTests = true)
-    {
-        if (string.IsNullOrWhiteSpace(testDirectory))
+    public ArityTestGenerationConfig(string                             baseNamespace,
+                                     string                             testDirectory,
+                                     int                                startArity                 = 1,
+                                     string                             subNamespace               = "",
+                                     string                             className                  = "",
+                                     FileOrganizationMode               fileOrganization           = FileOrganizationMode.SeparateFiles,
+                                     TestNamingPattern?                 namingPattern              = null,
+                                     IEnumerable<TestScenarioCategory>? enabledScenarios           = null,
+                                     TestGenerationMode                 mode                       = TestGenerationMode.Comprehensive,
+                                     bool                               generateAsyncTests         = true,
+                                     bool                               generateErrorHandlingTests = true) {
+        if (string.IsNullOrWhiteSpace(testDirectory)) {
             throw new ArgumentException("Test directory cannot be null or whitespace.", nameof(testDirectory));
+        }
 
-        BaseConfig = new GenerationConfig(baseNamespace, startArity, subNamespace, className, fileOrganization, isTest: true);
-        TestDirectory = testDirectory;
-        NamingPattern = namingPattern ?? new TestNamingPattern();
-        EnabledScenarios = enabledScenarios ?? GetDefaultEnabledScenarios();
-        Mode = mode;
-        GenerateAsyncTests = generateAsyncTests;
+        BaseConfig                 = new GenerationConfig(baseNamespace, startArity, subNamespace, className, fileOrganization, true);
+        TestDirectory              = testDirectory;
+        NamingPattern              = namingPattern    ?? new TestNamingPattern();
+        EnabledScenarios           = enabledScenarios ?? GetDefaultEnabledScenarios();
+        Mode                       = mode;
+        GenerateAsyncTests         = generateAsyncTests;
         GenerateErrorHandlingTests = generateErrorHandlingTests;
     }
 
-    private static IEnumerable<TestScenarioCategory> GetDefaultEnabledScenarios()
-    {
-        return new[]
-        {
+    /// <summary>
+    ///     Gets the base generation configuration.
+    /// </summary>
+    public GenerationConfig BaseConfig { get; init; }
+
+    /// <summary>
+    ///     Gets the directory where test files will be generated.
+    /// </summary>
+    public string TestDirectory { get; init; }
+
+    /// <summary>
+    ///     Gets a value indicating whether async tests should be generated.
+    /// </summary>
+    public bool GenerateAsyncTests { get; init; } = true;
+
+    /// <summary>
+    ///     Gets a value indicating whether error handling tests should be generated.
+    /// </summary>
+    public bool GenerateErrorHandlingTests { get; init; } = true;
+
+    /// <summary>
+    ///     Gets the naming pattern for generated tests.
+    /// </summary>
+    public TestNamingPattern NamingPattern { get; init; }
+
+    /// <summary>
+    ///     Gets the enabled test scenario categories.
+    /// </summary>
+    public IEnumerable<TestScenarioCategory> EnabledScenarios { get; init; }
+
+    /// <summary>
+    ///     Gets the test generation mode.
+    /// </summary>
+    public TestGenerationMode Mode { get; init; } = TestGenerationMode.Comprehensive;
+
+    private static IEnumerable<TestScenarioCategory> GetDefaultEnabledScenarios() {
+        return [
             TestScenarioCategory.Success,
             TestScenarioCategory.Failure,
             TestScenarioCategory.Exception,
             TestScenarioCategory.EdgeCase
-        };
+        ];
     }
 }

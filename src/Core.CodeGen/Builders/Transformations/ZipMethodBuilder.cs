@@ -4,20 +4,20 @@ using UnambitiousFx.Core.CodeGen.Design;
 namespace UnambitiousFx.Core.CodeGen.Builders.Transformations;
 
 /// <summary>
-/// Builds Zip extension methods for Result types.
+///     Builds Zip extension methods for Result types.
 /// </summary>
 internal sealed class ZipMethodBuilder {
     /// <summary>
-    /// Builds a standalone Zip method without projector for a specific arity.
+    ///     Builds a standalone Zip method without projector for a specific arity.
     /// </summary>
     public MethodWriter BuildStandaloneMethod(ushort arity) {
-        var genericTypes  = GenericTypeHelper.BuildGenericTypeString(arity, "T");
+        var genericTypes  = GenericTypeHelper.BuildGenericTypeString(arity);
         var returnType    = $"Result<{genericTypes}>";
         var genericParams = GenericTypeHelper.CreateGenericParameters(arity, "T", "notnull");
 
         // Build parameters - each result is Result<T{n}>
         var parameters = new List<MethodParameter>();
-        for (int i = 1; i <= arity; i++) {
+        for (var i = 1; i <= arity; i++) {
             var paramType = i == 1
                                 ? $"this Result<T{i}>"
                                 : $"Result<T{i}>";
@@ -26,7 +26,7 @@ internal sealed class ZipMethodBuilder {
 
         // Build body - check each result and accumulate errors
         var checks = new List<string>();
-        for (int i = 1; i <= arity; i++) {
+        for (var i = 1; i <= arity; i++) {
             checks.Add($$"""
                          if (!r{{i}}.TryGet(out var v{{i}}, out var e{{i}})) {
                              return Result.Failure<{{genericTypes}}>(e{{i}});
@@ -46,7 +46,7 @@ internal sealed class ZipMethodBuilder {
                                             .WithSummary("Combines multiple Result instances into a single Result containing all values.")
                                             .WithReturns("A Result containing all values if all are successful, otherwise the first failure.");
 
-        for (int i = 1; i <= arity; i++) {
+        for (var i = 1; i <= arity; i++) {
             docBuilder.WithParameter($"r{i}", $"Result {i} to combine.");
         }
 
@@ -55,19 +55,19 @@ internal sealed class ZipMethodBuilder {
         }
 
         return new MethodWriter(
-            name: "Zip",
-            returnType: returnType,
-            body: body,
-            visibility: Visibility.Public,
-            modifier: MethodModifier.Static,
-            parameters: parameters.ToArray(),
-            genericParameters: genericParams,
-            documentation: docBuilder.Build()
+            "Zip",
+            returnType,
+            body,
+            Visibility.Public,
+            MethodModifier.Static,
+            parameters.ToArray(),
+            genericParams,
+            docBuilder.Build()
         );
     }
 
     /// <summary>
-    /// Builds a standalone Zip method with projector for a specific arity.
+    ///     Builds a standalone Zip method with projector for a specific arity.
     /// </summary>
     public MethodWriter BuildProjectorMethod(ushort arity) {
         var genericParams = new List<GenericParameter>();
@@ -76,7 +76,7 @@ internal sealed class ZipMethodBuilder {
 
         // Build parameters
         var parameters = new List<MethodParameter>();
-        for (int i = 1; i <= arity; i++) {
+        for (var i = 1; i <= arity; i++) {
             var paramType = i == 1
                                 ? $"this Result<T{i}>"
                                 : $"Result<T{i}>";
@@ -89,7 +89,7 @@ internal sealed class ZipMethodBuilder {
 
         // Build body
         var checks = new List<string>();
-        for (int i = 1; i <= arity; i++) {
+        for (var i = 1; i <= arity; i++) {
             checks.Add($$"""
                          if (!r{{i}}.TryGet(out var v{{i}}, out var e{{i}})) {
                              return Result.Failure<TR>(e{{i}});
@@ -109,7 +109,7 @@ internal sealed class ZipMethodBuilder {
                                             .WithSummary("Combines multiple Result instances and projects their values using a function.")
                                             .WithReturns("A Result containing the projected value if all are successful, otherwise the first failure.");
 
-        for (int i = 1; i <= arity; i++) {
+        for (var i = 1; i <= arity; i++) {
             docBuilder.WithParameter($"r{i}", $"Result {i} to combine.");
         }
 
@@ -122,29 +122,29 @@ internal sealed class ZipMethodBuilder {
         docBuilder.WithTypeParameter("TR", "Projected result type.");
 
         return new MethodWriter(
-            name: "Zip",
-            returnType: "Result<TR>",
-            body: body,
-            visibility: Visibility.Public,
-            modifier: MethodModifier.Static,
-            parameters: parameters.ToArray(),
-            genericParameters: genericParams.ToArray(),
-            documentation: docBuilder.Build()
+            "Zip",
+            "Result<TR>",
+            body,
+            Visibility.Public,
+            MethodModifier.Static,
+            parameters.ToArray(),
+            genericParams.ToArray(),
+            docBuilder.Build()
         );
     }
 
     /// <summary>
-    /// Builds async Zip method without projector for Task/ValueTask Result types.
+    ///     Builds async Zip method without projector for Task/ValueTask Result types.
     /// </summary>
     public MethodWriter BuildAsyncMethod(ushort arity,
                                          bool   isValueTask) {
-        var genericTypes  = GenericTypeHelper.BuildGenericTypeString(arity, "T");
+        var genericTypes  = GenericTypeHelper.BuildGenericTypeString(arity);
         var returnType    = $"Result<{genericTypes}>";
         var genericParams = GenericTypeHelper.CreateGenericParameters(arity, "T", "notnull");
 
         // Build parameters
         var parameters = new List<MethodParameter>();
-        for (int i = 1; i <= arity; i++) {
+        for (var i = 1; i <= arity; i++) {
             var asyncType = isValueTask
                                 ? "ValueTask"
                                 : "Task";
@@ -169,7 +169,7 @@ internal sealed class ZipMethodBuilder {
                                             .WithSummary("Async Zip combining multiple awaitable Result instances.")
                                             .WithReturns("A task with the combined result.");
 
-        for (int i = 1; i <= arity; i++) {
+        for (var i = 1; i <= arity; i++) {
             docBuilder.WithParameter($"r{i}", $"Awaitable result {i} to combine.");
         }
 
@@ -178,31 +178,31 @@ internal sealed class ZipMethodBuilder {
         }
 
         return new MethodWriter(
-            name: "ZipAsync",
-            returnType: asyncReturn,
-            body: body,
-            visibility: Visibility.Public,
-            modifier: MethodModifier.Async | MethodModifier.Static,
-            parameters: parameters.ToArray(),
-            genericParameters: genericParams,
+            "ZipAsync",
+            asyncReturn,
+            body,
+            Visibility.Public,
+            MethodModifier.Async | MethodModifier.Static,
+            parameters.ToArray(),
+            genericParams,
             usings: ["System", "System.Threading.Tasks", "UnambitiousFx.Core.Results.Extensions.Transformations"],
             documentation: docBuilder.Build()
         );
     }
 
     /// <summary>
-    /// Builds async Zip method with projector for Task/ValueTask Result types.
+    ///     Builds async Zip method with projector for Task/ValueTask Result types.
     /// </summary>
     public MethodWriter BuildProjectorAsyncMethod(ushort arity,
                                                   bool   isValueTask) {
-        var inputTypes    = GenericTypeHelper.BuildGenericTypeString(arity, "T");
+        var inputTypes    = GenericTypeHelper.BuildGenericTypeString(arity);
         var genericParams = new List<GenericParameter>();
         genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "T", "notnull"));
         genericParams.Add(new GenericParameter("TR", "notnull"));
 
         // Build parameters
         var parameters = new List<MethodParameter>();
-        for (int i = 1; i <= arity; i++) {
+        for (var i = 1; i <= arity; i++) {
             var asyncType = isValueTask
                                 ? "ValueTask"
                                 : "Task";
@@ -231,7 +231,7 @@ internal sealed class ZipMethodBuilder {
                                             .WithSummary("Async Zip combining multiple awaitable Result instances with projection.")
                                             .WithReturns("A task with the projected result.");
 
-        for (int i = 1; i <= arity; i++) {
+        for (var i = 1; i <= arity; i++) {
             docBuilder.WithParameter($"r{i}", $"Awaitable result {i} to combine.");
         }
 
@@ -244,13 +244,13 @@ internal sealed class ZipMethodBuilder {
         docBuilder.WithTypeParameter("TR", "Projected result type.");
 
         return new MethodWriter(
-            name: "ZipAsync",
-            returnType: asyncReturn,
-            body: body,
-            visibility: Visibility.Public,
-            modifier: MethodModifier.Async | MethodModifier.Static,
-            parameters: parameters.ToArray(),
-            genericParameters: genericParams.ToArray(),
+            "ZipAsync",
+            asyncReturn,
+            body,
+            Visibility.Public,
+            MethodModifier.Async | MethodModifier.Static,
+            parameters.ToArray(),
+            genericParams.ToArray(),
             usings: ["System", "System.Threading.Tasks", "UnambitiousFx.Core.Results.Extensions.Transformations"],
             documentation: docBuilder.Build()
         );

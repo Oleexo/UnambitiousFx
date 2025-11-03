@@ -4,20 +4,20 @@ using UnambitiousFx.Core.CodeGen.Design;
 namespace UnambitiousFx.Core.CodeGen.Builders.OneOf;
 
 /// <summary>
-/// Builds the base OneOf class for a given arity.
+///     Builds the base OneOf class for a given arity.
 /// </summary>
 internal static class OneOfBaseClassBuilder {
     public static ClassWriter Build(ushort arity,
                                     string baseNamespace,
                                     string className) {
-        var genericParams = GenericTypeHelper.CreateOrdinalGenericParameters(arity, "T", "notnull");
+        var genericParams = GenericTypeHelper.CreateOrdinalGenericParameters(arity);
 
         var classDocBuilder = DocumentationWriter.Create()
                                                  .WithSummary($"Minimal discriminated union base abstraction representing a value that can be one of {arity} types.\n" +
                                                               "Specific semantic unions (e.g. Either<TLeft,TRight>) can inherit from this to express intent\n"         +
                                                               "without duplicating core shape.");
 
-        for (int i = 0; i < genericParams.Length; i++) {
+        for (var i = 0; i < genericParams.Length; i++) {
             classDocBuilder.WithTypeParameter(
                 genericParams[i].Name,
                 $"{OrdinalHelper.GetOrdinalName(i + 1)} possible contained type."
@@ -25,10 +25,10 @@ internal static class OneOfBaseClassBuilder {
         }
 
         var classWriter = new ClassWriter(
-            name: className,
-            visibility: Visibility.Public,
-            classModifiers: ClassModifier.Abstract,
-            genericParameters: genericParams,
+            className,
+            Visibility.Public,
+            ClassModifier.Abstract,
+            genericParams,
             documentation: classDocBuilder.Build()
         );
 
@@ -50,11 +50,8 @@ internal static class OneOfBaseClassBuilder {
                                                  .Build();
 
             classWriter.AddProperty(new PropertyWriter(
-                                        name: $"Is{ordinalName}",
-                                        type: "bool",
-                                        visibility: Visibility.Public,
-                                        hasGetter: true,
-                                        hasSetter: false,
+                                        $"Is{ordinalName}",
+                                        "bool",
                                         style: PropertyStyle.Abstract,
                                         documentation: propertyDoc
                                     ));
@@ -83,12 +80,12 @@ internal static class OneOfBaseClassBuilder {
         matchFuncDocBuilder.WithReturns("The result of invoking the appropriate function");
 
         classWriter.AddMethod(new AbstractMethodWriter(
-                                  name: "Match",
-                                  returnType: "TOut",
-                                  visibility: Visibility.Public,
-                                  parameters: matchFuncParams,
-                                  genericParameters: [new GenericParameter("TOut", "")],
-                                  documentation: matchFuncDocBuilder.Build()
+                                  "Match",
+                                  "TOut",
+                                  Visibility.Public,
+                                  matchFuncParams,
+                                  [new GenericParameter("TOut", "")],
+                                  matchFuncDocBuilder.Build()
                               ));
 
         // Match with void
@@ -108,10 +105,10 @@ internal static class OneOfBaseClassBuilder {
         }
 
         classWriter.AddMethod(new AbstractMethodWriter(
-                                  name: "Match",
-                                  returnType: "void",
-                                  visibility: Visibility.Public,
-                                  parameters: matchActionParams,
+                                  "Match",
+                                  "void",
+                                  Visibility.Public,
+                                  matchActionParams,
                                   documentation: matchActionDocBuilder.Build()
                               ));
     }
@@ -127,10 +124,10 @@ internal static class OneOfBaseClassBuilder {
                                                 .Build();
 
             classWriter.AddMethod(new AbstractMethodWriter(
-                                      name: ordinalName,
-                                      returnType: "bool",
-                                      visibility: Visibility.Public,
-                                      parameters: [new MethodParameter($"[NotNullWhen(true)] out T{ordinalName}?", ordinalName.ToLower())],
+                                      ordinalName,
+                                      "bool",
+                                      Visibility.Public,
+                                      [new MethodParameter($"[NotNullWhen(true)] out T{ordinalName}?", ordinalName.ToLower())],
                                       documentation: extractDoc,
                                       usings: ["System.Diagnostics.CodeAnalysis"]
                                   ));
@@ -152,12 +149,12 @@ internal static class OneOfBaseClassBuilder {
                                                 .Build();
 
             classWriter.AddMethod(new MethodWriter(
-                                      name: $"From{ordinalName}",
-                                      returnType: $"{className}<{allTypeParams}>",
-                                      body: $"return new {ordinalName}OneOf<{allTypeParams}>(value);",
-                                      visibility: Visibility.Public,
-                                      modifier: MethodModifier.Static,
-                                      parameters: [new MethodParameter($"T{ordinalName}", "value")],
+                                      $"From{ordinalName}",
+                                      $"{className}<{allTypeParams}>",
+                                      $"return new {ordinalName}OneOf<{allTypeParams}>(value);",
+                                      Visibility.Public,
+                                      MethodModifier.Static,
+                                      [new MethodParameter($"T{ordinalName}", "value")],
                                       documentation: factoryDoc
                                   ));
         }
@@ -178,12 +175,12 @@ internal static class OneOfBaseClassBuilder {
                                                  .Build();
 
             classWriter.AddMethod(new MethodWriter(
-                                      name: $"implicit operator {className}<{allTypeParams}>",
-                                      returnType: "",
-                                      body: $"return From{ordinalName}(value);",
-                                      visibility: Visibility.Public,
-                                      modifier: MethodModifier.Static,
-                                      parameters: [new MethodParameter($"T{ordinalName}", "value")],
+                                      $"implicit operator {className}<{allTypeParams}>",
+                                      "",
+                                      $"return From{ordinalName}(value);",
+                                      Visibility.Public,
+                                      MethodModifier.Static,
+                                      [new MethodParameter($"T{ordinalName}", "value")],
                                       documentation: operatorDoc
                                   ));
         }

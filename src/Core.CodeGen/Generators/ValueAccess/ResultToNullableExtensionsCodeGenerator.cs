@@ -6,23 +6,23 @@ using UnambitiousFx.Core.CodeGen.Design;
 namespace UnambitiousFx.Core.CodeGen.Generators.ValueAccess;
 
 /// <summary>
-/// Generator for ResultToNullableExtensions class.
-/// Generates ONE class containing all ToNullable methods, organized by arity in regions.
-/// Follows architecture rule: One generator per class.
+///     Generator for ResultToNullableExtensions class.
+///     Generates ONE class containing all ToNullable methods, organized by arity in regions.
+///     Follows architecture rule: One generator per class.
 /// </summary>
 internal sealed class ResultToNullableExtensionsCodeGenerator : BaseCodeGenerator {
-    private const string ExtensionsNamespace = "Results.Extensions.ValueAccess";
+    private const    string             ExtensionsNamespace = "Results.Extensions.ValueAccess";
+    private readonly AsyncMethodBuilder _asyncBuilder;
 
     private readonly ToNullableMethodBuilder _toNullableBuilder;
-    private readonly AsyncMethodBuilder      _asyncBuilder;
 
     public ResultToNullableExtensionsCodeGenerator(string baseNamespace)
         : base(new GenerationConfig(
                    baseNamespace,
-                   startArity: 1,
-                   subNamespace: ExtensionsNamespace,
-                   className: "ResultToNullableExtensions",
-                   fileOrganization: FileOrganizationMode.SingleFile)) {
+                   1,
+                   ExtensionsNamespace,
+                   "ResultToNullableExtensions",
+                   FileOrganizationMode.SingleFile)) {
         _toNullableBuilder = new ToNullableMethodBuilder(baseNamespace);
         _asyncBuilder      = new AsyncMethodBuilder(baseNamespace);
     }
@@ -35,17 +35,17 @@ internal sealed class ResultToNullableExtensionsCodeGenerator : BaseCodeGenerato
     protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
         return [
             GenerateSyncMethods(arity),
-            GenerateAsyncMethods(arity, isValueTask: false),
-            GenerateAsyncMethods(arity, isValueTask: true)
+            GenerateAsyncMethods(arity, false),
+            GenerateAsyncMethods(arity, true)
         ];
     }
 
     private ClassWriter GenerateSyncMethods(ushort arity) {
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
         var classWriter = new ClassWriter(
-            name: Config.ClassName,
-            visibility: Visibility.Public,
-            classModifiers: ClassModifier.Static | ClassModifier.Partial
+            Config.ClassName,
+            Visibility.Public,
+            ClassModifier.Static | ClassModifier.Partial
         );
 
         classWriter.AddMethod(_toNullableBuilder.BuildStandaloneMethod(arity));
@@ -61,9 +61,9 @@ internal sealed class ResultToNullableExtensionsCodeGenerator : BaseCodeGenerato
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}.{subNamespace}";
 
         var classWriter = new ClassWriter(
-            name: Config.ClassName,
-            visibility: Visibility.Public,
-            classModifiers: ClassModifier.Static | ClassModifier.Partial
+            Config.ClassName,
+            Visibility.Public,
+            ClassModifier.Static | ClassModifier.Partial
         );
 
         classWriter.AddMethod(_asyncBuilder.BuildToNullableDefaultAsync(arity, isValueTask));

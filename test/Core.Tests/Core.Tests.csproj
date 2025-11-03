@@ -6,15 +6,12 @@
     <ItemGroup>
         <ProjectReference Include="..\..\src\Core\Core.csproj" />
         <ProjectReference Include="..\..\src\Core.XUnit\Core.XUnit.csproj" />
+        <ProjectReference Include="..\..\src\Core.CodeGen\Core.CodeGen.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="OneOf\" />
-      <Folder Include="Results\Extensions\ErrorHandling\" />
       <Folder Include="Results\Extensions\SideEffects\" />
-      <Folder Include="Results\Extensions\Validations\" />
-      <Folder Include="Results\Tasks\" />
-      <Folder Include="Results\ValueTasks\" />
     </ItemGroup>
 
 </Project>

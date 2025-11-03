@@ -6,23 +6,23 @@ using UnambitiousFx.Core.CodeGen.Design;
 namespace UnambitiousFx.Core.CodeGen.Generators.ValueAccess;
 
 /// <summary>
-/// Generator for ResultValueOrThrowExtensions class.
-/// Generates ONE class containing all ValueOrThrow methods, organized by arity in regions.
-/// Follows architecture rule: One generator per class.
+///     Generator for ResultValueOrThrowExtensions class.
+///     Generates ONE class containing all ValueOrThrow methods, organized by arity in regions.
+///     Follows architecture rule: One generator per class.
 /// </summary>
 internal sealed class ResultValueOrThrowExtensionsCodeGenerator : BaseCodeGenerator {
-    private const string ExtensionsNamespace = "Results.Extensions.ValueAccess";
+    private const    string             ExtensionsNamespace = "Results.Extensions.ValueAccess";
+    private readonly AsyncMethodBuilder _asyncBuilder;
 
     private readonly ValueOrThrowMethodBuilder _valueOrThrowBuilder;
-    private readonly AsyncMethodBuilder        _asyncBuilder;
 
     public ResultValueOrThrowExtensionsCodeGenerator(string baseNamespace)
         : base(new GenerationConfig(
                    baseNamespace,
-                   startArity: 1,
-                   subNamespace: ExtensionsNamespace,
-                   className: "ResultValueOrThrowExtensions",
-                   fileOrganization: FileOrganizationMode.SingleFile)) {
+                   1,
+                   ExtensionsNamespace,
+                   "ResultValueOrThrowExtensions",
+                   FileOrganizationMode.SingleFile)) {
         _valueOrThrowBuilder = new ValueOrThrowMethodBuilder(baseNamespace);
         _asyncBuilder        = new AsyncMethodBuilder(baseNamespace);
     }
@@ -36,8 +36,8 @@ internal sealed class ResultValueOrThrowExtensionsCodeGenerator : BaseCodeGenera
         return [
             GenerateSyncMethods(arity),
 
-            GenerateAsyncMethods(arity, isValueTask: false),
-            GenerateAsyncMethods(arity, isValueTask: true)
+            GenerateAsyncMethods(arity, false),
+            GenerateAsyncMethods(arity, true)
         ];
     }
 
@@ -46,9 +46,9 @@ internal sealed class ResultValueOrThrowExtensionsCodeGenerator : BaseCodeGenera
 
         // Add methods organized by arity regions
         var classWriter = new ClassWriter(
-            name: Config.ClassName,
-            visibility: Visibility.Public,
-            classModifiers: ClassModifier.Static | ClassModifier.Partial
+            Config.ClassName,
+            Visibility.Public,
+            ClassModifier.Static | ClassModifier.Partial
         );
 
         // Add both ValueOrThrow methods for this arity
@@ -68,9 +68,9 @@ internal sealed class ResultValueOrThrowExtensionsCodeGenerator : BaseCodeGenera
 
         // Add methods organized by arity regions
         var classWriter = new ClassWriter(
-            name: Config.ClassName,
-            visibility: Visibility.Public,
-            classModifiers: ClassModifier.Static | ClassModifier.Partial
+            Config.ClassName,
+            Visibility.Public,
+            ClassModifier.Static | ClassModifier.Partial
         );
 
         // Add both async ValueOrThrow methods for this arity

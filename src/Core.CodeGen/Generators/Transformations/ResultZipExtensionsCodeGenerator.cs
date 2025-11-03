@@ -6,12 +6,11 @@ using UnambitiousFx.Core.CodeGen.Design;
 namespace UnambitiousFx.Core.CodeGen.Generators.Transformations;
 
 /// <summary>
-/// Generator for ResultZipExtensions class.
-/// Generates ONE class containing all Zip methods, organized by arity in regions.
-/// Follows architecture rule: One generator per class.
+///     Generator for ResultZipExtensions class.
+///     Generates ONE class containing all Zip methods, organized by arity in regions.
+///     Follows architecture rule: One generator per class.
 /// </summary>
-internal sealed class ResultZipExtensionsCodeGenerator : BaseCodeGenerator
-{
+internal sealed class ResultZipExtensionsCodeGenerator : BaseCodeGenerator {
     private const string ExtensionsNamespace = "Results.Extensions.Transformations";
 
     private readonly ZipMethodBuilder _zipBuilder;
@@ -19,36 +18,32 @@ internal sealed class ResultZipExtensionsCodeGenerator : BaseCodeGenerator
     public ResultZipExtensionsCodeGenerator(string baseNamespace)
         : base(new GenerationConfig(
                    baseNamespace,
-                   startArity: 2, // Zip requires at least 2 results
-                   subNamespace: ExtensionsNamespace,
-                   className: "ResultZipExtensions",
-                   fileOrganization: FileOrganizationMode.SingleFile))
-    {
+                   2, // Zip requires at least 2 results
+                   ExtensionsNamespace,
+                   "ResultZipExtensions",
+                   FileOrganizationMode.SingleFile)) {
         _zipBuilder = new ZipMethodBuilder();
     }
 
-    protected override string PrepareOutputDirectory(string outputPath)
-    {
+    protected override string PrepareOutputDirectory(string outputPath) {
         var mainOutput = FileSystemHelper.CreateSubdirectory(outputPath, Config.SubNamespace);
         return mainOutput;
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
-    {
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
         return [
             GenerateSyncMethods(arity),
-            GenerateAsyncMethods(arity, isValueTask: false),
-            GenerateAsyncMethods(arity, isValueTask: true)
+            GenerateAsyncMethods(arity, false),
+            GenerateAsyncMethods(arity, true)
         ];
     }
 
-    private ClassWriter GenerateSyncMethods(ushort arity)
-    {
+    private ClassWriter GenerateSyncMethods(ushort arity) {
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
         var classWriter = new ClassWriter(
-            name: Config.ClassName,
-            visibility: Visibility.Public,
-            classModifiers: ClassModifier.Static | ClassModifier.Partial
+            Config.ClassName,
+            Visibility.Public,
+            ClassModifier.Static | ClassModifier.Partial
         );
 
         // Generate both variants: with and without projector
@@ -59,17 +54,16 @@ internal sealed class ResultZipExtensionsCodeGenerator : BaseCodeGenerator
     }
 
     private ClassWriter GenerateAsyncMethods(ushort arity,
-                                             bool isValueTask)
-    {
+                                             bool   isValueTask) {
         var subNamespace = isValueTask
                                ? "ValueTasks"
                                : "Tasks";
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}.{subNamespace}";
 
         var classWriter = new ClassWriter(
-            name: Config.ClassName,
-            visibility: Visibility.Public,
-            classModifiers: ClassModifier.Static | ClassModifier.Partial
+            Config.ClassName,
+            Visibility.Public,
+            ClassModifier.Static | ClassModifier.Partial
         );
 
         // Generate both async variants: with and without projector
