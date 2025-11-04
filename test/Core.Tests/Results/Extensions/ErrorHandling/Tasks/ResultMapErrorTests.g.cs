@@ -29,7 +29,7 @@ public class ResultMapErrorTaskTestsArity0
         // Given
         var result = Result.Success();
         // When
-        var mappedResult = await Task.FromResult(result).MapErrorAsync(e => Task.FromResult(new Error(e.Message + " MAPPED")));
+        var mappedResult = await Task.FromResult(result).MapErrorAsync(errors => Task.FromResult(errors.Select(e => e.WithMessage(e.Message + " MAPPED"))));
         // Then
         Assert.True(mappedResult.IsSuccess);
     }
@@ -39,7 +39,7 @@ public class ResultMapErrorTaskTestsArity0
         // Given
         var result = Result.Failure("Test error");
         // When
-        var mappedResult = await Task.FromResult(result).MapErrorAsync(e => Task.FromResult(new Error(e.Message + " MAPPED")));
+        var mappedResult = await Task.FromResult(result).MapErrorAsync(errors => Task.FromResult(errors.Select(e => e.WithMessage(e.Message + " MAPPED"))));
         // Then
         Assert.False(mappedResult.IsSuccess);
         Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
@@ -50,7 +50,7 @@ public class ResultMapErrorTaskTestsArity0
         // Given
         var result = Result.Failure("Test error");
         // When
-        var mappedResult = await Task.FromResult(result).MapErrorAsync(e => Task.FromResult(new Error(e.Message + " MAPPED")));
+        var mappedResult = await Task.FromResult(result).MapErrorAsync(errors => Task.FromResult(errors.Select(e => e.WithMessage(e.Message + " MAPPED"))));
         // Then
         Assert.False(mappedResult.IsSuccess);
         Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
@@ -63,9 +63,10 @@ public class ResultMapErrorTaskTestsArity0
     [Fact]
     public async Task MapErrorTask_Arity1_Success_ShouldNotMapError() {
         // Given
-        var result = Result.Success(value1);
+        var value1 = 42;
+        var taskResult = Task.FromResult(Result.Success(value1));
         // When
-        var mappedResult = await taskResult.MapErrorAsync<int>(e => Task.FromResult(new Error(e.Message + " MAPPED")));
+        var mappedResult = await taskResult.MapErrorAsync<int>(errors => Task.FromResult(errors.Select(e => e.WithMessage(e.Message + " MAPPED"))));
         // Then
         Assert.True(mappedResult.IsSuccess);
     }
@@ -73,9 +74,9 @@ public class ResultMapErrorTaskTestsArity0
     [Fact]
     public async Task MapErrorTask_Arity1_Failure_ShouldMapError() {
         // Given
-        var result = Result.Failure<int>("Test error");
+        var taskResult = Task.FromResult(Result.Failure<int>("Test error"));
         // When
-        var mappedResult = await taskResult.MapErrorAsync<int>(e => Task.FromResult(new Error(e.Message + " MAPPED")));
+        var mappedResult = await taskResult.MapErrorAsync<int>(errors => Task.FromResult(errors.Select(e => e.WithMessage(e.Message + " MAPPED"))));
         // Then
         Assert.False(mappedResult.IsSuccess);
         Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
@@ -88,9 +89,11 @@ public class ResultMapErrorTaskTestsArity0
     [Fact]
     public async Task MapErrorTask_Arity2_Success_ShouldNotMapError() {
         // Given
-        var result = Result.Success(value1, value2);
+        var value1 = 42;
+        var value2 = "test";
+        var taskResult = Task.FromResult(Result.Success(value1, value2));
         // When
-        var mappedResult = await taskResult.MapErrorAsync<int, string>(e => Task.FromResult(new Error(e.Message + " MAPPED")));
+        var mappedResult = await taskResult.MapErrorAsync<int, string>(errors => Task.FromResult(errors.Select(e => e.WithMessage(e.Message + " MAPPED"))));
         // Then
         Assert.True(mappedResult.IsSuccess);
     }
@@ -98,9 +101,9 @@ public class ResultMapErrorTaskTestsArity0
     [Fact]
     public async Task MapErrorTask_Arity2_Failure_ShouldMapError() {
         // Given
-        var result = Result.Failure<int, string>("Test error");
+        var taskResult = Task.FromResult(Result.Failure<int, string>("Test error"));
         // When
-        var mappedResult = await taskResult.MapErrorAsync<int, string>(e => Task.FromResult(new Error(e.Message + " MAPPED")));
+        var mappedResult = await taskResult.MapErrorAsync<int, string>(errors => Task.FromResult(errors.Select(e => e.WithMessage(e.Message + " MAPPED"))));
         // Then
         Assert.False(mappedResult.IsSuccess);
         Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
@@ -113,9 +116,12 @@ public class ResultMapErrorTaskTestsArity0
     [Fact]
     public async Task MapErrorTask_Arity3_Success_ShouldNotMapError() {
         // Given
-        var result = Result.Success(value1, value2, value3);
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var taskResult = Task.FromResult(Result.Success(value1, value2, value3));
         // When
-        var mappedResult = await taskResult.MapErrorAsync<int, string, bool>(e => Task.FromResult(new Error(e.Message + " MAPPED")));
+        var mappedResult = await taskResult.MapErrorAsync<int, string, bool>(errors => Task.FromResult(errors.Select(e => e.WithMessage(e.Message + " MAPPED"))));
         // Then
         Assert.True(mappedResult.IsSuccess);
     }
@@ -123,9 +129,9 @@ public class ResultMapErrorTaskTestsArity0
     [Fact]
     public async Task MapErrorTask_Arity3_Failure_ShouldMapError() {
         // Given
-        var result = Result.Failure<int, string, bool>("Test error");
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool>("Test error"));
         // When
-        var mappedResult = await taskResult.MapErrorAsync<int, string, bool>(e => Task.FromResult(new Error(e.Message + " MAPPED")));
+        var mappedResult = await taskResult.MapErrorAsync<int, string, bool>(errors => Task.FromResult(errors.Select(e => e.WithMessage(e.Message + " MAPPED"))));
         // Then
         Assert.False(mappedResult.IsSuccess);
         Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
@@ -138,9 +144,13 @@ public class ResultMapErrorTaskTestsArity0
     [Fact]
     public async Task MapErrorTask_Arity4_Success_ShouldNotMapError() {
         // Given
-        var result = Result.Success(value1, value2, value3, value4);
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4));
         // When
-        var mappedResult = await taskResult.MapErrorAsync<int, string, bool, double>(e => Task.FromResult(new Error(e.Message + " MAPPED")));
+        var mappedResult = await taskResult.MapErrorAsync<int, string, bool, double>(errors => Task.FromResult(errors.Select(e => e.WithMessage(e.Message + " MAPPED"))));
         // Then
         Assert.True(mappedResult.IsSuccess);
     }
@@ -148,9 +158,9 @@ public class ResultMapErrorTaskTestsArity0
     [Fact]
     public async Task MapErrorTask_Arity4_Failure_ShouldMapError() {
         // Given
-        var result = Result.Failure<int, string, bool, double>("Test error");
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double>("Test error"));
         // When
-        var mappedResult = await taskResult.MapErrorAsync<int, string, bool, double>(e => Task.FromResult(new Error(e.Message + " MAPPED")));
+        var mappedResult = await taskResult.MapErrorAsync<int, string, bool, double>(errors => Task.FromResult(errors.Select(e => e.WithMessage(e.Message + " MAPPED"))));
         // Then
         Assert.False(mappedResult.IsSuccess);
         Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
@@ -163,9 +173,14 @@ public class ResultMapErrorTaskTestsArity0
     [Fact]
     public async Task MapErrorTask_Arity5_Success_ShouldNotMapError() {
         // Given
-        var result = Result.Success(value1, value2, value3, value4, value5);
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5));
         // When
-        var mappedResult = await taskResult.MapErrorAsync<int, string, bool, double, long>(e => Task.FromResult(new Error(e.Message + " MAPPED")));
+        var mappedResult = await taskResult.MapErrorAsync<int, string, bool, double, long>(errors => Task.FromResult(errors.Select(e => e.WithMessage(e.Message + " MAPPED"))));
         // Then
         Assert.True(mappedResult.IsSuccess);
     }
@@ -173,9 +188,9 @@ public class ResultMapErrorTaskTestsArity0
     [Fact]
     public async Task MapErrorTask_Arity5_Failure_ShouldMapError() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long>("Test error");
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
         // When
-        var mappedResult = await taskResult.MapErrorAsync<int, string, bool, double, long>(e => Task.FromResult(new Error(e.Message + " MAPPED")));
+        var mappedResult = await taskResult.MapErrorAsync<int, string, bool, double, long>(errors => Task.FromResult(errors.Select(e => e.WithMessage(e.Message + " MAPPED"))));
         // Then
         Assert.False(mappedResult.IsSuccess);
         Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
@@ -188,9 +203,15 @@ public class ResultMapErrorTaskTestsArity0
     [Fact]
     public async Task MapErrorTask_Arity6_Success_ShouldNotMapError() {
         // Given
-        var result = Result.Success(value1, value2, value3, value4, value5, value6);
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = "value6";
+        var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
         // When
-        var mappedResult = await taskResult.MapErrorAsync<int, string, bool, double, long, string>(e => Task.FromResult(new Error(e.Message + " MAPPED")));
+        var mappedResult = await taskResult.MapErrorAsync<int, string, bool, double, long, string>(errors => Task.FromResult(errors.Select(e => e.WithMessage(e.Message + " MAPPED"))));
         // Then
         Assert.True(mappedResult.IsSuccess);
     }
@@ -198,9 +219,9 @@ public class ResultMapErrorTaskTestsArity0
     [Fact]
     public async Task MapErrorTask_Arity6_Failure_ShouldMapError() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string>("Test error");
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
         // When
-        var mappedResult = await taskResult.MapErrorAsync<int, string, bool, double, long, string>(e => Task.FromResult(new Error(e.Message + " MAPPED")));
+        var mappedResult = await taskResult.MapErrorAsync<int, string, bool, double, long, string>(errors => Task.FromResult(errors.Select(e => e.WithMessage(e.Message + " MAPPED"))));
         // Then
         Assert.False(mappedResult.IsSuccess);
         Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
@@ -213,9 +234,16 @@ public class ResultMapErrorTaskTestsArity0
     [Fact]
     public async Task MapErrorTask_Arity7_Success_ShouldNotMapError() {
         // Given
-        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = "value6";
+        var value7 = "value7";
+        var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
         // When
-        var mappedResult = await taskResult.MapErrorAsync<int, string, bool, double, long, string, string>(e => Task.FromResult(new Error(e.Message + " MAPPED")));
+        var mappedResult = await taskResult.MapErrorAsync<int, string, bool, double, long, string, string>(errors => Task.FromResult(errors.Select(e => e.WithMessage(e.Message + " MAPPED"))));
         // Then
         Assert.True(mappedResult.IsSuccess);
     }
@@ -223,9 +251,9 @@ public class ResultMapErrorTaskTestsArity0
     [Fact]
     public async Task MapErrorTask_Arity7_Failure_ShouldMapError() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string>("Test error");
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
         // When
-        var mappedResult = await taskResult.MapErrorAsync<int, string, bool, double, long, string, string>(e => Task.FromResult(new Error(e.Message + " MAPPED")));
+        var mappedResult = await taskResult.MapErrorAsync<int, string, bool, double, long, string, string>(errors => Task.FromResult(errors.Select(e => e.WithMessage(e.Message + " MAPPED"))));
         // Then
         Assert.False(mappedResult.IsSuccess);
         Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
@@ -238,9 +266,17 @@ public class ResultMapErrorTaskTestsArity0
     [Fact]
     public async Task MapErrorTask_Arity8_Success_ShouldNotMapError() {
         // Given
-        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = "value6";
+        var value7 = "value7";
+        var value8 = "value8";
+        var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
         // When
-        var mappedResult = await taskResult.MapErrorAsync<int, string, bool, double, long, string, string, string>(e => Task.FromResult(new Error(e.Message + " MAPPED")));
+        var mappedResult = await taskResult.MapErrorAsync<int, string, bool, double, long, string, string, string>(errors => Task.FromResult(errors.Select(e => e.WithMessage(e.Message + " MAPPED"))));
         // Then
         Assert.True(mappedResult.IsSuccess);
     }
@@ -248,9 +284,9 @@ public class ResultMapErrorTaskTestsArity0
     [Fact]
     public async Task MapErrorTask_Arity8_Failure_ShouldMapError() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string, string>("Test error");
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
         // When
-        var mappedResult = await taskResult.MapErrorAsync<int, string, bool, double, long, string, string, string>(e => Task.FromResult(new Error(e.Message + " MAPPED")));
+        var mappedResult = await taskResult.MapErrorAsync<int, string, bool, double, long, string, string, string>(errors => Task.FromResult(errors.Select(e => e.WithMessage(e.Message + " MAPPED"))));
         // Then
         Assert.False(mappedResult.IsSuccess);
         Assert.Contains("MAPPED", mappedResult.Errors.First().Message);

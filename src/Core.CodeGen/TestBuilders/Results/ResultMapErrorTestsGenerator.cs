@@ -92,57 +92,60 @@ internal sealed class ResultMapErrorTestsGenerator : ResultTestGeneratorBase
     {
         var testValues = GenerateTestValues(arity);
         var creation = GenerateResultCreation(arity);
-        var call = $"var mappedResult = result.MapError<{GenerateTypeParams(arity)}>(e => new Error(e.Message + \" MAPPED\"));";
+        var call = $"var mappedResult = result.MapError<{GenerateTypeParams(arity)}>(errors => errors.Select(e => e.WithMessage(e.Message + \" MAPPED\")));";
         return BuildTestBody([testValues, creation], [call], ["Assert.True(mappedResult.IsSuccess);"]);
     }
 
     private string GenerateSyncFailureBody(ushort arity)
     {
         var creation = GenerateFailureResultCreation(arity);
-        var call = $"var mappedResult = result.MapError<{GenerateTypeParams(arity)}>(e => new Error(e.Message + \" MAPPED\"));";
+        var call = $"var mappedResult = result.MapError<{GenerateTypeParams(arity)}>(errors => errors.Select(e => e.WithMessage(e.Message + \" MAPPED\")));";
         return BuildTestBody([creation], [call], ["Assert.False(mappedResult.IsSuccess);", "Assert.Contains(\"MAPPED\", mappedResult.Errors.First().Message);"]);
     }
 
     private string GenerateTaskSuccessBody(ushort arity)
     {
-        var creation = arity == 0 ? "var result = Result.Success();" : GenerateResultCreation(arity);
-        var wrap = arity == 0 ? "Task.FromResult(result)" : "taskResult";
-        var call = arity == 0 ? "var mappedResult = await Task.FromResult(result).MapErrorAsync(e => Task.FromResult(new Error(e.Message + \" MAPPED\")));" : $"var mappedResult = await taskResult.MapErrorAsync<{GenerateTypeParams(arity)}>(e => Task.FromResult(new Error(e.Message + \" MAPPED\")));";
-        return BuildTestBody([creation], [call], ["Assert.True(mappedResult.IsSuccess);"]);
+        var creation = arity == 0 ? "var result = Result.Success();" : GenerateTaskResultCreation(arity);
+        var call = arity == 0 ? "var mappedResult = await Task.FromResult(result).MapErrorAsync(errors => Task.FromResult(errors.Select(e => e.WithMessage(e.Message + \" MAPPED\"))));" : $"var mappedResult = await taskResult.MapErrorAsync<{GenerateTypeParams(arity)}>(errors => Task.FromResult(errors.Select(e => e.WithMessage(e.Message + \" MAPPED\"))));";
+        return arity == 0
+            ? BuildTestBody([creation], [call], ["Assert.True(mappedResult.IsSuccess);"])
+            : BuildTestBody([GenerateTestValues(arity), creation], [call], ["Assert.True(mappedResult.IsSuccess);"]);
     }
 
     private string GenerateTaskFailureBody(ushort arity)
     {
-        var creation = arity == 0 ? "var result = Result.Failure(\"Test error\");" : GenerateFailureResultCreation(arity);
-        var call = arity == 0 ? "var mappedResult = await Task.FromResult(result).MapErrorAsync(e => Task.FromResult(new Error(e.Message + \" MAPPED\")));" : $"var mappedResult = await taskResult.MapErrorAsync<{GenerateTypeParams(arity)}>(e => Task.FromResult(new Error(e.Message + \" MAPPED\")));";
+        var creation = arity == 0 ? "var result = Result.Failure(\"Test error\");" : GenerateTaskFailureResultCreation(arity);
+        var call = arity == 0 ? "var mappedResult = await Task.FromResult(result).MapErrorAsync(errors => Task.FromResult(errors.Select(e => e.WithMessage(e.Message + \" MAPPED\"))));" : $"var mappedResult = await taskResult.MapErrorAsync<{GenerateTypeParams(arity)}>(errors => Task.FromResult(errors.Select(e => e.WithMessage(e.Message + \" MAPPED\"))));";
         return BuildTestBody([creation], [call], ["Assert.False(mappedResult.IsSuccess);", "Assert.Contains(\"MAPPED\", mappedResult.Errors.First().Message);"]);
     }
 
     private string GenerateTaskAwaitableFailureBody()
     {
         const string creation = "var result = Result.Failure(\"Test error\");";
-        const string call = "var mappedResult = await Task.FromResult(result).MapErrorAsync(e => Task.FromResult(new Error(e.Message + \" MAPPED\")));";
+        const string call = "var mappedResult = await Task.FromResult(result).MapErrorAsync(errors => Task.FromResult(errors.Select(e => e.WithMessage(e.Message + \" MAPPED\"))));";
         return BuildTestBody([creation], [call], ["Assert.False(mappedResult.IsSuccess);", "Assert.Contains(\"MAPPED\", mappedResult.Errors.First().Message);"]);
     }
 
     private string GenerateValueTaskSuccessBody(ushort arity)
     {
-        var creation = arity == 0 ? "var result = Result.Success();" : GenerateResultCreation(arity);
-        var call = arity == 0 ? "var mappedResult = await ValueTask.FromResult(result).MapErrorAsync(e => ValueTask.FromResult(new Error(e.Message + \" MAPPED\")));" : $"var mappedResult = await valueTaskResult.MapErrorAsync<{GenerateTypeParams(arity)}>(e => ValueTask.FromResult(new Error(e.Message + \" MAPPED\")));";
-        return BuildTestBody([creation], [call], ["Assert.True(mappedResult.IsSuccess);"]);
+        var creation = arity == 0 ? "var result = Result.Success();" : GenerateValueTaskResultCreation(arity);
+        var call = arity == 0 ? "var mappedResult = await ValueTask.FromResult(result).MapErrorAsync(errors => ValueTask.FromResult(errors.Select(e => e.WithMessage(e.Message + \" MAPPED\"))));" : $"var mappedResult = await valueTaskResult.MapErrorAsync<{GenerateTypeParams(arity)}>(errors => ValueTask.FromResult(errors.Select(e => e.WithMessage(e.Message + \" MAPPED\"))));";
+        return arity == 0
+            ? BuildTestBody([creation], [call], ["Assert.True(mappedResult.IsSuccess);"])
+            : BuildTestBody([GenerateTestValues(arity), creation], [call], ["Assert.True(mappedResult.IsSuccess);"]);
     }
 
     private string GenerateValueTaskFailureBody(ushort arity)
     {
-        var creation = arity == 0 ? "var result = Result.Failure(\"Test error\");" : GenerateFailureResultCreation(arity);
-        var call = arity == 0 ? "var mappedResult = await ValueTask.FromResult(result).MapErrorAsync(e => ValueTask.FromResult(new Error(e.Message + \" MAPPED\")));" : $"var mappedResult = await valueTaskResult.MapErrorAsync<{GenerateTypeParams(arity)}>(e => ValueTask.FromResult(new Error(e.Message + \" MAPPED\")));";
+        var creation = arity == 0 ? "var result = Result.Failure(\"Test error\");" : GenerateValueTaskFailureResultCreation(arity);
+        var call = arity == 0 ? "var mappedResult = await ValueTask.FromResult(result).MapErrorAsync(errors => ValueTask.FromResult(errors.Select(e => e.WithMessage(e.Message + \" MAPPED\"))));" : $"var mappedResult = await valueTaskResult.MapErrorAsync<{GenerateTypeParams(arity)}>(errors => ValueTask.FromResult(errors.Select(e => e.WithMessage(e.Message + \" MAPPED\"))));";
         return BuildTestBody([creation], [call], ["Assert.False(mappedResult.IsSuccess);", "Assert.Contains(\"MAPPED\", mappedResult.Errors.First().Message);"]);
     }
 
     private string GenerateValueTaskAwaitableFailureBody()
     {
         const string creation = "var result = Result.Failure(\"Test error\");";
-        const string call = "var mappedResult = await ValueTask.FromResult(result).MapErrorAsync(e => ValueTask.FromResult(new Error(e.Message + \" MAPPED\")));";
+        const string call = "var mappedResult = await ValueTask.FromResult(result).MapErrorAsync(errors => ValueTask.FromResult(errors.Select(e => e.WithMessage(e.Message + \" MAPPED\"))));";
         return BuildTestBody([creation], [call], ["Assert.False(mappedResult.IsSuccess);", "Assert.Contains(\"MAPPED\", mappedResult.Errors.First().Message);"]);
     }
 }
