@@ -8,13 +8,15 @@
 #nullable enable
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
-using UnambitiousFx.Core.Results.Extensions.Transformations;
+using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
+using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Extensions.Transformations.Tasks;
-using UnambitiousFx.Core.Results.Extensions.Transformations.ValueTasks;
+using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Transformations.Tasks;
@@ -25,31 +27,37 @@ public class ResultTryTaskTestsArity1
     
     [Fact]
     public async Task TryTask_Arity1_Success_ShouldTransform() {
+        // Given
         var value1 = 42;
         var taskResult = Task.FromResult(Result.Success(value1));
+        // When
         var result = await taskResult;
-        var transformedResult = result.Try<int, string>(x => x.ToString() + "_tried");
+        var transformedResult = await result.TryAsync<int, string>(x => Task.FromResult(x.ToString() + "_tried"));
+        // Then
         Assert.True(transformedResult.IsSuccess);
-        Assert.True(transformedResult.TryGet(out var triedValue));
-        Assert.Equal("42_tried", triedValue);
     }
     
     [Fact]
     public async Task TryTask_Arity1_Failure_ShouldNotTransform() {
+        // Given
         var taskResult = Task.FromResult(Result.Failure<int>("Test error"));
+        // When
         var result = await taskResult;
-        var transformedResult = result.Try<int, string>(x => x.ToString() + "_tried");
+        var transformedResult = await result.TryAsync<int, string>(x => Task.FromResult(x.ToString() + "_tried"));
+        // Then
         Assert.False(transformedResult.IsSuccess);
     }
     
     [Fact]
-    public async Task TryTask_Arity1_Exception_ShouldCaptureException() {
+    public async Task TryTask_Arity1_Exception_ShouldReturnExceptionalError() {
+        // Given
         var value1 = 42;
         var taskResult = Task.FromResult(Result.Success(value1));
+        // When
         var result = await taskResult;
-        var transformedResult = result.Try<int, string>(x => throw new InvalidOperationException("Test exception"));
+        var transformedResult = await result.TryAsync<int, string>(x => throw new Exception("Boom"));
+        // Then
         Assert.False(transformedResult.IsSuccess);
-        Assert.True(transformedResult.HasException<InvalidOperationException, string>());
     }
     
     #endregion // Arity 1 - Task Try
@@ -58,31 +66,39 @@ public class ResultTryTaskTestsArity1
     
     [Fact]
     public async Task TryTask_Arity2_Success_ShouldTransform() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var taskResult = Task.FromResult(Result.Success(value1, value2));
+        // When
         var result = await taskResult;
-        var transformedResult = result.Try<int, string, string, string>((x1, x2) => (x1 + "_tried", x2 + "_tried"));
+        var transformedResult = await result.TryAsync<int, string, string, string>((x1, x2) => Task.FromResult((x1 + "_tried", x2 + "_tried")));
+        // Then
         Assert.True(transformedResult.IsSuccess);
     }
     
     [Fact]
     public async Task TryTask_Arity2_Failure_ShouldNotTransform() {
+        // Given
         var taskResult = Task.FromResult(Result.Failure<int, string>("Test error"));
+        // When
         var result = await taskResult;
-        var transformedResult = result.Try<int, string, string, string>((x1, x2) => (x1 + "_tried", x2 + "_tried"));
+        var transformedResult = await result.TryAsync<int, string, string, string>((x1, x2) => Task.FromResult((x1 + "_tried", x2 + "_tried")));
+        // Then
         Assert.False(transformedResult.IsSuccess);
     }
     
     [Fact]
-    public async Task TryTask_Arity2_Exception_ShouldCaptureException() {
+    public async Task TryTask_Arity2_Exception_ShouldReturnExceptionalError() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var taskResult = Task.FromResult(Result.Success(value1, value2));
+        // When
         var result = await taskResult;
-        var transformedResult = result.Try<int, string, string, string>((x1, x2) => throw new InvalidOperationException("Test exception"));
+        var transformedResult = await result.TryAsync<int, string, string, string>((x1, x2) => throw new Exception("Boom"));
+        // Then
         Assert.False(transformedResult.IsSuccess);
-        Assert.True(transformedResult.HasException<InvalidOperationException, string, string>());
     }
     
     #endregion // Arity 2 - Task Try
@@ -91,33 +107,41 @@ public class ResultTryTaskTestsArity1
     
     [Fact]
     public async Task TryTask_Arity3_Success_ShouldTransform() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3));
+        // When
         var result = await taskResult;
-        var transformedResult = result.Try<int, string, bool, string, string, string>((x1, x2, x3) => (x1 + "_tried", x2 + "_tried", x3 + "_tried"));
+        var transformedResult = await result.TryAsync<int, string, bool, string, string, string>((x1, x2, x3) => Task.FromResult((x1 + "_tried", x2 + "_tried", x3 + "_tried")));
+        // Then
         Assert.True(transformedResult.IsSuccess);
     }
     
     [Fact]
     public async Task TryTask_Arity3_Failure_ShouldNotTransform() {
+        // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool>("Test error"));
+        // When
         var result = await taskResult;
-        var transformedResult = result.Try<int, string, bool, string, string, string>((x1, x2, x3) => (x1 + "_tried", x2 + "_tried", x3 + "_tried"));
+        var transformedResult = await result.TryAsync<int, string, bool, string, string, string>((x1, x2, x3) => Task.FromResult((x1 + "_tried", x2 + "_tried", x3 + "_tried")));
+        // Then
         Assert.False(transformedResult.IsSuccess);
     }
     
     [Fact]
-    public async Task TryTask_Arity3_Exception_ShouldCaptureException() {
+    public async Task TryTask_Arity3_Exception_ShouldReturnExceptionalError() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3));
+        // When
         var result = await taskResult;
-        var transformedResult = result.Try<int, string, bool, string, string, string>((x1, x2, x3) => throw new InvalidOperationException("Test exception"));
+        var transformedResult = await result.TryAsync<int, string, bool, string, string, string>((x1, x2, x3) => throw new Exception("Boom"));
+        // Then
         Assert.False(transformedResult.IsSuccess);
-        Assert.True(transformedResult.HasException<InvalidOperationException, string, string, string>());
     }
     
     #endregion // Arity 3 - Task Try
@@ -126,35 +150,43 @@ public class ResultTryTaskTestsArity1
     
     [Fact]
     public async Task TryTask_Arity4_Success_ShouldTransform() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4));
+        // When
         var result = await taskResult;
-        var transformedResult = result.Try<int, string, bool, double, string, string, string, string>((x1, x2, x3, x4) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried"));
+        var transformedResult = await result.TryAsync<int, string, bool, double, string, string, string, string>((x1, x2, x3, x4) => Task.FromResult((x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried")));
+        // Then
         Assert.True(transformedResult.IsSuccess);
     }
     
     [Fact]
     public async Task TryTask_Arity4_Failure_ShouldNotTransform() {
+        // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        // When
         var result = await taskResult;
-        var transformedResult = result.Try<int, string, bool, double, string, string, string, string>((x1, x2, x3, x4) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried"));
+        var transformedResult = await result.TryAsync<int, string, bool, double, string, string, string, string>((x1, x2, x3, x4) => Task.FromResult((x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried")));
+        // Then
         Assert.False(transformedResult.IsSuccess);
     }
     
     [Fact]
-    public async Task TryTask_Arity4_Exception_ShouldCaptureException() {
+    public async Task TryTask_Arity4_Exception_ShouldReturnExceptionalError() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4));
+        // When
         var result = await taskResult;
-        var transformedResult = result.Try<int, string, bool, double, string, string, string, string>((x1, x2, x3, x4) => throw new InvalidOperationException("Test exception"));
+        var transformedResult = await result.TryAsync<int, string, bool, double, string, string, string, string>((x1, x2, x3, x4) => throw new Exception("Boom"));
+        // Then
         Assert.False(transformedResult.IsSuccess);
-        Assert.True(transformedResult.HasException<InvalidOperationException, string, string, string, string>());
     }
     
     #endregion // Arity 4 - Task Try
@@ -163,37 +195,45 @@ public class ResultTryTaskTestsArity1
     
     [Fact]
     public async Task TryTask_Arity5_Success_ShouldTransform() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        // When
         var result = await taskResult;
-        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string>((x1, x2, x3, x4, x5) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried"));
+        var transformedResult = await result.TryAsync<int, string, bool, double, long, string, string, string, string, string>((x1, x2, x3, x4, x5) => Task.FromResult((x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried")));
+        // Then
         Assert.True(transformedResult.IsSuccess);
     }
     
     [Fact]
     public async Task TryTask_Arity5_Failure_ShouldNotTransform() {
+        // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        // When
         var result = await taskResult;
-        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string>((x1, x2, x3, x4, x5) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried"));
+        var transformedResult = await result.TryAsync<int, string, bool, double, long, string, string, string, string, string>((x1, x2, x3, x4, x5) => Task.FromResult((x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried")));
+        // Then
         Assert.False(transformedResult.IsSuccess);
     }
     
     [Fact]
-    public async Task TryTask_Arity5_Exception_ShouldCaptureException() {
+    public async Task TryTask_Arity5_Exception_ShouldReturnExceptionalError() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        // When
         var result = await taskResult;
-        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string>((x1, x2, x3, x4, x5) => throw new InvalidOperationException("Test exception"));
+        var transformedResult = await result.TryAsync<int, string, bool, double, long, string, string, string, string, string>((x1, x2, x3, x4, x5) => throw new Exception("Boom"));
+        // Then
         Assert.False(transformedResult.IsSuccess);
-        Assert.True(transformedResult.HasException<InvalidOperationException, string, string, string, string, string>());
     }
     
     #endregion // Arity 5 - Task Try
@@ -202,6 +242,7 @@ public class ResultTryTaskTestsArity1
     
     [Fact]
     public async Task TryTask_Arity6_Success_ShouldTransform() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
@@ -209,21 +250,27 @@ public class ResultTryTaskTestsArity1
         var value5 = 123L;
         var value6 = "value6";
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        // When
         var result = await taskResult;
-        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried"));
+        var transformedResult = await result.TryAsync<int, string, bool, double, long, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6) => Task.FromResult((x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried")));
+        // Then
         Assert.True(transformedResult.IsSuccess);
     }
     
     [Fact]
     public async Task TryTask_Arity6_Failure_ShouldNotTransform() {
+        // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
+        // When
         var result = await taskResult;
-        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried"));
+        var transformedResult = await result.TryAsync<int, string, bool, double, long, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6) => Task.FromResult((x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried")));
+        // Then
         Assert.False(transformedResult.IsSuccess);
     }
     
     [Fact]
-    public async Task TryTask_Arity6_Exception_ShouldCaptureException() {
+    public async Task TryTask_Arity6_Exception_ShouldReturnExceptionalError() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
@@ -231,10 +278,11 @@ public class ResultTryTaskTestsArity1
         var value5 = 123L;
         var value6 = "value6";
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        // When
         var result = await taskResult;
-        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6) => throw new InvalidOperationException("Test exception"));
+        var transformedResult = await result.TryAsync<int, string, bool, double, long, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6) => throw new Exception("Boom"));
+        // Then
         Assert.False(transformedResult.IsSuccess);
-        Assert.True(transformedResult.HasException<InvalidOperationException, string, string, string, string, string, string>());
     }
     
     #endregion // Arity 6 - Task Try
@@ -243,6 +291,7 @@ public class ResultTryTaskTestsArity1
     
     [Fact]
     public async Task TryTask_Arity7_Success_ShouldTransform() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
@@ -251,21 +300,27 @@ public class ResultTryTaskTestsArity1
         var value6 = "value6";
         var value7 = "value7";
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        // When
         var result = await taskResult;
-        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried", x7 + "_tried"));
+        var transformedResult = await result.TryAsync<int, string, bool, double, long, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7) => Task.FromResult((x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried", x7 + "_tried")));
+        // Then
         Assert.True(transformedResult.IsSuccess);
     }
     
     [Fact]
     public async Task TryTask_Arity7_Failure_ShouldNotTransform() {
+        // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
+        // When
         var result = await taskResult;
-        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried", x7 + "_tried"));
+        var transformedResult = await result.TryAsync<int, string, bool, double, long, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7) => Task.FromResult((x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried", x7 + "_tried")));
+        // Then
         Assert.False(transformedResult.IsSuccess);
     }
     
     [Fact]
-    public async Task TryTask_Arity7_Exception_ShouldCaptureException() {
+    public async Task TryTask_Arity7_Exception_ShouldReturnExceptionalError() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
@@ -274,10 +329,11 @@ public class ResultTryTaskTestsArity1
         var value6 = "value6";
         var value7 = "value7";
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        // When
         var result = await taskResult;
-        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7) => throw new InvalidOperationException("Test exception"));
+        var transformedResult = await result.TryAsync<int, string, bool, double, long, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7) => throw new Exception("Boom"));
+        // Then
         Assert.False(transformedResult.IsSuccess);
-        Assert.True(transformedResult.HasException<InvalidOperationException, string, string, string, string, string, string, string>());
     }
     
     #endregion // Arity 7 - Task Try
@@ -286,6 +342,7 @@ public class ResultTryTaskTestsArity1
     
     [Fact]
     public async Task TryTask_Arity8_Success_ShouldTransform() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
@@ -295,21 +352,27 @@ public class ResultTryTaskTestsArity1
         var value7 = "value7";
         var value8 = "value8";
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        // When
         var result = await taskResult;
-        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7, x8) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried", x7 + "_tried", x8 + "_tried"));
+        var transformedResult = await result.TryAsync<int, string, bool, double, long, string, string, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7, x8) => Task.FromResult((x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried", x7 + "_tried", x8 + "_tried")));
+        // Then
         Assert.True(transformedResult.IsSuccess);
     }
     
     [Fact]
     public async Task TryTask_Arity8_Failure_ShouldNotTransform() {
+        // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
+        // When
         var result = await taskResult;
-        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7, x8) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried", x7 + "_tried", x8 + "_tried"));
+        var transformedResult = await result.TryAsync<int, string, bool, double, long, string, string, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7, x8) => Task.FromResult((x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried", x7 + "_tried", x8 + "_tried")));
+        // Then
         Assert.False(transformedResult.IsSuccess);
     }
     
     [Fact]
-    public async Task TryTask_Arity8_Exception_ShouldCaptureException() {
+    public async Task TryTask_Arity8_Exception_ShouldReturnExceptionalError() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
@@ -319,10 +382,11 @@ public class ResultTryTaskTestsArity1
         var value7 = "value7";
         var value8 = "value8";
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        // When
         var result = await taskResult;
-        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7, x8) => throw new InvalidOperationException("Test exception"));
+        var transformedResult = await result.TryAsync<int, string, bool, double, long, string, string, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7, x8) => throw new Exception("Boom"));
+        // Then
         Assert.False(transformedResult.IsSuccess);
-        Assert.True(transformedResult.HasException<InvalidOperationException, string, string, string, string, string, string, string, string>());
     }
     
     #endregion // Arity 8 - Task Try

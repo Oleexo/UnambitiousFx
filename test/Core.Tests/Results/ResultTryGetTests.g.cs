@@ -20,11 +20,14 @@ public abstract class ResultTryGetTests
     
     [Fact]
     public void TryGet_Arity1_Success_ShouldReturnValues() {
+        // Given
         // Given: A successful Result
         var value1 = 42;
         var result = Result.Success(value1);
+        // When
         // When: Calling TryGet
         var tryGetResult = result.TryGet(out var outValue1);
+        // Then
         // Then: Should retrieve values
         Assert.True(tryGetResult);
         Assert.Equal(42, outValue1);
@@ -32,10 +35,13 @@ public abstract class ResultTryGetTests
     
     [Fact]
     public void TryGet_Arity1_Failure_ShouldReturnFalse() {
+        // Given
         // Given: A failed Result
         var result = Result.Failure<int>("Test error");
+        // When
         // When: Calling TryGet
         var tryGetResult = result.TryGet(out var outValue1);
+        // Then
         // Then: Should return false
         Assert.False(tryGetResult);
     }
@@ -46,12 +52,15 @@ public abstract class ResultTryGetTests
     
     [Fact]
     public void TryGet_Arity2_Success_ShouldReturnValues() {
+        // Given
         // Given: A successful Result
         var value1 = 42;
         var value2 = "test";
         var result = Result.Success(value1, value2);
+        // When
         // When: Calling TryGet
         var tryGetResult = result.TryGet(out var outValue1, out var outValue2);
+        // Then
         // Then: Should retrieve values
         Assert.True(tryGetResult);
         Assert.Equal(42, outValue1);
@@ -60,10 +69,13 @@ public abstract class ResultTryGetTests
     
     [Fact]
     public void TryGet_Arity2_Failure_ShouldReturnFalse() {
+        // Given
         // Given: A failed Result
         var result = Result.Failure<int, string>("Test error");
+        // When
         // When: Calling TryGet
         var tryGetResult = result.TryGet(out var outValue1, out var outValue2);
+        // Then
         // Then: Should return false
         Assert.False(tryGetResult);
     }
@@ -74,13 +86,16 @@ public abstract class ResultTryGetTests
     
     [Fact]
     public void TryGet_Arity3_Success_ShouldReturnValues() {
+        // Given
         // Given: A successful Result
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
         var result = Result.Success(value1, value2, value3);
+        // When
         // When: Calling TryGet
         var tryGetResult = result.TryGet(out var outValue1, out var outValue2, out var outValue3);
+        // Then
         // Then: Should retrieve values
         Assert.True(tryGetResult);
         Assert.Equal(42, outValue1);
@@ -90,10 +105,13 @@ public abstract class ResultTryGetTests
     
     [Fact]
     public void TryGet_Arity3_Failure_ShouldReturnFalse() {
+        // Given
         // Given: A failed Result
         var result = Result.Failure<int, string, bool>("Test error");
+        // When
         // When: Calling TryGet
         var tryGetResult = result.TryGet(out var outValue1, out var outValue2, out var outValue3);
+        // Then
         // Then: Should return false
         Assert.False(tryGetResult);
     }
@@ -104,14 +122,17 @@ public abstract class ResultTryGetTests
     
     [Fact]
     public void TryGet_Arity4_Success_ShouldReturnValues() {
+        // Given
         // Given: A successful Result
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
         var result = Result.Success(value1, value2, value3, value4);
+        // When
         // When: Calling TryGet
         var tryGetResult = result.TryGet(out var outValue1, out var outValue2, out var outValue3, out var outValue4);
+        // Then
         // Then: Should retrieve values
         Assert.True(tryGetResult);
         Assert.Equal(42, outValue1);
@@ -122,10 +143,13 @@ public abstract class ResultTryGetTests
     
     [Fact]
     public void TryGet_Arity4_Failure_ShouldReturnFalse() {
+        // Given
         // Given: A failed Result
         var result = Result.Failure<int, string, bool, double>("Test error");
+        // When
         // When: Calling TryGet
         var tryGetResult = result.TryGet(out var outValue1, out var outValue2, out var outValue3, out var outValue4);
+        // Then
         // Then: Should return false
         Assert.False(tryGetResult);
     }
@@ -136,6 +160,7 @@ public abstract class ResultTryGetTests
     
     [Fact]
     public void TryGet_Arity5_Success_ShouldReturnValues() {
+        // Given
         // Given: A successful Result
         var value1 = 42;
         var value2 = "test";
@@ -143,8 +168,10 @@ public abstract class ResultTryGetTests
         var value4 = 3.14;
         var value5 = 123L;
         var result = Result.Success(value1, value2, value3, value4, value5);
+        // When
         // When: Calling TryGet
         var tryGetResult = result.TryGet(out var outValue1, out var outValue2, out var outValue3, out var outValue4, out var outValue5);
+        // Then
         // Then: Should retrieve values
         Assert.True(tryGetResult);
         Assert.Equal(42, outValue1);
@@ -156,10 +183,13 @@ public abstract class ResultTryGetTests
     
     [Fact]
     public void TryGet_Arity5_Failure_ShouldReturnFalse() {
+        // Given
         // Given: A failed Result
         var result = Result.Failure<int, string, bool, double, long>("Test error");
+        // When
         // When: Calling TryGet
         var tryGetResult = result.TryGet(out var outValue1, out var outValue2, out var outValue3, out var outValue4, out var outValue5);
+        // Then
         // Then: Should return false
         Assert.False(tryGetResult);
     }
@@ -170,6 +200,7 @@ public abstract class ResultTryGetTests
     
     [Fact]
     public void TryGet_Arity6_Success_ShouldReturnValues() {
+        // Given
         // Given: A successful Result
         var value1 = 42;
         var value2 = "test";
@@ -178,8 +209,10 @@ public abstract class ResultTryGetTests
         var value5 = 123L;
         var value6 = "value6";
         var result = Result.Success(value1, value2, value3, value4, value5, value6);
+        // When
         // When: Calling TryGet
         var tryGetResult = result.TryGet(out var outValue1, out var outValue2, out var outValue3, out var outValue4, out var outValue5, out var outValue6);
+        // Then
         // Then: Should retrieve values
         Assert.True(tryGetResult);
         Assert.Equal(42, outValue1);
@@ -192,10 +225,13 @@ public abstract class ResultTryGetTests
     
     [Fact]
     public void TryGet_Arity6_Failure_ShouldReturnFalse() {
+        // Given
         // Given: A failed Result
         var result = Result.Failure<int, string, bool, double, long, string>("Test error");
+        // When
         // When: Calling TryGet
         var tryGetResult = result.TryGet(out var outValue1, out var outValue2, out var outValue3, out var outValue4, out var outValue5, out var outValue6);
+        // Then
         // Then: Should return false
         Assert.False(tryGetResult);
     }
@@ -206,6 +242,7 @@ public abstract class ResultTryGetTests
     
     [Fact]
     public void TryGet_Arity7_Success_ShouldReturnValues() {
+        // Given
         // Given: A successful Result
         var value1 = 42;
         var value2 = "test";
@@ -215,8 +252,10 @@ public abstract class ResultTryGetTests
         var value6 = "value6";
         var value7 = "value7";
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
+        // When
         // When: Calling TryGet
         var tryGetResult = result.TryGet(out var outValue1, out var outValue2, out var outValue3, out var outValue4, out var outValue5, out var outValue6, out var outValue7);
+        // Then
         // Then: Should retrieve values
         Assert.True(tryGetResult);
         Assert.Equal(42, outValue1);
@@ -230,10 +269,13 @@ public abstract class ResultTryGetTests
     
     [Fact]
     public void TryGet_Arity7_Failure_ShouldReturnFalse() {
+        // Given
         // Given: A failed Result
         var result = Result.Failure<int, string, bool, double, long, string, string>("Test error");
+        // When
         // When: Calling TryGet
         var tryGetResult = result.TryGet(out var outValue1, out var outValue2, out var outValue3, out var outValue4, out var outValue5, out var outValue6, out var outValue7);
+        // Then
         // Then: Should return false
         Assert.False(tryGetResult);
     }
@@ -244,6 +286,7 @@ public abstract class ResultTryGetTests
     
     [Fact]
     public void TryGet_Arity8_Success_ShouldReturnValues() {
+        // Given
         // Given: A successful Result
         var value1 = 42;
         var value2 = "test";
@@ -254,8 +297,10 @@ public abstract class ResultTryGetTests
         var value7 = "value7";
         var value8 = "value8";
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
+        // When
         // When: Calling TryGet
         var tryGetResult = result.TryGet(out var outValue1, out var outValue2, out var outValue3, out var outValue4, out var outValue5, out var outValue6, out var outValue7, out var outValue8);
+        // Then
         // Then: Should retrieve values
         Assert.True(tryGetResult);
         Assert.Equal(42, outValue1);
@@ -270,10 +315,13 @@ public abstract class ResultTryGetTests
     
     [Fact]
     public void TryGet_Arity8_Failure_ShouldReturnFalse() {
+        // Given
         // Given: A failed Result
         var result = Result.Failure<int, string, bool, double, long, string, string, string>("Test error");
+        // When
         // When: Calling TryGet
         var tryGetResult = result.TryGet(out var outValue1, out var outValue2, out var outValue3, out var outValue4, out var outValue5, out var outValue6, out var outValue7, out var outValue8);
+        // Then
         // Then: Should return false
         Assert.False(tryGetResult);
     }

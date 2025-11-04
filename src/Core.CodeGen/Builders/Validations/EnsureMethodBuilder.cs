@@ -24,7 +24,7 @@ internal sealed class EnsureMethodBuilder {
         var valueParams = string.Join(", ", Enumerable.Range(1, arity)
                                                       .Select(n => $"value{n}"));
         var predicateType    = $"Func<{genericTypes}, bool>";
-        var errorFactoryType = $"Func<{genericTypes}, Exception>";
+        var errorFactoryType = $"Func<{genericTypes}, IError>";
 
         string body;
         if (arity == 1) {
@@ -66,7 +66,10 @@ internal sealed class EnsureMethodBuilder {
             ],
             genericParams,
             docBuilder.Build(),
-            usings: ["UnambitiousFx.Core.Results.Extensions.Transformations"]
+            usings: [
+                "UnambitiousFx.Core.Results.Extensions.Transformations",
+                "UnambitiousFx.Core.Results.Reasons"
+            ]
         );
     }
 }

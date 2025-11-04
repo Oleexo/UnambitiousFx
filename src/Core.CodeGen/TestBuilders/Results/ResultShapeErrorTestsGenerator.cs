@@ -24,189 +24,67 @@ internal sealed class ResultShapeErrorTestsGenerator : ResultTestGeneratorBase
     {
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
-    {
-        var classes = new List<ClassWriter>();
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) =>
+        GenerateVariants(arity, ClassName, (GenerateTaskTests, true), (GenerateValueTaskTests, true));
 
-        var task = GenerateTaskTests(arity);
-        if (task != null)
-        {
-            task.UnderClass = ClassName;
-            classes.Add(task);
-        }
-
-        var valueTask = GenerateValueTaskTests(arity);
-        if (valueTask != null)
-        {
-            valueTask.UnderClass = ClassName;
-            classes.Add(valueTask);
-        }
-
-        return classes;
-    }
-
-    private ClassWriter? GenerateTaskTests(ushort arity)
-    {
+    private ClassWriter GenerateTaskTests(ushort arity) {
         var cw = new ClassWriter($"ResultShapeErrorTaskTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Task ShapeError" };
-        cw.AddMethod(GenerateTaskSuccessTest(arity));
-        cw.AddMethod(GenerateTaskFailureTest(arity));
-        cw.AddMethod(GenerateTaskAwaitableFailureTest(arity));
+        cw.AddMethod(new MethodWriter($"ShapeErrorTask_Arity{arity}_Success_ShouldReturnSuccess", "async Task", GenerateTaskSuccessBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings()));
+        cw.AddMethod(new MethodWriter($"ShapeErrorTask_Arity{arity}_Failure_ShouldShapeErrors", "async Task", GenerateTaskFailureBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings()));
+        cw.AddMethod(new MethodWriter($"ShapeErrorTaskAwaitable_Arity{arity}_Failure_ShouldShapeErrors", "async Task", GenerateTaskAwaitableFailureBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings()));
         cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.Tasks";
         return cw;
     }
 
-    private ClassWriter? GenerateValueTaskTests(ushort arity)
-    {
+    private ClassWriter GenerateValueTaskTests(ushort arity) {
         var cw = new ClassWriter($"ResultShapeErrorValueTaskTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - ValueTask ShapeError" };
-        cw.AddMethod(GenerateValueTaskSuccessTest(arity));
-        cw.AddMethod(GenerateValueTaskFailureTest(arity));
-        cw.AddMethod(GenerateValueTaskAwaitableFailureTest(arity));
+        cw.AddMethod(new MethodWriter($"ShapeErrorValueTask_Arity{arity}_Success_ShouldReturnSuccess", "async Task", GenerateValueTaskSuccessBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings()));
+        cw.AddMethod(new MethodWriter($"ShapeErrorValueTask_Arity{arity}_Failure_ShouldShapeErrors", "async Task", GenerateValueTaskFailureBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings()));
+        cw.AddMethod(new MethodWriter($"ShapeErrorValueTaskAwaitable_Arity{arity}_Failure_ShouldShapeErrors", "async Task", GenerateValueTaskAwaitableFailureBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings()));
         cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.ValueTasks";
         return cw;
     }
 
-    private MethodWriter GenerateTaskSuccessTest(ushort arity)
-    {
-        return new MethodWriter($"ShapeErrorTask_Arity{arity}_Success_ShouldReturnSuccess",
-                                "async Task",
-                                GenerateTaskSuccessBody(arity),
-                                attributes: [new FactAttributeReference()],
-                                usings: GetUsings());
+    private string GenerateTaskSuccessBody(ushort arity) {
+        var given = arity == 0 ? new[] { GenerateResultCreation(arity) } : new[] { GenerateTestValues(arity), GenerateResultCreation(arity) };
+        var when  = new[] { GenerateShapeErrorTaskCall(arity) };
+        var then  = new[] { "Assert.True(shaped.IsSuccess);" };
+        return BuildTestBody(given, when, then);
     }
 
-    private MethodWriter GenerateTaskFailureTest(ushort arity)
-    {
-        return new MethodWriter($"ShapeErrorTask_Arity{arity}_Failure_ShouldShapeErrors",
-                                "async Task",
-                                GenerateTaskFailureBody(arity),
-                                attributes: [new FactAttributeReference()],
-                                usings: GetUsings());
+    private string GenerateTaskFailureBody(ushort arity) {
+        var given = new[] { GenerateFailureResultCreation(arity) };
+        var when  = new[] { GenerateShapeErrorTaskCall(arity) };
+        var then  = new[] { "Assert.False(shaped.IsSuccess);", "Assert.Contains(shaped.Errors, e => e.Message.Contains(\"Shaped\"));" };
+        return BuildTestBody(given, when, then);
     }
 
-    private MethodWriter GenerateTaskAwaitableFailureTest(ushort arity)
-    {
-        return new MethodWriter($"ShapeErrorTaskAwaitable_Arity{arity}_Failure_ShouldShapeErrors",
-                                "async Task",
-                                GenerateTaskAwaitableFailureBody(arity),
-                                attributes: [new FactAttributeReference()],
-                                usings: GetUsings());
+    private string GenerateTaskAwaitableFailureBody(ushort arity) {
+        var given = new[] { GenerateTaskFailureResultCreation(arity) };
+        var when  = new[] { GenerateShapeErrorTaskAwaitableCall(arity) };
+        var then  = new[] { "Assert.False(shaped.IsSuccess);", "Assert.Contains(shaped.Errors, e => e.Message.Contains(\"Shaped\"));" };
+        return BuildTestBody(given, when, then);
     }
 
-    private MethodWriter GenerateValueTaskSuccessTest(ushort arity)
-    {
-        return new MethodWriter($"ShapeErrorValueTask_Arity{arity}_Success_ShouldReturnSuccess",
-                                "async Task",
-                                GenerateValueTaskSuccessBody(arity),
-                                attributes: [new FactAttributeReference()],
-                                usings: GetUsings());
+    private string GenerateValueTaskSuccessBody(ushort arity) {
+        var given = arity == 0 ? new[] { GenerateResultCreation(arity) } : new[] { GenerateTestValues(arity), GenerateResultCreation(arity) };
+        var when  = new[] { GenerateShapeErrorValueTaskCall(arity) };
+        var then  = new[] { "Assert.True(shaped.IsSuccess);" };
+        return BuildTestBody(given, when, then);
     }
 
-    private MethodWriter GenerateValueTaskFailureTest(ushort arity)
-    {
-        return new MethodWriter($"ShapeErrorValueTask_Arity{arity}_Failure_ShouldShapeErrors",
-                                "async Task",
-                                GenerateValueTaskFailureBody(arity),
-                                attributes: [new FactAttributeReference()],
-                                usings: GetUsings());
+    private string GenerateValueTaskFailureBody(ushort arity) {
+        var given = new[] { GenerateFailureResultCreation(arity) };
+        var when  = new[] { GenerateShapeErrorValueTaskCall(arity) };
+        var then  = new[] { "Assert.False(shaped.IsSuccess);", "Assert.Contains(shaped.Errors, e => e.Message.Contains(\"Shaped\"));" };
+        return BuildTestBody(given, when, then);
     }
 
-    private MethodWriter GenerateValueTaskAwaitableFailureTest(ushort arity)
-    {
-        return new MethodWriter($"ShapeErrorValueTaskAwaitable_Arity{arity}_Failure_ShouldShapeErrors",
-                                "async Task",
-                                GenerateValueTaskAwaitableFailureBody(arity),
-                                attributes: [new FactAttributeReference()],
-                                usings: GetUsings());
-    }
-
-    private string GenerateTaskSuccessBody(ushort arity)
-    {
-        var testValues = arity == 0 ? string.Empty : GenerateTestValues(arity);
-        var creation = GenerateResultCreation(arity);
-        var call = GenerateShapeErrorTaskCall(arity);
-        var givenSection = arity == 0 ? $"// Given\n{creation}" : $"// Given\n{testValues}\n{creation}";
-        return $"""
-                {givenSection}
-                // When
-                {call}
-                // Then
-                Assert.True(shaped.IsSuccess);
-                """;
-    }
-
-    private string GenerateTaskFailureBody(ushort arity)
-    {
-        var creation = GenerateFailureResultCreation(arity);
-        var call = GenerateShapeErrorTaskCall(arity);
-        return $"""
-                // Given
-                {creation}
-                // When
-                {call}
-                // Then
-                Assert.False(shaped.IsSuccess);
-                Assert.Contains(shaped.Errors, e => e.Message.Contains("Shaped"));
-                """;
-    }
-
-    private string GenerateTaskAwaitableFailureBody(ushort arity)
-    {
-        var creation = GenerateTaskFailureResultCreation(arity);
-        var call = GenerateShapeErrorTaskAwaitableCall(arity);
-        return $"""
-                // Given
-                {creation}
-                // When
-                {call}
-                // Then
-                Assert.False(shaped.IsSuccess);
-                Assert.Contains(shaped.Errors, e => e.Message.Contains("Shaped"));
-                """;
-    }
-
-    private string GenerateValueTaskSuccessBody(ushort arity)
-    {
-        var testValues = arity == 0 ? string.Empty : GenerateTestValues(arity);
-        var creation = GenerateResultCreation(arity);
-        var call = GenerateShapeErrorValueTaskCall(arity);
-        var givenSection = arity == 0 ? $"// Given\n{creation}" : $"// Given\n{testValues}\n{creation}";
-        return $"""
-                {givenSection}
-                // When
-                {call}
-                // Then
-                Assert.True(shaped.IsSuccess);
-                """;
-    }
-
-    private string GenerateValueTaskFailureBody(ushort arity)
-    {
-        var creation = GenerateFailureResultCreation(arity);
-        var call = GenerateShapeErrorValueTaskCall(arity);
-        return $"""
-                // Given
-                {creation}
-                // When
-                {call}
-                // Then
-                Assert.False(shaped.IsSuccess);
-                Assert.Contains(shaped.Errors, e => e.Message.Contains("Shaped"));
-                """;
-    }
-
-    private string GenerateValueTaskAwaitableFailureBody(ushort arity)
-    {
-        var creation = GenerateValueTaskFailureResultCreation(arity);
-        var call = GenerateShapeErrorValueTaskAwaitableCall(arity);
-        return $"""
-                // Given
-                {creation}
-                // When
-                {call}
-                // Then
-                Assert.False(shaped.IsSuccess);
-                Assert.Contains(shaped.Errors, e => e.Message.Contains("Shaped"));
-                """;
+    private string GenerateValueTaskAwaitableFailureBody(ushort arity) {
+        var given = new[] { GenerateValueTaskFailureResultCreation(arity) };
+        var when  = new[] { GenerateShapeErrorValueTaskAwaitableCall(arity) };
+        var then  = new[] { "Assert.False(shaped.IsSuccess);", "Assert.Contains(shaped.Errors, e => e.Message.Contains(\"Shaped\"));" };
+        return BuildTestBody(given, when, then);
     }
 
     private string GenerateShapeErrorTaskCall(ushort arity)

@@ -8,12 +8,15 @@
 #nullable enable
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
-using UnambitiousFx.Core.Results.Extensions.Transformations;
-using UnambitiousFx.Core.Results.Extensions.Transformations.Tasks;
+using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
+using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
+using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Extensions.Transformations.ValueTasks;
+using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Transformations.ValueTasks;
@@ -31,8 +34,7 @@ public class ResultMapValueTaskTestsArity1
         var transformedResult = await valueTaskResult.MapAsync(x => x * 2);
         // Then
         Assert.True(transformedResult.IsSuccess);
-        Assert.True(transformedResult.TryGet(out var mappedValue));
-        Assert.Equal(84, mappedValue);
+        Assert.Equal(84, transformedResult.TryGet(out var v) ? v : 0);
     }
     
     [Fact]

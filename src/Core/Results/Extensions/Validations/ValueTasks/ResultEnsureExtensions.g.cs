@@ -8,6 +8,7 @@
 #nullable enable
 
 using UnambitiousFx.Core.Results.Extensions.Transformations.ValueTasks;
+using UnambitiousFx.Core.Results.Reasons;
 
 namespace UnambitiousFx.Core.Results.Extensions.Validations.ValueTasks;
 
@@ -23,7 +24,7 @@ public static partial class ResultExtensions
     /// <param name="predicate">The async validation predicate.</param>
     /// <param name="errorFactory">Factory function to create an exception when validation fails.</param>
     /// <returns>A ValueTask representing the async operation with the result.</returns>
-    public static ValueTask<Result<TValue1>> EnsureAsync<TValue1>(this Result<TValue1> result, Func<TValue1, ValueTask<bool>> predicate, Func<TValue1, ValueTask<Exception>> errorFactory) where TValue1 : notnull {
+    public static ValueTask<Result<TValue1>> EnsureAsync<TValue1>(this Result<TValue1> result, Func<TValue1, ValueTask<bool>> predicate, Func<TValue1, ValueTask<IError>> errorFactory) where TValue1 : notnull {
         return result.ThenAsync(async value => {
             if (await predicate(value)) {
                 return Result.Success(value);
@@ -41,7 +42,7 @@ public static partial class ResultExtensions
     /// <param name="predicate">The async validation predicate.</param>
     /// <param name="errorFactory">Factory function to create an exception when validation fails.</param>
     /// <returns>A ValueTask representing the async operation with the result.</returns>
-    public static async ValueTask<Result<TValue1>> EnsureAsync<TValue1>(this ValueTask<Result<TValue1>> awaitableResult, Func<TValue1, ValueTask<bool>> predicate, Func<TValue1, ValueTask<Exception>> errorFactory) where TValue1 : notnull {
+    public static async ValueTask<Result<TValue1>> EnsureAsync<TValue1>(this ValueTask<Result<TValue1>> awaitableResult, Func<TValue1, ValueTask<bool>> predicate, Func<TValue1, ValueTask<IError>> errorFactory) where TValue1 : notnull {
         var result = await awaitableResult;
         return await result.EnsureAsync(predicate, errorFactory);
     }
@@ -59,7 +60,7 @@ public static partial class ResultExtensions
     /// <param name="predicate">The async validation predicate.</param>
     /// <param name="errorFactory">Factory function to create an exception when validation fails.</param>
     /// <returns>A ValueTask representing the async operation with the result.</returns>
-    public static ValueTask<Result<TValue1, TValue2>> EnsureAsync<TValue1, TValue2>(this Result<TValue1, TValue2> result, Func<TValue1, TValue2, ValueTask<bool>> predicate, Func<TValue1, TValue2, ValueTask<Exception>> errorFactory) where TValue1 : notnull where TValue2 : notnull {
+    public static ValueTask<Result<TValue1, TValue2>> EnsureAsync<TValue1, TValue2>(this Result<TValue1, TValue2> result, Func<TValue1, TValue2, ValueTask<bool>> predicate, Func<TValue1, TValue2, ValueTask<IError>> errorFactory) where TValue1 : notnull where TValue2 : notnull {
         return result.ThenAsync(async (value1, value2) => {
             if (await predicate(value1, value2)) {
                 return Result.Success(value1, value2);
@@ -78,7 +79,7 @@ public static partial class ResultExtensions
     /// <param name="predicate">The async validation predicate.</param>
     /// <param name="errorFactory">Factory function to create an exception when validation fails.</param>
     /// <returns>A ValueTask representing the async operation with the result.</returns>
-    public static async ValueTask<Result<TValue1, TValue2>> EnsureAsync<TValue1, TValue2>(this ValueTask<Result<TValue1, TValue2>> awaitableResult, Func<TValue1, TValue2, ValueTask<bool>> predicate, Func<TValue1, TValue2, ValueTask<Exception>> errorFactory) where TValue1 : notnull where TValue2 : notnull {
+    public static async ValueTask<Result<TValue1, TValue2>> EnsureAsync<TValue1, TValue2>(this ValueTask<Result<TValue1, TValue2>> awaitableResult, Func<TValue1, TValue2, ValueTask<bool>> predicate, Func<TValue1, TValue2, ValueTask<IError>> errorFactory) where TValue1 : notnull where TValue2 : notnull {
         var result = await awaitableResult;
         return await result.EnsureAsync(predicate, errorFactory);
     }
@@ -97,7 +98,7 @@ public static partial class ResultExtensions
     /// <param name="predicate">The async validation predicate.</param>
     /// <param name="errorFactory">Factory function to create an exception when validation fails.</param>
     /// <returns>A ValueTask representing the async operation with the result.</returns>
-    public static ValueTask<Result<TValue1, TValue2, TValue3>> EnsureAsync<TValue1, TValue2, TValue3>(this Result<TValue1, TValue2, TValue3> result, Func<TValue1, TValue2, TValue3, ValueTask<bool>> predicate, Func<TValue1, TValue2, TValue3, ValueTask<Exception>> errorFactory) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull {
+    public static ValueTask<Result<TValue1, TValue2, TValue3>> EnsureAsync<TValue1, TValue2, TValue3>(this Result<TValue1, TValue2, TValue3> result, Func<TValue1, TValue2, TValue3, ValueTask<bool>> predicate, Func<TValue1, TValue2, TValue3, ValueTask<IError>> errorFactory) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull {
         return result.ThenAsync(async (value1, value2, value3) => {
             if (await predicate(value1, value2, value3)) {
                 return Result.Success(value1, value2, value3);
@@ -117,7 +118,7 @@ public static partial class ResultExtensions
     /// <param name="predicate">The async validation predicate.</param>
     /// <param name="errorFactory">Factory function to create an exception when validation fails.</param>
     /// <returns>A ValueTask representing the async operation with the result.</returns>
-    public static async ValueTask<Result<TValue1, TValue2, TValue3>> EnsureAsync<TValue1, TValue2, TValue3>(this ValueTask<Result<TValue1, TValue2, TValue3>> awaitableResult, Func<TValue1, TValue2, TValue3, ValueTask<bool>> predicate, Func<TValue1, TValue2, TValue3, ValueTask<Exception>> errorFactory) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull {
+    public static async ValueTask<Result<TValue1, TValue2, TValue3>> EnsureAsync<TValue1, TValue2, TValue3>(this ValueTask<Result<TValue1, TValue2, TValue3>> awaitableResult, Func<TValue1, TValue2, TValue3, ValueTask<bool>> predicate, Func<TValue1, TValue2, TValue3, ValueTask<IError>> errorFactory) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull {
         var result = await awaitableResult;
         return await result.EnsureAsync(predicate, errorFactory);
     }
@@ -137,7 +138,7 @@ public static partial class ResultExtensions
     /// <param name="predicate">The async validation predicate.</param>
     /// <param name="errorFactory">Factory function to create an exception when validation fails.</param>
     /// <returns>A ValueTask representing the async operation with the result.</returns>
-    public static ValueTask<Result<TValue1, TValue2, TValue3, TValue4>> EnsureAsync<TValue1, TValue2, TValue3, TValue4>(this Result<TValue1, TValue2, TValue3, TValue4> result, Func<TValue1, TValue2, TValue3, TValue4, ValueTask<bool>> predicate, Func<TValue1, TValue2, TValue3, TValue4, ValueTask<Exception>> errorFactory) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull {
+    public static ValueTask<Result<TValue1, TValue2, TValue3, TValue4>> EnsureAsync<TValue1, TValue2, TValue3, TValue4>(this Result<TValue1, TValue2, TValue3, TValue4> result, Func<TValue1, TValue2, TValue3, TValue4, ValueTask<bool>> predicate, Func<TValue1, TValue2, TValue3, TValue4, ValueTask<IError>> errorFactory) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull {
         return result.ThenAsync(async (value1, value2, value3, value4) => {
             if (await predicate(value1, value2, value3, value4)) {
                 return Result.Success(value1, value2, value3, value4);
@@ -158,7 +159,7 @@ public static partial class ResultExtensions
     /// <param name="predicate">The async validation predicate.</param>
     /// <param name="errorFactory">Factory function to create an exception when validation fails.</param>
     /// <returns>A ValueTask representing the async operation with the result.</returns>
-    public static async ValueTask<Result<TValue1, TValue2, TValue3, TValue4>> EnsureAsync<TValue1, TValue2, TValue3, TValue4>(this ValueTask<Result<TValue1, TValue2, TValue3, TValue4>> awaitableResult, Func<TValue1, TValue2, TValue3, TValue4, ValueTask<bool>> predicate, Func<TValue1, TValue2, TValue3, TValue4, ValueTask<Exception>> errorFactory) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull {
+    public static async ValueTask<Result<TValue1, TValue2, TValue3, TValue4>> EnsureAsync<TValue1, TValue2, TValue3, TValue4>(this ValueTask<Result<TValue1, TValue2, TValue3, TValue4>> awaitableResult, Func<TValue1, TValue2, TValue3, TValue4, ValueTask<bool>> predicate, Func<TValue1, TValue2, TValue3, TValue4, ValueTask<IError>> errorFactory) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull {
         var result = await awaitableResult;
         return await result.EnsureAsync(predicate, errorFactory);
     }
@@ -179,7 +180,7 @@ public static partial class ResultExtensions
     /// <param name="predicate">The async validation predicate.</param>
     /// <param name="errorFactory">Factory function to create an exception when validation fails.</param>
     /// <returns>A ValueTask representing the async operation with the result.</returns>
-    public static ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5>> EnsureAsync<TValue1, TValue2, TValue3, TValue4, TValue5>(this Result<TValue1, TValue2, TValue3, TValue4, TValue5> result, Func<TValue1, TValue2, TValue3, TValue4, TValue5, ValueTask<bool>> predicate, Func<TValue1, TValue2, TValue3, TValue4, TValue5, ValueTask<Exception>> errorFactory) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull {
+    public static ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5>> EnsureAsync<TValue1, TValue2, TValue3, TValue4, TValue5>(this Result<TValue1, TValue2, TValue3, TValue4, TValue5> result, Func<TValue1, TValue2, TValue3, TValue4, TValue5, ValueTask<bool>> predicate, Func<TValue1, TValue2, TValue3, TValue4, TValue5, ValueTask<IError>> errorFactory) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull {
         return result.ThenAsync(async (value1, value2, value3, value4, value5) => {
             if (await predicate(value1, value2, value3, value4, value5)) {
                 return Result.Success(value1, value2, value3, value4, value5);
@@ -201,7 +202,7 @@ public static partial class ResultExtensions
     /// <param name="predicate">The async validation predicate.</param>
     /// <param name="errorFactory">Factory function to create an exception when validation fails.</param>
     /// <returns>A ValueTask representing the async operation with the result.</returns>
-    public static async ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5>> EnsureAsync<TValue1, TValue2, TValue3, TValue4, TValue5>(this ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5>> awaitableResult, Func<TValue1, TValue2, TValue3, TValue4, TValue5, ValueTask<bool>> predicate, Func<TValue1, TValue2, TValue3, TValue4, TValue5, ValueTask<Exception>> errorFactory) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull {
+    public static async ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5>> EnsureAsync<TValue1, TValue2, TValue3, TValue4, TValue5>(this ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5>> awaitableResult, Func<TValue1, TValue2, TValue3, TValue4, TValue5, ValueTask<bool>> predicate, Func<TValue1, TValue2, TValue3, TValue4, TValue5, ValueTask<IError>> errorFactory) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull {
         var result = await awaitableResult;
         return await result.EnsureAsync(predicate, errorFactory);
     }
@@ -223,7 +224,7 @@ public static partial class ResultExtensions
     /// <param name="predicate">The async validation predicate.</param>
     /// <param name="errorFactory">Factory function to create an exception when validation fails.</param>
     /// <returns>A ValueTask representing the async operation with the result.</returns>
-    public static ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>> EnsureAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6> result, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, ValueTask<bool>> predicate, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, ValueTask<Exception>> errorFactory) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull {
+    public static ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>> EnsureAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6> result, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, ValueTask<bool>> predicate, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, ValueTask<IError>> errorFactory) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull {
         return result.ThenAsync(async (value1, value2, value3, value4, value5, value6) => {
             if (await predicate(value1, value2, value3, value4, value5, value6)) {
                 return Result.Success(value1, value2, value3, value4, value5, value6);
@@ -246,7 +247,7 @@ public static partial class ResultExtensions
     /// <param name="predicate">The async validation predicate.</param>
     /// <param name="errorFactory">Factory function to create an exception when validation fails.</param>
     /// <returns>A ValueTask representing the async operation with the result.</returns>
-    public static async ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>> EnsureAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(this ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>> awaitableResult, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, ValueTask<bool>> predicate, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, ValueTask<Exception>> errorFactory) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull {
+    public static async ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>> EnsureAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(this ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>> awaitableResult, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, ValueTask<bool>> predicate, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, ValueTask<IError>> errorFactory) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull {
         var result = await awaitableResult;
         return await result.EnsureAsync(predicate, errorFactory);
     }
@@ -269,7 +270,7 @@ public static partial class ResultExtensions
     /// <param name="predicate">The async validation predicate.</param>
     /// <param name="errorFactory">Factory function to create an exception when validation fails.</param>
     /// <returns>A ValueTask representing the async operation with the result.</returns>
-    public static ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>> EnsureAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> result, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, ValueTask<bool>> predicate, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, ValueTask<Exception>> errorFactory) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull {
+    public static ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>> EnsureAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> result, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, ValueTask<bool>> predicate, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, ValueTask<IError>> errorFactory) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull {
         return result.ThenAsync(async (value1, value2, value3, value4, value5, value6, value7) => {
             if (await predicate(value1, value2, value3, value4, value5, value6, value7)) {
                 return Result.Success(value1, value2, value3, value4, value5, value6, value7);
@@ -293,7 +294,7 @@ public static partial class ResultExtensions
     /// <param name="predicate">The async validation predicate.</param>
     /// <param name="errorFactory">Factory function to create an exception when validation fails.</param>
     /// <returns>A ValueTask representing the async operation with the result.</returns>
-    public static async ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>> EnsureAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(this ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>> awaitableResult, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, ValueTask<bool>> predicate, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, ValueTask<Exception>> errorFactory) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull {
+    public static async ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>> EnsureAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(this ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>> awaitableResult, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, ValueTask<bool>> predicate, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, ValueTask<IError>> errorFactory) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull {
         var result = await awaitableResult;
         return await result.EnsureAsync(predicate, errorFactory);
     }
@@ -317,7 +318,7 @@ public static partial class ResultExtensions
     /// <param name="predicate">The async validation predicate.</param>
     /// <param name="errorFactory">Factory function to create an exception when validation fails.</param>
     /// <returns>A ValueTask representing the async operation with the result.</returns>
-    public static ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>> EnsureAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8> result, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8, ValueTask<bool>> predicate, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8, ValueTask<Exception>> errorFactory) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull where TValue8 : notnull {
+    public static ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>> EnsureAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8> result, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8, ValueTask<bool>> predicate, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8, ValueTask<IError>> errorFactory) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull where TValue8 : notnull {
         return result.ThenAsync(async (value1, value2, value3, value4, value5, value6, value7, value8) => {
             if (await predicate(value1, value2, value3, value4, value5, value6, value7, value8)) {
                 return Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
@@ -342,7 +343,7 @@ public static partial class ResultExtensions
     /// <param name="predicate">The async validation predicate.</param>
     /// <param name="errorFactory">Factory function to create an exception when validation fails.</param>
     /// <returns>A ValueTask representing the async operation with the result.</returns>
-    public static async ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>> EnsureAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(this ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>> awaitableResult, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8, ValueTask<bool>> predicate, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8, ValueTask<Exception>> errorFactory) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull where TValue8 : notnull {
+    public static async ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>> EnsureAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(this ValueTask<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>> awaitableResult, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8, ValueTask<bool>> predicate, Func<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8, ValueTask<IError>> errorFactory) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull where TValue8 : notnull {
         var result = await awaitableResult;
         return await result.EnsureAsync(predicate, errorFactory);
     }

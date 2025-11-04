@@ -8,9 +8,15 @@
 #nullable enable
 
 using System;
+using System.Linq;
+using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
+using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
+using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Extensions.Transformations;
+using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Transformations;
@@ -21,10 +27,13 @@ public class ResultThenSyncTestsArity1
     
     [Fact]
     public void Then_Arity1_Success_ShouldTransform() {
-        var testValue1 = 42;
+        // Given
+        var value1 = 42;
         var transformed1 = 100;
-        var result = Result.Success(testValue1);
+        var result = Result.Success(value1);
+        // When
         var actualResult = result.Then(v1 => Result.Success(transformed1));
+        // Then
         Assert.True(actualResult.IsSuccess);
         Assert.True(actualResult.TryGet(out var actual));
         Assert.Equal(transformed1, actual);
@@ -32,8 +41,11 @@ public class ResultThenSyncTestsArity1
     
     [Fact]
     public void Then_Arity1_Failure_ShouldReturnOriginal() {
+        // Given
         var result = Result.Failure<int>("Test error");
+        // When
         var actualResult = result.Then(v1 => Result.Success(100));
+        // Then
         Assert.False(actualResult.IsSuccess);
     }
     
@@ -43,12 +55,15 @@ public class ResultThenSyncTestsArity1
     
     [Fact]
     public void Then_Arity2_Success_ShouldTransform() {
-        var testValue1 = 42;
-                var testValue2 = "Hello";
+        // Given
+        var value1 = 42;
+        var value2 = "test";
         var transformed1 = 100;
-                var transformed2 = "World";
-        var result = Result.Success(testValue1, testValue2);
+        var transformed2 = "World";
+        var result = Result.Success(value1, value2);
+        // When
         var actualResult = result.Then((v1, v2) => Result.Success(transformed1, transformed2));
+        // Then
         Assert.True(actualResult.IsSuccess);
         Assert.True(actualResult.TryGet(out var actual1, out var actual2));
         Assert.Equal(transformed1, actual1);
@@ -57,8 +72,11 @@ public class ResultThenSyncTestsArity1
     
     [Fact]
     public void Then_Arity2_Failure_ShouldReturnOriginal() {
+        // Given
         var result = Result.Failure<int, string>("Test error");
+        // When
         var actualResult = result.Then((v1, v2) => Result.Success(100, "World"));
+        // Then
         Assert.False(actualResult.IsSuccess);
     }
     
@@ -68,14 +86,17 @@ public class ResultThenSyncTestsArity1
     
     [Fact]
     public void Then_Arity3_Success_ShouldTransform() {
-        var testValue1 = 42;
-                var testValue2 = "Hello";
-                var testValue3 = 3.14;
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
         var transformed1 = 100;
-                var transformed2 = "World";
-                var transformed3 = 6.28;
-        var result = Result.Success(testValue1, testValue2, testValue3);
+        var transformed2 = "World";
+        var transformed3 = 6.28;
+        var result = Result.Success(value1, value2, value3);
+        // When
         var actualResult = result.Then((v1, v2, v3) => Result.Success(transformed1, transformed2, transformed3));
+        // Then
         Assert.True(actualResult.IsSuccess);
         Assert.True(actualResult.TryGet(out var actual1, out var actual2, out var actual3));
         Assert.Equal(transformed1, actual1);
@@ -85,8 +106,11 @@ public class ResultThenSyncTestsArity1
     
     [Fact]
     public void Then_Arity3_Failure_ShouldReturnOriginal() {
-        var result = Result.Failure<int, string, double>("Test error");
+        // Given
+        var result = Result.Failure<int, string, bool>("Test error");
+        // When
         var actualResult = result.Then((v1, v2, v3) => Result.Success(100, "World", 6.28));
+        // Then
         Assert.False(actualResult.IsSuccess);
     }
     
@@ -96,16 +120,19 @@ public class ResultThenSyncTestsArity1
     
     [Fact]
     public void Then_Arity4_Success_ShouldTransform() {
-        var testValue1 = 42;
-                var testValue2 = "Hello";
-                var testValue3 = 3.14;
-                var testValue4 = true;
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
         var transformed1 = 100;
-                var transformed2 = "World";
-                var transformed3 = 6.28;
-                var transformed4 = false;
-        var result = Result.Success(testValue1, testValue2, testValue3, testValue4);
+        var transformed2 = "World";
+        var transformed3 = 6.28;
+        var transformed4 = false;
+        var result = Result.Success(value1, value2, value3, value4);
+        // When
         var actualResult = result.Then((v1, v2, v3, v4) => Result.Success(transformed1, transformed2, transformed3, transformed4));
+        // Then
         Assert.True(actualResult.IsSuccess);
         Assert.True(actualResult.TryGet(out var actual1, out var actual2, out var actual3, out var actual4));
         Assert.Equal(transformed1, actual1);
@@ -116,8 +143,11 @@ public class ResultThenSyncTestsArity1
     
     [Fact]
     public void Then_Arity4_Failure_ShouldReturnOriginal() {
-        var result = Result.Failure<int, string, double, bool>("Test error");
+        // Given
+        var result = Result.Failure<int, string, bool, double>("Test error");
+        // When
         var actualResult = result.Then((v1, v2, v3, v4) => Result.Success(100, "World", 6.28, false));
+        // Then
         Assert.False(actualResult.IsSuccess);
     }
     
@@ -127,18 +157,21 @@ public class ResultThenSyncTestsArity1
     
     [Fact]
     public void Then_Arity5_Success_ShouldTransform() {
-        var testValue1 = 42;
-                var testValue2 = "Hello";
-                var testValue3 = 3.14;
-                var testValue4 = true;
-                var testValue5 = 'A';
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
         var transformed1 = 100;
-                var transformed2 = "World";
-                var transformed3 = 6.28;
-                var transformed4 = false;
-                var transformed5 = 'B';
-        var result = Result.Success(testValue1, testValue2, testValue3, testValue4, testValue5);
+        var transformed2 = "World";
+        var transformed3 = 6.28;
+        var transformed4 = false;
+        var transformed5 = 'B';
+        var result = Result.Success(value1, value2, value3, value4, value5);
+        // When
         var actualResult = result.Then((v1, v2, v3, v4, v5) => Result.Success(transformed1, transformed2, transformed3, transformed4, transformed5));
+        // Then
         Assert.True(actualResult.IsSuccess);
         Assert.True(actualResult.TryGet(out var actual1, out var actual2, out var actual3, out var actual4, out var actual5));
         Assert.Equal(transformed1, actual1);
@@ -150,8 +183,11 @@ public class ResultThenSyncTestsArity1
     
     [Fact]
     public void Then_Arity5_Failure_ShouldReturnOriginal() {
-        var result = Result.Failure<int, string, double, bool, char>("Test error");
+        // Given
+        var result = Result.Failure<int, string, bool, double, long>("Test error");
+        // When
         var actualResult = result.Then((v1, v2, v3, v4, v5) => Result.Success(100, "World", 6.28, false, 'B'));
+        // Then
         Assert.False(actualResult.IsSuccess);
     }
     
@@ -161,20 +197,23 @@ public class ResultThenSyncTestsArity1
     
     [Fact]
     public void Then_Arity6_Success_ShouldTransform() {
-        var testValue1 = 42;
-                var testValue2 = "Hello";
-                var testValue3 = 3.14;
-                var testValue4 = true;
-                var testValue5 = 'A';
-                var testValue6 = 123L;
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = "value6";
         var transformed1 = 100;
-                var transformed2 = "World";
-                var transformed3 = 6.28;
-                var transformed4 = false;
-                var transformed5 = 'B';
-                var transformed6 = 456L;
-        var result = Result.Success(testValue1, testValue2, testValue3, testValue4, testValue5, testValue6);
+        var transformed2 = "World";
+        var transformed3 = 6.28;
+        var transformed4 = false;
+        var transformed5 = 'B';
+        var transformed6 = 456L;
+        var result = Result.Success(value1, value2, value3, value4, value5, value6);
+        // When
         var actualResult = result.Then((v1, v2, v3, v4, v5, v6) => Result.Success(transformed1, transformed2, transformed3, transformed4, transformed5, transformed6));
+        // Then
         Assert.True(actualResult.IsSuccess);
         Assert.True(actualResult.TryGet(out var actual1, out var actual2, out var actual3, out var actual4, out var actual5, out var actual6));
         Assert.Equal(transformed1, actual1);
@@ -187,8 +226,11 @@ public class ResultThenSyncTestsArity1
     
     [Fact]
     public void Then_Arity6_Failure_ShouldReturnOriginal() {
-        var result = Result.Failure<int, string, double, bool, char, long>("Test error");
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, string>("Test error");
+        // When
         var actualResult = result.Then((v1, v2, v3, v4, v5, v6) => Result.Success(100, "World", 6.28, false, 'B', 456L));
+        // Then
         Assert.False(actualResult.IsSuccess);
     }
     
@@ -198,22 +240,25 @@ public class ResultThenSyncTestsArity1
     
     [Fact]
     public void Then_Arity7_Success_ShouldTransform() {
-        var testValue1 = 42;
-                var testValue2 = "Hello";
-                var testValue3 = 3.14;
-                var testValue4 = true;
-                var testValue5 = 'A';
-                var testValue6 = 123L;
-                var testValue7 = 7.5f;
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = "value6";
+        var value7 = "value7";
         var transformed1 = 100;
-                var transformed2 = "World";
-                var transformed3 = 6.28;
-                var transformed4 = false;
-                var transformed5 = 'B';
-                var transformed6 = 456L;
-                var transformed7 = 15.0f;
-        var result = Result.Success(testValue1, testValue2, testValue3, testValue4, testValue5, testValue6, testValue7);
+        var transformed2 = "World";
+        var transformed3 = 6.28;
+        var transformed4 = false;
+        var transformed5 = 'B';
+        var transformed6 = 456L;
+        var transformed7 = 15.0f;
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
+        // When
         var actualResult = result.Then((v1, v2, v3, v4, v5, v6, v7) => Result.Success(transformed1, transformed2, transformed3, transformed4, transformed5, transformed6, transformed7));
+        // Then
         Assert.True(actualResult.IsSuccess);
         Assert.True(actualResult.TryGet(out var actual1, out var actual2, out var actual3, out var actual4, out var actual5, out var actual6, out var actual7));
         Assert.Equal(transformed1, actual1);
@@ -227,8 +272,11 @@ public class ResultThenSyncTestsArity1
     
     [Fact]
     public void Then_Arity7_Failure_ShouldReturnOriginal() {
-        var result = Result.Failure<int, string, double, bool, char, long, float>("Test error");
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, string, string>("Test error");
+        // When
         var actualResult = result.Then((v1, v2, v3, v4, v5, v6, v7) => Result.Success(100, "World", 6.28, false, 'B', 456L, 15.0f));
+        // Then
         Assert.False(actualResult.IsSuccess);
     }
     
@@ -238,24 +286,27 @@ public class ResultThenSyncTestsArity1
     
     [Fact]
     public void Then_Arity8_Success_ShouldTransform() {
-        var testValue1 = 42;
-                var testValue2 = "Hello";
-                var testValue3 = 3.14;
-                var testValue4 = true;
-                var testValue5 = 'A';
-                var testValue6 = 123L;
-                var testValue7 = 7.5f;
-                var testValue8 = 99m;
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = "value6";
+        var value7 = "value7";
+        var value8 = "value8";
         var transformed1 = 100;
-                var transformed2 = "World";
-                var transformed3 = 6.28;
-                var transformed4 = false;
-                var transformed5 = 'B';
-                var transformed6 = 456L;
-                var transformed7 = 15.0f;
-                var transformed8 = 198m;
-        var result = Result.Success(testValue1, testValue2, testValue3, testValue4, testValue5, testValue6, testValue7, testValue8);
+        var transformed2 = "World";
+        var transformed3 = 6.28;
+        var transformed4 = false;
+        var transformed5 = 'B';
+        var transformed6 = 456L;
+        var transformed7 = 15.0f;
+        var transformed8 = 198m;
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
+        // When
         var actualResult = result.Then((v1, v2, v3, v4, v5, v6, v7, v8) => Result.Success(transformed1, transformed2, transformed3, transformed4, transformed5, transformed6, transformed7, transformed8));
+        // Then
         Assert.True(actualResult.IsSuccess);
         Assert.True(actualResult.TryGet(out var actual1, out var actual2, out var actual3, out var actual4, out var actual5, out var actual6, out var actual7, out var actual8));
         Assert.Equal(transformed1, actual1);
@@ -270,8 +321,11 @@ public class ResultThenSyncTestsArity1
     
     [Fact]
     public void Then_Arity8_Failure_ShouldReturnOriginal() {
-        var result = Result.Failure<int, string, double, bool, char, long, float, decimal>("Test error");
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, string, string, string>("Test error");
+        // When
         var actualResult = result.Then((v1, v2, v3, v4, v5, v6, v7, v8) => Result.Success(100, "World", 6.28, false, 'B', 456L, 15.0f, 198m));
+        // Then
         Assert.False(actualResult.IsSuccess);
     }
     

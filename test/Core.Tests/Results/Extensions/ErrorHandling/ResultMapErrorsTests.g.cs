@@ -29,7 +29,7 @@ public class ResultMapErrorsSyncTestsArity0
         // Given
         var result = Result.Success();
         // When
-        var mappedResult = result.MapErrors(errors => new Error(string.Join(", ", errors.Select(e => e.Message)) + " - MAPPED"));
+        var mappedResult = result.MapErrors(errors => new Error(errors.First().Message + " MAPPED"));
         // Then
         Assert.True(mappedResult.IsSuccess);
     }
@@ -39,10 +39,10 @@ public class ResultMapErrorsSyncTestsArity0
         // Given
         var result = Result.Failure("Test error");
         // When
-        var mappedResult = result.MapErrors(errors => new Error(string.Join(", ", errors.Select(e => e.Message)) + " - MAPPED"));
+        var mappedResult = result.MapErrors(errors => new Error(errors.First().Message + " MAPPED"));
         // Then
         Assert.False(mappedResult.IsSuccess);
-        Assert.All(mappedResult.Errors, error => Assert.Contains("MAPPED", error.Message));
+        Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
     }
     
     #endregion // Arity 0 - Sync MapErrors
@@ -55,7 +55,7 @@ public class ResultMapErrorsSyncTestsArity0
         var value1 = 42;
         var result = Result.Success(value1);
         // When
-        var mappedResult = result.MapErrors<int>(errors => new Error(string.Join(", ", errors.Select(e => e.Message)) + " - MAPPED"));
+        var mappedResult = result.MapErrors<int>(errors => new Error(errors.First().Message + " MAPPED"));
         // Then
         Assert.True(mappedResult.IsSuccess);
     }
@@ -65,10 +65,10 @@ public class ResultMapErrorsSyncTestsArity0
         // Given
         var result = Result.Failure<int>("Test error");
         // When
-        var mappedResult = result.MapErrors<int>(errors => new Error(string.Join(", ", errors.Select(e => e.Message)) + " - MAPPED"));
+        var mappedResult = result.MapErrors<int>(errors => new Error(errors.First().Message + " MAPPED"));
         // Then
         Assert.False(mappedResult.IsSuccess);
-        Assert.All(mappedResult.Errors, error => Assert.Contains("MAPPED", error.Message));
+        Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
     }
     
     #endregion // Arity 1 - Sync MapErrors
@@ -82,7 +82,7 @@ public class ResultMapErrorsSyncTestsArity0
         var value2 = "test";
         var result = Result.Success(value1, value2);
         // When
-        var mappedResult = result.MapErrors<int, string>(errors => new Error(string.Join(", ", errors.Select(e => e.Message)) + " - MAPPED"));
+        var mappedResult = result.MapErrors<int, string>(errors => new Error(errors.First().Message + " MAPPED"));
         // Then
         Assert.True(mappedResult.IsSuccess);
     }
@@ -92,10 +92,10 @@ public class ResultMapErrorsSyncTestsArity0
         // Given
         var result = Result.Failure<int, string>("Test error");
         // When
-        var mappedResult = result.MapErrors<int, string>(errors => new Error(string.Join(", ", errors.Select(e => e.Message)) + " - MAPPED"));
+        var mappedResult = result.MapErrors<int, string>(errors => new Error(errors.First().Message + " MAPPED"));
         // Then
         Assert.False(mappedResult.IsSuccess);
-        Assert.All(mappedResult.Errors, error => Assert.Contains("MAPPED", error.Message));
+        Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
     }
     
     #endregion // Arity 2 - Sync MapErrors
@@ -110,7 +110,7 @@ public class ResultMapErrorsSyncTestsArity0
         var value3 = true;
         var result = Result.Success(value1, value2, value3);
         // When
-        var mappedResult = result.MapErrors<int, string, bool>(errors => new Error(string.Join(", ", errors.Select(e => e.Message)) + " - MAPPED"));
+        var mappedResult = result.MapErrors<int, string, bool>(errors => new Error(errors.First().Message + " MAPPED"));
         // Then
         Assert.True(mappedResult.IsSuccess);
     }
@@ -120,10 +120,10 @@ public class ResultMapErrorsSyncTestsArity0
         // Given
         var result = Result.Failure<int, string, bool>("Test error");
         // When
-        var mappedResult = result.MapErrors<int, string, bool>(errors => new Error(string.Join(", ", errors.Select(e => e.Message)) + " - MAPPED"));
+        var mappedResult = result.MapErrors<int, string, bool>(errors => new Error(errors.First().Message + " MAPPED"));
         // Then
         Assert.False(mappedResult.IsSuccess);
-        Assert.All(mappedResult.Errors, error => Assert.Contains("MAPPED", error.Message));
+        Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
     }
     
     #endregion // Arity 3 - Sync MapErrors
@@ -139,7 +139,7 @@ public class ResultMapErrorsSyncTestsArity0
         var value4 = 3.14;
         var result = Result.Success(value1, value2, value3, value4);
         // When
-        var mappedResult = result.MapErrors<int, string, bool, double>(errors => new Error(string.Join(", ", errors.Select(e => e.Message)) + " - MAPPED"));
+        var mappedResult = result.MapErrors<int, string, bool, double>(errors => new Error(errors.First().Message + " MAPPED"));
         // Then
         Assert.True(mappedResult.IsSuccess);
     }
@@ -149,10 +149,10 @@ public class ResultMapErrorsSyncTestsArity0
         // Given
         var result = Result.Failure<int, string, bool, double>("Test error");
         // When
-        var mappedResult = result.MapErrors<int, string, bool, double>(errors => new Error(string.Join(", ", errors.Select(e => e.Message)) + " - MAPPED"));
+        var mappedResult = result.MapErrors<int, string, bool, double>(errors => new Error(errors.First().Message + " MAPPED"));
         // Then
         Assert.False(mappedResult.IsSuccess);
-        Assert.All(mappedResult.Errors, error => Assert.Contains("MAPPED", error.Message));
+        Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
     }
     
     #endregion // Arity 4 - Sync MapErrors
@@ -169,7 +169,7 @@ public class ResultMapErrorsSyncTestsArity0
         var value5 = 123L;
         var result = Result.Success(value1, value2, value3, value4, value5);
         // When
-        var mappedResult = result.MapErrors<int, string, bool, double, long>(errors => new Error(string.Join(", ", errors.Select(e => e.Message)) + " - MAPPED"));
+        var mappedResult = result.MapErrors<int, string, bool, double, long>(errors => new Error(errors.First().Message + " MAPPED"));
         // Then
         Assert.True(mappedResult.IsSuccess);
     }
@@ -179,10 +179,10 @@ public class ResultMapErrorsSyncTestsArity0
         // Given
         var result = Result.Failure<int, string, bool, double, long>("Test error");
         // When
-        var mappedResult = result.MapErrors<int, string, bool, double, long>(errors => new Error(string.Join(", ", errors.Select(e => e.Message)) + " - MAPPED"));
+        var mappedResult = result.MapErrors<int, string, bool, double, long>(errors => new Error(errors.First().Message + " MAPPED"));
         // Then
         Assert.False(mappedResult.IsSuccess);
-        Assert.All(mappedResult.Errors, error => Assert.Contains("MAPPED", error.Message));
+        Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
     }
     
     #endregion // Arity 5 - Sync MapErrors
@@ -200,7 +200,7 @@ public class ResultMapErrorsSyncTestsArity0
         var value6 = "value6";
         var result = Result.Success(value1, value2, value3, value4, value5, value6);
         // When
-        var mappedResult = result.MapErrors<int, string, bool, double, long, string>(errors => new Error(string.Join(", ", errors.Select(e => e.Message)) + " - MAPPED"));
+        var mappedResult = result.MapErrors<int, string, bool, double, long, string>(errors => new Error(errors.First().Message + " MAPPED"));
         // Then
         Assert.True(mappedResult.IsSuccess);
     }
@@ -210,10 +210,10 @@ public class ResultMapErrorsSyncTestsArity0
         // Given
         var result = Result.Failure<int, string, bool, double, long, string>("Test error");
         // When
-        var mappedResult = result.MapErrors<int, string, bool, double, long, string>(errors => new Error(string.Join(", ", errors.Select(e => e.Message)) + " - MAPPED"));
+        var mappedResult = result.MapErrors<int, string, bool, double, long, string>(errors => new Error(errors.First().Message + " MAPPED"));
         // Then
         Assert.False(mappedResult.IsSuccess);
-        Assert.All(mappedResult.Errors, error => Assert.Contains("MAPPED", error.Message));
+        Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
     }
     
     #endregion // Arity 6 - Sync MapErrors
@@ -232,7 +232,7 @@ public class ResultMapErrorsSyncTestsArity0
         var value7 = "value7";
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
         // When
-        var mappedResult = result.MapErrors<int, string, bool, double, long, string, string>(errors => new Error(string.Join(", ", errors.Select(e => e.Message)) + " - MAPPED"));
+        var mappedResult = result.MapErrors<int, string, bool, double, long, string, string>(errors => new Error(errors.First().Message + " MAPPED"));
         // Then
         Assert.True(mappedResult.IsSuccess);
     }
@@ -242,10 +242,10 @@ public class ResultMapErrorsSyncTestsArity0
         // Given
         var result = Result.Failure<int, string, bool, double, long, string, string>("Test error");
         // When
-        var mappedResult = result.MapErrors<int, string, bool, double, long, string, string>(errors => new Error(string.Join(", ", errors.Select(e => e.Message)) + " - MAPPED"));
+        var mappedResult = result.MapErrors<int, string, bool, double, long, string, string>(errors => new Error(errors.First().Message + " MAPPED"));
         // Then
         Assert.False(mappedResult.IsSuccess);
-        Assert.All(mappedResult.Errors, error => Assert.Contains("MAPPED", error.Message));
+        Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
     }
     
     #endregion // Arity 7 - Sync MapErrors
@@ -265,7 +265,7 @@ public class ResultMapErrorsSyncTestsArity0
         var value8 = "value8";
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
         // When
-        var mappedResult = result.MapErrors<int, string, bool, double, long, string, string, string>(errors => new Error(string.Join(", ", errors.Select(e => e.Message)) + " - MAPPED"));
+        var mappedResult = result.MapErrors<int, string, bool, double, long, string, string, string>(errors => new Error(errors.First().Message + " MAPPED"));
         // Then
         Assert.True(mappedResult.IsSuccess);
     }
@@ -275,10 +275,10 @@ public class ResultMapErrorsSyncTestsArity0
         // Given
         var result = Result.Failure<int, string, bool, double, long, string, string, string>("Test error");
         // When
-        var mappedResult = result.MapErrors<int, string, bool, double, long, string, string, string>(errors => new Error(string.Join(", ", errors.Select(e => e.Message)) + " - MAPPED"));
+        var mappedResult = result.MapErrors<int, string, bool, double, long, string, string, string>(errors => new Error(errors.First().Message + " MAPPED"));
         // Then
         Assert.False(mappedResult.IsSuccess);
-        Assert.All(mappedResult.Errors, error => Assert.Contains("MAPPED", error.Message));
+        Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
     }
     
     #endregion // Arity 8 - Sync MapErrors

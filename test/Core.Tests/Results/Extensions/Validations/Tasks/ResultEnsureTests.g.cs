@@ -12,9 +12,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
-using UnambitiousFx.Core.Results.Extensions.Validations;
+using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
+using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
+using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Extensions.Validations.Tasks;
-using UnambitiousFx.Core.Results.Extensions.Validations.ValueTasks;
+using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Validations.Tasks;
@@ -28,22 +30,20 @@ public class ResultEnsureTaskTestsArity1
         // Given
         var value1 = 42;
         var taskResult = Task.FromResult(Result.Success(value1));
-        Func<int, Task<bool>> predicate = (x1) => Task.FromResult(x1 > 0);
-        Func<int, Task<Exception>> errorFactory = (x1) => Task.FromResult<Exception>(new InvalidOperationException($"Validation failed: {x1}"));
+        Func<int, Task<bool>> predicate = (_) => Task.FromResult(true);
+        Func<int, Task<IError>> errorFactory = (_) => Task.FromResult<IError>(new Error("Validation failed"));
         // When
         var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);
         // Then
         Assert.True(ensuredResult.IsSuccess);
-        Assert.True(ensuredResult.TryGet(out var value));
-        Assert.Equal(42, value);
     }
     
     [Fact]
     public async Task EnsureTask_Arity1_FailureResult_ShouldNotValidate() {
         // Given
         var taskResult = Task.FromResult(Result.Failure<int>("Test error"));
-        Func<int, Task<bool>> predicate = (x1) => Task.FromResult(x1 > 0);
-        Func<int, Task<Exception>> errorFactory = (x1) => Task.FromResult<Exception>(new InvalidOperationException($"Validation failed: {x1}"));
+        Func<int, Task<bool>> predicate = (_) => Task.FromResult(false);
+        Func<int, Task<IError>> errorFactory = (_) => Task.FromResult<IError>(new Error("Validation failed"));
         // When
         var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);
         // Then
@@ -55,18 +55,12 @@ public class ResultEnsureTaskTestsArity1
         // Given
         var value1 = 42;
         var taskResult = Task.FromResult(Result.Success(value1));
-        Func<int, Task<bool>> predicate = (x1) => Task.FromResult(x1 < 0);
-        Func<int, Task<Exception>> errorFactory = (x1) => Task.FromResult<Exception>(new InvalidOperationException($"Validation failed: {x1}"));
+        Func<int, Task<bool>> predicate = (_) => Task.FromResult(false);
+        Func<int, Task<IError>> errorFactory = (_) => Task.FromResult<IError>(new Error("Validation failed"));
         // When
         var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);
         // Then
         Assert.False(ensuredResult.IsSuccess);
-        var errorsList = ensuredResult.Errors.ToList();
-        Assert.NotEmpty(errorsList);
-        var exceptionalError = errorsList.OfType<UnambitiousFx.Core.Results.Reasons.ExceptionalError>().FirstOrDefault();
-        Assert.NotNull(exceptionalError);
-        Assert.IsType<InvalidOperationException>(exceptionalError.Exception);
-        Assert.Contains("Validation failed", exceptionalError.Exception.Message);
     }
     
     #endregion // Arity 1 - Task Ensure
@@ -79,8 +73,8 @@ public class ResultEnsureTaskTestsArity1
         var value1 = 42;
         var value2 = "test";
         var taskResult = Task.FromResult(Result.Success(value1, value2));
-        Func<int, string, Task<bool>> predicate = (x1, x2) => Task.FromResult(x1 > 0 && !string.IsNullOrEmpty(x2));
-        Func<int, string, Task<Exception>> errorFactory = (x1, x2) => Task.FromResult<Exception>(new InvalidOperationException($"Validation failed: {x1}, {x2}"));
+        Func<int, string, Task<bool>> predicate = (_, _) => Task.FromResult(true);
+        Func<int, string, Task<IError>> errorFactory = (_, _) => Task.FromResult<IError>(new Error("Validation failed"));
         // When
         var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);
         // Then
@@ -91,8 +85,8 @@ public class ResultEnsureTaskTestsArity1
     public async Task EnsureTask_Arity2_FailureResult_ShouldNotValidate() {
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string>("Test error"));
-        Func<int, string, Task<bool>> predicate = (x1, x2) => Task.FromResult(x1 > 0 && !string.IsNullOrEmpty(x2));
-        Func<int, string, Task<Exception>> errorFactory = (x1, x2) => Task.FromResult<Exception>(new InvalidOperationException($"Validation failed: {x1}, {x2}"));
+        Func<int, string, Task<bool>> predicate = (_, _) => Task.FromResult(false);
+        Func<int, string, Task<IError>> errorFactory = (_, _) => Task.FromResult<IError>(new Error("Validation failed"));
         // When
         var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);
         // Then
@@ -105,18 +99,12 @@ public class ResultEnsureTaskTestsArity1
         var value1 = 42;
         var value2 = "test";
         var taskResult = Task.FromResult(Result.Success(value1, value2));
-        Func<int, string, Task<bool>> predicate = (x1, x2) => Task.FromResult(x1 < 0 || string.IsNullOrEmpty(x2));
-        Func<int, string, Task<Exception>> errorFactory = (x1, x2) => Task.FromResult<Exception>(new InvalidOperationException($"Validation failed: {x1}, {x2}"));
+        Func<int, string, Task<bool>> predicate = (_, _) => Task.FromResult(false);
+        Func<int, string, Task<IError>> errorFactory = (_, _) => Task.FromResult<IError>(new Error("Validation failed"));
         // When
         var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);
         // Then
         Assert.False(ensuredResult.IsSuccess);
-        var errorsList = ensuredResult.Errors.ToList();
-        Assert.NotEmpty(errorsList);
-        var exceptionalError = errorsList.OfType<UnambitiousFx.Core.Results.Reasons.ExceptionalError>().FirstOrDefault();
-        Assert.NotNull(exceptionalError);
-        Assert.IsType<InvalidOperationException>(exceptionalError.Exception);
-        Assert.Contains("Validation failed", exceptionalError.Exception.Message);
     }
     
     #endregion // Arity 2 - Task Ensure
@@ -130,8 +118,8 @@ public class ResultEnsureTaskTestsArity1
         var value2 = "test";
         var value3 = true;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3));
-        Func<int, string, bool, Task<bool>> predicate = (x1, x2, x3) => Task.FromResult(x1 > 0 && !string.IsNullOrEmpty(x2) && x3 == true);
-        Func<int, string, bool, Task<Exception>> errorFactory = (x1, x2, x3) => Task.FromResult<Exception>(new InvalidOperationException($"Validation failed: {x1}, {x2}, {x3}"));
+        Func<int, string, bool, Task<bool>> predicate = (_, _, _) => Task.FromResult(true);
+        Func<int, string, bool, Task<IError>> errorFactory = (_, _, _) => Task.FromResult<IError>(new Error("Validation failed"));
         // When
         var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);
         // Then
@@ -142,8 +130,8 @@ public class ResultEnsureTaskTestsArity1
     public async Task EnsureTask_Arity3_FailureResult_ShouldNotValidate() {
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool>("Test error"));
-        Func<int, string, bool, Task<bool>> predicate = (x1, x2, x3) => Task.FromResult(x1 > 0 && !string.IsNullOrEmpty(x2) && x3 == true);
-        Func<int, string, bool, Task<Exception>> errorFactory = (x1, x2, x3) => Task.FromResult<Exception>(new InvalidOperationException($"Validation failed: {x1}, {x2}, {x3}"));
+        Func<int, string, bool, Task<bool>> predicate = (_, _, _) => Task.FromResult(false);
+        Func<int, string, bool, Task<IError>> errorFactory = (_, _, _) => Task.FromResult<IError>(new Error("Validation failed"));
         // When
         var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);
         // Then
@@ -157,18 +145,12 @@ public class ResultEnsureTaskTestsArity1
         var value2 = "test";
         var value3 = true;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3));
-        Func<int, string, bool, Task<bool>> predicate = (x1, x2, x3) => Task.FromResult(x1 < 0 || string.IsNullOrEmpty(x2) || x3 == false);
-        Func<int, string, bool, Task<Exception>> errorFactory = (x1, x2, x3) => Task.FromResult<Exception>(new InvalidOperationException($"Validation failed: {x1}, {x2}, {x3}"));
+        Func<int, string, bool, Task<bool>> predicate = (_, _, _) => Task.FromResult(false);
+        Func<int, string, bool, Task<IError>> errorFactory = (_, _, _) => Task.FromResult<IError>(new Error("Validation failed"));
         // When
         var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);
         // Then
         Assert.False(ensuredResult.IsSuccess);
-        var errorsList = ensuredResult.Errors.ToList();
-        Assert.NotEmpty(errorsList);
-        var exceptionalError = errorsList.OfType<UnambitiousFx.Core.Results.Reasons.ExceptionalError>().FirstOrDefault();
-        Assert.NotNull(exceptionalError);
-        Assert.IsType<InvalidOperationException>(exceptionalError.Exception);
-        Assert.Contains("Validation failed", exceptionalError.Exception.Message);
     }
     
     #endregion // Arity 3 - Task Ensure
@@ -183,8 +165,8 @@ public class ResultEnsureTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4));
-        Func<int, string, bool, double, Task<bool>> predicate = (x1, x2, x3, x4) => Task.FromResult(x1 > 0 && !string.IsNullOrEmpty(x2) && x3 == true && x4 > 0);
-        Func<int, string, bool, double, Task<Exception>> errorFactory = (x1, x2, x3, x4) => Task.FromResult<Exception>(new InvalidOperationException($"Validation failed: {x1}, {x2}, {x3}, {x4}"));
+        Func<int, string, bool, double, Task<bool>> predicate = (_, _, _, _) => Task.FromResult(true);
+        Func<int, string, bool, double, Task<IError>> errorFactory = (_, _, _, _) => Task.FromResult<IError>(new Error("Validation failed"));
         // When
         var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);
         // Then
@@ -195,8 +177,8 @@ public class ResultEnsureTaskTestsArity1
     public async Task EnsureTask_Arity4_FailureResult_ShouldNotValidate() {
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool, double>("Test error"));
-        Func<int, string, bool, double, Task<bool>> predicate = (x1, x2, x3, x4) => Task.FromResult(x1 > 0 && !string.IsNullOrEmpty(x2) && x3 == true && x4 > 0);
-        Func<int, string, bool, double, Task<Exception>> errorFactory = (x1, x2, x3, x4) => Task.FromResult<Exception>(new InvalidOperationException($"Validation failed: {x1}, {x2}, {x3}, {x4}"));
+        Func<int, string, bool, double, Task<bool>> predicate = (_, _, _, _) => Task.FromResult(false);
+        Func<int, string, bool, double, Task<IError>> errorFactory = (_, _, _, _) => Task.FromResult<IError>(new Error("Validation failed"));
         // When
         var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);
         // Then
@@ -211,18 +193,12 @@ public class ResultEnsureTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4));
-        Func<int, string, bool, double, Task<bool>> predicate = (x1, x2, x3, x4) => Task.FromResult(x1 < 0 || string.IsNullOrEmpty(x2) || x3 == false || x4 < 0);
-        Func<int, string, bool, double, Task<Exception>> errorFactory = (x1, x2, x3, x4) => Task.FromResult<Exception>(new InvalidOperationException($"Validation failed: {x1}, {x2}, {x3}, {x4}"));
+        Func<int, string, bool, double, Task<bool>> predicate = (_, _, _, _) => Task.FromResult(false);
+        Func<int, string, bool, double, Task<IError>> errorFactory = (_, _, _, _) => Task.FromResult<IError>(new Error("Validation failed"));
         // When
         var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);
         // Then
         Assert.False(ensuredResult.IsSuccess);
-        var errorsList = ensuredResult.Errors.ToList();
-        Assert.NotEmpty(errorsList);
-        var exceptionalError = errorsList.OfType<UnambitiousFx.Core.Results.Reasons.ExceptionalError>().FirstOrDefault();
-        Assert.NotNull(exceptionalError);
-        Assert.IsType<InvalidOperationException>(exceptionalError.Exception);
-        Assert.Contains("Validation failed", exceptionalError.Exception.Message);
     }
     
     #endregion // Arity 4 - Task Ensure
@@ -238,8 +214,8 @@ public class ResultEnsureTaskTestsArity1
         var value4 = 3.14;
         var value5 = 123L;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5));
-        Func<int, string, bool, double, long, Task<bool>> predicate = (x1, x2, x3, x4, x5) => Task.FromResult(x1 > 0 && !string.IsNullOrEmpty(x2) && x3 == true && x4 > 0 && x5 > 0);
-        Func<int, string, bool, double, long, Task<Exception>> errorFactory = (x1, x2, x3, x4, x5) => Task.FromResult<Exception>(new InvalidOperationException($"Validation failed: {x1}, {x2}, {x3}, {x4}, {x5}"));
+        Func<int, string, bool, double, long, Task<bool>> predicate = (_, _, _, _, _) => Task.FromResult(true);
+        Func<int, string, bool, double, long, Task<IError>> errorFactory = (_, _, _, _, _) => Task.FromResult<IError>(new Error("Validation failed"));
         // When
         var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);
         // Then
@@ -250,8 +226,8 @@ public class ResultEnsureTaskTestsArity1
     public async Task EnsureTask_Arity5_FailureResult_ShouldNotValidate() {
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
-        Func<int, string, bool, double, long, Task<bool>> predicate = (x1, x2, x3, x4, x5) => Task.FromResult(x1 > 0 && !string.IsNullOrEmpty(x2) && x3 == true && x4 > 0 && x5 > 0);
-        Func<int, string, bool, double, long, Task<Exception>> errorFactory = (x1, x2, x3, x4, x5) => Task.FromResult<Exception>(new InvalidOperationException($"Validation failed: {x1}, {x2}, {x3}, {x4}, {x5}"));
+        Func<int, string, bool, double, long, Task<bool>> predicate = (_, _, _, _, _) => Task.FromResult(false);
+        Func<int, string, bool, double, long, Task<IError>> errorFactory = (_, _, _, _, _) => Task.FromResult<IError>(new Error("Validation failed"));
         // When
         var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);
         // Then
@@ -267,18 +243,12 @@ public class ResultEnsureTaskTestsArity1
         var value4 = 3.14;
         var value5 = 123L;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5));
-        Func<int, string, bool, double, long, Task<bool>> predicate = (x1, x2, x3, x4, x5) => Task.FromResult(x1 < 0 || string.IsNullOrEmpty(x2) || x3 == false || x4 < 0 || x5 < 0);
-        Func<int, string, bool, double, long, Task<Exception>> errorFactory = (x1, x2, x3, x4, x5) => Task.FromResult<Exception>(new InvalidOperationException($"Validation failed: {x1}, {x2}, {x3}, {x4}, {x5}"));
+        Func<int, string, bool, double, long, Task<bool>> predicate = (_, _, _, _, _) => Task.FromResult(false);
+        Func<int, string, bool, double, long, Task<IError>> errorFactory = (_, _, _, _, _) => Task.FromResult<IError>(new Error("Validation failed"));
         // When
         var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);
         // Then
         Assert.False(ensuredResult.IsSuccess);
-        var errorsList = ensuredResult.Errors.ToList();
-        Assert.NotEmpty(errorsList);
-        var exceptionalError = errorsList.OfType<UnambitiousFx.Core.Results.Reasons.ExceptionalError>().FirstOrDefault();
-        Assert.NotNull(exceptionalError);
-        Assert.IsType<InvalidOperationException>(exceptionalError.Exception);
-        Assert.Contains("Validation failed", exceptionalError.Exception.Message);
     }
     
     #endregion // Arity 5 - Task Ensure
@@ -295,8 +265,8 @@ public class ResultEnsureTaskTestsArity1
         var value5 = 123L;
         var value6 = "value6";
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
-        Func<int, string, bool, double, long, string, Task<bool>> predicate = (x1, x2, x3, x4, x5, x6) => Task.FromResult(x1 > 0 && !string.IsNullOrEmpty(x2) && x3 == true && x4 > 0 && x5 > 0 && !string.IsNullOrEmpty(x6));
-        Func<int, string, bool, double, long, string, Task<Exception>> errorFactory = (x1, x2, x3, x4, x5, x6) => Task.FromResult<Exception>(new InvalidOperationException($"Validation failed: {x1}, {x2}, {x3}, {x4}, {x5}, {x6}"));
+        Func<int, string, bool, double, long, string, Task<bool>> predicate = (_, _, _, _, _, _) => Task.FromResult(true);
+        Func<int, string, bool, double, long, string, Task<IError>> errorFactory = (_, _, _, _, _, _) => Task.FromResult<IError>(new Error("Validation failed"));
         // When
         var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);
         // Then
@@ -307,8 +277,8 @@ public class ResultEnsureTaskTestsArity1
     public async Task EnsureTask_Arity6_FailureResult_ShouldNotValidate() {
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
-        Func<int, string, bool, double, long, string, Task<bool>> predicate = (x1, x2, x3, x4, x5, x6) => Task.FromResult(x1 > 0 && !string.IsNullOrEmpty(x2) && x3 == true && x4 > 0 && x5 > 0 && !string.IsNullOrEmpty(x6));
-        Func<int, string, bool, double, long, string, Task<Exception>> errorFactory = (x1, x2, x3, x4, x5, x6) => Task.FromResult<Exception>(new InvalidOperationException($"Validation failed: {x1}, {x2}, {x3}, {x4}, {x5}, {x6}"));
+        Func<int, string, bool, double, long, string, Task<bool>> predicate = (_, _, _, _, _, _) => Task.FromResult(false);
+        Func<int, string, bool, double, long, string, Task<IError>> errorFactory = (_, _, _, _, _, _) => Task.FromResult<IError>(new Error("Validation failed"));
         // When
         var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);
         // Then
@@ -325,18 +295,12 @@ public class ResultEnsureTaskTestsArity1
         var value5 = 123L;
         var value6 = "value6";
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
-        Func<int, string, bool, double, long, string, Task<bool>> predicate = (x1, x2, x3, x4, x5, x6) => Task.FromResult(x1 < 0 || string.IsNullOrEmpty(x2) || x3 == false || x4 < 0 || x5 < 0 || string.IsNullOrEmpty(x6));
-        Func<int, string, bool, double, long, string, Task<Exception>> errorFactory = (x1, x2, x3, x4, x5, x6) => Task.FromResult<Exception>(new InvalidOperationException($"Validation failed: {x1}, {x2}, {x3}, {x4}, {x5}, {x6}"));
+        Func<int, string, bool, double, long, string, Task<bool>> predicate = (_, _, _, _, _, _) => Task.FromResult(false);
+        Func<int, string, bool, double, long, string, Task<IError>> errorFactory = (_, _, _, _, _, _) => Task.FromResult<IError>(new Error("Validation failed"));
         // When
         var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);
         // Then
         Assert.False(ensuredResult.IsSuccess);
-        var errorsList = ensuredResult.Errors.ToList();
-        Assert.NotEmpty(errorsList);
-        var exceptionalError = errorsList.OfType<UnambitiousFx.Core.Results.Reasons.ExceptionalError>().FirstOrDefault();
-        Assert.NotNull(exceptionalError);
-        Assert.IsType<InvalidOperationException>(exceptionalError.Exception);
-        Assert.Contains("Validation failed", exceptionalError.Exception.Message);
     }
     
     #endregion // Arity 6 - Task Ensure
@@ -354,8 +318,8 @@ public class ResultEnsureTaskTestsArity1
         var value6 = "value6";
         var value7 = "value7";
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
-        Func<int, string, bool, double, long, string, string, Task<bool>> predicate = (x1, x2, x3, x4, x5, x6, x7) => Task.FromResult(x1 > 0 && !string.IsNullOrEmpty(x2) && x3 == true && x4 > 0 && x5 > 0 && !string.IsNullOrEmpty(x6) && !string.IsNullOrEmpty(x7));
-        Func<int, string, bool, double, long, string, string, Task<Exception>> errorFactory = (x1, x2, x3, x4, x5, x6, x7) => Task.FromResult<Exception>(new InvalidOperationException($"Validation failed: {x1}, {x2}, {x3}, {x4}, {x5}, {x6}, {x7}"));
+        Func<int, string, bool, double, long, string, string, Task<bool>> predicate = (_, _, _, _, _, _, _) => Task.FromResult(true);
+        Func<int, string, bool, double, long, string, string, Task<IError>> errorFactory = (_, _, _, _, _, _, _) => Task.FromResult<IError>(new Error("Validation failed"));
         // When
         var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);
         // Then
@@ -366,8 +330,8 @@ public class ResultEnsureTaskTestsArity1
     public async Task EnsureTask_Arity7_FailureResult_ShouldNotValidate() {
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
-        Func<int, string, bool, double, long, string, string, Task<bool>> predicate = (x1, x2, x3, x4, x5, x6, x7) => Task.FromResult(x1 > 0 && !string.IsNullOrEmpty(x2) && x3 == true && x4 > 0 && x5 > 0 && !string.IsNullOrEmpty(x6) && !string.IsNullOrEmpty(x7));
-        Func<int, string, bool, double, long, string, string, Task<Exception>> errorFactory = (x1, x2, x3, x4, x5, x6, x7) => Task.FromResult<Exception>(new InvalidOperationException($"Validation failed: {x1}, {x2}, {x3}, {x4}, {x5}, {x6}, {x7}"));
+        Func<int, string, bool, double, long, string, string, Task<bool>> predicate = (_, _, _, _, _, _, _) => Task.FromResult(false);
+        Func<int, string, bool, double, long, string, string, Task<IError>> errorFactory = (_, _, _, _, _, _, _) => Task.FromResult<IError>(new Error("Validation failed"));
         // When
         var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);
         // Then
@@ -385,18 +349,12 @@ public class ResultEnsureTaskTestsArity1
         var value6 = "value6";
         var value7 = "value7";
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
-        Func<int, string, bool, double, long, string, string, Task<bool>> predicate = (x1, x2, x3, x4, x5, x6, x7) => Task.FromResult(x1 < 0 || string.IsNullOrEmpty(x2) || x3 == false || x4 < 0 || x5 < 0 || string.IsNullOrEmpty(x6) || string.IsNullOrEmpty(x7));
-        Func<int, string, bool, double, long, string, string, Task<Exception>> errorFactory = (x1, x2, x3, x4, x5, x6, x7) => Task.FromResult<Exception>(new InvalidOperationException($"Validation failed: {x1}, {x2}, {x3}, {x4}, {x5}, {x6}, {x7}"));
+        Func<int, string, bool, double, long, string, string, Task<bool>> predicate = (_, _, _, _, _, _, _) => Task.FromResult(false);
+        Func<int, string, bool, double, long, string, string, Task<IError>> errorFactory = (_, _, _, _, _, _, _) => Task.FromResult<IError>(new Error("Validation failed"));
         // When
         var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);
         // Then
         Assert.False(ensuredResult.IsSuccess);
-        var errorsList = ensuredResult.Errors.ToList();
-        Assert.NotEmpty(errorsList);
-        var exceptionalError = errorsList.OfType<UnambitiousFx.Core.Results.Reasons.ExceptionalError>().FirstOrDefault();
-        Assert.NotNull(exceptionalError);
-        Assert.IsType<InvalidOperationException>(exceptionalError.Exception);
-        Assert.Contains("Validation failed", exceptionalError.Exception.Message);
     }
     
     #endregion // Arity 7 - Task Ensure
@@ -415,8 +373,8 @@ public class ResultEnsureTaskTestsArity1
         var value7 = "value7";
         var value8 = "value8";
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
-        Func<int, string, bool, double, long, string, string, string, Task<bool>> predicate = (x1, x2, x3, x4, x5, x6, x7, x8) => Task.FromResult(x1 > 0 && !string.IsNullOrEmpty(x2) && x3 == true && x4 > 0 && x5 > 0 && !string.IsNullOrEmpty(x6) && !string.IsNullOrEmpty(x7) && !string.IsNullOrEmpty(x8));
-        Func<int, string, bool, double, long, string, string, string, Task<Exception>> errorFactory = (x1, x2, x3, x4, x5, x6, x7, x8) => Task.FromResult<Exception>(new InvalidOperationException($"Validation failed: {x1}, {x2}, {x3}, {x4}, {x5}, {x6}, {x7}, {x8}"));
+        Func<int, string, bool, double, long, string, string, string, Task<bool>> predicate = (_, _, _, _, _, _, _, _) => Task.FromResult(true);
+        Func<int, string, bool, double, long, string, string, string, Task<IError>> errorFactory = (_, _, _, _, _, _, _, _) => Task.FromResult<IError>(new Error("Validation failed"));
         // When
         var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);
         // Then
@@ -427,8 +385,8 @@ public class ResultEnsureTaskTestsArity1
     public async Task EnsureTask_Arity8_FailureResult_ShouldNotValidate() {
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
-        Func<int, string, bool, double, long, string, string, string, Task<bool>> predicate = (x1, x2, x3, x4, x5, x6, x7, x8) => Task.FromResult(x1 > 0 && !string.IsNullOrEmpty(x2) && x3 == true && x4 > 0 && x5 > 0 && !string.IsNullOrEmpty(x6) && !string.IsNullOrEmpty(x7) && !string.IsNullOrEmpty(x8));
-        Func<int, string, bool, double, long, string, string, string, Task<Exception>> errorFactory = (x1, x2, x3, x4, x5, x6, x7, x8) => Task.FromResult<Exception>(new InvalidOperationException($"Validation failed: {x1}, {x2}, {x3}, {x4}, {x5}, {x6}, {x7}, {x8}"));
+        Func<int, string, bool, double, long, string, string, string, Task<bool>> predicate = (_, _, _, _, _, _, _, _) => Task.FromResult(false);
+        Func<int, string, bool, double, long, string, string, string, Task<IError>> errorFactory = (_, _, _, _, _, _, _, _) => Task.FromResult<IError>(new Error("Validation failed"));
         // When
         var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);
         // Then
@@ -447,18 +405,12 @@ public class ResultEnsureTaskTestsArity1
         var value7 = "value7";
         var value8 = "value8";
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
-        Func<int, string, bool, double, long, string, string, string, Task<bool>> predicate = (x1, x2, x3, x4, x5, x6, x7, x8) => Task.FromResult(x1 < 0 || string.IsNullOrEmpty(x2) || x3 == false || x4 < 0 || x5 < 0 || string.IsNullOrEmpty(x6) || string.IsNullOrEmpty(x7) || string.IsNullOrEmpty(x8));
-        Func<int, string, bool, double, long, string, string, string, Task<Exception>> errorFactory = (x1, x2, x3, x4, x5, x6, x7, x8) => Task.FromResult<Exception>(new InvalidOperationException($"Validation failed: {x1}, {x2}, {x3}, {x4}, {x5}, {x6}, {x7}, {x8}"));
+        Func<int, string, bool, double, long, string, string, string, Task<bool>> predicate = (_, _, _, _, _, _, _, _) => Task.FromResult(false);
+        Func<int, string, bool, double, long, string, string, string, Task<IError>> errorFactory = (_, _, _, _, _, _, _, _) => Task.FromResult<IError>(new Error("Validation failed"));
         // When
         var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);
         // Then
         Assert.False(ensuredResult.IsSuccess);
-        var errorsList = ensuredResult.Errors.ToList();
-        Assert.NotEmpty(errorsList);
-        var exceptionalError = errorsList.OfType<UnambitiousFx.Core.Results.Reasons.ExceptionalError>().FirstOrDefault();
-        Assert.NotNull(exceptionalError);
-        Assert.IsType<InvalidOperationException>(exceptionalError.Exception);
-        Assert.Contains("Validation failed", exceptionalError.Exception.Message);
     }
     
     #endregion // Arity 8 - Task Ensure

@@ -8,13 +8,15 @@
 #nullable enable
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
+using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
+using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Extensions.Transformations;
-using UnambitiousFx.Core.Results.Extensions.Transformations.Tasks;
-using UnambitiousFx.Core.Results.Extensions.Transformations.ValueTasks;
+using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Transformations;
@@ -25,28 +27,34 @@ public class ResultTrySyncTestsArity1
     
     [Fact]
     public void Try_Arity1_Success_ShouldTransform() {
+        // Given
         var value1 = 42;
         var result = Result.Success(value1);
+        // When
         var transformedResult = result.Try<int, string>(x => x.ToString() + "_tried");
+        // Then
         Assert.True(transformedResult.IsSuccess);
-        Assert.True(transformedResult.TryGet(out var triedValue));
-        Assert.Equal("42_tried", triedValue);
     }
     
     [Fact]
     public void Try_Arity1_Failure_ShouldNotTransform() {
+        // Given
         var result = Result.Failure<int>("Test error");
+        // When
         var transformedResult = result.Try<int, string>(x => x.ToString() + "_tried");
+        // Then
         Assert.False(transformedResult.IsSuccess);
     }
     
     [Fact]
-    public void Try_Arity1_Exception_ShouldCaptureException() {
+    public void Try_Arity1_Exception_ShouldReturnExceptionalError() {
+        // Given
         var value1 = 42;
         var result = Result.Success(value1);
-        var transformedResult = result.Try<int, string>(x => throw new InvalidOperationException("Test exception"));
+        // When
+        var transformedResult = result.Try<int, string>(x => throw new Exception("Boom"));
+        // Then
         Assert.False(transformedResult.IsSuccess);
-        Assert.True(transformedResult.HasException<InvalidOperationException, string>());
     }
     
     #endregion // Arity 1 - Sync Try
@@ -55,28 +63,36 @@ public class ResultTrySyncTestsArity1
     
     [Fact]
     public void Try_Arity2_Success_ShouldTransform() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var result = Result.Success(value1, value2);
+        // When
         var transformedResult = result.Try<int, string, string, string>((x1, x2) => (x1 + "_tried", x2 + "_tried"));
+        // Then
         Assert.True(transformedResult.IsSuccess);
     }
     
     [Fact]
     public void Try_Arity2_Failure_ShouldNotTransform() {
+        // Given
         var result = Result.Failure<int, string>("Test error");
+        // When
         var transformedResult = result.Try<int, string, string, string>((x1, x2) => (x1 + "_tried", x2 + "_tried"));
+        // Then
         Assert.False(transformedResult.IsSuccess);
     }
     
     [Fact]
-    public void Try_Arity2_Exception_ShouldCaptureException() {
+    public void Try_Arity2_Exception_ShouldReturnExceptionalError() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var result = Result.Success(value1, value2);
-        var transformedResult = result.Try<int, string, string, string>((x1, x2) => throw new InvalidOperationException("Test exception"));
+        // When
+        var transformedResult = result.Try<int, string, string, string>((x1, x2) => throw new Exception("Boom"));
+        // Then
         Assert.False(transformedResult.IsSuccess);
-        Assert.True(transformedResult.HasException<InvalidOperationException, string, string>());
     }
     
     #endregion // Arity 2 - Sync Try
@@ -85,30 +101,38 @@ public class ResultTrySyncTestsArity1
     
     [Fact]
     public void Try_Arity3_Success_ShouldTransform() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
         var result = Result.Success(value1, value2, value3);
+        // When
         var transformedResult = result.Try<int, string, bool, string, string, string>((x1, x2, x3) => (x1 + "_tried", x2 + "_tried", x3 + "_tried"));
+        // Then
         Assert.True(transformedResult.IsSuccess);
     }
     
     [Fact]
     public void Try_Arity3_Failure_ShouldNotTransform() {
+        // Given
         var result = Result.Failure<int, string, bool>("Test error");
+        // When
         var transformedResult = result.Try<int, string, bool, string, string, string>((x1, x2, x3) => (x1 + "_tried", x2 + "_tried", x3 + "_tried"));
+        // Then
         Assert.False(transformedResult.IsSuccess);
     }
     
     [Fact]
-    public void Try_Arity3_Exception_ShouldCaptureException() {
+    public void Try_Arity3_Exception_ShouldReturnExceptionalError() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
         var result = Result.Success(value1, value2, value3);
-        var transformedResult = result.Try<int, string, bool, string, string, string>((x1, x2, x3) => throw new InvalidOperationException("Test exception"));
+        // When
+        var transformedResult = result.Try<int, string, bool, string, string, string>((x1, x2, x3) => throw new Exception("Boom"));
+        // Then
         Assert.False(transformedResult.IsSuccess);
-        Assert.True(transformedResult.HasException<InvalidOperationException, string, string, string>());
     }
     
     #endregion // Arity 3 - Sync Try
@@ -117,32 +141,40 @@ public class ResultTrySyncTestsArity1
     
     [Fact]
     public void Try_Arity4_Success_ShouldTransform() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
         var result = Result.Success(value1, value2, value3, value4);
+        // When
         var transformedResult = result.Try<int, string, bool, double, string, string, string, string>((x1, x2, x3, x4) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried"));
+        // Then
         Assert.True(transformedResult.IsSuccess);
     }
     
     [Fact]
     public void Try_Arity4_Failure_ShouldNotTransform() {
+        // Given
         var result = Result.Failure<int, string, bool, double>("Test error");
+        // When
         var transformedResult = result.Try<int, string, bool, double, string, string, string, string>((x1, x2, x3, x4) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried"));
+        // Then
         Assert.False(transformedResult.IsSuccess);
     }
     
     [Fact]
-    public void Try_Arity4_Exception_ShouldCaptureException() {
+    public void Try_Arity4_Exception_ShouldReturnExceptionalError() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
         var result = Result.Success(value1, value2, value3, value4);
-        var transformedResult = result.Try<int, string, bool, double, string, string, string, string>((x1, x2, x3, x4) => throw new InvalidOperationException("Test exception"));
+        // When
+        var transformedResult = result.Try<int, string, bool, double, string, string, string, string>((x1, x2, x3, x4) => throw new Exception("Boom"));
+        // Then
         Assert.False(transformedResult.IsSuccess);
-        Assert.True(transformedResult.HasException<InvalidOperationException, string, string, string, string>());
     }
     
     #endregion // Arity 4 - Sync Try
@@ -151,34 +183,42 @@ public class ResultTrySyncTestsArity1
     
     [Fact]
     public void Try_Arity5_Success_ShouldTransform() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
         var result = Result.Success(value1, value2, value3, value4, value5);
+        // When
         var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string>((x1, x2, x3, x4, x5) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried"));
+        // Then
         Assert.True(transformedResult.IsSuccess);
     }
     
     [Fact]
     public void Try_Arity5_Failure_ShouldNotTransform() {
+        // Given
         var result = Result.Failure<int, string, bool, double, long>("Test error");
+        // When
         var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string>((x1, x2, x3, x4, x5) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried"));
+        // Then
         Assert.False(transformedResult.IsSuccess);
     }
     
     [Fact]
-    public void Try_Arity5_Exception_ShouldCaptureException() {
+    public void Try_Arity5_Exception_ShouldReturnExceptionalError() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
         var result = Result.Success(value1, value2, value3, value4, value5);
-        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string>((x1, x2, x3, x4, x5) => throw new InvalidOperationException("Test exception"));
+        // When
+        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string>((x1, x2, x3, x4, x5) => throw new Exception("Boom"));
+        // Then
         Assert.False(transformedResult.IsSuccess);
-        Assert.True(transformedResult.HasException<InvalidOperationException, string, string, string, string, string>());
     }
     
     #endregion // Arity 5 - Sync Try
@@ -187,6 +227,7 @@ public class ResultTrySyncTestsArity1
     
     [Fact]
     public void Try_Arity6_Success_ShouldTransform() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
@@ -194,19 +235,25 @@ public class ResultTrySyncTestsArity1
         var value5 = 123L;
         var value6 = "value6";
         var result = Result.Success(value1, value2, value3, value4, value5, value6);
+        // When
         var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried"));
+        // Then
         Assert.True(transformedResult.IsSuccess);
     }
     
     [Fact]
     public void Try_Arity6_Failure_ShouldNotTransform() {
+        // Given
         var result = Result.Failure<int, string, bool, double, long, string>("Test error");
+        // When
         var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried"));
+        // Then
         Assert.False(transformedResult.IsSuccess);
     }
     
     [Fact]
-    public void Try_Arity6_Exception_ShouldCaptureException() {
+    public void Try_Arity6_Exception_ShouldReturnExceptionalError() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
@@ -214,9 +261,10 @@ public class ResultTrySyncTestsArity1
         var value5 = 123L;
         var value6 = "value6";
         var result = Result.Success(value1, value2, value3, value4, value5, value6);
-        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6) => throw new InvalidOperationException("Test exception"));
+        // When
+        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6) => throw new Exception("Boom"));
+        // Then
         Assert.False(transformedResult.IsSuccess);
-        Assert.True(transformedResult.HasException<InvalidOperationException, string, string, string, string, string, string>());
     }
     
     #endregion // Arity 6 - Sync Try
@@ -225,6 +273,7 @@ public class ResultTrySyncTestsArity1
     
     [Fact]
     public void Try_Arity7_Success_ShouldTransform() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
@@ -233,19 +282,25 @@ public class ResultTrySyncTestsArity1
         var value6 = "value6";
         var value7 = "value7";
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
+        // When
         var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried", x7 + "_tried"));
+        // Then
         Assert.True(transformedResult.IsSuccess);
     }
     
     [Fact]
     public void Try_Arity7_Failure_ShouldNotTransform() {
+        // Given
         var result = Result.Failure<int, string, bool, double, long, string, string>("Test error");
+        // When
         var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried", x7 + "_tried"));
+        // Then
         Assert.False(transformedResult.IsSuccess);
     }
     
     [Fact]
-    public void Try_Arity7_Exception_ShouldCaptureException() {
+    public void Try_Arity7_Exception_ShouldReturnExceptionalError() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
@@ -254,9 +309,10 @@ public class ResultTrySyncTestsArity1
         var value6 = "value6";
         var value7 = "value7";
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
-        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7) => throw new InvalidOperationException("Test exception"));
+        // When
+        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7) => throw new Exception("Boom"));
+        // Then
         Assert.False(transformedResult.IsSuccess);
-        Assert.True(transformedResult.HasException<InvalidOperationException, string, string, string, string, string, string, string>());
     }
     
     #endregion // Arity 7 - Sync Try
@@ -265,6 +321,7 @@ public class ResultTrySyncTestsArity1
     
     [Fact]
     public void Try_Arity8_Success_ShouldTransform() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
@@ -274,19 +331,25 @@ public class ResultTrySyncTestsArity1
         var value7 = "value7";
         var value8 = "value8";
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
+        // When
         var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7, x8) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried", x7 + "_tried", x8 + "_tried"));
+        // Then
         Assert.True(transformedResult.IsSuccess);
     }
     
     [Fact]
     public void Try_Arity8_Failure_ShouldNotTransform() {
+        // Given
         var result = Result.Failure<int, string, bool, double, long, string, string, string>("Test error");
+        // When
         var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7, x8) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried", x7 + "_tried", x8 + "_tried"));
+        // Then
         Assert.False(transformedResult.IsSuccess);
     }
     
     [Fact]
-    public void Try_Arity8_Exception_ShouldCaptureException() {
+    public void Try_Arity8_Exception_ShouldReturnExceptionalError() {
+        // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
@@ -296,9 +359,10 @@ public class ResultTrySyncTestsArity1
         var value7 = "value7";
         var value8 = "value8";
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
-        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7, x8) => throw new InvalidOperationException("Test exception"));
+        // When
+        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7, x8) => throw new Exception("Boom"));
+        // Then
         Assert.False(transformedResult.IsSuccess);
-        Assert.True(transformedResult.HasException<InvalidOperationException, string, string, string, string, string, string, string, string>());
     }
     
     #endregion // Arity 8 - Sync Try

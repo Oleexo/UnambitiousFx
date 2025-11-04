@@ -8,12 +8,15 @@
 #nullable enable
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
-using UnambitiousFx.Core.Results.Extensions.Transformations;
-using UnambitiousFx.Core.Results.Extensions.Transformations.Tasks;
+using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
+using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
+using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Extensions.Transformations.ValueTasks;
+using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Transformations.ValueTasks;
@@ -38,9 +41,8 @@ public class ResultZipValueTaskTestsArity2
     [Fact]
     public async Task ZipValueTask_Arity2_Failure_ShouldNotZip() {
         // Given
-        var value2 = "test";
         var valueTaskResult1 = ValueTask.FromResult(Result.Failure<int>("Test error"));
-        var valueTaskResult2 = ValueTask.FromResult(Result.Success(value2));
+        var valueTaskResult2 = ValueTask.FromResult(Result.Failure<string>("Test error"));
         // When
         var zippedResult = await valueTaskResult1.ZipAsync(valueTaskResult2);
         // Then
@@ -69,11 +71,9 @@ public class ResultZipValueTaskTestsArity2
     [Fact]
     public async Task ZipValueTask_Arity3_Failure_ShouldNotZip() {
         // Given
-        var value2 = "test";
-        var value3 = true;
         var valueTaskResult1 = ValueTask.FromResult(Result.Failure<int>("Test error"));
-        var valueTaskResult2 = ValueTask.FromResult(Result.Success(value2));
-        var valueTaskResult3 = ValueTask.FromResult(Result.Success(value3));
+        var valueTaskResult2 = ValueTask.FromResult(Result.Failure<string>("Test error"));
+        var valueTaskResult3 = ValueTask.FromResult(Result.Failure<bool>("Test error"));
         // When
         var zippedResult = await valueTaskResult1.ZipAsync(valueTaskResult2, valueTaskResult3);
         // Then
@@ -104,13 +104,10 @@ public class ResultZipValueTaskTestsArity2
     [Fact]
     public async Task ZipValueTask_Arity4_Failure_ShouldNotZip() {
         // Given
-        var value2 = "test";
-        var value3 = true;
-        var value4 = 3.14;
         var valueTaskResult1 = ValueTask.FromResult(Result.Failure<int>("Test error"));
-        var valueTaskResult2 = ValueTask.FromResult(Result.Success(value2));
-        var valueTaskResult3 = ValueTask.FromResult(Result.Success(value3));
-        var valueTaskResult4 = ValueTask.FromResult(Result.Success(value4));
+        var valueTaskResult2 = ValueTask.FromResult(Result.Failure<string>("Test error"));
+        var valueTaskResult3 = ValueTask.FromResult(Result.Failure<bool>("Test error"));
+        var valueTaskResult4 = ValueTask.FromResult(Result.Failure<double>("Test error"));
         // When
         var zippedResult = await valueTaskResult1.ZipAsync(valueTaskResult2, valueTaskResult3, valueTaskResult4);
         // Then
@@ -143,15 +140,11 @@ public class ResultZipValueTaskTestsArity2
     [Fact]
     public async Task ZipValueTask_Arity5_Failure_ShouldNotZip() {
         // Given
-        var value2 = "test";
-        var value3 = true;
-        var value4 = 3.14;
-        var value5 = 123L;
         var valueTaskResult1 = ValueTask.FromResult(Result.Failure<int>("Test error"));
-        var valueTaskResult2 = ValueTask.FromResult(Result.Success(value2));
-        var valueTaskResult3 = ValueTask.FromResult(Result.Success(value3));
-        var valueTaskResult4 = ValueTask.FromResult(Result.Success(value4));
-        var valueTaskResult5 = ValueTask.FromResult(Result.Success(value5));
+        var valueTaskResult2 = ValueTask.FromResult(Result.Failure<string>("Test error"));
+        var valueTaskResult3 = ValueTask.FromResult(Result.Failure<bool>("Test error"));
+        var valueTaskResult4 = ValueTask.FromResult(Result.Failure<double>("Test error"));
+        var valueTaskResult5 = ValueTask.FromResult(Result.Failure<long>("Test error"));
         // When
         var zippedResult = await valueTaskResult1.ZipAsync(valueTaskResult2, valueTaskResult3, valueTaskResult4, valueTaskResult5);
         // Then
@@ -186,17 +179,12 @@ public class ResultZipValueTaskTestsArity2
     [Fact]
     public async Task ZipValueTask_Arity6_Failure_ShouldNotZip() {
         // Given
-        var value2 = "test";
-        var value3 = true;
-        var value4 = 3.14;
-        var value5 = 123L;
-        var value6 = "value6";
         var valueTaskResult1 = ValueTask.FromResult(Result.Failure<int>("Test error"));
-        var valueTaskResult2 = ValueTask.FromResult(Result.Success(value2));
-        var valueTaskResult3 = ValueTask.FromResult(Result.Success(value3));
-        var valueTaskResult4 = ValueTask.FromResult(Result.Success(value4));
-        var valueTaskResult5 = ValueTask.FromResult(Result.Success(value5));
-        var valueTaskResult6 = ValueTask.FromResult(Result.Success(value6));
+        var valueTaskResult2 = ValueTask.FromResult(Result.Failure<string>("Test error"));
+        var valueTaskResult3 = ValueTask.FromResult(Result.Failure<bool>("Test error"));
+        var valueTaskResult4 = ValueTask.FromResult(Result.Failure<double>("Test error"));
+        var valueTaskResult5 = ValueTask.FromResult(Result.Failure<long>("Test error"));
+        var valueTaskResult6 = ValueTask.FromResult(Result.Failure<string>("Test error"));
         // When
         var zippedResult = await valueTaskResult1.ZipAsync(valueTaskResult2, valueTaskResult3, valueTaskResult4, valueTaskResult5, valueTaskResult6);
         // Then
@@ -233,19 +221,13 @@ public class ResultZipValueTaskTestsArity2
     [Fact]
     public async Task ZipValueTask_Arity7_Failure_ShouldNotZip() {
         // Given
-        var value2 = "test";
-        var value3 = true;
-        var value4 = 3.14;
-        var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
         var valueTaskResult1 = ValueTask.FromResult(Result.Failure<int>("Test error"));
-        var valueTaskResult2 = ValueTask.FromResult(Result.Success(value2));
-        var valueTaskResult3 = ValueTask.FromResult(Result.Success(value3));
-        var valueTaskResult4 = ValueTask.FromResult(Result.Success(value4));
-        var valueTaskResult5 = ValueTask.FromResult(Result.Success(value5));
-        var valueTaskResult6 = ValueTask.FromResult(Result.Success(value6));
-        var valueTaskResult7 = ValueTask.FromResult(Result.Success(value7));
+        var valueTaskResult2 = ValueTask.FromResult(Result.Failure<string>("Test error"));
+        var valueTaskResult3 = ValueTask.FromResult(Result.Failure<bool>("Test error"));
+        var valueTaskResult4 = ValueTask.FromResult(Result.Failure<double>("Test error"));
+        var valueTaskResult5 = ValueTask.FromResult(Result.Failure<long>("Test error"));
+        var valueTaskResult6 = ValueTask.FromResult(Result.Failure<string>("Test error"));
+        var valueTaskResult7 = ValueTask.FromResult(Result.Failure<string>("Test error"));
         // When
         var zippedResult = await valueTaskResult1.ZipAsync(valueTaskResult2, valueTaskResult3, valueTaskResult4, valueTaskResult5, valueTaskResult6, valueTaskResult7);
         // Then
@@ -284,21 +266,14 @@ public class ResultZipValueTaskTestsArity2
     [Fact]
     public async Task ZipValueTask_Arity8_Failure_ShouldNotZip() {
         // Given
-        var value2 = "test";
-        var value3 = true;
-        var value4 = 3.14;
-        var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
         var valueTaskResult1 = ValueTask.FromResult(Result.Failure<int>("Test error"));
-        var valueTaskResult2 = ValueTask.FromResult(Result.Success(value2));
-        var valueTaskResult3 = ValueTask.FromResult(Result.Success(value3));
-        var valueTaskResult4 = ValueTask.FromResult(Result.Success(value4));
-        var valueTaskResult5 = ValueTask.FromResult(Result.Success(value5));
-        var valueTaskResult6 = ValueTask.FromResult(Result.Success(value6));
-        var valueTaskResult7 = ValueTask.FromResult(Result.Success(value7));
-        var valueTaskResult8 = ValueTask.FromResult(Result.Success(value8));
+        var valueTaskResult2 = ValueTask.FromResult(Result.Failure<string>("Test error"));
+        var valueTaskResult3 = ValueTask.FromResult(Result.Failure<bool>("Test error"));
+        var valueTaskResult4 = ValueTask.FromResult(Result.Failure<double>("Test error"));
+        var valueTaskResult5 = ValueTask.FromResult(Result.Failure<long>("Test error"));
+        var valueTaskResult6 = ValueTask.FromResult(Result.Failure<string>("Test error"));
+        var valueTaskResult7 = ValueTask.FromResult(Result.Failure<string>("Test error"));
+        var valueTaskResult8 = ValueTask.FromResult(Result.Failure<string>("Test error"));
         // When
         var zippedResult = await valueTaskResult1.ZipAsync(valueTaskResult2, valueTaskResult3, valueTaskResult4, valueTaskResult5, valueTaskResult6, valueTaskResult7, valueTaskResult8);
         // Then

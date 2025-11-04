@@ -6,52 +6,31 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results;
 
 /// <summary>
 ///     Test generator for Result.HasError extension methods (sync, Task, ValueTask).
+///     Refactored to use common variant generation helper for homogeneity.
 /// </summary>
-internal sealed class ResultHasErrorTestsGenerator : ResultTestGeneratorBase
-{
-    private const int StartArity = 0; // Changed to 0 to support non-generic Result
-    private const string ClassName = "ResultHasErrorTests";
+internal sealed class ResultHasErrorTestsGenerator : ResultTestGeneratorBase {
+    private const int    StartArity          = 0; // Supports non-generic Result
+    private const string ClassName           = "ResultHasErrorTests";
     private const string ExtensionsNamespace = "Results.Extensions.ErrorHandling";
 
-    public ResultHasErrorTestsGenerator(string baseNamespace,
+    public ResultHasErrorTestsGenerator(string              baseNamespace,
                                         FileOrganizationMode fileOrganization)
         : base(new GenerationConfig(baseNamespace,
                                     StartArity,
                                     ExtensionsNamespace,
                                     ClassName,
                                     fileOrganization,
-                                    true))
-    {
+                                    true)) { }
+
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
+        return GenerateVariants(arity,
+                                ClassName,
+                                (GenerateSyncTests,       false),
+                                (GenerateTaskTests,       true),
+                                (GenerateValueTaskTests,  true));
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
-    {
-        var classes = new List<ClassWriter>();
-        var sync = GenerateSyncTests(arity);
-        if (sync != null)
-        {
-            classes.Add(sync);
-        }
-
-        var task = GenerateTaskTests(arity);
-        if (task != null)
-        {
-            task.UnderClass = ClassName;
-            classes.Add(task);
-        }
-
-        var valueTask = GenerateValueTaskTests(arity);
-        if (valueTask != null)
-        {
-            valueTask.UnderClass = ClassName;
-            classes.Add(valueTask);
-        }
-
-        return classes;
-    }
-
-    private ClassWriter? GenerateSyncTests(ushort arity)
-    {
+    private ClassWriter GenerateSyncTests(ushort arity) {
         var cw = new ClassWriter($"ResultHasErrorSyncTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Sync HasError" };
         cw.AddMethod(GenerateSyncSuccessTest(arity));
         cw.AddMethod(GenerateSyncFailureTest(arity));
@@ -59,8 +38,7 @@ internal sealed class ResultHasErrorTestsGenerator : ResultTestGeneratorBase
         return cw;
     }
 
-    private ClassWriter? GenerateTaskTests(ushort arity)
-    {
+    private ClassWriter GenerateTaskTests(ushort arity) {
         var cw = new ClassWriter($"ResultHasErrorTaskTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Task HasError" };
         cw.AddMethod(GenerateTaskSuccessTest(arity));
         cw.AddMethod(GenerateTaskFailureTest(arity));
@@ -68,8 +46,7 @@ internal sealed class ResultHasErrorTestsGenerator : ResultTestGeneratorBase
         return cw;
     }
 
-    private ClassWriter? GenerateValueTaskTests(ushort arity)
-    {
+    private ClassWriter GenerateValueTaskTests(ushort arity) {
         var cw = new ClassWriter($"ResultHasErrorValueTaskTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - ValueTask HasError" };
         cw.AddMethod(GenerateValueTaskSuccessTest(arity));
         cw.AddMethod(GenerateValueTaskFailureTest(arity));
@@ -77,8 +54,7 @@ internal sealed class ResultHasErrorTestsGenerator : ResultTestGeneratorBase
         return cw;
     }
 
-    private MethodWriter GenerateSyncSuccessTest(ushort arity)
-    {
+    private MethodWriter GenerateSyncSuccessTest(ushort arity) {
         return new MethodWriter($"HasError_Arity{arity}_Success_ShouldReturnFalse",
                                 "void",
                                 GenerateSyncSuccessBody(arity),
@@ -86,8 +62,7 @@ internal sealed class ResultHasErrorTestsGenerator : ResultTestGeneratorBase
                                 usings: GetUsings());
     }
 
-    private MethodWriter GenerateSyncFailureTest(ushort arity)
-    {
+    private MethodWriter GenerateSyncFailureTest(ushort arity) {
         return new MethodWriter($"HasError_Arity{arity}_Failure_ShouldReturnTrue",
                                 "void",
                                 GenerateSyncFailureBody(arity),
@@ -95,8 +70,7 @@ internal sealed class ResultHasErrorTestsGenerator : ResultTestGeneratorBase
                                 usings: GetUsings());
     }
 
-    private MethodWriter GenerateTaskSuccessTest(ushort arity)
-    {
+    private MethodWriter GenerateTaskSuccessTest(ushort arity) {
         return new MethodWriter($"HasErrorTask_Arity{arity}_Success_ShouldReturnFalse",
                                 "async Task",
                                 GenerateTaskSuccessBody(arity),
@@ -104,8 +78,7 @@ internal sealed class ResultHasErrorTestsGenerator : ResultTestGeneratorBase
                                 usings: GetUsings());
     }
 
-    private MethodWriter GenerateTaskFailureTest(ushort arity)
-    {
+    private MethodWriter GenerateTaskFailureTest(ushort arity) {
         return new MethodWriter($"HasErrorTask_Arity{arity}_Failure_ShouldReturnTrue",
                                 "async Task",
                                 GenerateTaskFailureBody(arity),
@@ -113,8 +86,7 @@ internal sealed class ResultHasErrorTestsGenerator : ResultTestGeneratorBase
                                 usings: GetUsings());
     }
 
-    private MethodWriter GenerateValueTaskSuccessTest(ushort arity)
-    {
+    private MethodWriter GenerateValueTaskSuccessTest(ushort arity) {
         return new MethodWriter($"HasErrorValueTask_Arity{arity}_Success_ShouldReturnFalse",
                                 "async Task",
                                 GenerateValueTaskSuccessBody(arity),
@@ -122,8 +94,7 @@ internal sealed class ResultHasErrorTestsGenerator : ResultTestGeneratorBase
                                 usings: GetUsings());
     }
 
-    private MethodWriter GenerateValueTaskFailureTest(ushort arity)
-    {
+    private MethodWriter GenerateValueTaskFailureTest(ushort arity) {
         return new MethodWriter($"HasErrorValueTask_Arity{arity}_Failure_ShouldReturnTrue",
                                 "async Task",
                                 GenerateValueTaskFailureBody(arity),
@@ -131,11 +102,10 @@ internal sealed class ResultHasErrorTestsGenerator : ResultTestGeneratorBase
                                 usings: GetUsings());
     }
 
-    private string GenerateSyncSuccessBody(ushort arity)
-    {
+    private string GenerateSyncSuccessBody(ushort arity) {
         var testValues = GenerateTestValues(arity);
-        var creation = GenerateResultCreation(arity);
-        var call = GenerateHasErrorSyncCall(arity);
+        var creation   = GenerateResultCreation(arity);
+        var call       = GenerateHasErrorSyncCall(arity);
         return $"""
                 // Given
                 {testValues}
@@ -147,10 +117,9 @@ internal sealed class ResultHasErrorTestsGenerator : ResultTestGeneratorBase
                 """;
     }
 
-    private string GenerateSyncFailureBody(ushort arity)
-    {
+    private string GenerateSyncFailureBody(ushort arity) {
         var failureCreation = GenerateErrorTypeFailureResultCreation(arity);
-        var call = GenerateHasErrorSyncCall(arity);
+        var call            = GenerateHasErrorSyncCall(arity);
         return $"""
                 // Given
                 {failureCreation}
@@ -161,11 +130,10 @@ internal sealed class ResultHasErrorTestsGenerator : ResultTestGeneratorBase
                 """;
     }
 
-    private string GenerateTaskSuccessBody(ushort arity)
-    {
+    private string GenerateTaskSuccessBody(ushort arity) {
         var testValues = GenerateTestValues(arity);
-        var creation = GenerateTaskResultCreation(arity);
-        var call = GenerateHasErrorTaskCall(arity);
+        var creation   = GenerateTaskResultCreation(arity);
+        var call       = GenerateHasErrorTaskCall(arity);
         return $"""
                 // Given
                 {testValues}
@@ -177,10 +145,9 @@ internal sealed class ResultHasErrorTestsGenerator : ResultTestGeneratorBase
                 """;
     }
 
-    private string GenerateTaskFailureBody(ushort arity)
-    {
+    private string GenerateTaskFailureBody(ushort arity) {
         var creation = GenerateTaskErrorTypeFailureResultCreation(arity);
-        var call = GenerateHasErrorTaskCall(arity);
+        var call     = GenerateHasErrorTaskCall(arity);
         return $"""
                 // Given
                 {creation}
@@ -191,11 +158,10 @@ internal sealed class ResultHasErrorTestsGenerator : ResultTestGeneratorBase
                 """;
     }
 
-    private string GenerateValueTaskSuccessBody(ushort arity)
-    {
+    private string GenerateValueTaskSuccessBody(ushort arity) {
         var testValues = GenerateTestValues(arity);
-        var creation = GenerateValueTaskResultCreation(arity);
-        var call = GenerateHasErrorValueTaskCall(arity);
+        var creation   = GenerateValueTaskResultCreation(arity);
+        var call       = GenerateHasErrorValueTaskCall(arity);
         return $"""
                 // Given
                 {testValues}
@@ -207,10 +173,9 @@ internal sealed class ResultHasErrorTestsGenerator : ResultTestGeneratorBase
                 """;
     }
 
-    private string GenerateValueTaskFailureBody(ushort arity)
-    {
+    private string GenerateValueTaskFailureBody(ushort arity) {
         var creation = GenerateValueTaskErrorTypeFailureResultCreation(arity);
-        var call = GenerateHasErrorValueTaskCall(arity);
+        var call     = GenerateHasErrorValueTaskCall(arity);
         return $"""
                 // Given
                 {creation}
@@ -221,10 +186,8 @@ internal sealed class ResultHasErrorTestsGenerator : ResultTestGeneratorBase
                 """;
     }
 
-    private string GenerateHasErrorSyncCall(ushort arity)
-    {
-        if (arity == 0)
-        {
+    private string GenerateHasErrorSyncCall(ushort arity) {
+        if (arity == 0) {
             return "var hasError = result.HasError<Error>();";
         }
 
@@ -232,10 +195,8 @@ internal sealed class ResultHasErrorTestsGenerator : ResultTestGeneratorBase
         return $"var hasError = result.HasError<{typeParams}>();";
     }
 
-    private string GenerateHasErrorTaskCall(ushort arity)
-    {
-        if (arity == 0)
-        {
+    private string GenerateHasErrorTaskCall(ushort arity) {
+        if (arity == 0) {
             return "var hasError = await taskResult.HasErrorAsync<Error>();";
         }
 
@@ -243,10 +204,8 @@ internal sealed class ResultHasErrorTestsGenerator : ResultTestGeneratorBase
         return $"var hasError = await taskResult.HasErrorAsync<{typeParams}>();";
     }
 
-    private string GenerateHasErrorValueTaskCall(ushort arity)
-    {
-        if (arity == 0)
-        {
+    private string GenerateHasErrorValueTaskCall(ushort arity) {
+        if (arity == 0) {
             return "var hasError = await valueTaskResult.HasErrorAsync<Error>();";
         }
 

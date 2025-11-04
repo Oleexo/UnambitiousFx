@@ -8,12 +8,15 @@
 #nullable enable
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
+using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
+using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Extensions.SideEffects;
-using UnambitiousFx.Core.Results.Extensions.SideEffects.Tasks;
-using UnambitiousFx.Core.Results.Extensions.SideEffects.ValueTasks;
+using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.SideEffects;
@@ -25,28 +28,28 @@ public class ResultTapBothSyncTestsArity0
     [Fact]
     public void TapBoth_Arity0_Success_ShouldExecuteSuccessSideEffect() {
         // Given
-        var successSideEffectExecuted = false;
-        var failureSideEffectExecuted = false;
+        var successExecuted = false;
+        var failureExecuted = false;
         var result = Result.Success();
         // When
-        var tappedResult = result.TapBoth(() => successSideEffectExecuted = true, errors => failureSideEffectExecuted = true);
+        var tappedResult = result.TapBoth(() => successExecuted = true, _ => failureExecuted = true);
         // Then
-        Assert.True(successSideEffectExecuted);
-        Assert.False(failureSideEffectExecuted);
+        Assert.True(successExecuted);
+        Assert.False(failureExecuted);
         Assert.True(tappedResult.IsSuccess);
     }
     
     [Fact]
     public void TapBoth_Arity0_Failure_ShouldExecuteFailureSideEffect() {
         // Given
-        var successSideEffectExecuted = false;
-        var failureSideEffectExecuted = false;
+        var successExecuted = false;
+        var failureExecuted = false;
         var result = Result.Failure("Test error");
         // When
-        var tappedResult = result.TapBoth(() => successSideEffectExecuted = true, errors => failureSideEffectExecuted = true);
+        var tappedResult = result.TapBoth(() => successExecuted = true, _ => failureExecuted = true);
         // Then
-        Assert.False(successSideEffectExecuted);
-        Assert.True(failureSideEffectExecuted);
+        Assert.False(successExecuted);
+        Assert.True(failureExecuted);
         Assert.False(tappedResult.IsSuccess);
     }
     
@@ -57,29 +60,28 @@ public class ResultTapBothSyncTestsArity0
     [Fact]
     public void TapBoth_Arity1_Success_ShouldExecuteSuccessSideEffect() {
         // Given
-        var value1 = 42;
-        var successSideEffectExecuted = false;
-        var failureSideEffectExecuted = false;
+        var successExecuted = false;
+        var failureExecuted = false;
         var result = Result.Success(value1);
         // When
-        var tappedResult = result.TapBoth(x => successSideEffectExecuted = true, errors => failureSideEffectExecuted = true);
+        var tappedResult = result.TapBoth<int>(() => successExecuted = true, _ => failureExecuted = true);
         // Then
-        Assert.True(successSideEffectExecuted);
-        Assert.False(failureSideEffectExecuted);
+        Assert.True(successExecuted);
+        Assert.False(failureExecuted);
         Assert.True(tappedResult.IsSuccess);
     }
     
     [Fact]
     public void TapBoth_Arity1_Failure_ShouldExecuteFailureSideEffect() {
         // Given
-        var successSideEffectExecuted = false;
-        var failureSideEffectExecuted = false;
+        var successExecuted = false;
+        var failureExecuted = false;
         var result = Result.Failure<int>("Test error");
         // When
-        var tappedResult = result.TapBoth(x => successSideEffectExecuted = true, errors => failureSideEffectExecuted = true);
+        var tappedResult = result.TapBoth<int>(() => successExecuted = true, _ => failureExecuted = true);
         // Then
-        Assert.False(successSideEffectExecuted);
-        Assert.True(failureSideEffectExecuted);
+        Assert.False(successExecuted);
+        Assert.True(failureExecuted);
         Assert.False(tappedResult.IsSuccess);
     }
     
@@ -90,30 +92,28 @@ public class ResultTapBothSyncTestsArity0
     [Fact]
     public void TapBoth_Arity2_Success_ShouldExecuteSuccessSideEffect() {
         // Given
-        var value1 = 42;
-        var value2 = "test";
-        var successSideEffectExecuted = false;
-        var failureSideEffectExecuted = false;
+        var successExecuted = false;
+        var failureExecuted = false;
         var result = Result.Success(value1, value2);
         // When
-        var tappedResult = result.TapBoth((x1, x2) => successSideEffectExecuted = true, errors => failureSideEffectExecuted = true);
+        var tappedResult = result.TapBoth<int, string>(() => successExecuted = true, _ => failureExecuted = true);
         // Then
-        Assert.True(successSideEffectExecuted);
-        Assert.False(failureSideEffectExecuted);
+        Assert.True(successExecuted);
+        Assert.False(failureExecuted);
         Assert.True(tappedResult.IsSuccess);
     }
     
     [Fact]
     public void TapBoth_Arity2_Failure_ShouldExecuteFailureSideEffect() {
         // Given
-        var successSideEffectExecuted = false;
-        var failureSideEffectExecuted = false;
+        var successExecuted = false;
+        var failureExecuted = false;
         var result = Result.Failure<int, string>("Test error");
         // When
-        var tappedResult = result.TapBoth((x1, x2) => successSideEffectExecuted = true, errors => failureSideEffectExecuted = true);
+        var tappedResult = result.TapBoth<int, string>(() => successExecuted = true, _ => failureExecuted = true);
         // Then
-        Assert.False(successSideEffectExecuted);
-        Assert.True(failureSideEffectExecuted);
+        Assert.False(successExecuted);
+        Assert.True(failureExecuted);
         Assert.False(tappedResult.IsSuccess);
     }
     
@@ -124,31 +124,28 @@ public class ResultTapBothSyncTestsArity0
     [Fact]
     public void TapBoth_Arity3_Success_ShouldExecuteSuccessSideEffect() {
         // Given
-        var value1 = 42;
-        var value2 = "test";
-        var value3 = true;
-        var successSideEffectExecuted = false;
-        var failureSideEffectExecuted = false;
+        var successExecuted = false;
+        var failureExecuted = false;
         var result = Result.Success(value1, value2, value3);
         // When
-        var tappedResult = result.TapBoth((x1, x2, x3) => successSideEffectExecuted = true, errors => failureSideEffectExecuted = true);
+        var tappedResult = result.TapBoth<int, string, bool>(() => successExecuted = true, _ => failureExecuted = true);
         // Then
-        Assert.True(successSideEffectExecuted);
-        Assert.False(failureSideEffectExecuted);
+        Assert.True(successExecuted);
+        Assert.False(failureExecuted);
         Assert.True(tappedResult.IsSuccess);
     }
     
     [Fact]
     public void TapBoth_Arity3_Failure_ShouldExecuteFailureSideEffect() {
         // Given
-        var successSideEffectExecuted = false;
-        var failureSideEffectExecuted = false;
+        var successExecuted = false;
+        var failureExecuted = false;
         var result = Result.Failure<int, string, bool>("Test error");
         // When
-        var tappedResult = result.TapBoth((x1, x2, x3) => successSideEffectExecuted = true, errors => failureSideEffectExecuted = true);
+        var tappedResult = result.TapBoth<int, string, bool>(() => successExecuted = true, _ => failureExecuted = true);
         // Then
-        Assert.False(successSideEffectExecuted);
-        Assert.True(failureSideEffectExecuted);
+        Assert.False(successExecuted);
+        Assert.True(failureExecuted);
         Assert.False(tappedResult.IsSuccess);
     }
     
@@ -159,32 +156,28 @@ public class ResultTapBothSyncTestsArity0
     [Fact]
     public void TapBoth_Arity4_Success_ShouldExecuteSuccessSideEffect() {
         // Given
-        var value1 = 42;
-        var value2 = "test";
-        var value3 = true;
-        var value4 = 3.14;
-        var successSideEffectExecuted = false;
-        var failureSideEffectExecuted = false;
+        var successExecuted = false;
+        var failureExecuted = false;
         var result = Result.Success(value1, value2, value3, value4);
         // When
-        var tappedResult = result.TapBoth((x1, x2, x3, x4) => successSideEffectExecuted = true, errors => failureSideEffectExecuted = true);
+        var tappedResult = result.TapBoth<int, string, bool, double>(() => successExecuted = true, _ => failureExecuted = true);
         // Then
-        Assert.True(successSideEffectExecuted);
-        Assert.False(failureSideEffectExecuted);
+        Assert.True(successExecuted);
+        Assert.False(failureExecuted);
         Assert.True(tappedResult.IsSuccess);
     }
     
     [Fact]
     public void TapBoth_Arity4_Failure_ShouldExecuteFailureSideEffect() {
         // Given
-        var successSideEffectExecuted = false;
-        var failureSideEffectExecuted = false;
+        var successExecuted = false;
+        var failureExecuted = false;
         var result = Result.Failure<int, string, bool, double>("Test error");
         // When
-        var tappedResult = result.TapBoth((x1, x2, x3, x4) => successSideEffectExecuted = true, errors => failureSideEffectExecuted = true);
+        var tappedResult = result.TapBoth<int, string, bool, double>(() => successExecuted = true, _ => failureExecuted = true);
         // Then
-        Assert.False(successSideEffectExecuted);
-        Assert.True(failureSideEffectExecuted);
+        Assert.False(successExecuted);
+        Assert.True(failureExecuted);
         Assert.False(tappedResult.IsSuccess);
     }
     
@@ -195,33 +188,28 @@ public class ResultTapBothSyncTestsArity0
     [Fact]
     public void TapBoth_Arity5_Success_ShouldExecuteSuccessSideEffect() {
         // Given
-        var value1 = 42;
-        var value2 = "test";
-        var value3 = true;
-        var value4 = 3.14;
-        var value5 = 123L;
-        var successSideEffectExecuted = false;
-        var failureSideEffectExecuted = false;
+        var successExecuted = false;
+        var failureExecuted = false;
         var result = Result.Success(value1, value2, value3, value4, value5);
         // When
-        var tappedResult = result.TapBoth((x1, x2, x3, x4, x5) => successSideEffectExecuted = true, errors => failureSideEffectExecuted = true);
+        var tappedResult = result.TapBoth<int, string, bool, double, long>(() => successExecuted = true, _ => failureExecuted = true);
         // Then
-        Assert.True(successSideEffectExecuted);
-        Assert.False(failureSideEffectExecuted);
+        Assert.True(successExecuted);
+        Assert.False(failureExecuted);
         Assert.True(tappedResult.IsSuccess);
     }
     
     [Fact]
     public void TapBoth_Arity5_Failure_ShouldExecuteFailureSideEffect() {
         // Given
-        var successSideEffectExecuted = false;
-        var failureSideEffectExecuted = false;
+        var successExecuted = false;
+        var failureExecuted = false;
         var result = Result.Failure<int, string, bool, double, long>("Test error");
         // When
-        var tappedResult = result.TapBoth((x1, x2, x3, x4, x5) => successSideEffectExecuted = true, errors => failureSideEffectExecuted = true);
+        var tappedResult = result.TapBoth<int, string, bool, double, long>(() => successExecuted = true, _ => failureExecuted = true);
         // Then
-        Assert.False(successSideEffectExecuted);
-        Assert.True(failureSideEffectExecuted);
+        Assert.False(successExecuted);
+        Assert.True(failureExecuted);
         Assert.False(tappedResult.IsSuccess);
     }
     
@@ -232,34 +220,28 @@ public class ResultTapBothSyncTestsArity0
     [Fact]
     public void TapBoth_Arity6_Success_ShouldExecuteSuccessSideEffect() {
         // Given
-        var value1 = 42;
-        var value2 = "test";
-        var value3 = true;
-        var value4 = 3.14;
-        var value5 = 123L;
-        var value6 = "value6";
-        var successSideEffectExecuted = false;
-        var failureSideEffectExecuted = false;
+        var successExecuted = false;
+        var failureExecuted = false;
         var result = Result.Success(value1, value2, value3, value4, value5, value6);
         // When
-        var tappedResult = result.TapBoth((x1, x2, x3, x4, x5, x6) => successSideEffectExecuted = true, errors => failureSideEffectExecuted = true);
+        var tappedResult = result.TapBoth<int, string, bool, double, long, string>(() => successExecuted = true, _ => failureExecuted = true);
         // Then
-        Assert.True(successSideEffectExecuted);
-        Assert.False(failureSideEffectExecuted);
+        Assert.True(successExecuted);
+        Assert.False(failureExecuted);
         Assert.True(tappedResult.IsSuccess);
     }
     
     [Fact]
     public void TapBoth_Arity6_Failure_ShouldExecuteFailureSideEffect() {
         // Given
-        var successSideEffectExecuted = false;
-        var failureSideEffectExecuted = false;
+        var successExecuted = false;
+        var failureExecuted = false;
         var result = Result.Failure<int, string, bool, double, long, string>("Test error");
         // When
-        var tappedResult = result.TapBoth((x1, x2, x3, x4, x5, x6) => successSideEffectExecuted = true, errors => failureSideEffectExecuted = true);
+        var tappedResult = result.TapBoth<int, string, bool, double, long, string>(() => successExecuted = true, _ => failureExecuted = true);
         // Then
-        Assert.False(successSideEffectExecuted);
-        Assert.True(failureSideEffectExecuted);
+        Assert.False(successExecuted);
+        Assert.True(failureExecuted);
         Assert.False(tappedResult.IsSuccess);
     }
     
@@ -270,35 +252,28 @@ public class ResultTapBothSyncTestsArity0
     [Fact]
     public void TapBoth_Arity7_Success_ShouldExecuteSuccessSideEffect() {
         // Given
-        var value1 = 42;
-        var value2 = "test";
-        var value3 = true;
-        var value4 = 3.14;
-        var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var successSideEffectExecuted = false;
-        var failureSideEffectExecuted = false;
+        var successExecuted = false;
+        var failureExecuted = false;
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
         // When
-        var tappedResult = result.TapBoth((x1, x2, x3, x4, x5, x6, x7) => successSideEffectExecuted = true, errors => failureSideEffectExecuted = true);
+        var tappedResult = result.TapBoth<int, string, bool, double, long, string, string>(() => successExecuted = true, _ => failureExecuted = true);
         // Then
-        Assert.True(successSideEffectExecuted);
-        Assert.False(failureSideEffectExecuted);
+        Assert.True(successExecuted);
+        Assert.False(failureExecuted);
         Assert.True(tappedResult.IsSuccess);
     }
     
     [Fact]
     public void TapBoth_Arity7_Failure_ShouldExecuteFailureSideEffect() {
         // Given
-        var successSideEffectExecuted = false;
-        var failureSideEffectExecuted = false;
+        var successExecuted = false;
+        var failureExecuted = false;
         var result = Result.Failure<int, string, bool, double, long, string, string>("Test error");
         // When
-        var tappedResult = result.TapBoth((x1, x2, x3, x4, x5, x6, x7) => successSideEffectExecuted = true, errors => failureSideEffectExecuted = true);
+        var tappedResult = result.TapBoth<int, string, bool, double, long, string, string>(() => successExecuted = true, _ => failureExecuted = true);
         // Then
-        Assert.False(successSideEffectExecuted);
-        Assert.True(failureSideEffectExecuted);
+        Assert.False(successExecuted);
+        Assert.True(failureExecuted);
         Assert.False(tappedResult.IsSuccess);
     }
     
@@ -309,36 +284,28 @@ public class ResultTapBothSyncTestsArity0
     [Fact]
     public void TapBoth_Arity8_Success_ShouldExecuteSuccessSideEffect() {
         // Given
-        var value1 = 42;
-        var value2 = "test";
-        var value3 = true;
-        var value4 = 3.14;
-        var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
-        var successSideEffectExecuted = false;
-        var failureSideEffectExecuted = false;
+        var successExecuted = false;
+        var failureExecuted = false;
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
         // When
-        var tappedResult = result.TapBoth((x1, x2, x3, x4, x5, x6, x7, x8) => successSideEffectExecuted = true, errors => failureSideEffectExecuted = true);
+        var tappedResult = result.TapBoth<int, string, bool, double, long, string, string, string>(() => successExecuted = true, _ => failureExecuted = true);
         // Then
-        Assert.True(successSideEffectExecuted);
-        Assert.False(failureSideEffectExecuted);
+        Assert.True(successExecuted);
+        Assert.False(failureExecuted);
         Assert.True(tappedResult.IsSuccess);
     }
     
     [Fact]
     public void TapBoth_Arity8_Failure_ShouldExecuteFailureSideEffect() {
         // Given
-        var successSideEffectExecuted = false;
-        var failureSideEffectExecuted = false;
+        var successExecuted = false;
+        var failureExecuted = false;
         var result = Result.Failure<int, string, bool, double, long, string, string, string>("Test error");
         // When
-        var tappedResult = result.TapBoth((x1, x2, x3, x4, x5, x6, x7, x8) => successSideEffectExecuted = true, errors => failureSideEffectExecuted = true);
+        var tappedResult = result.TapBoth<int, string, bool, double, long, string, string, string>(() => successExecuted = true, _ => failureExecuted = true);
         // Then
-        Assert.False(successSideEffectExecuted);
-        Assert.True(failureSideEffectExecuted);
+        Assert.False(successExecuted);
+        Assert.True(failureExecuted);
         Assert.False(tappedResult.IsSuccess);
     }
     

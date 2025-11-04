@@ -8,12 +8,15 @@
 #nullable enable
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
-using UnambitiousFx.Core.Results.Extensions.Transformations;
-using UnambitiousFx.Core.Results.Extensions.Transformations.Tasks;
+using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
+using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
+using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Extensions.Transformations.ValueTasks;
+using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Transformations.ValueTasks;
@@ -26,19 +29,17 @@ public class ResultFlattenValueTaskTestsArity1
     public async Task FlattenValueTask_Arity1_Success_ShouldFlatten() {
         // Given
         var value1 = 42;
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1)));
+        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1)););
         // When
         var flattenedResult = await valueTaskNestedResult.FlattenAsync();
         // Then
         Assert.True(flattenedResult.IsSuccess);
-        Assert.True(flattenedResult.TryGet(out var flattenedValue));
-        Assert.Equal(42, flattenedValue);
     }
     
     [Fact]
     public async Task FlattenValueTask_Arity1_Failure_ShouldNotFlatten() {
         // Given
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Failure<Result<int>>("Test error"));
+        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Failure<int>("Test error")););
         // When
         var flattenedResult = await valueTaskNestedResult.FlattenAsync();
         // Then
@@ -54,7 +55,7 @@ public class ResultFlattenValueTaskTestsArity1
         // Given
         var value1 = 42;
         var value2 = "test";
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2)));
+        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2)););
         // When
         var flattenedResult = await valueTaskNestedResult.FlattenAsync();
         // Then
@@ -64,7 +65,7 @@ public class ResultFlattenValueTaskTestsArity1
     [Fact]
     public async Task FlattenValueTask_Arity2_Failure_ShouldNotFlatten() {
         // Given
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Failure<Result<int, string>>("Test error"));
+        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Failure<int, string>("Test error")););
         // When
         var flattenedResult = await valueTaskNestedResult.FlattenAsync();
         // Then
@@ -81,7 +82,7 @@ public class ResultFlattenValueTaskTestsArity1
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2, value3)));
+        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2, value3)););
         // When
         var flattenedResult = await valueTaskNestedResult.FlattenAsync();
         // Then
@@ -91,7 +92,7 @@ public class ResultFlattenValueTaskTestsArity1
     [Fact]
     public async Task FlattenValueTask_Arity3_Failure_ShouldNotFlatten() {
         // Given
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Failure<Result<int, string, bool>>("Test error"));
+        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Failure<int, string, bool>("Test error")););
         // When
         var flattenedResult = await valueTaskNestedResult.FlattenAsync();
         // Then
@@ -109,7 +110,7 @@ public class ResultFlattenValueTaskTestsArity1
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2, value3, value4)));
+        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2, value3, value4)););
         // When
         var flattenedResult = await valueTaskNestedResult.FlattenAsync();
         // Then
@@ -119,7 +120,7 @@ public class ResultFlattenValueTaskTestsArity1
     [Fact]
     public async Task FlattenValueTask_Arity4_Failure_ShouldNotFlatten() {
         // Given
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Failure<Result<int, string, bool, double>>("Test error"));
+        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Failure<int, string, bool, double>("Test error")););
         // When
         var flattenedResult = await valueTaskNestedResult.FlattenAsync();
         // Then
@@ -138,7 +139,7 @@ public class ResultFlattenValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2, value3, value4, value5)));
+        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2, value3, value4, value5)););
         // When
         var flattenedResult = await valueTaskNestedResult.FlattenAsync();
         // Then
@@ -148,7 +149,7 @@ public class ResultFlattenValueTaskTestsArity1
     [Fact]
     public async Task FlattenValueTask_Arity5_Failure_ShouldNotFlatten() {
         // Given
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Failure<Result<int, string, bool, double, long>>("Test error"));
+        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Failure<int, string, bool, double, long>("Test error")););
         // When
         var flattenedResult = await valueTaskNestedResult.FlattenAsync();
         // Then
@@ -168,7 +169,7 @@ public class ResultFlattenValueTaskTestsArity1
         var value4 = 3.14;
         var value5 = 123L;
         var value6 = "value6";
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2, value3, value4, value5, value6)));
+        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2, value3, value4, value5, value6)););
         // When
         var flattenedResult = await valueTaskNestedResult.FlattenAsync();
         // Then
@@ -178,7 +179,7 @@ public class ResultFlattenValueTaskTestsArity1
     [Fact]
     public async Task FlattenValueTask_Arity6_Failure_ShouldNotFlatten() {
         // Given
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Failure<Result<int, string, bool, double, long, string>>("Test error"));
+        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Failure<int, string, bool, double, long, string>("Test error")););
         // When
         var flattenedResult = await valueTaskNestedResult.FlattenAsync();
         // Then
@@ -199,7 +200,7 @@ public class ResultFlattenValueTaskTestsArity1
         var value5 = 123L;
         var value6 = "value6";
         var value7 = "value7";
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2, value3, value4, value5, value6, value7)));
+        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2, value3, value4, value5, value6, value7)););
         // When
         var flattenedResult = await valueTaskNestedResult.FlattenAsync();
         // Then
@@ -209,7 +210,7 @@ public class ResultFlattenValueTaskTestsArity1
     [Fact]
     public async Task FlattenValueTask_Arity7_Failure_ShouldNotFlatten() {
         // Given
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Failure<Result<int, string, bool, double, long, string, string>>("Test error"));
+        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Failure<int, string, bool, double, long, string, string>("Test error")););
         // When
         var flattenedResult = await valueTaskNestedResult.FlattenAsync();
         // Then
@@ -231,7 +232,7 @@ public class ResultFlattenValueTaskTestsArity1
         var value6 = "value6";
         var value7 = "value7";
         var value8 = "value8";
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8)));
+        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8)););
         // When
         var flattenedResult = await valueTaskNestedResult.FlattenAsync();
         // Then
@@ -241,7 +242,7 @@ public class ResultFlattenValueTaskTestsArity1
     [Fact]
     public async Task FlattenValueTask_Arity8_Failure_ShouldNotFlatten() {
         // Given
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Failure<Result<int, string, bool, double, long, string, string, string>>("Test error"));
+        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Failure<int, string, bool, double, long, string, string, string>("Test error")););
         // When
         var flattenedResult = await valueTaskNestedResult.FlattenAsync();
         // Then

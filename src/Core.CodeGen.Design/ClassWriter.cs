@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System.Diagnostics;
 
 namespace UnambitiousFx.Core.CodeGen.Design;
 
@@ -16,6 +17,7 @@ public sealed class ClassWriter : IConcreteTypeWriter {
     private readonly List<TypeDefinitionReference> _interfaces;
     private readonly List<IMethodWriter>           _methods;
     private readonly List<PropertyWriter>          _properties;
+    private readonly HashSet<string>               _usings;
 
     private readonly List<RegionGroup> _regions;
 
@@ -49,14 +51,15 @@ public sealed class ClassWriter : IConcreteTypeWriter {
         _classModifiers    = classModifiers;
         _genericParameters = genericParameters?.ToArray() ?? [];
         _baseClass         = baseClass;
-        _interfaces        = interfaces?.ToList()         ?? [];
-        _attributes        = attributes?.ToList()         ?? [];
+        _interfaces        = interfaces?.ToList() ?? [];
+        _attributes        = attributes?.ToList() ?? [];
         _documentation     = documentation;
         _fields            = [];
         _constructors      = [];
         _properties        = [];
         _methods           = [];
         _regions           = [];
+        _usings            = [];
     }
 
     /// <summary>
@@ -360,6 +363,9 @@ public sealed class ClassWriter : IConcreteTypeWriter {
     /// <returns>A set of using directives.</returns>
     private HashSet<string> GetUsings() {
         var usings = new HashSet<string>();
+        foreach (var @using in _usings) {
+            usings.Add(@using);
+        }
 
         if (_baseClass is { Using: { } usingBase }) {
             usings.Add(usingBase);
@@ -420,6 +426,9 @@ public sealed class ClassWriter : IConcreteTypeWriter {
                                      f._visibility,
                                      f._classModifiers);
         foreach (var g in groups) {
+            foreach (var @using in g.SelectMany(x => x._usings)) {
+                result._usings.Add(@using);
+            }
             foreach (var method in g.SelectMany(x => x.Methods)) {
                 result.AddMethod(method, g.Key);
             }
@@ -456,5 +465,13 @@ public sealed class ClassWriter : IConcreteTypeWriter {
         ///     Gets the methods in the region.
         /// </summary>
         public List<IMethodWriter> Methods { get; } = [];
+    }
+
+    /// <summary>
+    ///     Adds a using directive to the class.
+    /// </summary>
+    /// <param name="using">The using directive to add.</param>
+    public void AddUsing(string @using) {
+        _usings.Add(@using);
     }
 }

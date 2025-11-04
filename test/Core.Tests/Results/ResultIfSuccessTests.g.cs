@@ -20,23 +20,29 @@ public abstract class ResultIfSuccessTests
     
     [Fact]
     public void IfSuccess_Arity1_Success_ShouldExecuteCorrectly() {
+        // Given
         // Given: A successful Result with test values
         var value1 = 42;
         var result = Result.Success(value1);
+        // When
         // When: Calling IfSuccess
         var executed = false;
         result.IfSuccess(_ => executed = true);
+        // Then
         // Then: Should execute success handler
         Assert.True(executed);
     }
     
     [Fact]
     public void IfSuccess_Arity1_Failure_ShouldNotExecute() {
+        // Given
         // Given: A failed Result
         var result = Result.Failure<int>("Test error");
+        // When
         // When: Calling IfSuccess
         var executed = false;
         result.IfSuccess(_ => executed = true);
+        // Then
         // Then: Should NOT execute success handler
         Assert.False(executed);
     }
@@ -47,24 +53,30 @@ public abstract class ResultIfSuccessTests
     
     [Fact]
     public void IfSuccess_Arity2_Success_ShouldExecuteCorrectly() {
+        // Given
         // Given: A successful Result with test values
         var value1 = 42;
         var value2 = "test";
         var result = Result.Success(value1, value2);
+        // When
         // When: Calling IfSuccess
         var executed = false;
         result.IfSuccess((_, _) => executed = true);
+        // Then
         // Then: Should execute success handler
         Assert.True(executed);
     }
     
     [Fact]
     public void IfSuccess_Arity2_Failure_ShouldNotExecute() {
+        // Given
         // Given: A failed Result
         var result = Result.Failure<int, string>("Test error");
+        // When
         // When: Calling IfSuccess
         var executed = false;
         result.IfSuccess((_, _) => executed = true);
+        // Then
         // Then: Should NOT execute success handler
         Assert.False(executed);
     }
@@ -75,25 +87,31 @@ public abstract class ResultIfSuccessTests
     
     [Fact]
     public void IfSuccess_Arity3_Success_ShouldExecuteCorrectly() {
+        // Given
         // Given: A successful Result with test values
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
         var result = Result.Success(value1, value2, value3);
+        // When
         // When: Calling IfSuccess
         var executed = false;
         result.IfSuccess((_, _, _) => executed = true);
+        // Then
         // Then: Should execute success handler
         Assert.True(executed);
     }
     
     [Fact]
     public void IfSuccess_Arity3_Failure_ShouldNotExecute() {
+        // Given
         // Given: A failed Result
         var result = Result.Failure<int, string, bool>("Test error");
+        // When
         // When: Calling IfSuccess
         var executed = false;
         result.IfSuccess((_, _, _) => executed = true);
+        // Then
         // Then: Should NOT execute success handler
         Assert.False(executed);
     }
@@ -104,26 +122,32 @@ public abstract class ResultIfSuccessTests
     
     [Fact]
     public void IfSuccess_Arity4_Success_ShouldExecuteCorrectly() {
+        // Given
         // Given: A successful Result with test values
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
         var result = Result.Success(value1, value2, value3, value4);
+        // When
         // When: Calling IfSuccess
         var executed = false;
         result.IfSuccess((_, _, _, _) => executed = true);
+        // Then
         // Then: Should execute success handler
         Assert.True(executed);
     }
     
     [Fact]
     public void IfSuccess_Arity4_Failure_ShouldNotExecute() {
+        // Given
         // Given: A failed Result
         var result = Result.Failure<int, string, bool, double>("Test error");
+        // When
         // When: Calling IfSuccess
         var executed = false;
         result.IfSuccess((_, _, _, _) => executed = true);
+        // Then
         // Then: Should NOT execute success handler
         Assert.False(executed);
     }
@@ -134,6 +158,7 @@ public abstract class ResultIfSuccessTests
     
     [Fact]
     public void IfSuccess_Arity5_Success_ShouldExecuteCorrectly() {
+        // Given
         // Given: A successful Result with test values
         var value1 = 42;
         var value2 = "test";
@@ -141,20 +166,25 @@ public abstract class ResultIfSuccessTests
         var value4 = 3.14;
         var value5 = 123L;
         var result = Result.Success(value1, value2, value3, value4, value5);
+        // When
         // When: Calling IfSuccess
         var executed = false;
         result.IfSuccess((_, _, _, _, _) => executed = true);
+        // Then
         // Then: Should execute success handler
         Assert.True(executed);
     }
     
     [Fact]
     public void IfSuccess_Arity5_Failure_ShouldNotExecute() {
+        // Given
         // Given: A failed Result
         var result = Result.Failure<int, string, bool, double, long>("Test error");
+        // When
         // When: Calling IfSuccess
         var executed = false;
         result.IfSuccess((_, _, _, _, _) => executed = true);
+        // Then
         // Then: Should NOT execute success handler
         Assert.False(executed);
     }
@@ -165,6 +195,7 @@ public abstract class ResultIfSuccessTests
     
     [Fact]
     public void IfSuccess_Arity6_Success_ShouldExecuteCorrectly() {
+        // Given
         // Given: A successful Result with test values
         var value1 = 42;
         var value2 = "test";
@@ -173,20 +204,25 @@ public abstract class ResultIfSuccessTests
         var value5 = 123L;
         var value6 = "value6";
         var result = Result.Success(value1, value2, value3, value4, value5, value6);
+        // When
         // When: Calling IfSuccess
         var executed = false;
         result.IfSuccess((_, _, _, _, _, _) => executed = true);
+        // Then
         // Then: Should execute success handler
         Assert.True(executed);
     }
     
     [Fact]
     public void IfSuccess_Arity6_Failure_ShouldNotExecute() {
+        // Given
         // Given: A failed Result
         var result = Result.Failure<int, string, bool, double, long, string>("Test error");
+        // When
         // When: Calling IfSuccess
         var executed = false;
         result.IfSuccess((_, _, _, _, _, _) => executed = true);
+        // Then
         // Then: Should NOT execute success handler
         Assert.False(executed);
     }
@@ -197,6 +233,7 @@ public abstract class ResultIfSuccessTests
     
     [Fact]
     public void IfSuccess_Arity7_Success_ShouldExecuteCorrectly() {
+        // Given
         // Given: A successful Result with test values
         var value1 = 42;
         var value2 = "test";
@@ -206,20 +243,25 @@ public abstract class ResultIfSuccessTests
         var value6 = "value6";
         var value7 = "value7";
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
+        // When
         // When: Calling IfSuccess
         var executed = false;
         result.IfSuccess((_, _, _, _, _, _, _) => executed = true);
+        // Then
         // Then: Should execute success handler
         Assert.True(executed);
     }
     
     [Fact]
     public void IfSuccess_Arity7_Failure_ShouldNotExecute() {
+        // Given
         // Given: A failed Result
         var result = Result.Failure<int, string, bool, double, long, string, string>("Test error");
+        // When
         // When: Calling IfSuccess
         var executed = false;
         result.IfSuccess((_, _, _, _, _, _, _) => executed = true);
+        // Then
         // Then: Should NOT execute success handler
         Assert.False(executed);
     }
@@ -230,6 +272,7 @@ public abstract class ResultIfSuccessTests
     
     [Fact]
     public void IfSuccess_Arity8_Success_ShouldExecuteCorrectly() {
+        // Given
         // Given: A successful Result with test values
         var value1 = 42;
         var value2 = "test";
@@ -240,20 +283,25 @@ public abstract class ResultIfSuccessTests
         var value7 = "value7";
         var value8 = "value8";
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
+        // When
         // When: Calling IfSuccess
         var executed = false;
         result.IfSuccess((_, _, _, _, _, _, _, _) => executed = true);
+        // Then
         // Then: Should execute success handler
         Assert.True(executed);
     }
     
     [Fact]
     public void IfSuccess_Arity8_Failure_ShouldNotExecute() {
+        // Given
         // Given: A failed Result
         var result = Result.Failure<int, string, bool, double, long, string, string, string>("Test error");
+        // When
         // When: Calling IfSuccess
         var executed = false;
         result.IfSuccess((_, _, _, _, _, _, _, _) => executed = true);
+        // Then
         // Then: Should NOT execute success handler
         Assert.False(executed);
     }

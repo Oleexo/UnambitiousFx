@@ -5,16 +5,6 @@ using UnambitiousFx.Core.CodeGen.TestBuilders.AttributeReferences;
 namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results;
 
 /// <summary>
-///     Represents the type of test being generated (Sync, Task, or ValueTask).
-/// </summary>
-internal enum TestType
-{
-    Sync,
-    Task,
-    ValueTask
-}
-
-/// <summary>
 ///     Test generator for Result.Recover extension methods (sync, Task, ValueTask).
 /// </summary>
 internal sealed class ResultRecoverTestsGenerator : ResultTestGeneratorBase
@@ -34,167 +24,91 @@ internal sealed class ResultRecoverTestsGenerator : ResultTestGeneratorBase
     {
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
-    {
-        var classes = new List<ClassWriter>();
-        var sync = GenerateSyncTests(arity);
-        if (sync != null)
-        {
-            classes.Add(sync);
-        }
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) =>
+        GenerateVariants(arity, ClassName, (GenerateSyncTests, false), (GenerateTaskTests, true), (GenerateValueTaskTests, true));
 
-        var task = GenerateTaskTests(arity);
-        if (task != null)
-        {
-            task.UnderClass = ClassName;
-            classes.Add(task);
-        }
-
-        var valueTask = GenerateValueTaskTests(arity);
-        if (valueTask != null)
-        {
-            valueTask.UnderClass = ClassName;
-            classes.Add(valueTask);
-        }
-
-        return classes;
-    }
-
-    private ClassWriter? GenerateSyncTests(ushort arity)
-    {
-        return GenerateTestClass(
-            $"ResultRecoverSyncTestsArity{arity}",
-            $"Arity {arity} - Sync Recover",
-            $"{Config.BaseNamespace}.{ExtensionsNamespace}",
-            arity,
-            TestType.Sync);
-    }
-
-    private ClassWriter? GenerateTaskTests(ushort arity)
-    {
-        return GenerateTestClass(
-            $"ResultRecoverTaskTestsArity{arity}",
-            $"Arity {arity} - Task Recover",
-            $"{Config.BaseNamespace}.{ExtensionsNamespace}.Tasks",
-            arity,
-            TestType.Task);
-    }
-
-    private ClassWriter? GenerateValueTaskTests(ushort arity)
-    {
-        return GenerateTestClass(
-            $"ResultRecoverValueTaskTestsArity{arity}",
-            $"Arity {arity} - ValueTask Recover",
-            $"{Config.BaseNamespace}.{ExtensionsNamespace}.ValueTasks",
-            arity,
-            TestType.ValueTask);
-    }
-
-    private ClassWriter GenerateTestClass(string className, string region, string namespaceName, ushort arity, TestType testType)
-    {
-        var cw = new ClassWriter(className, Visibility.Public) { Region = region };
-        cw.AddMethod(GenerateSuccessTest(arity, testType));
-        cw.AddMethod(GenerateFailureTest(arity, testType));
-        cw.Namespace = namespaceName;
+    private ClassWriter GenerateSyncTests(ushort arity) {
+        var cw = new ClassWriter($"ResultRecoverSyncTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Sync Recover" };
+        cw.AddMethod(new MethodWriter($"Recover_Arity{arity}_Success_ShouldNotRecover", "void", GenerateSyncSuccessBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings()));
+        cw.AddMethod(new MethodWriter($"Recover_Arity{arity}_Failure_ShouldRecover", "void", GenerateSyncFailureBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings()));
+        cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
         return cw;
     }
 
-    private MethodWriter GenerateSuccessTest(ushort arity, TestType testType)
-    {
-        var (methodPrefix, returnType) = GetMethodInfo(testType);
-        return new MethodWriter($"{methodPrefix}_Arity{arity}_Success_ShouldNotRecover",
-                                returnType,
-                                GenerateSuccessBody(arity, testType),
-                                attributes: [new FactAttributeReference()],
-                                usings: GetUsings());
+    private ClassWriter GenerateTaskTests(ushort arity) {
+        var cw = new ClassWriter($"ResultRecoverTaskTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Task Recover" };
+        cw.AddMethod(new MethodWriter($"RecoverTask_Arity{arity}_Success_ShouldNotRecover", "async Task", GenerateTaskSuccessBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings()));
+        cw.AddMethod(new MethodWriter($"RecoverTask_Arity{arity}_Failure_ShouldRecover", "async Task", GenerateTaskFailureBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings()));
+        cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.Tasks";
+        return cw;
     }
 
-    private MethodWriter GenerateFailureTest(ushort arity, TestType testType)
-    {
-        var (methodPrefix, returnType) = GetMethodInfo(testType);
-        return new MethodWriter($"{methodPrefix}_Arity{arity}_Failure_ShouldRecover",
-                                returnType,
-                                GenerateFailureBody(arity, testType),
-                                attributes: [new FactAttributeReference()],
-                                usings: GetUsings());
+    private ClassWriter GenerateValueTaskTests(ushort arity) {
+        var cw = new ClassWriter($"ResultRecoverValueTaskTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - ValueTask Recover" };
+        cw.AddMethod(new MethodWriter($"RecoverValueTask_Arity{arity}_Success_ShouldNotRecover", "async Task", GenerateValueTaskSuccessBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings()));
+        cw.AddMethod(new MethodWriter($"RecoverValueTask_Arity{arity}_Failure_ShouldRecover", "async Task", GenerateValueTaskFailureBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings()));
+        cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.ValueTasks";
+        return cw;
     }
 
-    private (string methodPrefix, string returnType) GetMethodInfo(TestType testType)
-    {
-        return testType switch
-        {
-            TestType.Sync => ("Recover", "void"),
-            TestType.Task => ("RecoverTask", "async Task"),
-            TestType.ValueTask => ("RecoverValueTask", "async Task"),
-            _ => throw new ArgumentOutOfRangeException(nameof(testType))
-        };
+    private string GenerateSyncSuccessBody(ushort arity) {
+        var given = new[] { GenerateTestValues(arity), GenerateResultCreation(arity) };
+        var when  = new[] { GenerateRecoverSyncCall(arity) };
+        var then  = new[] { "Assert.True(recoveredResult.IsSuccess);" };
+        return BuildTestBody(given, when, then);
     }
 
-    private string GenerateSuccessBody(ushort arity, TestType testType)
-    {
-        var testValues = GenerateTestValues(arity);
-        var creation = GetResultCreation(arity, testType);
-        var call = GenerateRecoverCall(arity, testType);
-        return $"""
-                // Given
-                {testValues}
-                {creation}
-                // When
-                {call}
-                // Then
-                Assert.True(recoveredResult.IsSuccess);
-                """;
+    private string GenerateSyncFailureBody(ushort arity) {
+        var given = new[] { GenerateFailureResultCreation(arity) };
+        var when  = new[] { GenerateRecoverSyncCall(arity) };
+        var then  = GenerateRecoverSuccessAssertions(arity).Split('\n', StringSplitOptions.RemoveEmptyEntries);
+        return BuildTestBody(given, when, then);
     }
 
-    private string GenerateFailureBody(ushort arity, TestType testType)
-    {
-        var failureCreation = GetFailureResultCreation(arity, testType);
-        var call = GenerateRecoverCall(arity, testType);
-        var assertions = GenerateRecoverSuccessAssertions(arity);
-        return $"""
-                // Given
-                {failureCreation}
-                // When
-                {call}
-                // Then
-                {assertions}
-                """;
+    private string GenerateTaskSuccessBody(ushort arity) {
+        var given = new[] { GenerateTestValues(arity), GenerateTaskResultCreation(arity) };
+        var when  = new[] { GenerateRecoverTaskCall(arity) };
+        var then  = new[] { "Assert.True(recoveredResult.IsSuccess);" };
+        return BuildTestBody(given, when, then);
     }
 
-    private string GetResultCreation(ushort arity, TestType testType)
-    {
-        return testType switch
-        {
-            TestType.Sync => GenerateResultCreation(arity),
-            TestType.Task => GenerateTaskResultCreation(arity),
-            TestType.ValueTask => GenerateValueTaskResultCreation(arity),
-            _ => throw new ArgumentOutOfRangeException(nameof(testType))
-        };
+    private string GenerateTaskFailureBody(ushort arity) {
+        var given = new[] { GenerateTaskFailureResultCreation(arity) };
+        var when  = new[] { GenerateRecoverTaskCall(arity) };
+        var then  = GenerateRecoverSuccessAssertions(arity).Split('\n', StringSplitOptions.RemoveEmptyEntries);
+        return BuildTestBody(given, when, then);
     }
 
-    private string GetFailureResultCreation(ushort arity, TestType testType)
-    {
-        return testType switch
-        {
-            TestType.Sync => GenerateFailureResultCreation(arity),
-            TestType.Task => GenerateTaskFailureResultCreation(arity),
-            TestType.ValueTask => GenerateValueTaskFailureResultCreation(arity),
-            _ => throw new ArgumentOutOfRangeException(nameof(testType))
-        };
+    private string GenerateValueTaskSuccessBody(ushort arity) {
+        var given = new[] { GenerateTestValues(arity), GenerateValueTaskResultCreation(arity) };
+        var when  = new[] { GenerateRecoverValueTaskCall(arity) };
+        var then  = new[] { "Assert.True(recoveredResult.IsSuccess);" };
+        return BuildTestBody(given, when, then);
     }
 
-    private string GenerateRecoverCall(ushort arity, TestType testType)
-    {
-        var typeParams = string.Join(", ", Enumerable.Range(1, arity).Select(GetTestType));
+    private string GenerateValueTaskFailureBody(ushort arity) {
+        var given = new[] { GenerateValueTaskFailureResultCreation(arity) };
+        var when  = new[] { GenerateRecoverValueTaskCall(arity) };
+        var then  = GenerateRecoverSuccessAssertions(arity).Split('\n', StringSplitOptions.RemoveEmptyEntries);
+        return BuildTestBody(given, when, then);
+    }
+
+    private string GenerateRecoverSyncCall(ushort arity) {
+        var typeParams    = GenerateTypeParams(arity);
         var recoveryValue = GetRecoveryValueExpression(arity);
+        return $"var recoveredResult = result.Recover<{typeParams}>(errors => {recoveryValue});";
+    }
 
-        return testType switch
-        {
-            TestType.Sync => $"var recoveredResult = result.Recover<{typeParams}>(errors => {recoveryValue});",
-            TestType.Task => $"var recoveredResult = await taskResult.RecoverAsync<{typeParams}>(errors => Task.FromResult({recoveryValue}));",
-            TestType.ValueTask => $"var recoveredResult = await valueTaskResult.RecoverAsync<{typeParams}>(errors => ValueTask.FromResult({recoveryValue}));",
-            _ => throw new ArgumentOutOfRangeException(nameof(testType))
-        };
+    private string GenerateRecoverTaskCall(ushort arity) {
+        var typeParams    = GenerateTypeParams(arity);
+        var recoveryValue = GetRecoveryValueExpression(arity);
+        return $"var recoveredResult = await taskResult.RecoverAsync<{typeParams}>(errors => Task.FromResult({recoveryValue}));";
+    }
+
+    private string GenerateRecoverValueTaskCall(ushort arity) {
+        var typeParams    = GenerateTypeParams(arity);
+        var recoveryValue = GetRecoveryValueExpression(arity);
+        return $"var recoveredResult = await valueTaskResult.RecoverAsync<{typeParams}>(errors => ValueTask.FromResult({recoveryValue}));";
     }
 
     private string GetRecoveryValueExpression(ushort arity)

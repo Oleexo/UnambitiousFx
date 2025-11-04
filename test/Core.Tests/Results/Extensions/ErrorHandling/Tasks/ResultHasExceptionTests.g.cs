@@ -29,7 +29,7 @@ public class ResultHasExceptionTaskTestsArity0
         // Given
         var taskResult = Task.FromResult(Result.Success());
         // When
-        var hasException = await taskResult.HasExceptionAsync<InvalidOperationException>();
+        var hasException = await Task.FromResult(result).HasExceptionAsync();
         // Then
         Assert.False(hasException);
     }
@@ -39,7 +39,7 @@ public class ResultHasExceptionTaskTestsArity0
         // Given
         var taskResult = Task.FromResult(Result.Failure(new ExceptionalError(new InvalidOperationException("Test exception"))));
         // When
-        var hasException = await taskResult.HasExceptionAsync<InvalidOperationException>();
+        var hasException = await Task.FromResult(result).HasExceptionAsync();
         // Then
         Assert.True(hasException);
     }
@@ -54,7 +54,7 @@ public class ResultHasExceptionTaskTestsArity0
         var value1 = 42;
         var taskResult = Task.FromResult(Result.Success(value1));
         // When
-        var hasException = await taskResult.HasExceptionAsync<InvalidOperationException, int>();
+        var hasException = await Task.FromResult(result).HasExceptionAsync<int>();
         // Then
         Assert.False(hasException);
     }
@@ -64,7 +64,7 @@ public class ResultHasExceptionTaskTestsArity0
         // Given
         var taskResult = Task.FromResult(Result.Failure<int>(new ExceptionalError(new InvalidOperationException("Test exception"))));
         // When
-        var hasException = await taskResult.HasExceptionAsync<InvalidOperationException, int>();
+        var hasException = await Task.FromResult(result).HasExceptionAsync<int>();
         // Then
         Assert.True(hasException);
     }
@@ -80,7 +80,7 @@ public class ResultHasExceptionTaskTestsArity0
         var value2 = "test";
         var taskResult = Task.FromResult(Result.Success(value1, value2));
         // When
-        var hasException = await taskResult.HasExceptionAsync<InvalidOperationException, int, string>();
+        var hasException = await Task.FromResult(result).HasExceptionAsync<int, string>();
         // Then
         Assert.False(hasException);
     }
@@ -90,7 +90,7 @@ public class ResultHasExceptionTaskTestsArity0
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string>(new ExceptionalError(new InvalidOperationException("Test exception"))));
         // When
-        var hasException = await taskResult.HasExceptionAsync<InvalidOperationException, int, string>();
+        var hasException = await Task.FromResult(result).HasExceptionAsync<int, string>();
         // Then
         Assert.True(hasException);
     }
@@ -107,7 +107,7 @@ public class ResultHasExceptionTaskTestsArity0
         var value3 = true;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3));
         // When
-        var hasException = await taskResult.HasExceptionAsync<InvalidOperationException, int, string, bool>();
+        var hasException = await Task.FromResult(result).HasExceptionAsync<int, string, bool>();
         // Then
         Assert.False(hasException);
     }
@@ -117,7 +117,7 @@ public class ResultHasExceptionTaskTestsArity0
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool>(new ExceptionalError(new InvalidOperationException("Test exception"))));
         // When
-        var hasException = await taskResult.HasExceptionAsync<InvalidOperationException, int, string, bool>();
+        var hasException = await Task.FromResult(result).HasExceptionAsync<int, string, bool>();
         // Then
         Assert.True(hasException);
     }
@@ -135,7 +135,7 @@ public class ResultHasExceptionTaskTestsArity0
         var value4 = 3.14;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4));
         // When
-        var hasException = await taskResult.HasExceptionAsync<InvalidOperationException, int, string, bool, double>();
+        var hasException = await Task.FromResult(result).HasExceptionAsync<int, string, bool, double>();
         // Then
         Assert.False(hasException);
     }
@@ -145,7 +145,7 @@ public class ResultHasExceptionTaskTestsArity0
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool, double>(new ExceptionalError(new InvalidOperationException("Test exception"))));
         // When
-        var hasException = await taskResult.HasExceptionAsync<InvalidOperationException, int, string, bool, double>();
+        var hasException = await Task.FromResult(result).HasExceptionAsync<int, string, bool, double>();
         // Then
         Assert.True(hasException);
     }
@@ -164,7 +164,7 @@ public class ResultHasExceptionTaskTestsArity0
         var value5 = 123L;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5));
         // When
-        var hasException = await taskResult.HasExceptionAsync<InvalidOperationException, int, string, bool, double, long>();
+        var hasException = await Task.FromResult(result).HasExceptionAsync<int, string, bool, double, long>();
         // Then
         Assert.False(hasException);
     }
@@ -174,7 +174,7 @@ public class ResultHasExceptionTaskTestsArity0
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long>(new ExceptionalError(new InvalidOperationException("Test exception"))));
         // When
-        var hasException = await taskResult.HasExceptionAsync<InvalidOperationException, int, string, bool, double, long>();
+        var hasException = await Task.FromResult(result).HasExceptionAsync<int, string, bool, double, long>();
         // Then
         Assert.True(hasException);
     }
@@ -194,7 +194,7 @@ public class ResultHasExceptionTaskTestsArity0
         var value6 = "value6";
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
         // When
-        var hasException = await taskResult.HasExceptionAsync<InvalidOperationException, int, string, bool, double, long, string>();
+        var hasException = await Task.FromResult(result).HasExceptionAsync<int, string, bool, double, long, string>();
         // Then
         Assert.False(hasException);
     }
@@ -204,7 +204,7 @@ public class ResultHasExceptionTaskTestsArity0
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string>(new ExceptionalError(new InvalidOperationException("Test exception"))));
         // When
-        var hasException = await taskResult.HasExceptionAsync<InvalidOperationException, int, string, bool, double, long, string>();
+        var hasException = await Task.FromResult(result).HasExceptionAsync<int, string, bool, double, long, string>();
         // Then
         Assert.True(hasException);
     }
@@ -225,7 +225,7 @@ public class ResultHasExceptionTaskTestsArity0
         var value7 = "value7";
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
         // When
-        var hasException = await taskResult.HasExceptionAsync<InvalidOperationException, int, string, bool, double, long, string, string>();
+        var hasException = await Task.FromResult(result).HasExceptionAsync<int, string, bool, double, long, string, string>();
         // Then
         Assert.False(hasException);
     }
@@ -235,7 +235,7 @@ public class ResultHasExceptionTaskTestsArity0
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string, string>(new ExceptionalError(new InvalidOperationException("Test exception"))));
         // When
-        var hasException = await taskResult.HasExceptionAsync<InvalidOperationException, int, string, bool, double, long, string, string>();
+        var hasException = await Task.FromResult(result).HasExceptionAsync<int, string, bool, double, long, string, string>();
         // Then
         Assert.True(hasException);
     }
@@ -257,7 +257,7 @@ public class ResultHasExceptionTaskTestsArity0
         var value8 = "value8";
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
         // When
-        var hasException = await taskResult.HasExceptionAsync<InvalidOperationException, int, string, bool, double, long, string, string, string>();
+        var hasException = await Task.FromResult(result).HasExceptionAsync<int, string, bool, double, long, string, string, string>();
         // Then
         Assert.False(hasException);
     }
@@ -267,7 +267,7 @@ public class ResultHasExceptionTaskTestsArity0
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>(new ExceptionalError(new InvalidOperationException("Test exception"))));
         // When
-        var hasException = await taskResult.HasExceptionAsync<InvalidOperationException, int, string, bool, double, long, string, string, string>();
+        var hasException = await Task.FromResult(result).HasExceptionAsync<int, string, bool, double, long, string, string, string>();
         // Then
         Assert.True(hasException);
     }

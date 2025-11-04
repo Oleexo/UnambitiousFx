@@ -6,52 +6,31 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results;
 
 /// <summary>
 ///     Test generator for Result.FindError extension methods (sync, Task, ValueTask).
+///     Refactored for homogeneity using variant helper.
 /// </summary>
-internal sealed class ResultFindErrorTestsGenerator : ResultTestGeneratorBase
-{
-    private const int StartArity = 0;
-    private const string ClassName = "ResultFindErrorTests";
+internal sealed class ResultFindErrorTestsGenerator : ResultTestGeneratorBase {
+    private const int    StartArity          = 0;
+    private const string ClassName           = "ResultFindErrorTests";
     private const string ExtensionsNamespace = "Results.Extensions.ErrorHandling";
 
-    public ResultFindErrorTestsGenerator(string baseNamespace,
+    public ResultFindErrorTestsGenerator(string              baseNamespace,
                                          FileOrganizationMode fileOrganization)
         : base(new GenerationConfig(baseNamespace,
                                     StartArity,
                                     ExtensionsNamespace,
                                     ClassName,
                                     fileOrganization,
-                                    true))
-    {
+                                    true)) { }
+
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
+        return GenerateVariants(arity,
+                                ClassName,
+                                (GenerateSyncTests,      false),
+                                (GenerateTaskTests,      true),
+                                (GenerateValueTaskTests, true));
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
-    {
-        var classes = new List<ClassWriter>();
-        var sync = GenerateSyncTests(arity);
-        if (sync != null)
-        {
-            classes.Add(sync);
-        }
-
-        var task = GenerateTaskTests(arity);
-        if (task != null)
-        {
-            task.UnderClass = ClassName;
-            classes.Add(task);
-        }
-
-        var valueTask = GenerateValueTaskTests(arity);
-        if (valueTask != null)
-        {
-            valueTask.UnderClass = ClassName;
-            classes.Add(valueTask);
-        }
-
-        return classes;
-    }
-
-    private ClassWriter? GenerateSyncTests(ushort arity)
-    {
+    private ClassWriter GenerateSyncTests(ushort arity) {
         var cw = new ClassWriter($"ResultFindErrorSyncTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Sync FindError" };
         cw.AddMethod(GenerateSyncSuccessTest(arity));
         cw.AddMethod(GenerateSyncFailureTest(arity));
@@ -59,8 +38,7 @@ internal sealed class ResultFindErrorTestsGenerator : ResultTestGeneratorBase
         return cw;
     }
 
-    private ClassWriter? GenerateTaskTests(ushort arity)
-    {
+    private ClassWriter GenerateTaskTests(ushort arity) {
         var cw = new ClassWriter($"ResultFindErrorTaskTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Task FindError" };
         cw.AddMethod(GenerateTaskSuccessTest(arity));
         cw.AddMethod(GenerateTaskFailureTest(arity));
@@ -68,8 +46,7 @@ internal sealed class ResultFindErrorTestsGenerator : ResultTestGeneratorBase
         return cw;
     }
 
-    private ClassWriter? GenerateValueTaskTests(ushort arity)
-    {
+    private ClassWriter GenerateValueTaskTests(ushort arity) {
         var cw = new ClassWriter($"ResultFindErrorValueTaskTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - ValueTask FindError" };
         cw.AddMethod(GenerateValueTaskSuccessTest(arity));
         cw.AddMethod(GenerateValueTaskFailureTest(arity));
@@ -77,8 +54,7 @@ internal sealed class ResultFindErrorTestsGenerator : ResultTestGeneratorBase
         return cw;
     }
 
-    private MethodWriter GenerateSyncSuccessTest(ushort arity)
-    {
+    private MethodWriter GenerateSyncSuccessTest(ushort arity) {
         return new MethodWriter($"FindError_Arity{arity}_Success_ShouldReturnNull",
                                 "void",
                                 GenerateSyncSuccessBody(arity),
@@ -86,8 +62,7 @@ internal sealed class ResultFindErrorTestsGenerator : ResultTestGeneratorBase
                                 usings: GetUsings());
     }
 
-    private MethodWriter GenerateSyncFailureTest(ushort arity)
-    {
+    private MethodWriter GenerateSyncFailureTest(ushort arity) {
         return new MethodWriter($"FindError_Arity{arity}_Failure_ShouldReturnError",
                                 "void",
                                 GenerateSyncFailureBody(arity),
@@ -95,8 +70,7 @@ internal sealed class ResultFindErrorTestsGenerator : ResultTestGeneratorBase
                                 usings: GetUsings());
     }
 
-    private MethodWriter GenerateTaskSuccessTest(ushort arity)
-    {
+    private MethodWriter GenerateTaskSuccessTest(ushort arity) {
         return new MethodWriter($"FindErrorTask_Arity{arity}_Success_ShouldReturnNull",
                                 "async Task",
                                 GenerateTaskSuccessBody(arity),
@@ -104,8 +78,7 @@ internal sealed class ResultFindErrorTestsGenerator : ResultTestGeneratorBase
                                 usings: GetUsings());
     }
 
-    private MethodWriter GenerateTaskFailureTest(ushort arity)
-    {
+    private MethodWriter GenerateTaskFailureTest(ushort arity) {
         return new MethodWriter($"FindErrorTask_Arity{arity}_Failure_ShouldReturnError",
                                 "async Task",
                                 GenerateTaskFailureBody(arity),
@@ -113,8 +86,7 @@ internal sealed class ResultFindErrorTestsGenerator : ResultTestGeneratorBase
                                 usings: GetUsings());
     }
 
-    private MethodWriter GenerateValueTaskSuccessTest(ushort arity)
-    {
+    private MethodWriter GenerateValueTaskSuccessTest(ushort arity) {
         return new MethodWriter($"FindErrorValueTask_Arity{arity}_Success_ShouldReturnNull",
                                 "async Task",
                                 GenerateValueTaskSuccessBody(arity),
@@ -122,8 +94,7 @@ internal sealed class ResultFindErrorTestsGenerator : ResultTestGeneratorBase
                                 usings: GetUsings());
     }
 
-    private MethodWriter GenerateValueTaskFailureTest(ushort arity)
-    {
+    private MethodWriter GenerateValueTaskFailureTest(ushort arity) {
         return new MethodWriter($"FindErrorValueTask_Arity{arity}_Failure_ShouldReturnError",
                                 "async Task",
                                 GenerateValueTaskFailureBody(arity),
@@ -131,129 +102,84 @@ internal sealed class ResultFindErrorTestsGenerator : ResultTestGeneratorBase
                                 usings: GetUsings());
     }
 
-    private string GenerateSyncSuccessBody(ushort arity)
-    {
-        var testValues = arity == 0 ? string.Empty : GenerateTestValues(arity);
-        var creation = GenerateResultCreation(arity);
-        var call = GenerateFindErrorSyncCall(arity);
-        var givenSection = arity == 0 ? $"// Given\n{creation}" : $"// Given\n{testValues}\n{creation}";
-        return $"""
-                {givenSection}
-                // When
-                {call}
-                // Then
-                Assert.Null(foundError);
-                """;
+    private string GenerateSyncSuccessBody(ushort arity) {
+        var testValues   = arity == 0 ? string.Empty : GenerateTestValues(arity);
+        var creation     = GenerateResultCreation(arity);
+        var call         = GenerateFindErrorSyncCall(arity);
+        var givenLines   = arity == 0 ? new[] { creation } : new[] { testValues, creation };
+        return BuildTestBody(givenLines,
+                             [call],
+                             ["Assert.Null(foundError);"]);
     }
 
-    private string GenerateSyncFailureBody(ushort arity)
-    {
+    private string GenerateSyncFailureBody(ushort arity) {
         var failureCreation = GenerateErrorTypeFailureResultCreation(arity);
-        var call = GenerateFindErrorSyncCall(arity);
-        return $"""
-                // Given
-                {failureCreation}
-                // When
-                {call}
-                // Then
-                Assert.NotNull(foundError);
-                Assert.Equal("Test error", foundError.Message);
-                """;
+        var call            = GenerateFindErrorSyncCall(arity);
+        return BuildTestBody([failureCreation],
+                             [call],
+                             ["Assert.NotNull(foundError);", "Assert.Equal(\"Test error\", foundError.Message);"]);
     }
 
-    private string GenerateTaskSuccessBody(ushort arity)
-    {
-        var testValues = arity == 0 ? string.Empty : GenerateTestValues(arity);
-        var creation = GenerateTaskResultCreation(arity);
-        var call = GenerateFindErrorTaskCall(arity);
-        var givenSection = arity == 0 ? $"// Given\n{creation}" : $"// Given\n{testValues}\n{creation}";
-        return $"""
-                {givenSection}
-                // When
-                {call}
-                // Then
-                Assert.Null(foundError);
-                """;
+    private string GenerateTaskSuccessBody(ushort arity) {
+        var testValues   = arity == 0 ? string.Empty : GenerateTestValues(arity);
+        var creation     = GenerateTaskResultCreation(arity);
+        var call         = GenerateFindErrorTaskCall(arity);
+        var givenLines   = arity == 0 ? new[] { creation } : new[] { testValues, creation };
+        return BuildTestBody(givenLines,
+                             [call],
+                             ["Assert.Null(foundError);"]);
     }
 
-    private string GenerateTaskFailureBody(ushort arity)
-    {
+    private string GenerateTaskFailureBody(ushort arity) {
         var creation = GenerateTaskErrorTypeFailureResultCreation(arity);
-        var call = GenerateFindErrorTaskCall(arity);
-        return $"""
-                // Given
-                {creation}
-                // When
-                {call}
-                // Then
-                Assert.NotNull(foundError);
-                Assert.Equal("Test error", foundError.Message);
-                """;
+        var call     = GenerateFindErrorTaskCall(arity);
+        return BuildTestBody([creation],
+                             [call],
+                             ["Assert.NotNull(foundError);", "Assert.Equal(\"Test error\", foundError.Message);"]);
     }
 
-    private string GenerateValueTaskSuccessBody(ushort arity)
-    {
-        var testValues = arity == 0 ? string.Empty : GenerateTestValues(arity);
-        var creation = GenerateValueTaskResultCreation(arity);
-        var call = GenerateFindErrorValueTaskCall(arity);
-        var givenSection = arity == 0 ? $"// Given\n{creation}" : $"// Given\n{testValues}\n{creation}";
-        return $"""
-                {givenSection}
-                // When
-                {call}
-                // Then
-                Assert.Null(foundError);
-                """;
+    private string GenerateValueTaskSuccessBody(ushort arity) {
+        var testValues   = arity == 0 ? string.Empty : GenerateTestValues(arity);
+        var creation     = GenerateValueTaskResultCreation(arity);
+        var call         = GenerateFindErrorValueTaskCall(arity);
+        var givenLines   = arity == 0 ? new[] { creation } : new[] { testValues, creation };
+        return BuildTestBody(givenLines,
+                             [call],
+                             ["Assert.Null(foundError);"]);
     }
 
-    private string GenerateValueTaskFailureBody(ushort arity)
-    {
+    private string GenerateValueTaskFailureBody(ushort arity) {
         var creation = GenerateValueTaskErrorTypeFailureResultCreation(arity);
-        var call = GenerateFindErrorValueTaskCall(arity);
-        return $"""
-                // Given
-                {creation}
-                // When
-                {call}
-                // Then
-                Assert.NotNull(foundError);
-                Assert.Equal("Test error", foundError.Message);
-                """;
+        var call     = GenerateFindErrorValueTaskCall(arity);
+        return BuildTestBody([creation],
+                             [call],
+                             ["Assert.NotNull(foundError);", "Assert.Equal(\"Test error\", foundError.Message);"]);
     }
 
-    private string GenerateFindErrorSyncCall(ushort arity)
-    {
+    private string GenerateFindErrorSyncCall(ushort arity) {
         var typeParams = string.Join(", ", Enumerable.Range(1, arity)
                                                      .Select(GetTestType));
-        if (arity == 0)
-        {
+        if (arity == 0) {
             return "var foundError = result.FindError(e => e is Error);";
         }
-
         return $"var foundError = result.FindError<{typeParams}>(e => e is Error);";
     }
 
-    private string GenerateFindErrorTaskCall(ushort arity)
-    {
+    private string GenerateFindErrorTaskCall(ushort arity) {
         var typeParams = string.Join(", ", Enumerable.Range(1, arity)
                                                      .Select(GetTestType));
-        if (arity == 0)
-        {
+        if (arity == 0) {
             return "var foundError = await taskResult.FindErrorAsync(e => Task.FromResult(e is Error));";
         }
-
         return $"var foundError = await taskResult.FindErrorAsync<{typeParams}>(e => Task.FromResult(e is Error));";
     }
 
-    private string GenerateFindErrorValueTaskCall(ushort arity)
-    {
+    private string GenerateFindErrorValueTaskCall(ushort arity) {
         var typeParams = string.Join(", ", Enumerable.Range(1, arity)
                                                      .Select(GetTestType));
-        if (arity == 0)
-        {
+        if (arity == 0) {
             return "var foundError = await valueTaskResult.FindErrorAsync(e => ValueTask.FromResult(e is Error));";
         }
-
         return $"var foundError = await valueTaskResult.FindErrorAsync<{typeParams}>(e => ValueTask.FromResult(e is Error));";
     }
 }

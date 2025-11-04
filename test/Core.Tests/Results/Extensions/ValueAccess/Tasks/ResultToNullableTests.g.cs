@@ -8,12 +8,15 @@
 #nullable enable
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
-using UnambitiousFx.Core.Results.Extensions.ValueAccess;
+using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
+using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
+using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Extensions.ValueAccess.Tasks;
-using UnambitiousFx.Core.Results.Extensions.ValueAccess.ValueTasks;
+using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.ValueAccess.Tasks;
@@ -30,7 +33,7 @@ public class ResultToNullableTaskTestsArity1
         // When
         var nullableValue = await taskResult.ToNullableAsync();
         // Then
-        Assert.Equal(value1, nullableValue);
+        Assert.Equal(value1, nullableValue.GetValueOrDefault());
     }
     
     [Fact]
@@ -40,7 +43,7 @@ public class ResultToNullableTaskTestsArity1
         // When
         var nullableValue = await taskResult.ToNullableAsync();
         // Then
-        Assert.Equal(default, nullableValue);
+        Assert.Equal(default, nullableValue.GetValueOrDefault());
     }
     
     #endregion // Arity 1 - Task ToNullable
@@ -68,7 +71,7 @@ public class ResultToNullableTaskTestsArity1
         // When
         var nullableValue = await taskResult.ToNullableAsync();
         // Then
-        Assert.Null(nullableValue);
+        Assert.Equal(default, nullableValue.GetValueOrDefault());
     }
     
     #endregion // Arity 2 - Task ToNullable
@@ -98,7 +101,7 @@ public class ResultToNullableTaskTestsArity1
         // When
         var nullableValue = await taskResult.ToNullableAsync();
         // Then
-        Assert.Null(nullableValue);
+        Assert.Equal(default, nullableValue.GetValueOrDefault());
     }
     
     #endregion // Arity 3 - Task ToNullable
@@ -130,7 +133,7 @@ public class ResultToNullableTaskTestsArity1
         // When
         var nullableValue = await taskResult.ToNullableAsync();
         // Then
-        Assert.Null(nullableValue);
+        Assert.Equal(default, nullableValue.GetValueOrDefault());
     }
     
     #endregion // Arity 4 - Task ToNullable
@@ -164,7 +167,7 @@ public class ResultToNullableTaskTestsArity1
         // When
         var nullableValue = await taskResult.ToNullableAsync();
         // Then
-        Assert.Null(nullableValue);
+        Assert.Equal(default, nullableValue.GetValueOrDefault());
     }
     
     #endregion // Arity 5 - Task ToNullable
@@ -200,7 +203,7 @@ public class ResultToNullableTaskTestsArity1
         // When
         var nullableValue = await taskResult.ToNullableAsync();
         // Then
-        Assert.Null(nullableValue);
+        Assert.Equal(default, nullableValue.GetValueOrDefault());
     }
     
     #endregion // Arity 6 - Task ToNullable
@@ -238,7 +241,7 @@ public class ResultToNullableTaskTestsArity1
         // When
         var nullableValue = await taskResult.ToNullableAsync();
         // Then
-        Assert.Null(nullableValue);
+        Assert.Equal(default, nullableValue.GetValueOrDefault());
     }
     
     #endregion // Arity 7 - Task ToNullable
@@ -278,7 +281,7 @@ public class ResultToNullableTaskTestsArity1
         // When
         var nullableValue = await taskResult.ToNullableAsync();
         // Then
-        Assert.Null(nullableValue);
+        Assert.Equal(default, nullableValue.GetValueOrDefault());
     }
     
     #endregion // Arity 8 - Task ToNullable

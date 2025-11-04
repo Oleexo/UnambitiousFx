@@ -15,10 +15,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="TestBuilders\Results\" />
-    </ItemGroup>
-
-    <ItemGroup>
         <Compile Remove="src\Core\Results\Extensions\Validations\ResultEnsureExtensions.g.cs" />
         <Compile Remove="src\Core\Results\Extensions\Transformations\ValueTasks\ResultZipExtensions.g.cs" />
         <Compile Remove="src\Core\Results\Extensions\Transformations\ValueTasks\ResultTryExtensions.g.cs" />

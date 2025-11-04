@@ -77,7 +77,7 @@ internal sealed class ValidationAsyncMethodBuilder {
         var valueParams = string.Join(", ", Enumerable.Range(1, arity)
                                                       .Select(n => $"value{n}"));
         var predicateType    = $"Func<{genericTypes}, {taskType}<bool>>";
-        var errorFactoryType = $"Func<{genericTypes}, {taskType}<Exception>>";
+        var errorFactoryType = $"Func<{genericTypes}, {taskType}<IError>>";
 
         string body;
         if (arity == 1) {
@@ -129,7 +129,10 @@ internal sealed class ValidationAsyncMethodBuilder {
                 new MethodParameter(errorFactoryType,     "errorFactory")
             ],
             genericParams,
-            docBuilder.Build()
+            docBuilder.Build(),
+            usings: [
+                "UnambitiousFx.Core.Results.Reasons"
+            ]
         );
     }
 
@@ -146,7 +149,7 @@ internal sealed class ValidationAsyncMethodBuilder {
         var resultType    = $"Result<{genericTypes}>";
 
         var predicateType    = $"Func<{genericTypes}, {taskType}<bool>>";
-        var errorFactoryType = $"Func<{genericTypes}, {taskType}<Exception>>";
+        var errorFactoryType = $"Func<{genericTypes}, {taskType}<IError>>";
 
         var body = """
                    var result = await awaitableResult;
@@ -177,7 +180,10 @@ internal sealed class ValidationAsyncMethodBuilder {
             ],
             genericParams,
             docBuilder.Build(),
-            usings: [$"UnambitiousFx.Core.Results.Extensions.Transformations.{taskType}s"]
+            usings: [
+                $"UnambitiousFx.Core.Results.Extensions.Transformations.{taskType}s",
+                "UnambitiousFx.Core.Results.Reasons"
+            ]
         );
     }
 
