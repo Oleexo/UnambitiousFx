@@ -29,10 +29,10 @@ public class ResultValueOrValueTaskTestsArity1
     public async Task ValueOrValueTask_Arity1_Success_ShouldReturnValue() {
         // Given
         var value1 = 42;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1));
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
         var fallback1 = 999;
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(fallback1);
+        var actualValue = await taskResult.ValueOrAsync(fallback1);
         // Then
         Assert.Equal(value1, actualValue);
     }
@@ -40,10 +40,10 @@ public class ResultValueOrValueTaskTestsArity1
     [Fact]
     public async Task ValueOrValueTask_Arity1_Failure_ShouldReturnFallback() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
         var fallback1 = 999;
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(fallback1);
+        var actualValue = await taskResult.ValueOrAsync(fallback1);
         // Then
         Assert.Equal(fallback1, actualValue);
     }
@@ -52,11 +52,11 @@ public class ResultValueOrValueTaskTestsArity1
     public async Task ValueOrValueTaskWithFactory_Arity1_Success_ShouldReturnValue() {
         // Given
         var value1 = 42;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1));
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
         var fallback1 = 999;
         Func<int> factory = () => fallback1;
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(factory);
+        var actualValue = await taskResult.ValueOrAsync(factory);
         // Then
         Assert.Equal(value1, actualValue);
     }
@@ -64,11 +64,11 @@ public class ResultValueOrValueTaskTestsArity1
     [Fact]
     public async Task ValueOrValueTaskWithFactory_Arity1_Failure_ShouldReturnFactoryValue() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
         var fallback1 = 999;
         Func<int> factory = () => fallback1;
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(factory);
+        var actualValue = await taskResult.ValueOrAsync(factory);
         // Then
         Assert.Equal(fallback1, actualValue);
     }
@@ -82,11 +82,11 @@ public class ResultValueOrValueTaskTestsArity1
         // Given
         var value1 = 42;
         var value2 = "test";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
         var fallback1 = 999;
         var fallback2 = "fallback";
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(fallback1, fallback2);
+        var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2);
         // Then
         Assert.Equal(value1, actualValue.Item1);
         Assert.Equal(value2, actualValue.Item2);
@@ -95,11 +95,11 @@ public class ResultValueOrValueTaskTestsArity1
     [Fact]
     public async Task ValueOrValueTask_Arity2_Failure_ShouldReturnFallback() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
         var fallback1 = 999;
         var fallback2 = "fallback";
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(fallback1, fallback2);
+        var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2);
         // Then
         Assert.Equal(fallback1, actualValue.Item1);
         Assert.Equal(fallback2, actualValue.Item2);
@@ -110,12 +110,12 @@ public class ResultValueOrValueTaskTestsArity1
         // Given
         var value1 = 42;
         var value2 = "test";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
         var fallback1 = 999;
         var fallback2 = "fallback";
         Func<(int, string)> factory = () => (fallback1, fallback2);
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(factory);
+        var actualValue = await taskResult.ValueOrAsync(factory);
         // Then
         Assert.Equal(value1, actualValue.Item1);
         Assert.Equal(value2, actualValue.Item2);
@@ -124,12 +124,12 @@ public class ResultValueOrValueTaskTestsArity1
     [Fact]
     public async Task ValueOrValueTaskWithFactory_Arity2_Failure_ShouldReturnFactoryValue() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
         var fallback1 = 999;
         var fallback2 = "fallback";
         Func<(int, string)> factory = () => (fallback1, fallback2);
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(factory);
+        var actualValue = await taskResult.ValueOrAsync(factory);
         // Then
         Assert.Equal(fallback1, actualValue.Item1);
         Assert.Equal(fallback2, actualValue.Item2);
@@ -145,12 +145,12 @@ public class ResultValueOrValueTaskTestsArity1
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
         var fallback1 = 999;
         var fallback2 = "fallback";
         var fallback3 = false;
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(fallback1, fallback2, fallback3);
+        var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2, fallback3);
         // Then
         Assert.Equal(value1, actualValue.Item1);
         Assert.Equal(value2, actualValue.Item2);
@@ -160,12 +160,12 @@ public class ResultValueOrValueTaskTestsArity1
     [Fact]
     public async Task ValueOrValueTask_Arity3_Failure_ShouldReturnFallback() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
         var fallback1 = 999;
         var fallback2 = "fallback";
         var fallback3 = false;
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(fallback1, fallback2, fallback3);
+        var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2, fallback3);
         // Then
         Assert.Equal(fallback1, actualValue.Item1);
         Assert.Equal(fallback2, actualValue.Item2);
@@ -178,13 +178,13 @@ public class ResultValueOrValueTaskTestsArity1
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
         var fallback1 = 999;
         var fallback2 = "fallback";
         var fallback3 = false;
         Func<(int, string, bool)> factory = () => (fallback1, fallback2, fallback3);
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(factory);
+        var actualValue = await taskResult.ValueOrAsync(factory);
         // Then
         Assert.Equal(value1, actualValue.Item1);
         Assert.Equal(value2, actualValue.Item2);
@@ -194,13 +194,13 @@ public class ResultValueOrValueTaskTestsArity1
     [Fact]
     public async Task ValueOrValueTaskWithFactory_Arity3_Failure_ShouldReturnFactoryValue() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
         var fallback1 = 999;
         var fallback2 = "fallback";
         var fallback3 = false;
         Func<(int, string, bool)> factory = () => (fallback1, fallback2, fallback3);
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(factory);
+        var actualValue = await taskResult.ValueOrAsync(factory);
         // Then
         Assert.Equal(fallback1, actualValue.Item1);
         Assert.Equal(fallback2, actualValue.Item2);
@@ -218,13 +218,13 @@ public class ResultValueOrValueTaskTestsArity1
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
         var fallback1 = 999;
         var fallback2 = "fallback";
         var fallback3 = false;
         var fallback4 = 9.99;
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4);
+        var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4);
         // Then
         Assert.Equal(value1, actualValue.Item1);
         Assert.Equal(value2, actualValue.Item2);
@@ -235,13 +235,13 @@ public class ResultValueOrValueTaskTestsArity1
     [Fact]
     public async Task ValueOrValueTask_Arity4_Failure_ShouldReturnFallback() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
         var fallback1 = 999;
         var fallback2 = "fallback";
         var fallback3 = false;
         var fallback4 = 9.99;
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4);
+        var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4);
         // Then
         Assert.Equal(fallback1, actualValue.Item1);
         Assert.Equal(fallback2, actualValue.Item2);
@@ -256,14 +256,14 @@ public class ResultValueOrValueTaskTestsArity1
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
         var fallback1 = 999;
         var fallback2 = "fallback";
         var fallback3 = false;
         var fallback4 = 9.99;
         Func<(int, string, bool, double)> factory = () => (fallback1, fallback2, fallback3, fallback4);
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(factory);
+        var actualValue = await taskResult.ValueOrAsync(factory);
         // Then
         Assert.Equal(value1, actualValue.Item1);
         Assert.Equal(value2, actualValue.Item2);
@@ -274,14 +274,14 @@ public class ResultValueOrValueTaskTestsArity1
     [Fact]
     public async Task ValueOrValueTaskWithFactory_Arity4_Failure_ShouldReturnFactoryValue() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
         var fallback1 = 999;
         var fallback2 = "fallback";
         var fallback3 = false;
         var fallback4 = 9.99;
         Func<(int, string, bool, double)> factory = () => (fallback1, fallback2, fallback3, fallback4);
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(factory);
+        var actualValue = await taskResult.ValueOrAsync(factory);
         // Then
         Assert.Equal(fallback1, actualValue.Item1);
         Assert.Equal(fallback2, actualValue.Item2);
@@ -301,14 +301,14 @@ public class ResultValueOrValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
         var fallback1 = 999;
         var fallback2 = "fallback";
         var fallback3 = false;
         var fallback4 = 9.99;
         var fallback5 = 999L;
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4, fallback5);
+        var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4, fallback5);
         // Then
         Assert.Equal(value1, actualValue.Item1);
         Assert.Equal(value2, actualValue.Item2);
@@ -320,14 +320,14 @@ public class ResultValueOrValueTaskTestsArity1
     [Fact]
     public async Task ValueOrValueTask_Arity5_Failure_ShouldReturnFallback() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
         var fallback1 = 999;
         var fallback2 = "fallback";
         var fallback3 = false;
         var fallback4 = 9.99;
         var fallback5 = 999L;
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4, fallback5);
+        var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4, fallback5);
         // Then
         Assert.Equal(fallback1, actualValue.Item1);
         Assert.Equal(fallback2, actualValue.Item2);
@@ -344,7 +344,7 @@ public class ResultValueOrValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
         var fallback1 = 999;
         var fallback2 = "fallback";
         var fallback3 = false;
@@ -352,7 +352,7 @@ public class ResultValueOrValueTaskTestsArity1
         var fallback5 = 999L;
         Func<(int, string, bool, double, long)> factory = () => (fallback1, fallback2, fallback3, fallback4, fallback5);
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(factory);
+        var actualValue = await taskResult.ValueOrAsync(factory);
         // Then
         Assert.Equal(value1, actualValue.Item1);
         Assert.Equal(value2, actualValue.Item2);
@@ -364,7 +364,7 @@ public class ResultValueOrValueTaskTestsArity1
     [Fact]
     public async Task ValueOrValueTaskWithFactory_Arity5_Failure_ShouldReturnFactoryValue() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
         var fallback1 = 999;
         var fallback2 = "fallback";
         var fallback3 = false;
@@ -372,7 +372,7 @@ public class ResultValueOrValueTaskTestsArity1
         var fallback5 = 999L;
         Func<(int, string, bool, double, long)> factory = () => (fallback1, fallback2, fallback3, fallback4, fallback5);
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(factory);
+        var actualValue = await taskResult.ValueOrAsync(factory);
         // Then
         Assert.Equal(fallback1, actualValue.Item1);
         Assert.Equal(fallback2, actualValue.Item2);
@@ -394,7 +394,7 @@ public class ResultValueOrValueTaskTestsArity1
         var value4 = 3.14;
         var value5 = 123L;
         var value6 = "value6";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
         var fallback1 = 999;
         var fallback2 = "fallback";
         var fallback3 = false;
@@ -402,7 +402,7 @@ public class ResultValueOrValueTaskTestsArity1
         var fallback5 = 999L;
         var fallback6 = "fallback6";
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4, fallback5, fallback6);
+        var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4, fallback5, fallback6);
         // Then
         Assert.Equal(value1, actualValue.Item1);
         Assert.Equal(value2, actualValue.Item2);
@@ -415,7 +415,7 @@ public class ResultValueOrValueTaskTestsArity1
     [Fact]
     public async Task ValueOrValueTask_Arity6_Failure_ShouldReturnFallback() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
         var fallback1 = 999;
         var fallback2 = "fallback";
         var fallback3 = false;
@@ -423,7 +423,7 @@ public class ResultValueOrValueTaskTestsArity1
         var fallback5 = 999L;
         var fallback6 = "fallback6";
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4, fallback5, fallback6);
+        var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4, fallback5, fallback6);
         // Then
         Assert.Equal(fallback1, actualValue.Item1);
         Assert.Equal(fallback2, actualValue.Item2);
@@ -442,7 +442,7 @@ public class ResultValueOrValueTaskTestsArity1
         var value4 = 3.14;
         var value5 = 123L;
         var value6 = "value6";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
         var fallback1 = 999;
         var fallback2 = "fallback";
         var fallback3 = false;
@@ -451,7 +451,7 @@ public class ResultValueOrValueTaskTestsArity1
         var fallback6 = "fallback6";
         Func<(int, string, bool, double, long, string)> factory = () => (fallback1, fallback2, fallback3, fallback4, fallback5, fallback6);
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(factory);
+        var actualValue = await taskResult.ValueOrAsync(factory);
         // Then
         Assert.Equal(value1, actualValue.Item1);
         Assert.Equal(value2, actualValue.Item2);
@@ -464,7 +464,7 @@ public class ResultValueOrValueTaskTestsArity1
     [Fact]
     public async Task ValueOrValueTaskWithFactory_Arity6_Failure_ShouldReturnFactoryValue() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
         var fallback1 = 999;
         var fallback2 = "fallback";
         var fallback3 = false;
@@ -473,7 +473,7 @@ public class ResultValueOrValueTaskTestsArity1
         var fallback6 = "fallback6";
         Func<(int, string, bool, double, long, string)> factory = () => (fallback1, fallback2, fallback3, fallback4, fallback5, fallback6);
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(factory);
+        var actualValue = await taskResult.ValueOrAsync(factory);
         // Then
         Assert.Equal(fallback1, actualValue.Item1);
         Assert.Equal(fallback2, actualValue.Item2);
@@ -497,7 +497,7 @@ public class ResultValueOrValueTaskTestsArity1
         var value5 = 123L;
         var value6 = "value6";
         var value7 = "value7";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
         var fallback1 = 999;
         var fallback2 = "fallback";
         var fallback3 = false;
@@ -506,7 +506,7 @@ public class ResultValueOrValueTaskTestsArity1
         var fallback6 = "fallback6";
         var fallback7 = "fallback7";
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4, fallback5, fallback6, fallback7);
+        var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4, fallback5, fallback6, fallback7);
         // Then
         Assert.Equal(value1, actualValue.Item1);
         Assert.Equal(value2, actualValue.Item2);
@@ -520,7 +520,7 @@ public class ResultValueOrValueTaskTestsArity1
     [Fact]
     public async Task ValueOrValueTask_Arity7_Failure_ShouldReturnFallback() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
         var fallback1 = 999;
         var fallback2 = "fallback";
         var fallback3 = false;
@@ -529,7 +529,7 @@ public class ResultValueOrValueTaskTestsArity1
         var fallback6 = "fallback6";
         var fallback7 = "fallback7";
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4, fallback5, fallback6, fallback7);
+        var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4, fallback5, fallback6, fallback7);
         // Then
         Assert.Equal(fallback1, actualValue.Item1);
         Assert.Equal(fallback2, actualValue.Item2);
@@ -550,7 +550,7 @@ public class ResultValueOrValueTaskTestsArity1
         var value5 = 123L;
         var value6 = "value6";
         var value7 = "value7";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
         var fallback1 = 999;
         var fallback2 = "fallback";
         var fallback3 = false;
@@ -560,7 +560,7 @@ public class ResultValueOrValueTaskTestsArity1
         var fallback7 = "fallback7";
         Func<(int, string, bool, double, long, string, string)> factory = () => (fallback1, fallback2, fallback3, fallback4, fallback5, fallback6, fallback7);
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(factory);
+        var actualValue = await taskResult.ValueOrAsync(factory);
         // Then
         Assert.Equal(value1, actualValue.Item1);
         Assert.Equal(value2, actualValue.Item2);
@@ -574,7 +574,7 @@ public class ResultValueOrValueTaskTestsArity1
     [Fact]
     public async Task ValueOrValueTaskWithFactory_Arity7_Failure_ShouldReturnFactoryValue() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
         var fallback1 = 999;
         var fallback2 = "fallback";
         var fallback3 = false;
@@ -584,7 +584,7 @@ public class ResultValueOrValueTaskTestsArity1
         var fallback7 = "fallback7";
         Func<(int, string, bool, double, long, string, string)> factory = () => (fallback1, fallback2, fallback3, fallback4, fallback5, fallback6, fallback7);
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(factory);
+        var actualValue = await taskResult.ValueOrAsync(factory);
         // Then
         Assert.Equal(fallback1, actualValue.Item1);
         Assert.Equal(fallback2, actualValue.Item2);
@@ -610,7 +610,7 @@ public class ResultValueOrValueTaskTestsArity1
         var value6 = "value6";
         var value7 = "value7";
         var value8 = "value8";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
         var fallback1 = 999;
         var fallback2 = "fallback";
         var fallback3 = false;
@@ -620,7 +620,7 @@ public class ResultValueOrValueTaskTestsArity1
         var fallback7 = "fallback7";
         var fallback8 = "fallback8";
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4, fallback5, fallback6, fallback7, fallback8);
+        var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4, fallback5, fallback6, fallback7, fallback8);
         // Then
         Assert.Equal(value1, actualValue.Item1);
         Assert.Equal(value2, actualValue.Item2);
@@ -635,7 +635,7 @@ public class ResultValueOrValueTaskTestsArity1
     [Fact]
     public async Task ValueOrValueTask_Arity8_Failure_ShouldReturnFallback() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
         var fallback1 = 999;
         var fallback2 = "fallback";
         var fallback3 = false;
@@ -645,7 +645,7 @@ public class ResultValueOrValueTaskTestsArity1
         var fallback7 = "fallback7";
         var fallback8 = "fallback8";
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4, fallback5, fallback6, fallback7, fallback8);
+        var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4, fallback5, fallback6, fallback7, fallback8);
         // Then
         Assert.Equal(fallback1, actualValue.Item1);
         Assert.Equal(fallback2, actualValue.Item2);
@@ -668,7 +668,7 @@ public class ResultValueOrValueTaskTestsArity1
         var value6 = "value6";
         var value7 = "value7";
         var value8 = "value8";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
         var fallback1 = 999;
         var fallback2 = "fallback";
         var fallback3 = false;
@@ -679,7 +679,7 @@ public class ResultValueOrValueTaskTestsArity1
         var fallback8 = "fallback8";
         Func<(int, string, bool, double, long, string, string, string)> factory = () => (fallback1, fallback2, fallback3, fallback4, fallback5, fallback6, fallback7, fallback8);
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(factory);
+        var actualValue = await taskResult.ValueOrAsync(factory);
         // Then
         Assert.Equal(value1, actualValue.Item1);
         Assert.Equal(value2, actualValue.Item2);
@@ -694,7 +694,7 @@ public class ResultValueOrValueTaskTestsArity1
     [Fact]
     public async Task ValueOrValueTaskWithFactory_Arity8_Failure_ShouldReturnFactoryValue() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
         var fallback1 = 999;
         var fallback2 = "fallback";
         var fallback3 = false;
@@ -705,7 +705,7 @@ public class ResultValueOrValueTaskTestsArity1
         var fallback8 = "fallback8";
         Func<(int, string, bool, double, long, string, string, string)> factory = () => (fallback1, fallback2, fallback3, fallback4, fallback5, fallback6, fallback7, fallback8);
         // When
-        var actualValue = await valueTaskResult.ValueOrAsync(factory);
+        var actualValue = await taskResult.ValueOrAsync(factory);
         // Then
         Assert.Equal(fallback1, actualValue.Item1);
         Assert.Equal(fallback2, actualValue.Item2);

@@ -7,52 +7,70 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results;
 /// <summary>
 ///     Test generator for Result.FilterError extension methods (sync, Task, ValueTask).
 /// </summary>
-internal sealed class ResultFilterErrorTestsGenerator : ResultTestGeneratorBase
-{
-    private const int StartArity = 0; // Changed to 0 to support non-generic Result
-    private const string ClassName = "ResultFilterErrorTests";
+internal sealed class ResultFilterErrorTestsGenerator : ResultTestGeneratorBase {
+    private const int    StartArity          = 0; // Changed to 0 to support non-generic Result
+    private const string ClassName           = "ResultFilterErrorTests";
     private const string ExtensionsNamespace = "Results.Extensions.ErrorHandling";
 
-    public ResultFilterErrorTestsGenerator(string baseNamespace,
+    public ResultFilterErrorTestsGenerator(string               baseNamespace,
                                            FileOrganizationMode fileOrganization)
         : base(new GenerationConfig(baseNamespace,
                                     StartArity,
                                     ExtensionsNamespace,
                                     ClassName,
                                     fileOrganization,
-                                    true))
-    {
+                                    true)) {
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) =>
-        GenerateVariants(arity, ClassName, (GenerateSyncTests, false), (GenerateTaskTests, true), (GenerateValueTaskTests, true));
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
+        return GenerateVariants(arity, ClassName, (GenerateSyncTests, false), (x => GenerateAsyncTests(x, "Task"), true), (x => GenerateAsyncTests(x, "ValueTask"), true));
+    }
 
     private ClassWriter GenerateSyncTests(ushort arity) {
         var cw = new ClassWriter($"ResultFilterErrorSyncTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Sync FilterError" };
-        cw.AddMethod(new MethodWriter($"FilterError_Arity{arity}_Success_ShouldNotFilterError", "void", GenerateSyncSuccessBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings()));
-        cw.AddMethod(new MethodWriter($"FilterError_Arity{arity}_Failure_ShouldFilterError", "void", GenerateSyncFailureBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings()));
+        cw.AddMethod(new MethodWriter($"FilterError_Arity{arity}_Success_ShouldNotFilterError", "void", GenerateSyncSuccessBody(arity), attributes: [new FactAttributeReference()],
+                                      usings: GetUsings()));
+        cw.AddMethod(new MethodWriter($"FilterError_Arity{arity}_Failure_ShouldFilterError", "void", GenerateSyncFailureBody(arity), attributes: [new FactAttributeReference()],
+                                      usings: GetUsings()));
         cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
         return cw;
     }
 
     private ClassWriter GenerateTaskTests(ushort arity) {
         var cw = new ClassWriter($"ResultFilterErrorTaskTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Task FilterError" };
-        cw.AddMethod(new MethodWriter($"FilterErrorTask_Arity{arity}_Success_ShouldNotFilterError", "async Task", GenerateTaskSuccessBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings()));
-        cw.AddMethod(new MethodWriter($"FilterErrorTask_Arity{arity}_Failure_ShouldFilterError", "async Task", GenerateTaskFailureBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings()));
+        cw.AddMethod(new MethodWriter($"FilterErrorTask_Arity{arity}_Success_ShouldNotFilterError", "async Task", GenerateTaskSuccessBody(arity),
+                                      attributes: [new FactAttributeReference()], usings: GetUsings()));
+        cw.AddMethod(new MethodWriter($"FilterErrorTask_Arity{arity}_Failure_ShouldFilterError", "async Task", GenerateTaskFailureBody(arity),
+                                      attributes: [new FactAttributeReference()], usings: GetUsings()));
         cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.Tasks";
         return cw;
     }
 
     private ClassWriter GenerateValueTaskTests(ushort arity) {
         var cw = new ClassWriter($"ResultFilterErrorValueTaskTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - ValueTask FilterError" };
-        cw.AddMethod(new MethodWriter($"FilterErrorValueTask_Arity{arity}_Success_ShouldNotFilterError", "async Task", GenerateValueTaskSuccessBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings()));
-        cw.AddMethod(new MethodWriter($"FilterErrorValueTask_Arity{arity}_Failure_ShouldFilterError", "async Task", GenerateValueTaskFailureBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings()));
+        cw.AddMethod(new MethodWriter($"FilterErrorValueTask_Arity{arity}_Success_ShouldNotFilterError", "async Task", GenerateValueTaskSuccessBody(arity),
+                                      attributes: [new FactAttributeReference()], usings: GetUsings()));
+        cw.AddMethod(new MethodWriter($"FilterErrorValueTask_Arity{arity}_Failure_ShouldFilterError", "async Task", GenerateValueTaskFailureBody(arity),
+                                      attributes: [new FactAttributeReference()], usings: GetUsings()));
         cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.ValueTasks";
         return cw;
     }
 
+    private ClassWriter GenerateAsyncTests(ushort arity,
+                                           string asyncType) {
+        var cw = new ClassWriter($"ResultFilterError{asyncType}TestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - {asyncType} FilterError" };
+        cw.AddMethod(new MethodWriter($"FilterError{asyncType}_Arity{arity}_Success_ShouldNotFilterError", "async Task", GenerateAsyncSuccessBody(arity, asyncType),
+                                      attributes: [new FactAttributeReference()], usings: GetUsings()));
+        cw.AddMethod(new MethodWriter($"FilterError{asyncType}_Arity{arity}_Failure_ShouldFilterError", "async Task", GenerateAsyncFailureBody(arity, asyncType),
+                                      attributes: [new FactAttributeReference()], usings: GetUsings()));
+        cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.{asyncType}s";
+        return cw;
+    }
+
     private string GenerateSyncSuccessBody(ushort arity) {
-        var given = arity == 0 ? new[] { GenerateResultCreation(arity) } : new[] { GenerateTestValues(arity), GenerateResultCreation(arity) };
+        var given = arity == 0
+                        ? new[] { GenerateResultCreation(arity) }
+                        : new[] { GenerateTestValues(arity), GenerateResultCreation(arity) };
         var when = new[] { GenerateFilterErrorSyncCall(arity) };
         var then = new[] { "Assert.True(filteredResult.IsSuccess);" };
         return BuildTestBody(given, when, then);
@@ -60,13 +78,17 @@ internal sealed class ResultFilterErrorTestsGenerator : ResultTestGeneratorBase
 
     private string GenerateSyncFailureBody(ushort arity) {
         var given = new[] { GenerateFailureResultCreation(arity) };
-        var when = new[] { GenerateFilterErrorSyncCall(arity) };
-        var then = new[] { "Assert.False(filteredResult.IsSuccess);", "Assert.Single(filteredResult.Errors);", "Assert.Equal(\"Test error\", filteredResult.Errors.First().Message);" };
+        var when  = new[] { GenerateFilterErrorSyncCall(arity) };
+        var then = new[] {
+            "Assert.False(filteredResult.IsSuccess);", "Assert.Single(filteredResult.Errors);", "Assert.Equal(\"Test error\", filteredResult.Errors.First().Message);"
+        };
         return BuildTestBody(given, when, then);
     }
 
     private string GenerateTaskSuccessBody(ushort arity) {
-        var given = arity == 0 ? new[] { GenerateTaskResultCreation(arity) } : new[] { GenerateTestValues(arity), GenerateTaskResultCreation(arity) };
+        var given = arity == 0
+                        ? new[] { GenerateTaskResultCreation(arity) }
+                        : new[] { GenerateTestValues(arity), GenerateTaskResultCreation(arity) };
         var when = new[] { GenerateFilterErrorTaskCall(arity) };
         var then = new[] { "Assert.True(filteredResult.IsSuccess);" };
         return BuildTestBody(given, when, then);
@@ -74,13 +96,17 @@ internal sealed class ResultFilterErrorTestsGenerator : ResultTestGeneratorBase
 
     private string GenerateTaskFailureBody(ushort arity) {
         var given = new[] { GenerateTaskFailureResultCreation(arity) };
-        var when = new[] { GenerateFilterErrorTaskCall(arity) };
-        var then = new[] { "Assert.False(filteredResult.IsSuccess);", "Assert.Single(filteredResult.Errors);", "Assert.Equal(\"Test error\", filteredResult.Errors.First().Message);" };
+        var when  = new[] { GenerateFilterErrorTaskCall(arity) };
+        var then = new[] {
+            "Assert.False(filteredResult.IsSuccess);", "Assert.Single(filteredResult.Errors);", "Assert.Equal(\"Test error\", filteredResult.Errors.First().Message);"
+        };
         return BuildTestBody(given, when, then);
     }
 
     private string GenerateValueTaskSuccessBody(ushort arity) {
-        var given = arity == 0 ? new[] { GenerateValueTaskResultCreation(arity) } : new[] { GenerateTestValues(arity), GenerateValueTaskResultCreation(arity) };
+        var given = arity == 0
+                        ? new[] { GenerateValueTaskResultCreation(arity) }
+                        : new[] { GenerateTestValues(arity), GenerateValueTaskResultCreation(arity) };
         var when = new[] { GenerateFilterErrorValueTaskCall(arity) };
         var then = new[] { "Assert.True(filteredResult.IsSuccess);" };
         return BuildTestBody(given, when, then);
@@ -88,15 +114,15 @@ internal sealed class ResultFilterErrorTestsGenerator : ResultTestGeneratorBase
 
     private string GenerateValueTaskFailureBody(ushort arity) {
         var given = new[] { GenerateValueTaskFailureResultCreation(arity) };
-        var when = new[] { GenerateFilterErrorValueTaskCall(arity) };
-        var then = new[] { "Assert.False(filteredResult.IsSuccess);", "Assert.Single(filteredResult.Errors);", "Assert.Equal(\"Test error\", filteredResult.Errors.First().Message);" };
+        var when  = new[] { GenerateFilterErrorValueTaskCall(arity) };
+        var then = new[] {
+            "Assert.False(filteredResult.IsSuccess);", "Assert.Single(filteredResult.Errors);", "Assert.Equal(\"Test error\", filteredResult.Errors.First().Message);"
+        };
         return BuildTestBody(given, when, then);
     }
 
-    private string GenerateFilterErrorSyncCall(ushort arity)
-    {
-        if (arity == 0)
-        {
+    private string GenerateFilterErrorSyncCall(ushort arity) {
+        if (arity == 0) {
             return "var filteredResult = result.FilterError(error => error.Message.Contains(\"Test\"));";
         }
 
@@ -104,10 +130,62 @@ internal sealed class ResultFilterErrorTestsGenerator : ResultTestGeneratorBase
         return $"var filteredResult = result.FilterError<{typeParams}>(error => error.Message.Contains(\"Test\"));";
     }
 
-    private string GenerateFilterErrorTaskCall(ushort arity)
-    {
-        if (arity == 0)
-        {
+    // Unified async bodies
+    private string GenerateAsyncSuccessBody(ushort arity,
+                                            string asyncType) {
+        var given = arity == 0
+                        ? new[] { GenerateAsyncResultCreation(arity,                            asyncType) }
+                        : new[] { GenerateTestValues(arity), GenerateAsyncResultCreation(arity, asyncType) };
+        var when = new[] { GenerateFilterErrorAsyncCall(arity) };
+        var then = new[] { "Assert.True(filteredResult.IsSuccess);" };
+        return BuildTestBody(given, when, then);
+    }
+
+    private string GenerateAsyncFailureBody(ushort arity,
+                                            string asyncType) {
+        var given = new[] { GenerateAsyncFailureResultCreation(arity, asyncType) };
+        var when  = new[] { GenerateFilterErrorAsyncCall(arity) };
+        var then = new[] {
+            "Assert.False(filteredResult.IsSuccess);", "Assert.Single(filteredResult.Errors);", "Assert.Equal(\"Test error\", filteredResult.Errors.First().Message);"
+        };
+        return BuildTestBody(given, when, then);
+    }
+
+    private string GenerateAsyncResultCreation(ushort arity,
+                                               string asyncType) {
+        string core;
+        if (arity == 0) {
+            core = "Result.Success()";
+        }
+        else if (arity == 1) {
+            core = "Result.Success(value1)";
+        }
+        else {
+            var values = string.Join(", ", Enumerable.Range(1, arity)
+                                                     .Select(i => $"value{i}"));
+            core = $"Result.Success({values})";
+        }
+
+        return $"var taskResult = {asyncType}.FromResult({core});";
+    }
+
+    private string GenerateAsyncFailureResultCreation(ushort arity,
+                                                      string asyncType) {
+        string core;
+        if (arity == 0) {
+            core = "Result.Failure(\"Test error\")";
+        }
+        else {
+            var typeParams = string.Join(", ", Enumerable.Range(1, arity)
+                                                         .Select(GetTestType));
+            core = $"Result.Failure<{typeParams}>(\"Test error\")";
+        }
+
+        return $"var taskResult = {asyncType}.FromResult({core});";
+    }
+
+    private string GenerateFilterErrorAsyncCall(ushort arity) {
+        if (arity == 0) {
             return "var filteredResult = await taskResult.FilterErrorAsync(error => error.Message.Contains(\"Test\"));";
         }
 
@@ -115,10 +193,17 @@ internal sealed class ResultFilterErrorTestsGenerator : ResultTestGeneratorBase
         return $"var filteredResult = await taskResult.FilterErrorAsync<{typeParams}>(error => error.Message.Contains(\"Test\"));";
     }
 
-    private string GenerateFilterErrorValueTaskCall(ushort arity)
-    {
-        if (arity == 0)
-        {
+    private string GenerateFilterErrorTaskCall(ushort arity) {
+        if (arity == 0) {
+            return "var filteredResult = await taskResult.FilterErrorAsync(error => error.Message.Contains(\"Test\"));";
+        }
+
+        var typeParams = GenerateTypeParams(arity);
+        return $"var filteredResult = await taskResult.FilterErrorAsync<{typeParams}>(error => error.Message.Contains(\"Test\"));";
+    }
+
+    private string GenerateFilterErrorValueTaskCall(ushort arity) {
+        if (arity == 0) {
             return "var filteredResult = await valueTaskResult.FilterErrorAsync(error => error.Message.Contains(\"Test\"));";
         }
 

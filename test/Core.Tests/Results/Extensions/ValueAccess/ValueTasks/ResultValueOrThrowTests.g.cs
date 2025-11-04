@@ -29,9 +29,9 @@ public class ResultValueOrThrowValueTaskTestsArity1
     public async Task ValueOrThrowValueTask_Arity1_Success_ShouldReturnValue() {
         // Given
         var value1 = 42;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1));
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
         // When
-        var actualValue = await valueTaskResult.ValueOrThrowAsync();
+        var actualValue = await taskResult.ValueOrThrowAsync();
         // Then
         Assert.Equal(value1, actualValue);
     }
@@ -39,10 +39,10 @@ public class ResultValueOrThrowValueTaskTestsArity1
     [Fact]
     public async Task ValueOrThrowValueTask_Arity1_Failure_ShouldThrowException() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
         // When
         await Assert.ThrowsAsync<Exception>(async () => {
-            valueTaskResult.ValueOrThrowAsync();
+            await taskResult.ValueOrThrowAsync();
         });
     }
     
@@ -50,10 +50,10 @@ public class ResultValueOrThrowValueTaskTestsArity1
     public async Task ValueOrThrowValueTaskWithFactory_Arity1_Success_ShouldReturnValue() {
         // Given
         var value1 = 42;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1));
-        Func<Exception> factory = () => new CustomTestException();
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
-        var actualValue = await valueTaskResult.ValueOrThrowAsync(factory);
+        var actualValue = await taskResult.ValueOrThrowAsync(factory);
         // Then
         Assert.Equal(value1, actualValue);
     }
@@ -61,11 +61,11 @@ public class ResultValueOrThrowValueTaskTestsArity1
     [Fact]
     public async Task ValueOrThrowValueTaskWithFactory_Arity1_Failure_ShouldThrowCustomException() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
-        Func<Exception> factory = () => new CustomTestException();
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
-        await Assert.ThrowsAsync<CustomTestException>(async () => {
-            valueTaskResult.ValueOrThrowAsync(factory);
+        await Assert.ThrowsAsync<Exception>(async () => {
+            await taskResult.ValueOrThrowAsync(factory);
         });
     }
     
@@ -78,20 +78,21 @@ public class ResultValueOrThrowValueTaskTestsArity1
         // Given
         var value1 = 42;
         var value2 = "test";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
         // When
-        var actualValue = await valueTaskResult.ValueOrThrowAsync();
+        var actualValue = await taskResult.ValueOrThrowAsync();
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
     }
     
     [Fact]
     public async Task ValueOrThrowValueTask_Arity2_Failure_ShouldThrowException() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
         // When
         await Assert.ThrowsAsync<Exception>(async () => {
-            valueTaskResult.ValueOrThrowAsync();
+            await taskResult.ValueOrThrowAsync();
         });
     }
     
@@ -100,22 +101,23 @@ public class ResultValueOrThrowValueTaskTestsArity1
         // Given
         var value1 = 42;
         var value2 = "test";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2));
-        Func<Exception> factory = () => new CustomTestException();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
-        var actualValue = await valueTaskResult.ValueOrThrowAsync(factory);
+        var actualValue = await taskResult.ValueOrThrowAsync(factory);
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
     }
     
     [Fact]
     public async Task ValueOrThrowValueTaskWithFactory_Arity2_Failure_ShouldThrowCustomException() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
-        Func<Exception> factory = () => new CustomTestException();
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
-        await Assert.ThrowsAsync<CustomTestException>(async () => {
-            valueTaskResult.ValueOrThrowAsync(factory);
+        await Assert.ThrowsAsync<Exception>(async () => {
+            await taskResult.ValueOrThrowAsync(factory);
         });
     }
     
@@ -129,20 +131,22 @@ public class ResultValueOrThrowValueTaskTestsArity1
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
         // When
-        var actualValue = await valueTaskResult.ValueOrThrowAsync();
+        var actualValue = await taskResult.ValueOrThrowAsync();
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
+        Assert.Equal(value3, actualValue.Item3);
     }
     
     [Fact]
     public async Task ValueOrThrowValueTask_Arity3_Failure_ShouldThrowException() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
         // When
         await Assert.ThrowsAsync<Exception>(async () => {
-            valueTaskResult.ValueOrThrowAsync();
+            await taskResult.ValueOrThrowAsync();
         });
     }
     
@@ -152,22 +156,24 @@ public class ResultValueOrThrowValueTaskTestsArity1
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
-        Func<Exception> factory = () => new CustomTestException();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
-        var actualValue = await valueTaskResult.ValueOrThrowAsync(factory);
+        var actualValue = await taskResult.ValueOrThrowAsync(factory);
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
+        Assert.Equal(value3, actualValue.Item3);
     }
     
     [Fact]
     public async Task ValueOrThrowValueTaskWithFactory_Arity3_Failure_ShouldThrowCustomException() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
-        Func<Exception> factory = () => new CustomTestException();
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
-        await Assert.ThrowsAsync<CustomTestException>(async () => {
-            valueTaskResult.ValueOrThrowAsync(factory);
+        await Assert.ThrowsAsync<Exception>(async () => {
+            await taskResult.ValueOrThrowAsync(factory);
         });
     }
     
@@ -182,20 +188,23 @@ public class ResultValueOrThrowValueTaskTestsArity1
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
         // When
-        var actualValue = await valueTaskResult.ValueOrThrowAsync();
+        var actualValue = await taskResult.ValueOrThrowAsync();
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
+        Assert.Equal(value3, actualValue.Item3);
+        Assert.Equal(value4, actualValue.Item4);
     }
     
     [Fact]
     public async Task ValueOrThrowValueTask_Arity4_Failure_ShouldThrowException() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
         // When
         await Assert.ThrowsAsync<Exception>(async () => {
-            valueTaskResult.ValueOrThrowAsync();
+            await taskResult.ValueOrThrowAsync();
         });
     }
     
@@ -206,22 +215,25 @@ public class ResultValueOrThrowValueTaskTestsArity1
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
-        Func<Exception> factory = () => new CustomTestException();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
-        var actualValue = await valueTaskResult.ValueOrThrowAsync(factory);
+        var actualValue = await taskResult.ValueOrThrowAsync(factory);
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
+        Assert.Equal(value3, actualValue.Item3);
+        Assert.Equal(value4, actualValue.Item4);
     }
     
     [Fact]
     public async Task ValueOrThrowValueTaskWithFactory_Arity4_Failure_ShouldThrowCustomException() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
-        Func<Exception> factory = () => new CustomTestException();
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
-        await Assert.ThrowsAsync<CustomTestException>(async () => {
-            valueTaskResult.ValueOrThrowAsync(factory);
+        await Assert.ThrowsAsync<Exception>(async () => {
+            await taskResult.ValueOrThrowAsync(factory);
         });
     }
     
@@ -237,20 +249,24 @@ public class ResultValueOrThrowValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
         // When
-        var actualValue = await valueTaskResult.ValueOrThrowAsync();
+        var actualValue = await taskResult.ValueOrThrowAsync();
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
+        Assert.Equal(value3, actualValue.Item3);
+        Assert.Equal(value4, actualValue.Item4);
+        Assert.Equal(value5, actualValue.Item5);
     }
     
     [Fact]
     public async Task ValueOrThrowValueTask_Arity5_Failure_ShouldThrowException() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
         // When
         await Assert.ThrowsAsync<Exception>(async () => {
-            valueTaskResult.ValueOrThrowAsync();
+            await taskResult.ValueOrThrowAsync();
         });
     }
     
@@ -262,22 +278,26 @@ public class ResultValueOrThrowValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
-        Func<Exception> factory = () => new CustomTestException();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
-        var actualValue = await valueTaskResult.ValueOrThrowAsync(factory);
+        var actualValue = await taskResult.ValueOrThrowAsync(factory);
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
+        Assert.Equal(value3, actualValue.Item3);
+        Assert.Equal(value4, actualValue.Item4);
+        Assert.Equal(value5, actualValue.Item5);
     }
     
     [Fact]
     public async Task ValueOrThrowValueTaskWithFactory_Arity5_Failure_ShouldThrowCustomException() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
-        Func<Exception> factory = () => new CustomTestException();
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
-        await Assert.ThrowsAsync<CustomTestException>(async () => {
-            valueTaskResult.ValueOrThrowAsync(factory);
+        await Assert.ThrowsAsync<Exception>(async () => {
+            await taskResult.ValueOrThrowAsync(factory);
         });
     }
     
@@ -294,20 +314,25 @@ public class ResultValueOrThrowValueTaskTestsArity1
         var value4 = 3.14;
         var value5 = 123L;
         var value6 = "value6";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
         // When
-        var actualValue = await valueTaskResult.ValueOrThrowAsync();
+        var actualValue = await taskResult.ValueOrThrowAsync();
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
+        Assert.Equal(value3, actualValue.Item3);
+        Assert.Equal(value4, actualValue.Item4);
+        Assert.Equal(value5, actualValue.Item5);
+        Assert.Equal(value6, actualValue.Item6);
     }
     
     [Fact]
     public async Task ValueOrThrowValueTask_Arity6_Failure_ShouldThrowException() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
         // When
         await Assert.ThrowsAsync<Exception>(async () => {
-            valueTaskResult.ValueOrThrowAsync();
+            await taskResult.ValueOrThrowAsync();
         });
     }
     
@@ -320,22 +345,27 @@ public class ResultValueOrThrowValueTaskTestsArity1
         var value4 = 3.14;
         var value5 = 123L;
         var value6 = "value6";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
-        Func<Exception> factory = () => new CustomTestException();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
-        var actualValue = await valueTaskResult.ValueOrThrowAsync(factory);
+        var actualValue = await taskResult.ValueOrThrowAsync(factory);
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
+        Assert.Equal(value3, actualValue.Item3);
+        Assert.Equal(value4, actualValue.Item4);
+        Assert.Equal(value5, actualValue.Item5);
+        Assert.Equal(value6, actualValue.Item6);
     }
     
     [Fact]
     public async Task ValueOrThrowValueTaskWithFactory_Arity6_Failure_ShouldThrowCustomException() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
-        Func<Exception> factory = () => new CustomTestException();
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
-        await Assert.ThrowsAsync<CustomTestException>(async () => {
-            valueTaskResult.ValueOrThrowAsync(factory);
+        await Assert.ThrowsAsync<Exception>(async () => {
+            await taskResult.ValueOrThrowAsync(factory);
         });
     }
     
@@ -353,20 +383,26 @@ public class ResultValueOrThrowValueTaskTestsArity1
         var value5 = 123L;
         var value6 = "value6";
         var value7 = "value7";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
         // When
-        var actualValue = await valueTaskResult.ValueOrThrowAsync();
+        var actualValue = await taskResult.ValueOrThrowAsync();
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
+        Assert.Equal(value3, actualValue.Item3);
+        Assert.Equal(value4, actualValue.Item4);
+        Assert.Equal(value5, actualValue.Item5);
+        Assert.Equal(value6, actualValue.Item6);
+        Assert.Equal(value7, actualValue.Item7);
     }
     
     [Fact]
     public async Task ValueOrThrowValueTask_Arity7_Failure_ShouldThrowException() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
         // When
         await Assert.ThrowsAsync<Exception>(async () => {
-            valueTaskResult.ValueOrThrowAsync();
+            await taskResult.ValueOrThrowAsync();
         });
     }
     
@@ -380,22 +416,28 @@ public class ResultValueOrThrowValueTaskTestsArity1
         var value5 = 123L;
         var value6 = "value6";
         var value7 = "value7";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
-        Func<Exception> factory = () => new CustomTestException();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
-        var actualValue = await valueTaskResult.ValueOrThrowAsync(factory);
+        var actualValue = await taskResult.ValueOrThrowAsync(factory);
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
+        Assert.Equal(value3, actualValue.Item3);
+        Assert.Equal(value4, actualValue.Item4);
+        Assert.Equal(value5, actualValue.Item5);
+        Assert.Equal(value6, actualValue.Item6);
+        Assert.Equal(value7, actualValue.Item7);
     }
     
     [Fact]
     public async Task ValueOrThrowValueTaskWithFactory_Arity7_Failure_ShouldThrowCustomException() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
-        Func<Exception> factory = () => new CustomTestException();
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
-        await Assert.ThrowsAsync<CustomTestException>(async () => {
-            valueTaskResult.ValueOrThrowAsync(factory);
+        await Assert.ThrowsAsync<Exception>(async () => {
+            await taskResult.ValueOrThrowAsync(factory);
         });
     }
     
@@ -414,20 +456,27 @@ public class ResultValueOrThrowValueTaskTestsArity1
         var value6 = "value6";
         var value7 = "value7";
         var value8 = "value8";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
         // When
-        var actualValue = await valueTaskResult.ValueOrThrowAsync();
+        var actualValue = await taskResult.ValueOrThrowAsync();
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
+        Assert.Equal(value3, actualValue.Item3);
+        Assert.Equal(value4, actualValue.Item4);
+        Assert.Equal(value5, actualValue.Item5);
+        Assert.Equal(value6, actualValue.Item6);
+        Assert.Equal(value7, actualValue.Item7);
+        Assert.Equal(value8, actualValue.Rest.Item1);
     }
     
     [Fact]
     public async Task ValueOrThrowValueTask_Arity8_Failure_ShouldThrowException() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
         // When
         await Assert.ThrowsAsync<Exception>(async () => {
-            valueTaskResult.ValueOrThrowAsync();
+            await taskResult.ValueOrThrowAsync();
         });
     }
     
@@ -442,22 +491,29 @@ public class ResultValueOrThrowValueTaskTestsArity1
         var value6 = "value6";
         var value7 = "value7";
         var value8 = "value8";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
-        Func<Exception> factory = () => new CustomTestException();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
-        var actualValue = await valueTaskResult.ValueOrThrowAsync(factory);
+        var actualValue = await taskResult.ValueOrThrowAsync(factory);
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
+        Assert.Equal(value3, actualValue.Item3);
+        Assert.Equal(value4, actualValue.Item4);
+        Assert.Equal(value5, actualValue.Item5);
+        Assert.Equal(value6, actualValue.Item6);
+        Assert.Equal(value7, actualValue.Item7);
+        Assert.Equal(value8, actualValue.Rest.Item1);
     }
     
     [Fact]
     public async Task ValueOrThrowValueTaskWithFactory_Arity8_Failure_ShouldThrowCustomException() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
-        Func<Exception> factory = () => new CustomTestException();
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
-        await Assert.ThrowsAsync<CustomTestException>(async () => {
-            valueTaskResult.ValueOrThrowAsync(factory);
+        await Assert.ThrowsAsync<Exception>(async () => {
+            await taskResult.ValueOrThrowAsync(factory);
         });
     }
     

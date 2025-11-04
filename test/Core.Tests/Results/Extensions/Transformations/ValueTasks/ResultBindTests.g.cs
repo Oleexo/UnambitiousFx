@@ -29,9 +29,9 @@ public class ResultBindValueTaskTestsArity1
     public async Task BindValueTask_Arity1_Success_ShouldTransform() {
         // Given
         var value1 = 42;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1));
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
         // When
-        var transformedResult = await valueTaskResult.BindAsync(x => Result.Success(x * 2));
+        var transformedResult = await taskResult.BindAsync(x => Result.Success(x * 2));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -39,9 +39,9 @@ public class ResultBindValueTaskTestsArity1
     [Fact]
     public async Task BindValueTask_Arity1_Failure_ShouldNotTransform() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
         // When
-        var transformedResult = await valueTaskResult.BindAsync(x => Result.Success(x * 2));
+        var transformedResult = await taskResult.BindAsync(x => Result.Success(x * 2));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -55,9 +55,9 @@ public class ResultBindValueTaskTestsArity1
         // Given
         var value1 = 42;
         var value2 = "test";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
         // When
-        var transformedResult = await valueTaskResult.BindAsync((x1, x2) => Result.Success(x1 + "_bound", x2 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2) => Result.Success(x1 + "_bound", x2 + "_bound"));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -65,9 +65,9 @@ public class ResultBindValueTaskTestsArity1
     [Fact]
     public async Task BindValueTask_Arity2_Failure_ShouldNotTransform() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
         // When
-        var transformedResult = await valueTaskResult.BindAsync((x1, x2) => Result.Success(x1 + "_bound", x2 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2) => Result.Success(x1 + "_bound", x2 + "_bound"));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -82,9 +82,9 @@ public class ResultBindValueTaskTestsArity1
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
         // When
-        var transformedResult = await valueTaskResult.BindAsync((x1, x2, x3) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound"));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -92,9 +92,9 @@ public class ResultBindValueTaskTestsArity1
     [Fact]
     public async Task BindValueTask_Arity3_Failure_ShouldNotTransform() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
         // When
-        var transformedResult = await valueTaskResult.BindAsync((x1, x2, x3) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound"));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -110,9 +110,9 @@ public class ResultBindValueTaskTestsArity1
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
         // When
-        var transformedResult = await valueTaskResult.BindAsync((x1, x2, x3, x4) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound"));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -120,9 +120,9 @@ public class ResultBindValueTaskTestsArity1
     [Fact]
     public async Task BindValueTask_Arity4_Failure_ShouldNotTransform() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
         // When
-        var transformedResult = await valueTaskResult.BindAsync((x1, x2, x3, x4) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound"));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -139,9 +139,9 @@ public class ResultBindValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
         // When
-        var transformedResult = await valueTaskResult.BindAsync((x1, x2, x3, x4, x5) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound", x5 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound", x5 + "_bound"));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -149,9 +149,9 @@ public class ResultBindValueTaskTestsArity1
     [Fact]
     public async Task BindValueTask_Arity5_Failure_ShouldNotTransform() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
         // When
-        var transformedResult = await valueTaskResult.BindAsync((x1, x2, x3, x4, x5) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound", x5 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound", x5 + "_bound"));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -169,9 +169,9 @@ public class ResultBindValueTaskTestsArity1
         var value4 = 3.14;
         var value5 = 123L;
         var value6 = "value6";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
         // When
-        var transformedResult = await valueTaskResult.BindAsync((x1, x2, x3, x4, x5, x6) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound", x5 + "_bound", x6 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound", x5 + "_bound", x6 + "_bound"));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -179,9 +179,9 @@ public class ResultBindValueTaskTestsArity1
     [Fact]
     public async Task BindValueTask_Arity6_Failure_ShouldNotTransform() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
         // When
-        var transformedResult = await valueTaskResult.BindAsync((x1, x2, x3, x4, x5, x6) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound", x5 + "_bound", x6 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound", x5 + "_bound", x6 + "_bound"));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -200,9 +200,9 @@ public class ResultBindValueTaskTestsArity1
         var value5 = 123L;
         var value6 = "value6";
         var value7 = "value7";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
         // When
-        var transformedResult = await valueTaskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound", x5 + "_bound", x6 + "_bound", x7 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound", x5 + "_bound", x6 + "_bound", x7 + "_bound"));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -210,9 +210,9 @@ public class ResultBindValueTaskTestsArity1
     [Fact]
     public async Task BindValueTask_Arity7_Failure_ShouldNotTransform() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
         // When
-        var transformedResult = await valueTaskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound", x5 + "_bound", x6 + "_bound", x7 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound", x5 + "_bound", x6 + "_bound", x7 + "_bound"));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -232,9 +232,9 @@ public class ResultBindValueTaskTestsArity1
         var value6 = "value6";
         var value7 = "value7";
         var value8 = "value8";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
         // When
-        var transformedResult = await valueTaskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound", x5 + "_bound", x6 + "_bound", x7 + "_bound", x8 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound", x5 + "_bound", x6 + "_bound", x7 + "_bound", x8 + "_bound"));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -242,9 +242,9 @@ public class ResultBindValueTaskTestsArity1
     [Fact]
     public async Task BindValueTask_Arity8_Failure_ShouldNotTransform() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
         // When
-        var transformedResult = await valueTaskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound", x5 + "_bound", x6 + "_bound", x7 + "_bound", x8 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound", x5 + "_bound", x6 + "_bound", x7 + "_bound", x8 + "_bound"));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }

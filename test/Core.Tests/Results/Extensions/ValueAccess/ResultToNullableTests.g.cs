@@ -33,7 +33,7 @@ public class ResultToNullableSyncTestsArity1
         // When
         var nullableValue = result.ToNullable();
         // Then
-        Assert.Equal(value1, nullableValue.GetValueOrDefault());
+        Assert.Equal(value1, nullableValue);
     }
     
     [Fact]
@@ -43,7 +43,7 @@ public class ResultToNullableSyncTestsArity1
         // When
         var nullableValue = result.ToNullable();
         // Then
-        Assert.Equal(default, nullableValue.GetValueOrDefault());
+        Assert.Equal(default, nullableValue);
     }
     
     #endregion // Arity 1 - Sync ToNullable
@@ -71,7 +71,7 @@ public class ResultToNullableSyncTestsArity1
         // When
         var nullableValue = result.ToNullable();
         // Then
-        Assert.Equal(default, nullableValue.GetValueOrDefault());
+        Assert.Equal(default, nullableValue);
     }
     
     #endregion // Arity 2 - Sync ToNullable
@@ -101,7 +101,7 @@ public class ResultToNullableSyncTestsArity1
         // When
         var nullableValue = result.ToNullable();
         // Then
-        Assert.Equal(default, nullableValue.GetValueOrDefault());
+        Assert.Equal(default, nullableValue);
     }
     
     #endregion // Arity 3 - Sync ToNullable
@@ -133,7 +133,7 @@ public class ResultToNullableSyncTestsArity1
         // When
         var nullableValue = result.ToNullable();
         // Then
-        Assert.Equal(default, nullableValue.GetValueOrDefault());
+        Assert.Equal(default, nullableValue);
     }
     
     #endregion // Arity 4 - Sync ToNullable
@@ -167,7 +167,7 @@ public class ResultToNullableSyncTestsArity1
         // When
         var nullableValue = result.ToNullable();
         // Then
-        Assert.Equal(default, nullableValue.GetValueOrDefault());
+        Assert.Equal(default, nullableValue);
     }
     
     #endregion // Arity 5 - Sync ToNullable
@@ -203,7 +203,7 @@ public class ResultToNullableSyncTestsArity1
         // When
         var nullableValue = result.ToNullable();
         // Then
-        Assert.Equal(default, nullableValue.GetValueOrDefault());
+        Assert.Equal(default, nullableValue);
     }
     
     #endregion // Arity 6 - Sync ToNullable
@@ -241,7 +241,7 @@ public class ResultToNullableSyncTestsArity1
         // When
         var nullableValue = result.ToNullable();
         // Then
-        Assert.Equal(default, nullableValue.GetValueOrDefault());
+        Assert.Equal(default, nullableValue);
     }
     
     #endregion // Arity 7 - Sync ToNullable
@@ -281,7 +281,7 @@ public class ResultToNullableSyncTestsArity1
         // When
         var nullableValue = result.ToNullable();
         // Then
-        Assert.Equal(default, nullableValue.GetValueOrDefault());
+        Assert.Equal(default, nullableValue);
     }
     
     #endregion // Arity 8 - Sync ToNullable

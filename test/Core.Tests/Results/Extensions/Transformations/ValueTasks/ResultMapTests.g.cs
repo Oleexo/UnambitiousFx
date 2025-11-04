@@ -29,9 +29,9 @@ public class ResultMapValueTaskTestsArity1
     public async Task MapValueTask_Arity1_Success_ShouldTransform() {
         // Given
         var value1 = 42;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1));
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
         // When
-        var transformedResult = await valueTaskResult.MapAsync(x => x * 2);
+        var transformedResult = await taskResult.MapAsync(x => x * 2);
         // Then
         Assert.True(transformedResult.IsSuccess);
         Assert.Equal(84, transformedResult.TryGet(out var v) ? v : 0);
@@ -40,9 +40,9 @@ public class ResultMapValueTaskTestsArity1
     [Fact]
     public async Task MapValueTask_Arity1_Failure_ShouldNotTransform() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
         // When
-        var transformedResult = await valueTaskResult.MapAsync(x => x * 2);
+        var transformedResult = await taskResult.MapAsync(x => x * 2);
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -56,9 +56,9 @@ public class ResultMapValueTaskTestsArity1
         // Given
         var value1 = 42;
         var value2 = "test";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
         // When
-        var transformedResult = await valueTaskResult.MapAsync((x1, x2) => (x1 + "_mapped", x2 + "_mapped"));
+        var transformedResult = await taskResult.MapAsync((x1, x2) => (x1 + "_mapped", x2 + "_mapped"));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -66,9 +66,9 @@ public class ResultMapValueTaskTestsArity1
     [Fact]
     public async Task MapValueTask_Arity2_Failure_ShouldNotTransform() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
         // When
-        var transformedResult = await valueTaskResult.MapAsync((x1, x2) => (x1 + "_mapped", x2 + "_mapped"));
+        var transformedResult = await taskResult.MapAsync((x1, x2) => (x1 + "_mapped", x2 + "_mapped"));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -83,9 +83,9 @@ public class ResultMapValueTaskTestsArity1
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
         // When
-        var transformedResult = await valueTaskResult.MapAsync((x1, x2, x3) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped"));
+        var transformedResult = await taskResult.MapAsync((x1, x2, x3) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped"));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -93,9 +93,9 @@ public class ResultMapValueTaskTestsArity1
     [Fact]
     public async Task MapValueTask_Arity3_Failure_ShouldNotTransform() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
         // When
-        var transformedResult = await valueTaskResult.MapAsync((x1, x2, x3) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped"));
+        var transformedResult = await taskResult.MapAsync((x1, x2, x3) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped"));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -111,9 +111,9 @@ public class ResultMapValueTaskTestsArity1
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
         // When
-        var transformedResult = await valueTaskResult.MapAsync((x1, x2, x3, x4) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped"));
+        var transformedResult = await taskResult.MapAsync((x1, x2, x3, x4) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped"));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -121,9 +121,9 @@ public class ResultMapValueTaskTestsArity1
     [Fact]
     public async Task MapValueTask_Arity4_Failure_ShouldNotTransform() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
         // When
-        var transformedResult = await valueTaskResult.MapAsync((x1, x2, x3, x4) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped"));
+        var transformedResult = await taskResult.MapAsync((x1, x2, x3, x4) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped"));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -140,9 +140,9 @@ public class ResultMapValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
         // When
-        var transformedResult = await valueTaskResult.MapAsync((x1, x2, x3, x4, x5) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped", x5 + "_mapped"));
+        var transformedResult = await taskResult.MapAsync((x1, x2, x3, x4, x5) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped", x5 + "_mapped"));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -150,9 +150,9 @@ public class ResultMapValueTaskTestsArity1
     [Fact]
     public async Task MapValueTask_Arity5_Failure_ShouldNotTransform() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
         // When
-        var transformedResult = await valueTaskResult.MapAsync((x1, x2, x3, x4, x5) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped", x5 + "_mapped"));
+        var transformedResult = await taskResult.MapAsync((x1, x2, x3, x4, x5) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped", x5 + "_mapped"));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -170,9 +170,9 @@ public class ResultMapValueTaskTestsArity1
         var value4 = 3.14;
         var value5 = 123L;
         var value6 = "value6";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
         // When
-        var transformedResult = await valueTaskResult.MapAsync((x1, x2, x3, x4, x5, x6) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped", x5 + "_mapped", x6 + "_mapped"));
+        var transformedResult = await taskResult.MapAsync((x1, x2, x3, x4, x5, x6) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped", x5 + "_mapped", x6 + "_mapped"));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -180,9 +180,9 @@ public class ResultMapValueTaskTestsArity1
     [Fact]
     public async Task MapValueTask_Arity6_Failure_ShouldNotTransform() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
         // When
-        var transformedResult = await valueTaskResult.MapAsync((x1, x2, x3, x4, x5, x6) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped", x5 + "_mapped", x6 + "_mapped"));
+        var transformedResult = await taskResult.MapAsync((x1, x2, x3, x4, x5, x6) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped", x5 + "_mapped", x6 + "_mapped"));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -201,9 +201,9 @@ public class ResultMapValueTaskTestsArity1
         var value5 = 123L;
         var value6 = "value6";
         var value7 = "value7";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
         // When
-        var transformedResult = await valueTaskResult.MapAsync((x1, x2, x3, x4, x5, x6, x7) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped", x5 + "_mapped", x6 + "_mapped", x7 + "_mapped"));
+        var transformedResult = await taskResult.MapAsync((x1, x2, x3, x4, x5, x6, x7) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped", x5 + "_mapped", x6 + "_mapped", x7 + "_mapped"));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -211,9 +211,9 @@ public class ResultMapValueTaskTestsArity1
     [Fact]
     public async Task MapValueTask_Arity7_Failure_ShouldNotTransform() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
         // When
-        var transformedResult = await valueTaskResult.MapAsync((x1, x2, x3, x4, x5, x6, x7) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped", x5 + "_mapped", x6 + "_mapped", x7 + "_mapped"));
+        var transformedResult = await taskResult.MapAsync((x1, x2, x3, x4, x5, x6, x7) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped", x5 + "_mapped", x6 + "_mapped", x7 + "_mapped"));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -233,9 +233,9 @@ public class ResultMapValueTaskTestsArity1
         var value6 = "value6";
         var value7 = "value7";
         var value8 = "value8";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
         // When
-        var transformedResult = await valueTaskResult.MapAsync((x1, x2, x3, x4, x5, x6, x7, x8) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped", x5 + "_mapped", x6 + "_mapped", x7 + "_mapped", x8 + "_mapped"));
+        var transformedResult = await taskResult.MapAsync((x1, x2, x3, x4, x5, x6, x7, x8) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped", x5 + "_mapped", x6 + "_mapped", x7 + "_mapped", x8 + "_mapped"));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -243,9 +243,9 @@ public class ResultMapValueTaskTestsArity1
     [Fact]
     public async Task MapValueTask_Arity8_Failure_ShouldNotTransform() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
         // When
-        var transformedResult = await valueTaskResult.MapAsync((x1, x2, x3, x4, x5, x6, x7, x8) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped", x5 + "_mapped", x6 + "_mapped", x7 + "_mapped", x8 + "_mapped"));
+        var transformedResult = await taskResult.MapAsync((x1, x2, x3, x4, x5, x6, x7, x8) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped", x5 + "_mapped", x6 + "_mapped", x7 + "_mapped", x8 + "_mapped"));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }

@@ -4,17 +4,23 @@ using UnambitiousFx.Core.CodeGen.TestBuilders.AttributeReferences;
 
 namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results;
 
-internal sealed class ResultValueOrTestsGenerator : ResultTestGeneratorBase { // base changed
+internal sealed class ResultValueOrTestsGenerator : ResultTestGeneratorBase {
+    // base changed
     private const int    StartArity          = 1;
     private const string ClassName           = "ResultValueOrTests";
     private const string ExtensionsNamespace = "Results.Extensions.ValueAccess";
 
-    public ResultValueOrTestsGenerator(string baseNamespace,
+    public ResultValueOrTestsGenerator(string               baseNamespace,
                                        FileOrganizationMode fileOrganization)
-        : base(new GenerationConfig(baseNamespace, StartArity, ExtensionsNamespace, ClassName, fileOrganization, true)) { }
+        : base(new GenerationConfig(baseNamespace, StartArity, ExtensionsNamespace, ClassName, fileOrganization, true)) {
+    }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) =>
-        GenerateVariants(arity, ClassName, (GenerateSyncTests, false), (GenerateTaskTests, true), (GenerateValueTaskTests, true));
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
+        return GenerateVariants(arity, ClassName,
+                                (GenerateSyncTests, false),
+                                (x => GenerateAsyncTests(x, "Task"), true),
+                                (x => GenerateAsyncTests(x, "ValueTask"), true));
+    }
 
     private ClassWriter GenerateSyncTests(ushort arity) {
         var cw = new ClassWriter($"ResultValueOrSyncTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Sync ValueOr" };
@@ -27,40 +33,67 @@ internal sealed class ResultValueOrTestsGenerator : ResultTestGeneratorBase { //
         return cw;
     }
 
-    private ClassWriter GenerateTaskTests(ushort arity) {
-        var cw = new ClassWriter($"ResultValueOrTaskTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Task ValueOr" };
-        cw.AddMethod(GenerateTaskSuccessTest(arity));
-        cw.AddMethod(GenerateTaskFailureTest(arity));
-        cw.AddMethod(GenerateTaskSuccessWithFactoryTest(arity));
-        cw.AddMethod(GenerateTaskFailureWithFactoryTest(arity));
-        cw.AddUsing("UnambitiousFx.Core.Results.Extensions.ValueAccess.Tasks");
-        cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.Tasks";
+    private ClassWriter GenerateAsyncTests(ushort arity,
+                                           string asyncType) {
+        var cw = new ClassWriter($"ResultValueOr{asyncType}TestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - {asyncType} ValueOr" };
+        cw.AddMethod(GenerateAsyncSuccessTest(arity, asyncType));
+        cw.AddMethod(GenerateAsyncFailureTest(arity, asyncType));
+        cw.AddMethod(GenerateAsyncSuccessWithFactoryTest(arity, asyncType));
+        cw.AddMethod(GenerateAsyncFailureWithFactoryTest(arity, asyncType));
+        cw.AddUsing($"UnambitiousFx.Core.Results.Extensions.ValueAccess.{asyncType}s");
+        cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.{asyncType}s";
         return cw;
     }
 
-    private ClassWriter GenerateValueTaskTests(ushort arity) {
-        var cw = new ClassWriter($"ResultValueOrValueTaskTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - ValueTask ValueOr" };
-        cw.AddMethod(GenerateValueTaskSuccessTest(arity));
-        cw.AddMethod(GenerateValueTaskFailureTest(arity));
-        cw.AddMethod(GenerateValueTaskSuccessWithFactoryTest(arity));
-        cw.AddMethod(GenerateValueTaskFailureWithFactoryTest(arity));
-        cw.AddUsing("UnambitiousFx.Core.Results.Extensions.ValueAccess.ValueTasks");
-        cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.ValueTasks";
-        return cw;
+    private MethodWriter GenerateSyncSuccessTest(ushort arity) {
+        return new MethodWriter($"ValueOr_Arity{arity}_Success_ShouldReturnValue", "void", GenerateSyncSuccessBody(arity),
+                                attributes: [new FactAttributeReference()], usings: GetUsings());
     }
 
-    private MethodWriter GenerateSyncSuccessTest(ushort arity) => new($"ValueOr_Arity{arity}_Success_ShouldReturnValue", "void", GenerateSyncSuccessBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateSyncFailureTest(ushort arity) => new($"ValueOr_Arity{arity}_Failure_ShouldReturnFallback", "void", GenerateSyncFailureBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateSyncSuccessWithFactoryTest(ushort arity) => new($"ValueOrWithFactory_Arity{arity}_Success_ShouldReturnValue", "void", GenerateSyncSuccessWithFactoryBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateSyncFailureWithFactoryTest(ushort arity) => new($"ValueOrWithFactory_Arity{arity}_Failure_ShouldReturnFactoryValue", "void", GenerateSyncFailureWithFactoryBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateTaskSuccessTest(ushort arity) => new($"ValueOrTask_Arity{arity}_Success_ShouldReturnValue", "async Task", GenerateTaskSuccessBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateTaskFailureTest(ushort arity) => new($"ValueOrTask_Arity{arity}_Failure_ShouldReturnFallback", "async Task", GenerateTaskFailureBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateTaskSuccessWithFactoryTest(ushort arity) => new($"ValueOrTaskWithFactory_Arity{arity}_Success_ShouldReturnValue", "async Task", GenerateTaskSuccessWithFactoryBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateTaskFailureWithFactoryTest(ushort arity) => new($"ValueOrTaskWithFactory_Arity{arity}_Failure_ShouldReturnFactoryValue", "async Task", GenerateTaskFailureWithFactoryBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateValueTaskSuccessTest(ushort arity) => new($"ValueOrValueTask_Arity{arity}_Success_ShouldReturnValue", "async Task", GenerateValueTaskSuccessBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateValueTaskFailureTest(ushort arity) => new($"ValueOrValueTask_Arity{arity}_Failure_ShouldReturnFallback", "async Task", GenerateValueTaskFailureBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateValueTaskSuccessWithFactoryTest(ushort arity) => new($"ValueOrValueTaskWithFactory_Arity{arity}_Success_ShouldReturnValue", "async Task", GenerateValueTaskSuccessWithFactoryBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateValueTaskFailureWithFactoryTest(ushort arity) => new($"ValueOrValueTaskWithFactory_Arity{arity}_Failure_ShouldReturnFactoryValue", "async Task", GenerateValueTaskFailureWithFactoryBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
+    private MethodWriter GenerateSyncFailureTest(ushort arity) {
+        return new MethodWriter($"ValueOr_Arity{arity}_Failure_ShouldReturnFallback", "void", GenerateSyncFailureBody(arity),
+                                attributes: [new FactAttributeReference()], usings: GetUsings());
+    }
+
+    private MethodWriter GenerateSyncSuccessWithFactoryTest(ushort arity) {
+        return new MethodWriter($"ValueOrWithFactory_Arity{arity}_Success_ShouldReturnValue", "void",
+                                GenerateSyncSuccessWithFactoryBody(arity), attributes: [new FactAttributeReference()],
+                                usings: GetUsings());
+    }
+
+    private MethodWriter GenerateSyncFailureWithFactoryTest(ushort arity) {
+        return new MethodWriter($"ValueOrWithFactory_Arity{arity}_Failure_ShouldReturnFactoryValue", "void",
+                                GenerateSyncFailureWithFactoryBody(arity), attributes: [new FactAttributeReference()],
+                                usings: GetUsings());
+    }
+
+    private MethodWriter GenerateAsyncSuccessTest(ushort arity,
+                                                  string asyncType) {
+        return new MethodWriter($"ValueOr{asyncType}_Arity{arity}_Success_ShouldReturnValue", "async Task",
+                                GenerateAsyncSuccessBody(arity, asyncType), attributes: [new FactAttributeReference()],
+                                usings: GetUsings());
+    }
+
+    private MethodWriter GenerateAsyncFailureTest(ushort arity,
+                                                  string asyncType) {
+        return new MethodWriter($"ValueOr{asyncType}_Arity{arity}_Failure_ShouldReturnFallback", "async Task",
+                                GenerateAsyncFailureBody(arity, asyncType), attributes: [new FactAttributeReference()],
+                                usings: GetUsings());
+    }
+
+    private MethodWriter GenerateAsyncSuccessWithFactoryTest(ushort arity,
+                                                             string asyncType) {
+        return new MethodWriter($"ValueOr{asyncType}WithFactory_Arity{arity}_Success_ShouldReturnValue", "async Task",
+                                GenerateAsyncSuccessWithFactoryBody(arity, asyncType),
+                                attributes: [new FactAttributeReference()], usings: GetUsings());
+    }
+
+    private MethodWriter GenerateAsyncFailureWithFactoryTest(ushort arity,
+                                                             string asyncType) {
+        return new MethodWriter($"ValueOr{asyncType}WithFactory_Arity{arity}_Failure_ShouldReturnFactoryValue", "async Task",
+                                GenerateAsyncFailureWithFactoryBody(arity, asyncType),
+                                attributes: [new FactAttributeReference()], usings: GetUsings());
+    }
 
     private string GenerateSyncSuccessBody(ushort arity) {
         var testValues     = GenerateTestValues(arity);
@@ -96,94 +129,133 @@ internal sealed class ResultValueOrTestsGenerator : ResultTestGeneratorBase { //
         return BuildTestBody([failureCreation, factoryDefinition], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
     }
 
-    private string GenerateTaskSuccessBody(ushort arity) {
+    private string GenerateAsyncSuccessBody(ushort arity,
+                                            string asyncType) {
         var testValues     = GenerateTestValues(arity);
-        var creation       = GenerateTaskResultCreation(arity);
+        var creation       = GenerateAsyncResultCreation(arity, asyncType);
         var fallbackValues = GenerateFallbackValues(arity);
-        var call           = GenerateValueOrTaskCall(arity);
+        var call           = GenerateValueOrAsyncCall(arity);
         var assertions     = GenerateValueOrSuccessAssertions(arity);
         return BuildTestBody([testValues, creation, fallbackValues], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
     }
 
-    private string GenerateTaskFailureBody(ushort arity) {
-        var creation       = GenerateTaskFailureResultCreation(arity);
+    private string GenerateAsyncFailureBody(ushort arity,
+                                            string asyncType) {
+        var creation       = GenerateAsyncFailureResultCreation(arity, asyncType);
         var fallbackValues = GenerateFallbackValues(arity);
-        var call           = GenerateValueOrTaskCall(arity);
+        var call           = GenerateValueOrAsyncCall(arity);
         var assertions     = GenerateValueOrFailureAssertions(arity);
         return BuildTestBody([creation, fallbackValues], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
     }
 
-    private string GenerateTaskSuccessWithFactoryBody(ushort arity) {
+    private string GenerateAsyncSuccessWithFactoryBody(ushort arity,
+                                                       string asyncType) {
         var testValues        = GenerateTestValues(arity);
-        var creation          = GenerateTaskResultCreation(arity);
+        var creation          = GenerateAsyncResultCreation(arity, asyncType);
         var factoryDefinition = GenerateFactoryDefinition(arity);
-        var call              = GenerateValueOrTaskWithFactoryCall(arity);
+        var call              = GenerateValueOrAsyncWithFactoryCall(arity);
         var assertions        = GenerateValueOrSuccessAssertions(arity);
         return BuildTestBody([testValues, creation, factoryDefinition], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
     }
 
-    private string GenerateTaskFailureWithFactoryBody(ushort arity) {
-        var creation          = GenerateTaskFailureResultCreation(arity);
+    private string GenerateAsyncFailureWithFactoryBody(ushort arity,
+                                                       string asyncType) {
+        var creation          = GenerateAsyncFailureResultCreation(arity, asyncType);
         var factoryDefinition = GenerateFactoryDefinition(arity);
-        var call              = GenerateValueOrTaskWithFactoryCall(arity);
+        var call              = GenerateValueOrAsyncWithFactoryCall(arity);
         var assertions        = GenerateValueOrFactoryFailureAssertions(arity);
         return BuildTestBody([creation, factoryDefinition], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
     }
 
-    private string GenerateValueTaskSuccessBody(ushort arity) {
-        var testValues     = GenerateTestValues(arity);
-        var creation       = GenerateValueTaskResultCreation(arity);
-        var fallbackValues = GenerateFallbackValues(arity);
-        var call           = GenerateValueOrValueTaskCall(arity);
-        var assertions     = GenerateValueOrSuccessAssertions(arity);
-        return BuildTestBody([testValues, creation, fallbackValues], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
+    private string GenerateValueOrSyncCall(ushort arity) {
+        return arity == 1
+                   ? "var actualValue = result.ValueOr(fallback1);"
+                   : $"var actualValue = result.ValueOr({string.Join(", ", Enumerable.Range(1, arity).Select(i => $"fallback{i}"))});";
     }
 
-    private string GenerateValueTaskFailureBody(ushort arity) {
-        var creation       = GenerateValueTaskFailureResultCreation(arity);
-        var fallbackValues = GenerateFallbackValues(arity);
-        var call           = GenerateValueOrValueTaskCall(arity);
-        var assertions     = GenerateValueOrFailureAssertions(arity);
-        return BuildTestBody([creation, fallbackValues], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
+    private string GenerateValueOrSyncWithFactoryCall(ushort arity) {
+        return "var actualValue = result.ValueOr(factory);";
     }
 
-    private string GenerateValueTaskSuccessWithFactoryBody(ushort arity) {
-        var testValues        = GenerateTestValues(arity);
-        var creation          = GenerateValueTaskResultCreation(arity);
-        var factoryDefinition = GenerateFactoryDefinition(arity);
-        var call              = GenerateValueOrValueTaskWithFactoryCall(arity);
-        var assertions        = GenerateValueOrSuccessAssertions(arity);
-        return BuildTestBody([testValues, creation, factoryDefinition], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
+    private string GenerateAsyncResultCreation(ushort arity,
+                                               string asyncType) {
+        string core;
+        if (arity == 0) {
+            core = "Result.Success()";
+        }
+        else if (arity == 1) {
+            core = "Result.Success(value1)";
+        }
+        else {
+            var values = string.Join(", ", Enumerable.Range(1, arity)
+                                                     .Select(i => $"value{i}"));
+            core = $"Result.Success({values})";
+        }
+
+        return $"var taskResult = {asyncType}.FromResult({core});";
     }
 
-    private string GenerateValueTaskFailureWithFactoryBody(ushort arity) {
-        var creation          = GenerateValueTaskFailureResultCreation(arity);
-        var factoryDefinition = GenerateFactoryDefinition(arity);
-        var call              = GenerateValueOrValueTaskWithFactoryCall(arity);
-        var assertions        = GenerateValueOrFactoryFailureAssertions(arity);
-        return BuildTestBody([creation, factoryDefinition], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
+    private string GenerateAsyncFailureResultCreation(ushort arity,
+                                                      string asyncType) {
+        string core;
+        if (arity == 0) {
+            core = "Result.Failure(\"Test error\")";
+        }
+        else {
+            var typeParams = string.Join(", ", Enumerable.Range(1, arity)
+                                                         .Select(GetTestType));
+            core = $"Result.Failure<{typeParams}>(\"Test error\")";
+        }
+
+        return $"var taskResult = {asyncType}.FromResult({core});";
     }
 
-    private string GenerateValueOrSyncCall(ushort arity) => arity == 1 ? "var actualValue = result.ValueOr(fallback1);" : $"var actualValue = result.ValueOr({string.Join(", ", Enumerable.Range(1, arity).Select(i => $"fallback{i}"))});";
-    private string GenerateValueOrSyncWithFactoryCall(ushort arity) => "var actualValue = result.ValueOr(factory);";
-    private string GenerateValueOrTaskCall(ushort arity) => arity == 1 ? "var actualValue = await taskResult.ValueOrAsync(fallback1);" : $"var actualValue = await taskResult.ValueOrAsync({string.Join(", ", Enumerable.Range(1, arity).Select(i => $"fallback{i}"))});";
-    private string GenerateValueOrTaskWithFactoryCall(ushort arity) => "var actualValue = await taskResult.ValueOrAsync(factory);";
-    private string GenerateValueOrValueTaskCall(ushort arity) => arity == 1 ? "var actualValue = await valueTaskResult.ValueOrAsync(fallback1);" : $"var actualValue = await valueTaskResult.ValueOrAsync({string.Join(", ", Enumerable.Range(1, arity).Select(i => $"fallback{i}"))});";
-    private string GenerateValueOrValueTaskWithFactoryCall(ushort arity) => "var actualValue = await valueTaskResult.ValueOrAsync(factory);";
+    private string GenerateValueOrAsyncCall(ushort arity) {
+        return arity == 1
+                   ? "var actualValue = await taskResult.ValueOrAsync(fallback1);"
+                   : $"var actualValue = await taskResult.ValueOrAsync({string.Join(", ", Enumerable.Range(1, arity).Select(i => $"fallback{i}"))});";
+    }
 
-    private string GenerateValueOrSuccessAssertions(ushort arity) => arity == 1 ? "Assert.Equal(value1, actualValue);" : string.Join('\n', Enumerable.Range(1, arity).Select(i => $"Assert.Equal(value{i}, actualValue.Item{i});"));
-    private string GenerateValueOrFailureAssertions(ushort arity) => arity == 1 ? "Assert.Equal(fallback1, actualValue);" : string.Join('\n', Enumerable.Range(1, arity).Select(i => $"Assert.Equal(fallback{i}, actualValue.Item{i});"));
-    private string GenerateValueOrFactoryFailureAssertions(ushort arity) => GenerateValueOrFailureAssertions(arity);
+    private string GenerateValueOrAsyncWithFactoryCall(ushort arity) {
+        return "var actualValue = await taskResult.ValueOrAsync(factory);";
+    }
 
-    private string GenerateFallbackValues(ushort arity) => string.Join('\n', Enumerable.Range(1, arity).Select(i => $"var fallback{i} = {GetFallbackValue(i)};"));
+    private string GenerateValueOrSuccessAssertions(ushort arity) {
+        return arity == 1
+                   ? "Assert.Equal(value1, actualValue);"
+                   : string.Join('\n', Enumerable.Range(1, arity)
+                                                 .Select(i => $"Assert.Equal(value{i}, actualValue.Item{i});"));
+    }
+
+    private string GenerateValueOrFailureAssertions(ushort arity) {
+        return arity == 1
+                   ? "Assert.Equal(fallback1, actualValue);"
+                   : string.Join('\n', Enumerable.Range(1, arity)
+                                                 .Select(i => $"Assert.Equal(fallback{i}, actualValue.Item{i});"));
+    }
+
+    private string GenerateValueOrFactoryFailureAssertions(ushort arity) {
+        return GenerateValueOrFailureAssertions(arity);
+    }
+
+    private string GenerateFallbackValues(ushort arity) {
+        return string.Join('\n', Enumerable.Range(1, arity)
+                                           .Select(i => $"var fallback{i} = {GetFallbackValue(i)};"));
+    }
 
     private string GenerateFactoryDefinition(ushort arity) {
-        if (arity == 1) return "var fallback1 = 999;\nFunc<int> factory = () => fallback1;";
-        var fallbackDecls = string.Join('\n', Enumerable.Range(1, arity).Select(i => $"var fallback{i} = {GetFallbackValue(i)};"));
-        var tupleType     = $"({string.Join(", ", Enumerable.Range(1, arity).Select(GetTestType))})";
-        var tupleValues   = $"({string.Join(", ", Enumerable.Range(1, arity).Select(i => $"fallback{i}"))})";
+        if (arity == 1) {
+            return "var fallback1 = 999;\nFunc<int> factory = () => fallback1;";
+        }
+
+        var fallbackDecls = string.Join('\n', Enumerable.Range(1, arity)
+                                                        .Select(i => $"var fallback{i} = {GetFallbackValue(i)};"));
+        var tupleType   = $"({string.Join(", ", Enumerable.Range(1, arity).Select(GetTestType))})";
+        var tupleValues = $"({string.Join(", ", Enumerable.Range(1, arity).Select(i => $"fallback{i}"))})";
         return $"{fallbackDecls}\nFunc<{tupleType}> factory = () => {tupleValues};";
     }
 
-    private string GetFallbackValue(int index) => index switch { 1 => "999", 2 => "\"fallback\"", 3 => "false", 4 => "9.99", 5 => "999L", _ => $"\"fallback{index}\"" };
+    private string GetFallbackValue(int index) {
+        return index switch { 1 => "999", 2 => "\"fallback\"", 3 => "false", 4 => "9.99", 5 => "999L", _ => $"\"fallback{index}\"" };
+    }
 }

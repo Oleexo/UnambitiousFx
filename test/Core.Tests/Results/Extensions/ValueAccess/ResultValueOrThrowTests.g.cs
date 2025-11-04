@@ -50,7 +50,7 @@ public class ResultValueOrThrowSyncTestsArity1
         // Given
         var value1 = 42;
         var result = Result.Success(value1);
-        Func<Exception> factory = () => new CustomTestException();
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
         var actualValue = result.ValueOrThrow(factory);
         // Then
@@ -61,9 +61,9 @@ public class ResultValueOrThrowSyncTestsArity1
     public void ValueOrThrowWithFactory_Arity1_Failure_ShouldThrowCustomException() {
         // Given
         var result = Result.Failure<int>("Test error");
-        Func<Exception> factory = () => new CustomTestException();
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
-        Assert.Throws<CustomTestException>(() => result.ValueOrThrow(factory));
+        Assert.Throws<Exception>(() => result.ValueOrThrow(factory));
     }
     
     #endregion // Arity 1 - Sync ValueOrThrow
@@ -79,7 +79,8 @@ public class ResultValueOrThrowSyncTestsArity1
         // When
         var actualValue = result.ValueOrThrow();
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
     }
     
     [Fact]
@@ -97,20 +98,21 @@ public class ResultValueOrThrowSyncTestsArity1
         var value1 = 42;
         var value2 = "test";
         var result = Result.Success(value1, value2);
-        Func<Exception> factory = () => new CustomTestException();
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
         var actualValue = result.ValueOrThrow(factory);
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
     }
     
     [Fact]
     public void ValueOrThrowWithFactory_Arity2_Failure_ShouldThrowCustomException() {
         // Given
         var result = Result.Failure<int, string>("Test error");
-        Func<Exception> factory = () => new CustomTestException();
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
-        Assert.Throws<CustomTestException>(() => result.ValueOrThrow(factory));
+        Assert.Throws<Exception>(() => result.ValueOrThrow(factory));
     }
     
     #endregion // Arity 2 - Sync ValueOrThrow
@@ -127,7 +129,9 @@ public class ResultValueOrThrowSyncTestsArity1
         // When
         var actualValue = result.ValueOrThrow();
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
+        Assert.Equal(value3, actualValue.Item3);
     }
     
     [Fact]
@@ -146,20 +150,22 @@ public class ResultValueOrThrowSyncTestsArity1
         var value2 = "test";
         var value3 = true;
         var result = Result.Success(value1, value2, value3);
-        Func<Exception> factory = () => new CustomTestException();
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
         var actualValue = result.ValueOrThrow(factory);
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
+        Assert.Equal(value3, actualValue.Item3);
     }
     
     [Fact]
     public void ValueOrThrowWithFactory_Arity3_Failure_ShouldThrowCustomException() {
         // Given
         var result = Result.Failure<int, string, bool>("Test error");
-        Func<Exception> factory = () => new CustomTestException();
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
-        Assert.Throws<CustomTestException>(() => result.ValueOrThrow(factory));
+        Assert.Throws<Exception>(() => result.ValueOrThrow(factory));
     }
     
     #endregion // Arity 3 - Sync ValueOrThrow
@@ -177,7 +183,10 @@ public class ResultValueOrThrowSyncTestsArity1
         // When
         var actualValue = result.ValueOrThrow();
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
+        Assert.Equal(value3, actualValue.Item3);
+        Assert.Equal(value4, actualValue.Item4);
     }
     
     [Fact]
@@ -197,20 +206,23 @@ public class ResultValueOrThrowSyncTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var result = Result.Success(value1, value2, value3, value4);
-        Func<Exception> factory = () => new CustomTestException();
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
         var actualValue = result.ValueOrThrow(factory);
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
+        Assert.Equal(value3, actualValue.Item3);
+        Assert.Equal(value4, actualValue.Item4);
     }
     
     [Fact]
     public void ValueOrThrowWithFactory_Arity4_Failure_ShouldThrowCustomException() {
         // Given
         var result = Result.Failure<int, string, bool, double>("Test error");
-        Func<Exception> factory = () => new CustomTestException();
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
-        Assert.Throws<CustomTestException>(() => result.ValueOrThrow(factory));
+        Assert.Throws<Exception>(() => result.ValueOrThrow(factory));
     }
     
     #endregion // Arity 4 - Sync ValueOrThrow
@@ -229,7 +241,11 @@ public class ResultValueOrThrowSyncTestsArity1
         // When
         var actualValue = result.ValueOrThrow();
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
+        Assert.Equal(value3, actualValue.Item3);
+        Assert.Equal(value4, actualValue.Item4);
+        Assert.Equal(value5, actualValue.Item5);
     }
     
     [Fact]
@@ -250,20 +266,24 @@ public class ResultValueOrThrowSyncTestsArity1
         var value4 = 3.14;
         var value5 = 123L;
         var result = Result.Success(value1, value2, value3, value4, value5);
-        Func<Exception> factory = () => new CustomTestException();
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
         var actualValue = result.ValueOrThrow(factory);
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
+        Assert.Equal(value3, actualValue.Item3);
+        Assert.Equal(value4, actualValue.Item4);
+        Assert.Equal(value5, actualValue.Item5);
     }
     
     [Fact]
     public void ValueOrThrowWithFactory_Arity5_Failure_ShouldThrowCustomException() {
         // Given
         var result = Result.Failure<int, string, bool, double, long>("Test error");
-        Func<Exception> factory = () => new CustomTestException();
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
-        Assert.Throws<CustomTestException>(() => result.ValueOrThrow(factory));
+        Assert.Throws<Exception>(() => result.ValueOrThrow(factory));
     }
     
     #endregion // Arity 5 - Sync ValueOrThrow
@@ -283,7 +303,12 @@ public class ResultValueOrThrowSyncTestsArity1
         // When
         var actualValue = result.ValueOrThrow();
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
+        Assert.Equal(value3, actualValue.Item3);
+        Assert.Equal(value4, actualValue.Item4);
+        Assert.Equal(value5, actualValue.Item5);
+        Assert.Equal(value6, actualValue.Item6);
     }
     
     [Fact]
@@ -305,20 +330,25 @@ public class ResultValueOrThrowSyncTestsArity1
         var value5 = 123L;
         var value6 = "value6";
         var result = Result.Success(value1, value2, value3, value4, value5, value6);
-        Func<Exception> factory = () => new CustomTestException();
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
         var actualValue = result.ValueOrThrow(factory);
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
+        Assert.Equal(value3, actualValue.Item3);
+        Assert.Equal(value4, actualValue.Item4);
+        Assert.Equal(value5, actualValue.Item5);
+        Assert.Equal(value6, actualValue.Item6);
     }
     
     [Fact]
     public void ValueOrThrowWithFactory_Arity6_Failure_ShouldThrowCustomException() {
         // Given
         var result = Result.Failure<int, string, bool, double, long, string>("Test error");
-        Func<Exception> factory = () => new CustomTestException();
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
-        Assert.Throws<CustomTestException>(() => result.ValueOrThrow(factory));
+        Assert.Throws<Exception>(() => result.ValueOrThrow(factory));
     }
     
     #endregion // Arity 6 - Sync ValueOrThrow
@@ -339,7 +369,13 @@ public class ResultValueOrThrowSyncTestsArity1
         // When
         var actualValue = result.ValueOrThrow();
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
+        Assert.Equal(value3, actualValue.Item3);
+        Assert.Equal(value4, actualValue.Item4);
+        Assert.Equal(value5, actualValue.Item5);
+        Assert.Equal(value6, actualValue.Item6);
+        Assert.Equal(value7, actualValue.Item7);
     }
     
     [Fact]
@@ -362,20 +398,26 @@ public class ResultValueOrThrowSyncTestsArity1
         var value6 = "value6";
         var value7 = "value7";
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
-        Func<Exception> factory = () => new CustomTestException();
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
         var actualValue = result.ValueOrThrow(factory);
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
+        Assert.Equal(value3, actualValue.Item3);
+        Assert.Equal(value4, actualValue.Item4);
+        Assert.Equal(value5, actualValue.Item5);
+        Assert.Equal(value6, actualValue.Item6);
+        Assert.Equal(value7, actualValue.Item7);
     }
     
     [Fact]
     public void ValueOrThrowWithFactory_Arity7_Failure_ShouldThrowCustomException() {
         // Given
         var result = Result.Failure<int, string, bool, double, long, string, string>("Test error");
-        Func<Exception> factory = () => new CustomTestException();
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
-        Assert.Throws<CustomTestException>(() => result.ValueOrThrow(factory));
+        Assert.Throws<Exception>(() => result.ValueOrThrow(factory));
     }
     
     #endregion // Arity 7 - Sync ValueOrThrow
@@ -397,7 +439,14 @@ public class ResultValueOrThrowSyncTestsArity1
         // When
         var actualValue = result.ValueOrThrow();
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
+        Assert.Equal(value3, actualValue.Item3);
+        Assert.Equal(value4, actualValue.Item4);
+        Assert.Equal(value5, actualValue.Item5);
+        Assert.Equal(value6, actualValue.Item6);
+        Assert.Equal(value7, actualValue.Item7);
+        Assert.Equal(value8, actualValue.Rest.Item1);
     }
     
     [Fact]
@@ -421,20 +470,27 @@ public class ResultValueOrThrowSyncTestsArity1
         var value7 = "value7";
         var value8 = "value8";
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
-        Func<Exception> factory = () => new CustomTestException();
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
         var actualValue = result.ValueOrThrow(factory);
         // Then
-        Assert.True(actualValue != null);
+        Assert.Equal(value1, actualValue.Item1);
+        Assert.Equal(value2, actualValue.Item2);
+        Assert.Equal(value3, actualValue.Item3);
+        Assert.Equal(value4, actualValue.Item4);
+        Assert.Equal(value5, actualValue.Item5);
+        Assert.Equal(value6, actualValue.Item6);
+        Assert.Equal(value7, actualValue.Item7);
+        Assert.Equal(value8, actualValue.Rest.Item1);
     }
     
     [Fact]
     public void ValueOrThrowWithFactory_Arity8_Failure_ShouldThrowCustomException() {
         // Given
         var result = Result.Failure<int, string, bool, double, long, string, string, string>("Test error");
-        Func<Exception> factory = () => new CustomTestException();
+        Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();
         // When
-        Assert.Throws<CustomTestException>(() => result.ValueOrThrow(factory));
+        Assert.Throws<Exception>(() => result.ValueOrThrow(factory));
     }
     
     #endregion // Arity 8 - Sync ValueOrThrow

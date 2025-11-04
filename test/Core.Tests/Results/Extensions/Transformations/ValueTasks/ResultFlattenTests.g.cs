@@ -21,147 +21,147 @@ using Xunit;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Transformations.ValueTasks;
 
-public class ResultFlattenValueTaskTestsArity1
+public class ResultFlattenTaskTestsArity1
 {
-    #region Arity 1 - ValueTask Flatten
+    #region Arity 1 - Task Flatten
     
     [Fact]
-    public async Task FlattenValueTask_Arity1_Success_ShouldFlatten() {
+    public async Task FlattenTask_Arity1_Success_ShouldFlatten() {
         // Given
         var value1 = 42;
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1)););
+        var taskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1)));
         // When
-        var flattenedResult = await valueTaskNestedResult.FlattenAsync();
+        var flattenedResult = await taskNestedResult.FlattenAsync();
         // Then
         Assert.True(flattenedResult.IsSuccess);
     }
     
     [Fact]
-    public async Task FlattenValueTask_Arity1_Failure_ShouldNotFlatten() {
+    public async Task FlattenTask_Arity1_Failure_ShouldNotFlatten() {
         // Given
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Failure<int>("Test error")););
+        var taskNestedResult = ValueTask.FromResult(Result.Success(Result.Failure<int>("Test error")));
         // When
-        var flattenedResult = await valueTaskNestedResult.FlattenAsync();
+        var flattenedResult = await taskNestedResult.FlattenAsync();
         // Then
         Assert.False(flattenedResult.IsSuccess);
     }
     
-    #endregion // Arity 1 - ValueTask Flatten
+    #endregion // Arity 1 - Task Flatten
     
-    #region Arity 2 - ValueTask Flatten
+    #region Arity 2 - Task Flatten
     
     [Fact]
-    public async Task FlattenValueTask_Arity2_Success_ShouldFlatten() {
+    public async Task FlattenTask_Arity2_Success_ShouldFlatten() {
         // Given
         var value1 = 42;
         var value2 = "test";
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2)););
+        var taskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2)));
         // When
-        var flattenedResult = await valueTaskNestedResult.FlattenAsync();
+        var flattenedResult = await taskNestedResult.FlattenAsync();
         // Then
         Assert.True(flattenedResult.IsSuccess);
     }
     
     [Fact]
-    public async Task FlattenValueTask_Arity2_Failure_ShouldNotFlatten() {
+    public async Task FlattenTask_Arity2_Failure_ShouldNotFlatten() {
         // Given
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Failure<int, string>("Test error")););
+        var taskNestedResult = ValueTask.FromResult(Result.Success(Result.Failure<int, string>("Test error")));
         // When
-        var flattenedResult = await valueTaskNestedResult.FlattenAsync();
+        var flattenedResult = await taskNestedResult.FlattenAsync();
         // Then
         Assert.False(flattenedResult.IsSuccess);
     }
     
-    #endregion // Arity 2 - ValueTask Flatten
+    #endregion // Arity 2 - Task Flatten
     
-    #region Arity 3 - ValueTask Flatten
+    #region Arity 3 - Task Flatten
     
     [Fact]
-    public async Task FlattenValueTask_Arity3_Success_ShouldFlatten() {
+    public async Task FlattenTask_Arity3_Success_ShouldFlatten() {
         // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2, value3)););
+        var taskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2, value3)));
         // When
-        var flattenedResult = await valueTaskNestedResult.FlattenAsync();
+        var flattenedResult = await taskNestedResult.FlattenAsync();
         // Then
         Assert.True(flattenedResult.IsSuccess);
     }
     
     [Fact]
-    public async Task FlattenValueTask_Arity3_Failure_ShouldNotFlatten() {
+    public async Task FlattenTask_Arity3_Failure_ShouldNotFlatten() {
         // Given
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Failure<int, string, bool>("Test error")););
+        var taskNestedResult = ValueTask.FromResult(Result.Success(Result.Failure<int, string, bool>("Test error")));
         // When
-        var flattenedResult = await valueTaskNestedResult.FlattenAsync();
+        var flattenedResult = await taskNestedResult.FlattenAsync();
         // Then
         Assert.False(flattenedResult.IsSuccess);
     }
     
-    #endregion // Arity 3 - ValueTask Flatten
+    #endregion // Arity 3 - Task Flatten
     
-    #region Arity 4 - ValueTask Flatten
+    #region Arity 4 - Task Flatten
     
     [Fact]
-    public async Task FlattenValueTask_Arity4_Success_ShouldFlatten() {
+    public async Task FlattenTask_Arity4_Success_ShouldFlatten() {
         // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2, value3, value4)););
+        var taskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2, value3, value4)));
         // When
-        var flattenedResult = await valueTaskNestedResult.FlattenAsync();
+        var flattenedResult = await taskNestedResult.FlattenAsync();
         // Then
         Assert.True(flattenedResult.IsSuccess);
     }
     
     [Fact]
-    public async Task FlattenValueTask_Arity4_Failure_ShouldNotFlatten() {
+    public async Task FlattenTask_Arity4_Failure_ShouldNotFlatten() {
         // Given
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Failure<int, string, bool, double>("Test error")););
+        var taskNestedResult = ValueTask.FromResult(Result.Success(Result.Failure<int, string, bool, double>("Test error")));
         // When
-        var flattenedResult = await valueTaskNestedResult.FlattenAsync();
+        var flattenedResult = await taskNestedResult.FlattenAsync();
         // Then
         Assert.False(flattenedResult.IsSuccess);
     }
     
-    #endregion // Arity 4 - ValueTask Flatten
+    #endregion // Arity 4 - Task Flatten
     
-    #region Arity 5 - ValueTask Flatten
+    #region Arity 5 - Task Flatten
     
     [Fact]
-    public async Task FlattenValueTask_Arity5_Success_ShouldFlatten() {
+    public async Task FlattenTask_Arity5_Success_ShouldFlatten() {
         // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2, value3, value4, value5)););
+        var taskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2, value3, value4, value5)));
         // When
-        var flattenedResult = await valueTaskNestedResult.FlattenAsync();
+        var flattenedResult = await taskNestedResult.FlattenAsync();
         // Then
         Assert.True(flattenedResult.IsSuccess);
     }
     
     [Fact]
-    public async Task FlattenValueTask_Arity5_Failure_ShouldNotFlatten() {
+    public async Task FlattenTask_Arity5_Failure_ShouldNotFlatten() {
         // Given
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Failure<int, string, bool, double, long>("Test error")););
+        var taskNestedResult = ValueTask.FromResult(Result.Success(Result.Failure<int, string, bool, double, long>("Test error")));
         // When
-        var flattenedResult = await valueTaskNestedResult.FlattenAsync();
+        var flattenedResult = await taskNestedResult.FlattenAsync();
         // Then
         Assert.False(flattenedResult.IsSuccess);
     }
     
-    #endregion // Arity 5 - ValueTask Flatten
+    #endregion // Arity 5 - Task Flatten
     
-    #region Arity 6 - ValueTask Flatten
+    #region Arity 6 - Task Flatten
     
     [Fact]
-    public async Task FlattenValueTask_Arity6_Success_ShouldFlatten() {
+    public async Task FlattenTask_Arity6_Success_ShouldFlatten() {
         // Given
         var value1 = 42;
         var value2 = "test";
@@ -169,29 +169,29 @@ public class ResultFlattenValueTaskTestsArity1
         var value4 = 3.14;
         var value5 = 123L;
         var value6 = "value6";
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2, value3, value4, value5, value6)););
+        var taskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2, value3, value4, value5, value6)));
         // When
-        var flattenedResult = await valueTaskNestedResult.FlattenAsync();
+        var flattenedResult = await taskNestedResult.FlattenAsync();
         // Then
         Assert.True(flattenedResult.IsSuccess);
     }
     
     [Fact]
-    public async Task FlattenValueTask_Arity6_Failure_ShouldNotFlatten() {
+    public async Task FlattenTask_Arity6_Failure_ShouldNotFlatten() {
         // Given
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Failure<int, string, bool, double, long, string>("Test error")););
+        var taskNestedResult = ValueTask.FromResult(Result.Success(Result.Failure<int, string, bool, double, long, string>("Test error")));
         // When
-        var flattenedResult = await valueTaskNestedResult.FlattenAsync();
+        var flattenedResult = await taskNestedResult.FlattenAsync();
         // Then
         Assert.False(flattenedResult.IsSuccess);
     }
     
-    #endregion // Arity 6 - ValueTask Flatten
+    #endregion // Arity 6 - Task Flatten
     
-    #region Arity 7 - ValueTask Flatten
+    #region Arity 7 - Task Flatten
     
     [Fact]
-    public async Task FlattenValueTask_Arity7_Success_ShouldFlatten() {
+    public async Task FlattenTask_Arity7_Success_ShouldFlatten() {
         // Given
         var value1 = 42;
         var value2 = "test";
@@ -200,29 +200,29 @@ public class ResultFlattenValueTaskTestsArity1
         var value5 = 123L;
         var value6 = "value6";
         var value7 = "value7";
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2, value3, value4, value5, value6, value7)););
+        var taskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2, value3, value4, value5, value6, value7)));
         // When
-        var flattenedResult = await valueTaskNestedResult.FlattenAsync();
+        var flattenedResult = await taskNestedResult.FlattenAsync();
         // Then
         Assert.True(flattenedResult.IsSuccess);
     }
     
     [Fact]
-    public async Task FlattenValueTask_Arity7_Failure_ShouldNotFlatten() {
+    public async Task FlattenTask_Arity7_Failure_ShouldNotFlatten() {
         // Given
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Failure<int, string, bool, double, long, string, string>("Test error")););
+        var taskNestedResult = ValueTask.FromResult(Result.Success(Result.Failure<int, string, bool, double, long, string, string>("Test error")));
         // When
-        var flattenedResult = await valueTaskNestedResult.FlattenAsync();
+        var flattenedResult = await taskNestedResult.FlattenAsync();
         // Then
         Assert.False(flattenedResult.IsSuccess);
     }
     
-    #endregion // Arity 7 - ValueTask Flatten
+    #endregion // Arity 7 - Task Flatten
     
-    #region Arity 8 - ValueTask Flatten
+    #region Arity 8 - Task Flatten
     
     [Fact]
-    public async Task FlattenValueTask_Arity8_Success_ShouldFlatten() {
+    public async Task FlattenTask_Arity8_Success_ShouldFlatten() {
         // Given
         var value1 = 42;
         var value2 = "test";
@@ -232,22 +232,22 @@ public class ResultFlattenValueTaskTestsArity1
         var value6 = "value6";
         var value7 = "value7";
         var value8 = "value8";
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8)););
+        var taskNestedResult = ValueTask.FromResult(Result.Success(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8)));
         // When
-        var flattenedResult = await valueTaskNestedResult.FlattenAsync();
+        var flattenedResult = await taskNestedResult.FlattenAsync();
         // Then
         Assert.True(flattenedResult.IsSuccess);
     }
     
     [Fact]
-    public async Task FlattenValueTask_Arity8_Failure_ShouldNotFlatten() {
+    public async Task FlattenTask_Arity8_Failure_ShouldNotFlatten() {
         // Given
-        var valueTaskNestedResult = ValueTask.FromResult(Result.Success(Result.Failure<int, string, bool, double, long, string, string, string>("Test error")););
+        var taskNestedResult = ValueTask.FromResult(Result.Success(Result.Failure<int, string, bool, double, long, string, string, string>("Test error")));
         // When
-        var flattenedResult = await valueTaskNestedResult.FlattenAsync();
+        var flattenedResult = await taskNestedResult.FlattenAsync();
         // Then
         Assert.False(flattenedResult.IsSuccess);
     }
     
-    #endregion // Arity 8 - ValueTask Flatten
+    #endregion // Arity 8 - Task Flatten
 }

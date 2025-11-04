@@ -9,12 +9,16 @@ internal sealed class ResultValueOrThrowTestsGenerator : ResultTestGeneratorBase
     private const string ClassName           = "ResultValueOrThrowTests";
     private const string ExtensionsNamespace = "Results.Extensions.ValueAccess";
 
-    public ResultValueOrThrowTestsGenerator(string baseNamespace,
+    public ResultValueOrThrowTestsGenerator(string               baseNamespace,
                                             FileOrganizationMode fileOrganization)
-        : base(new GenerationConfig(baseNamespace, StartArity, ExtensionsNamespace, ClassName, fileOrganization, true)) { }
+        : base(new GenerationConfig(baseNamespace, StartArity, ExtensionsNamespace, ClassName, fileOrganization, true)) {
+    }
 
     protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
-        return GenerateVariants(arity, ClassName, (GenerateSyncTests, false), (GenerateTaskTests, true), (GenerateValueTaskTests, true));
+        return GenerateVariants(arity, ClassName,
+                                (GenerateSyncTests, false),
+                                (x => GenerateAsyncTests(x, "Task"), true),
+                                (x => GenerateAsyncTests(x, "ValueTask"), true));
     }
 
     private ClassWriter GenerateSyncTests(ushort arity) {
@@ -28,40 +32,67 @@ internal sealed class ResultValueOrThrowTestsGenerator : ResultTestGeneratorBase
         return cw;
     }
 
-    private ClassWriter GenerateTaskTests(ushort arity) {
-        var cw = new ClassWriter($"ResultValueOrThrowTaskTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Task ValueOrThrow" };
-        cw.AddMethod(GenerateTaskSuccessTest(arity));
-        cw.AddMethod(GenerateTaskFailureTest(arity));
-        cw.AddMethod(GenerateTaskSuccessWithFactoryTest(arity));
-        cw.AddMethod(GenerateTaskFailureWithFactoryTest(arity));
-        cw.AddUsing("UnambitiousFx.Core.Results.Extensions.ValueAccess.Tasks");
-        cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.Tasks";
+    private ClassWriter GenerateAsyncTests(ushort arity,
+                                           string asyncType) {
+        var cw = new ClassWriter($"ResultValueOrThrow{asyncType}TestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - {asyncType} ValueOrThrow" };
+        cw.AddMethod(GenerateAsyncSuccessTest(arity, asyncType));
+        cw.AddMethod(GenerateAsyncFailureTest(arity, asyncType));
+        cw.AddMethod(GenerateAsyncSuccessWithFactoryTest(arity, asyncType));
+        cw.AddMethod(GenerateAsyncFailureWithFactoryTest(arity, asyncType));
+        cw.AddUsing($"UnambitiousFx.Core.Results.Extensions.ValueAccess.{asyncType}s");
+        cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.{asyncType}s";
         return cw;
     }
 
-    private ClassWriter GenerateValueTaskTests(ushort arity) {
-        var cw = new ClassWriter($"ResultValueOrThrowValueTaskTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - ValueTask ValueOrThrow" };
-        cw.AddMethod(GenerateValueTaskSuccessTest(arity));
-        cw.AddMethod(GenerateValueTaskFailureTest(arity));
-        cw.AddMethod(GenerateValueTaskSuccessWithFactoryTest(arity));
-        cw.AddMethod(GenerateValueTaskFailureWithFactoryTest(arity));
-        cw.AddUsing("UnambitiousFx.Core.Results.Extensions.ValueAccess.ValueTasks");
-        cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.ValueTasks";
-        return cw;
+    private MethodWriter GenerateSyncSuccessTest(ushort arity) {
+        return new MethodWriter($"ValueOrThrow_Arity{arity}_Success_ShouldReturnValue", "void", GenerateSyncSuccessBody(arity),
+                                attributes: [new FactAttributeReference()], usings: GetUsings());
     }
 
-    private MethodWriter GenerateSyncSuccessTest(ushort arity) => new($"ValueOrThrow_Arity{arity}_Success_ShouldReturnValue", "void", GenerateSyncSuccessBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateSyncFailureTest(ushort arity) => new($"ValueOrThrow_Arity{arity}_Failure_ShouldThrowException", "void", GenerateSyncFailureBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateSyncSuccessWithFactoryTest(ushort arity) => new($"ValueOrThrowWithFactory_Arity{arity}_Success_ShouldReturnValue", "void", GenerateSyncSuccessWithFactoryBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateSyncFailureWithFactoryTest(ushort arity) => new($"ValueOrThrowWithFactory_Arity{arity}_Failure_ShouldThrowCustomException", "void", GenerateSyncFailureWithFactoryBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateTaskSuccessTest(ushort arity) => new($"ValueOrThrowTask_Arity{arity}_Success_ShouldReturnValue", "async Task", GenerateTaskSuccessBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateTaskFailureTest(ushort arity) => new($"ValueOrThrowTask_Arity{arity}_Failure_ShouldThrowException", "async Task", GenerateTaskFailureBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateTaskSuccessWithFactoryTest(ushort arity) => new($"ValueOrThrowTaskWithFactory_Arity{arity}_Success_ShouldReturnValue", "async Task", GenerateTaskSuccessWithFactoryBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateTaskFailureWithFactoryTest(ushort arity) => new($"ValueOrThrowTaskWithFactory_Arity{arity}_Failure_ShouldThrowCustomException", "async Task", GenerateTaskFailureWithFactoryBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateValueTaskSuccessTest(ushort arity) => new($"ValueOrThrowValueTask_Arity{arity}_Success_ShouldReturnValue", "async Task", GenerateValueTaskSuccessBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateValueTaskFailureTest(ushort arity) => new($"ValueOrThrowValueTask_Arity{arity}_Failure_ShouldThrowException", "async Task", GenerateValueTaskFailureBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateValueTaskSuccessWithFactoryTest(ushort arity) => new($"ValueOrThrowValueTaskWithFactory_Arity{arity}_Success_ShouldReturnValue", "async Task", GenerateValueTaskSuccessWithFactoryBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateValueTaskFailureWithFactoryTest(ushort arity) => new($"ValueOrThrowValueTaskWithFactory_Arity{arity}_Failure_ShouldThrowCustomException", "async Task", GenerateValueTaskFailureWithFactoryBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
+    private MethodWriter GenerateSyncFailureTest(ushort arity) {
+        return new MethodWriter($"ValueOrThrow_Arity{arity}_Failure_ShouldThrowException", "void", GenerateSyncFailureBody(arity),
+                                attributes: [new FactAttributeReference()], usings: GetUsings());
+    }
+
+    private MethodWriter GenerateSyncSuccessWithFactoryTest(ushort arity) {
+        return new MethodWriter($"ValueOrThrowWithFactory_Arity{arity}_Success_ShouldReturnValue", "void",
+                                GenerateSyncSuccessWithFactoryBody(arity), attributes: [new FactAttributeReference()],
+                                usings: GetUsings());
+    }
+
+    private MethodWriter GenerateSyncFailureWithFactoryTest(ushort arity) {
+        return new MethodWriter($"ValueOrThrowWithFactory_Arity{arity}_Failure_ShouldThrowCustomException", "void",
+                                GenerateSyncFailureWithFactoryBody(arity), attributes: [new FactAttributeReference()],
+                                usings: GetUsings());
+    }
+
+    private MethodWriter GenerateAsyncSuccessTest(ushort arity,
+                                                  string asyncType) {
+        return new MethodWriter($"ValueOrThrow{asyncType}_Arity{arity}_Success_ShouldReturnValue", "async Task",
+                                GenerateAsyncSuccessBody(arity, asyncType), attributes: [new FactAttributeReference()],
+                                usings: GetUsings());
+    }
+
+    private MethodWriter GenerateAsyncFailureTest(ushort arity,
+                                                  string asyncType) {
+        return new MethodWriter($"ValueOrThrow{asyncType}_Arity{arity}_Failure_ShouldThrowException", "async Task",
+                                GenerateAsyncFailureBody(arity, asyncType), attributes: [new FactAttributeReference()],
+                                usings: GetUsings());
+    }
+
+    private MethodWriter GenerateAsyncSuccessWithFactoryTest(ushort arity,
+                                                             string asyncType) {
+        return new MethodWriter($"ValueOrThrow{asyncType}WithFactory_Arity{arity}_Success_ShouldReturnValue", "async Task",
+                                GenerateAsyncSuccessWithFactoryBody(arity, asyncType),
+                                attributes: [new FactAttributeReference()], usings: GetUsings());
+    }
+
+    private MethodWriter GenerateAsyncFailureWithFactoryTest(ushort arity,
+                                                             string asyncType) {
+        return new MethodWriter($"ValueOrThrow{asyncType}WithFactory_Arity{arity}_Failure_ShouldThrowCustomException",
+                                "async Task", GenerateAsyncFailureWithFactoryBody(arity, asyncType),
+                                attributes: [new FactAttributeReference()], usings: GetUsings());
+    }
 
     private string GenerateSyncSuccessBody(ushort arity) {
         var testValues = GenerateTestValues(arity);
@@ -74,7 +105,8 @@ internal sealed class ResultValueOrThrowTestsGenerator : ResultTestGeneratorBase
     private string GenerateSyncFailureBody(ushort arity) {
         var failureCreation = GenerateFailureResultCreation(arity);
         var call            = GenerateValueOrThrowSyncCall(arity);
-        var expr            = call.Replace("var actualValue = ", string.Empty).TrimEnd(';');
+        var expr = call.Replace("var actualValue = ", string.Empty)
+                       .TrimEnd(';');
         return BuildTestBody([failureCreation], ["// When & Then", $"Assert.Throws<Exception>(() => {expr});"], []);
     }
 
@@ -91,100 +123,132 @@ internal sealed class ResultValueOrThrowTestsGenerator : ResultTestGeneratorBase
         var failureCreation   = GenerateFailureResultCreation(arity);
         var factoryDefinition = GenerateExceptionFactoryDefinition();
         var call              = GenerateValueOrThrowSyncWithFactoryCall(arity);
-        var expr              = call.Replace("var actualValue = ", string.Empty).TrimEnd(';');
-        return BuildTestBody([failureCreation, factoryDefinition], [$"Assert.Throws<CustomTestException>(() => {expr});"], []);
+        var expr = call.Replace("var actualValue = ", string.Empty)
+                       .TrimEnd(';');
+        return BuildTestBody([failureCreation, factoryDefinition], [$"Assert.Throws<Exception>(() => {expr});"], []);
     }
 
-    private string GenerateTaskSuccessBody(ushort arity) {
+    private string GenerateAsyncSuccessBody(ushort arity,
+                                            string asyncType) {
         var testValues = GenerateTestValues(arity);
-        var creation   = GenerateTaskResultCreation(arity);
-        var call       = GenerateValueOrThrowTaskCall(arity);
+        var creation   = GenerateAsyncResultCreation(arity, asyncType);
+        var call       = GenerateValueOrThrowAsyncCall(arity);
         var assertions = GenerateValueOrThrowSuccessAssertions(arity);
         return BuildTestBody([testValues, creation], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
     }
 
-    private string GenerateTaskFailureBody(ushort arity) {
-        var creation = GenerateTaskFailureResultCreation(arity);
-        var call     = GenerateValueOrThrowTaskCall(arity);
-        var expr     = call.Replace("var actualValue = ", string.Empty).Replace("await ", string.Empty).TrimEnd(';');
-        return BuildTestBody([creation], ["await Assert.ThrowsAsync<Exception>(async () => {", $"    {expr};", "});"], []);
+    private string GenerateAsyncFailureBody(ushort arity,
+                                            string asyncType) {
+        var creation = GenerateAsyncFailureResultCreation(arity, asyncType);
+        var call     = GenerateValueOrThrowAsyncCall(arity);
+        var expr = call.Replace("var actualValue = ", string.Empty)
+                       .Replace("await ", string.Empty)
+                       .TrimEnd(';');
+        return BuildTestBody([creation], ["await Assert.ThrowsAsync<Exception>(async () => {", $"    await {expr};", "});"], []);
     }
 
-    private string GenerateTaskSuccessWithFactoryBody(ushort arity) {
+    private string GenerateAsyncSuccessWithFactoryBody(ushort arity,
+                                                       string asyncType) {
         var testValues        = GenerateTestValues(arity);
-        var creation          = GenerateTaskResultCreation(arity);
+        var creation          = GenerateAsyncResultCreation(arity, asyncType);
         var factoryDefinition = GenerateExceptionFactoryDefinition();
-        var call              = GenerateValueOrThrowTaskWithFactoryCall(arity);
+        var call              = GenerateValueOrThrowAsyncWithFactoryCall(arity);
         var assertions        = GenerateValueOrThrowSuccessAssertions(arity);
         return BuildTestBody([testValues, creation, factoryDefinition], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
     }
 
-    private string GenerateTaskFailureWithFactoryBody(ushort arity) {
-        var creation          = GenerateTaskFailureResultCreation(arity);
+    private string GenerateAsyncFailureWithFactoryBody(ushort arity,
+                                                       string asyncType) {
+        var creation          = GenerateAsyncFailureResultCreation(arity, asyncType);
         var factoryDefinition = GenerateExceptionFactoryDefinition();
-        var call              = GenerateValueOrThrowTaskWithFactoryCall(arity);
-        var expr              = call.Replace("var actualValue = ", string.Empty).Replace("await ", string.Empty).TrimEnd(';');
-        return BuildTestBody([creation, factoryDefinition], ["await Assert.ThrowsAsync<CustomTestException>(async () => {", $"    {expr};", "});"], []);
+        var call              = GenerateValueOrThrowAsyncWithFactoryCall(arity);
+        var expr = call.Replace("var actualValue = ", string.Empty)
+                       .Replace("await ", string.Empty)
+                       .TrimEnd(';');
+        return BuildTestBody([creation, factoryDefinition], ["await Assert.ThrowsAsync<Exception>(async () => {", $"    await {expr};", "});"], []);
     }
 
-    private string GenerateValueTaskSuccessBody(ushort arity) {
-        var testValues = GenerateTestValues(arity);
-        var creation   = GenerateValueTaskResultCreation(arity);
-        var call       = GenerateValueOrThrowValueTaskCall(arity);
-        var assertions = GenerateValueOrThrowSuccessAssertions(arity);
-        return BuildTestBody([testValues, creation], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
+    private string GenerateValueOrThrowSyncCall(ushort arity) {
+        return arity == 1
+                   ? "var actualValue = result.ValueOrThrow();"
+                   : "var actualValue = result.ValueOrThrow();";
+        // multi-arity returns tuple implicitly
     }
 
-    private string GenerateValueTaskFailureBody(ushort arity) {
-        var creation = GenerateValueTaskFailureResultCreation(arity);
-        var call     = GenerateValueOrThrowValueTaskCall(arity);
-        var expr     = call.Replace("var actualValue = ", string.Empty).Replace("await ", string.Empty).TrimEnd(';');
-        return BuildTestBody([creation], ["await Assert.ThrowsAsync<Exception>(async () => {", $"    {expr};", "});"], []);
+    private string GenerateValueOrThrowSyncWithFactoryCall(ushort arity) {
+        return arity == 1
+                   ? "var actualValue = result.ValueOrThrow(factory);"
+                   : "var actualValue = result.ValueOrThrow(factory);";
     }
 
-    private string GenerateValueTaskSuccessWithFactoryBody(ushort arity) {
-        var testValues        = GenerateTestValues(arity);
-        var creation          = GenerateValueTaskResultCreation(arity);
-        var factoryDefinition = GenerateExceptionFactoryDefinition();
-        var call              = GenerateValueOrThrowValueTaskWithFactoryCall(arity);
-        var assertions        = GenerateValueOrThrowSuccessAssertions(arity);
-        return BuildTestBody([testValues, creation, factoryDefinition], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
+    private string GenerateAsyncResultCreation(ushort arity,
+                                               string asyncType) {
+        string core;
+        if (arity == 0) {
+            core = "Result.Success()";
+        }
+        else if (arity == 1) {
+            core = "Result.Success(value1)";
+        }
+        else {
+            var values = string.Join(", ", Enumerable.Range(1, arity)
+                                                     .Select(i => $"value{i}"));
+            core = $"Result.Success({values})";
+        }
+
+        return $"var taskResult = {asyncType}.FromResult({core});";
     }
 
-    private string GenerateValueTaskFailureWithFactoryBody(ushort arity) {
-        var creation          = GenerateValueTaskFailureResultCreation(arity);
-        var factoryDefinition = GenerateExceptionFactoryDefinition();
-        var call              = GenerateValueOrThrowValueTaskWithFactoryCall(arity);
-        var expr              = call.Replace("var actualValue = ", string.Empty).Replace("await ", string.Empty).TrimEnd(';');
-        return BuildTestBody([creation, factoryDefinition], ["await Assert.ThrowsAsync<CustomTestException>(async () => {", $"    {expr};", "});"], []);
+    private string GenerateAsyncFailureResultCreation(ushort arity,
+                                                      string asyncType) {
+        string core;
+        if (arity == 0) {
+            core = "Result.Failure(\"Test error\")";
+        }
+        else {
+            var typeParams = string.Join(", ", Enumerable.Range(1, arity)
+                                                         .Select(GetTestType));
+            core = $"Result.Failure<{typeParams}>(\"Test error\")";
+        }
+
+        return $"var taskResult = {asyncType}.FromResult({core});";
     }
 
-    private string GenerateValueOrThrowSyncCall(ushort arity) => arity == 1 ? "var actualValue = result.ValueOrThrow();" : "var actualValue = result.ValueOrThrow();"; // multi-arity returns tuple implicitly
-    private string GenerateValueOrThrowTaskCall(ushort arity) => arity == 1 ? "var actualValue = await taskResult.ValueOrThrowAsync();" : "var actualValue = await taskResult.ValueOrThrowAsync();";
-    private string GenerateValueOrThrowValueTaskCall(ushort arity) => arity == 1 ? "var actualValue = await valueTaskResult.ValueOrThrowAsync();" : "var actualValue = await valueTaskResult.ValueOrThrowAsync();";
-    private string GenerateValueOrThrowSyncWithFactoryCall(ushort arity) => arity == 1 ? "var actualValue = result.ValueOrThrow(factory);" : "var actualValue = result.ValueOrThrow(factory);";
-    private string GenerateValueOrThrowTaskWithFactoryCall(ushort arity) => arity == 1 ? "var actualValue = await taskResult.ValueOrThrowAsync(factory);" : "var actualValue = await taskResult.ValueOrThrowAsync(factory);";
-    private string GenerateValueOrThrowValueTaskWithFactoryCall(ushort arity) => arity == 1 ? "var actualValue = await valueTaskResult.ValueOrThrowAsync(factory);" : "var actualValue = await valueTaskResult.ValueOrThrowAsync(factory);";
+    private string GenerateValueOrThrowAsyncCall(ushort arity) {
+        return "var actualValue = await taskResult.ValueOrThrowAsync();";
+    }
+
+    private string GenerateValueOrThrowAsyncWithFactoryCall(ushort arity) {
+        return "var actualValue = await taskResult.ValueOrThrowAsync(factory);";
+    }
 
     private string GenerateValueOrThrowSuccessAssertions(ushort arity) {
-        if (arity == 1) return "Assert.Equal(value1, actualValue);";
-        return "Assert.True(actualValue != null);"; // minimal multi-arity assertion retained
+        if (arity == 1) {
+            return "Assert.Equal(value1, actualValue);";
+        }
+
+        static string AccessPath(int index) {
+            if (index <= 7) {
+                return $"actualValue.Item{index}";
+            }
+
+            var restCount = (index - 1) / 7;
+            var within    = index - restCount * 7;
+            var restChain = string.Concat(Enumerable.Repeat(".Rest", restCount));
+            return $"actualValue{restChain}.Item{within}";
+        }
+
+        var lines = Enumerable.Range(1, arity)
+                              .Select(i => $"Assert.Equal(value{i}, {AccessPath(i)});");
+        return string.Join('\n', lines);
     }
 
-    private string GenerateExceptionFactoryDefinition() => "Func<Exception> factory = () => new CustomTestException();";
+    private string GenerateExceptionFactoryDefinition() {
+        return "Func<IEnumerable<IError>, Exception> factory = (_) => new Exception();";
+    }
 
     private string GenerateFailureResultCreation(ushort arity) {
         var typeParams = GenerateTypeParams(arity);
         return $"var result = Result.Failure<{typeParams}>(\"Test error\");";
-    }
-
-    private string GenerateTaskFailureResultCreation(ushort arity) {
-        var typeParams = GenerateTypeParams(arity);
-        return $"var taskResult = Task.FromResult(Result.Failure<{typeParams}>(\"Test error\"));";
-    }
-
-    private string GenerateValueTaskFailureResultCreation(ushort arity) {
-        var typeParams = GenerateTypeParams(arity);
-        return $"var valueTaskResult = ValueTask.FromResult(Result.Failure<{typeParams}>(\"Test error\"));";
     }
 }

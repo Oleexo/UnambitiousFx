@@ -120,7 +120,7 @@ internal sealed class ResultToNullableTestsGenerator : ResultTestGeneratorBase {
 
     private string GenerateToNullableSuccessAssertions(ushort arity) {
         if (arity == 1) {
-            return "Assert.Equal(value1, nullableValue.GetValueOrDefault());";
+            return "Assert.Equal(value1, nullableValue);";
         }
 
         var equals = string.Join('\n', Enumerable.Range(1, arity)
@@ -128,5 +128,5 @@ internal sealed class ResultToNullableTestsGenerator : ResultTestGeneratorBase {
         return $"Assert.NotNull(nullableValue);\n{equals}";
     }
 
-    private string GenerateToNullableFailureAssertions() => "Assert.Equal(default, nullableValue.GetValueOrDefault());"; // arity-independent (default tuple == null)
+    private string GenerateToNullableFailureAssertions() => "Assert.Equal(default, nullableValue);"; // arity-independent (default tuple == null)
 }
