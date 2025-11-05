@@ -1,7 +1,5 @@
-﻿using System.Text;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
 
 namespace UnambitiousFx.Mediator.Generator;
 
@@ -26,34 +24,6 @@ public class MediatorGenerator : IIncrementalGenerator {
     private const string FullRequestHandlerAttributeName  = $"{BaseNamespace}.{LongRequestHandlerAttributeName}";
     private const string FullEventHandlerAttributeName    = $"{BaseNamespace}.{LongEventHandlerAttributeName}";
 
-    private const string RequestHandlerAttributeCode =
-        $$"""
-          #nullable enable
-          namespace {{BaseNamespace}};
-
-          [AttributeUsage(AttributeTargets.Class)]
-          public sealed class {{LongRequestHandlerAttributeName}}<TRequest, TResponse> : Attribute
-              where TRequest : global::{{AbstractionsNamespace}}.IRequest<TResponse> 
-              where TResponse : notnull {
-          }
-
-          [AttributeUsage(AttributeTargets.Class)]
-          public sealed class {{LongRequestHandlerAttributeName}}<TRequest> : Attribute
-              where TRequest : global::{{AbstractionsNamespace}}.IRequest {
-          }
-          """;
-
-    private const string EventHandlerAttributeCode =
-        $$"""
-          #nullable enable
-          namespace {{BaseNamespace}};
-
-          [AttributeUsage(AttributeTargets.Class)]
-          public sealed class {{LongEventHandlerAttributeName}}<TEvent> : Attribute 
-              where TEvent : global::{{AbstractionsNamespace}}.IEvent {
-          }
-          """;
-
     /// <summary>
     ///     Initializes the MediatorGenerator by registering post-initialization output with the provided
     ///     <see cref="IncrementalGeneratorInitializationContext" />. This method is called during the
@@ -64,11 +34,6 @@ public class MediatorGenerator : IIncrementalGenerator {
     ///     that allow the generator to specify how it interacts with the compilation process.
     /// </param>
     public void Initialize(IncrementalGeneratorInitializationContext context) {
-        context.RegisterPostInitializationOutput(static x => {
-            x.AddSource($"{LongRequestHandlerAttributeName}.g.cs", SourceText.From(RequestHandlerAttributeCode, Encoding.UTF8));
-            x.AddSource($"{LongEventHandlerAttributeName}.g.cs",   SourceText.From(EventHandlerAttributeCode,   Encoding.UTF8));
-        });
-
         // Get the compilation
         var compilationProvider = context.CompilationProvider;
 
