@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.Results.Reasons;
 using UnambitiousFx.Mediator.Abstractions;
 
 namespace UnambitiousFx.Mediator.Pipelines;
@@ -34,7 +35,7 @@ public sealed class SimpleLoggingBehavior : IRequestPipelineBehavior, IEventPipe
 
         var elapsedTime = Stopwatch.GetElapsedTime(startedAt);
         if (!result.TryGet(out var error)) {
-            _logger.LogWarning("Event {EventName} handled in {ElapsedMilliseconds}ms with error {ErrorMessage}", eventName, elapsedTime, error.Message);
+            _logger.LogWarning("Event {EventName} handled in {ElapsedMilliseconds}ms with error {ErrorMessage}", eventName, elapsedTime, error.ToDisplayString());
         }
         else {
             _logger.LogInformation("Event {EventName} handled in {ElapsedMilliseconds}ms", eventName, elapsedTime);
@@ -58,7 +59,7 @@ public sealed class SimpleLoggingBehavior : IRequestPipelineBehavior, IEventPipe
 
         var elapsedTime = Stopwatch.GetElapsedTime(startedAt);
         if (!result.TryGet(out var errors)) {
-            _logger.LogWarning("Request {RequestName} handled in {ElapsedMilliseconds}ms with error {ErrorMessage}", requestName, elapsedTime, errors.Message);
+            _logger.LogWarning("Request {RequestName} handled in {ElapsedMilliseconds}ms with error {ErrorMessage}", requestName, elapsedTime, errors.ToDisplayString());
         }
         else {
             _logger.LogInformation("Request {RequestName} handled in {ElapsedMilliseconds}ms", requestName, elapsedTime);
@@ -82,7 +83,7 @@ public sealed class SimpleLoggingBehavior : IRequestPipelineBehavior, IEventPipe
 
         var elapsedTime = Stopwatch.GetElapsedTime(startedAt);
         if (!result.TryGet(out _, out var error)) {
-            _logger.LogWarning("Request {RequestName} handled in {ElapsedMilliseconds}ms with error {ErrorMessage}", requestName, elapsedTime, error.Message);
+            _logger.LogWarning("Request {RequestName} handled in {ElapsedMilliseconds}ms with error {ErrorMessage}", requestName, elapsedTime, error.ToDisplayString());
         }
         else {
             _logger.LogInformation("Request {RequestName} handled in {ElapsedMilliseconds}ms", requestName, elapsedTime);

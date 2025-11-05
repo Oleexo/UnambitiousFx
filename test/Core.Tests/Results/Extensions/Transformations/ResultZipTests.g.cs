@@ -12,9 +12,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Extensions.Transformations;
 using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
@@ -163,7 +160,7 @@ public class ResultZipSyncTestsArity2
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
+        var value6 = DateTime.UtcNow;
         var result1 = Result.Success(value1);
         var result2 = Result.Success(value2);
         var result3 = Result.Success(value3);
@@ -184,7 +181,7 @@ public class ResultZipSyncTestsArity2
         var result3 = Result.Failure<bool>("Test error");
         var result4 = Result.Failure<double>("Test error");
         var result5 = Result.Failure<long>("Test error");
-        var result6 = Result.Failure<string>("Test error");
+        var result6 = Result.Failure<DateTime>("Test error");
         // When
         var zippedResult = result1.Zip(result2, result3, result4, result5, result6);
         // Then
@@ -203,8 +200,8 @@ public class ResultZipSyncTestsArity2
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var result1 = Result.Success(value1);
         var result2 = Result.Success(value2);
         var result3 = Result.Success(value3);
@@ -226,8 +223,8 @@ public class ResultZipSyncTestsArity2
         var result3 = Result.Failure<bool>("Test error");
         var result4 = Result.Failure<double>("Test error");
         var result5 = Result.Failure<long>("Test error");
-        var result6 = Result.Failure<string>("Test error");
-        var result7 = Result.Failure<string>("Test error");
+        var result6 = Result.Failure<DateTime>("Test error");
+        var result7 = Result.Failure<Guid>("Test error");
         // When
         var zippedResult = result1.Zip(result2, result3, result4, result5, result6, result7);
         // Then
@@ -246,9 +243,9 @@ public class ResultZipSyncTestsArity2
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
         var result1 = Result.Success(value1);
         var result2 = Result.Success(value2);
         var result3 = Result.Success(value3);
@@ -271,9 +268,9 @@ public class ResultZipSyncTestsArity2
         var result3 = Result.Failure<bool>("Test error");
         var result4 = Result.Failure<double>("Test error");
         var result5 = Result.Failure<long>("Test error");
-        var result6 = Result.Failure<string>("Test error");
-        var result7 = Result.Failure<string>("Test error");
-        var result8 = Result.Failure<string>("Test error");
+        var result6 = Result.Failure<DateTime>("Test error");
+        var result7 = Result.Failure<Guid>("Test error");
+        var result8 = Result.Failure<TimeSpan>("Test error");
         // When
         var zippedResult = result1.Zip(result2, result3, result4, result5, result6, result7, result8);
         // Then

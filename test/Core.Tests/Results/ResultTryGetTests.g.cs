@@ -207,7 +207,7 @@ public abstract class ResultTryGetTests
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
+        var value6 = DateTime.UtcNow;
         var result = Result.Success(value1, value2, value3, value4, value5, value6);
         // When
         // When: Calling TryGet
@@ -220,14 +220,14 @@ public abstract class ResultTryGetTests
         Assert.True(outValue3);
         Assert.Equal(3.14, outValue4);
         Assert.Equal(123L, outValue5);
-        Assert.Equal("value6", outValue6);
+        Assert.Equal(DateTime.UtcNow, outValue6);
     }
     
     [Fact]
     public void TryGet_Arity6_Failure_ShouldReturnFalse() {
         // Given
         // Given: A failed Result
-        var result = Result.Failure<int, string, bool, double, long, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
         // When
         // When: Calling TryGet
         var tryGetResult = result.TryGet(out var outValue1, out var outValue2, out var outValue3, out var outValue4, out var outValue5, out var outValue6);
@@ -249,8 +249,8 @@ public abstract class ResultTryGetTests
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
         // When
         // When: Calling TryGet
@@ -263,15 +263,15 @@ public abstract class ResultTryGetTests
         Assert.True(outValue3);
         Assert.Equal(3.14, outValue4);
         Assert.Equal(123L, outValue5);
-        Assert.Equal("value6", outValue6);
-        Assert.Equal("value7", outValue7);
+        Assert.Equal(DateTime.UtcNow, outValue6);
+        Assert.Equal(Guid.NewGuid(), outValue7);
     }
     
     [Fact]
     public void TryGet_Arity7_Failure_ShouldReturnFalse() {
         // Given
         // Given: A failed Result
-        var result = Result.Failure<int, string, bool, double, long, string, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
         // When
         // When: Calling TryGet
         var tryGetResult = result.TryGet(out var outValue1, out var outValue2, out var outValue3, out var outValue4, out var outValue5, out var outValue6, out var outValue7);
@@ -293,9 +293,9 @@ public abstract class ResultTryGetTests
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
         // When
         // When: Calling TryGet
@@ -308,16 +308,16 @@ public abstract class ResultTryGetTests
         Assert.True(outValue3);
         Assert.Equal(3.14, outValue4);
         Assert.Equal(123L, outValue5);
-        Assert.Equal("value6", outValue6);
-        Assert.Equal("value7", outValue7);
-        Assert.Equal("value8", outValue8);
+        Assert.Equal(DateTime.UtcNow, outValue6);
+        Assert.Equal(Guid.NewGuid(), outValue7);
+        Assert.Equal(TimeSpan.FromMinutes(5), outValue8);
     }
     
     [Fact]
     public void TryGet_Arity8_Failure_ShouldReturnFalse() {
         // Given
         // Given: A failed Result
-        var result = Result.Failure<int, string, bool, double, long, string, string, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
         // When
         // When: Calling TryGet
         var tryGetResult = result.TryGet(out var outValue1, out var outValue2, out var outValue3, out var outValue4, out var outValue5, out var outValue6, out var outValue7, out var outValue8);

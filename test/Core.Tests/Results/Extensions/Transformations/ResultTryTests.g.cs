@@ -12,9 +12,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Extensions.Transformations;
 using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
@@ -233,10 +230,10 @@ public class ResultTrySyncTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
+        var value6 = DateTime.UtcNow;
         var result = Result.Success(value1, value2, value3, value4, value5, value6);
         // When
-        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried"));
+        var transformedResult = result.Try<int, string, bool, double, long, DateTime, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried"));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -244,9 +241,9 @@ public class ResultTrySyncTestsArity1
     [Fact]
     public void Try_Arity6_Failure_ShouldNotTransform() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
         // When
-        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried"));
+        var transformedResult = result.Try<int, string, bool, double, long, DateTime, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried"));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -259,10 +256,10 @@ public class ResultTrySyncTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
+        var value6 = DateTime.UtcNow;
         var result = Result.Success(value1, value2, value3, value4, value5, value6);
         // When
-        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6) => throw new Exception("Boom"));
+        var transformedResult = result.Try<int, string, bool, double, long, DateTime, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6) => throw new Exception("Boom"));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -279,11 +276,11 @@ public class ResultTrySyncTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
         // When
-        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried", x7 + "_tried"));
+        var transformedResult = result.Try<int, string, bool, double, long, DateTime, Guid, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried", x7 + "_tried"));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -291,9 +288,9 @@ public class ResultTrySyncTestsArity1
     [Fact]
     public void Try_Arity7_Failure_ShouldNotTransform() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
         // When
-        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried", x7 + "_tried"));
+        var transformedResult = result.Try<int, string, bool, double, long, DateTime, Guid, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried", x7 + "_tried"));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -306,11 +303,11 @@ public class ResultTrySyncTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
         // When
-        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7) => throw new Exception("Boom"));
+        var transformedResult = result.Try<int, string, bool, double, long, DateTime, Guid, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7) => throw new Exception("Boom"));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -327,12 +324,12 @@ public class ResultTrySyncTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
         // When
-        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7, x8) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried", x7 + "_tried", x8 + "_tried"));
+        var transformedResult = result.Try<int, string, bool, double, long, DateTime, Guid, TimeSpan, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7, x8) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried", x7 + "_tried", x8 + "_tried"));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -340,9 +337,9 @@ public class ResultTrySyncTestsArity1
     [Fact]
     public void Try_Arity8_Failure_ShouldNotTransform() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
         // When
-        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7, x8) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried", x7 + "_tried", x8 + "_tried"));
+        var transformedResult = result.Try<int, string, bool, double, long, DateTime, Guid, TimeSpan, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7, x8) => (x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried", x7 + "_tried", x8 + "_tried"));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -355,12 +352,12 @@ public class ResultTrySyncTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
         // When
-        var transformedResult = result.Try<int, string, bool, double, long, string, string, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7, x8) => throw new Exception("Boom"));
+        var transformedResult = result.Try<int, string, bool, double, long, DateTime, Guid, TimeSpan, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7, x8) => throw new Exception("Boom"));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }

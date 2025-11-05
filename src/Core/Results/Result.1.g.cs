@@ -88,9 +88,8 @@ public abstract class Result<TValue1> : BaseResult
     /// <summary>
     /// Deconstructs the result into its components.
     /// </summary>
-    /// <param name="isSuccess">Whether the result is successful</param>
     /// <param name="value">The success value(s) if successful</param>
     /// <param name="error">The exception if failed</param>
-    public abstract void Deconstruct(out bool isSuccess, out TValue1? value, out IEnumerable<IError>? error);
+    public abstract void Deconstruct(out TValue1? value, out IEnumerable<IError>? error);
     
 }

@@ -18,21 +18,16 @@ internal sealed class Sender : ISender {
                                                                        CancellationToken cancellationToken = default)
         where TResponse : notnull
         where TRequest : IRequest<TResponse> {
-        return _resolver.GetService<IRequestHandler<TRequest, TResponse>>()
-                        .Match(handler => {
-                             var ctx = _contextFactory.Create();
-                             return handler.HandleAsync(ctx, request, cancellationToken);
-                         }, () => throw new MissingHandlerException(typeof(IRequestHandler<TRequest, TResponse>)));
+        var handler = _resolver.GetRequiredService<IRequestHandler<TRequest, TResponse>>();
+        var ctx     = _contextFactory.Create();
+        return handler.HandleAsync(ctx, request, cancellationToken);
     }
 
     public ValueTask<Result> SendAsync<TRequest>(TRequest          request,
                                                  CancellationToken cancellationToken = default)
         where TRequest : IRequest {
-        return _resolver.GetService<IRequestHandler<TRequest>>()
-                        .Match(handler => {
-                                   var ctx = _contextFactory.Create();
-                                   return handler.HandleAsync(ctx, request, cancellationToken);
-                               },
-                               () => throw new MissingHandlerException(typeof(IRequestHandler<TRequest>)));
+        var handler = _resolver.GetRequiredService<IRequestHandler<TRequest>>();
+        var ctx     = _contextFactory.Create();
+        return handler.HandleAsync(ctx, request, cancellationToken);
     }
 }

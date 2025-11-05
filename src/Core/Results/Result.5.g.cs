@@ -104,9 +104,12 @@ public abstract class Result<TValue1, TValue2, TValue3, TValue4, TValue5> : Base
     /// <summary>
     /// Deconstructs the result into its components.
     /// </summary>
-    /// <param name="isSuccess">Whether the result is successful</param>
-    /// <param name="value">The success value(s) if successful</param>
+    /// <param name="value1">The success value(s) if successful</param>
+    /// <param name="value2">The success value(s) if successful</param>
+    /// <param name="value3">The success value(s) if successful</param>
+    /// <param name="value4">The success value(s) if successful</param>
+    /// <param name="value5">The success value(s) if successful</param>
     /// <param name="error">The exception if failed</param>
-    public abstract void Deconstruct(out bool isSuccess, out (TValue1, TValue2, TValue3, TValue4, TValue5)? value, out IEnumerable<IError>? error);
+    public abstract void Deconstruct(out TValue1? value1, out TValue2? value2, out TValue3? value3, out TValue4? value4, out TValue5? value5, out IEnumerable<IError>? error);
     
 }

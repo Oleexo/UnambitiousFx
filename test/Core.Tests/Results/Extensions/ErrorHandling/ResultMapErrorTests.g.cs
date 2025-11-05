@@ -13,15 +13,118 @@ using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Reasons;
+using UnambitiousFx.Core.Results.Types;
 using Xunit;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.ErrorHandling;
 
-public class ResultMapErrorSyncTestsArity1
+public class ResultMapErrorSyncTestsArity0
 {
+    #region Arity 0 - Sync MapError
+    
+    [Fact]
+    public void MapError_Arity0_Success_ShouldNotMapError() {
+        // Given
+        var result = Result.Success();
+        // When
+        var mappedResult = result.MapError(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")));
+        // Then
+        Assert.True(mappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void MapError_Arity0_Failure_ShouldMapError() {
+        // Given
+        var result = Result.Failure("Test error");
+        // When
+        var mappedResult = result.MapError(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")));
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity0_Success_ShortCircuit_ShouldNotMapError() {
+        // Given
+        var result = Result.Success();
+        // When
+        var mappedResult = result.MapError(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.True(mappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity0_Success_Accumulate_ShouldNotMapError() {
+        // Given
+        var result = Result.Success();
+        // When
+        var mappedResult = result.MapError(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.True(mappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity0_Accumulate_SingleError_ShouldMapError() {
+        // Given
+        var result = Result.Failure("Test error");
+        // Testing Accumulate policy with single error - preserves original error in Reasons
+        // When
+        var mappedResult = result.MapError(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // Accumulate preserves original errors + adds mapped errors to Reasons
+        Assert.Equal(2, mappedResult.Errors.Count()); // Original + Mapped
+        Assert.Contains(mappedResult.Errors, e => e.Message.Contains("MAPPED"));
+        Assert.Contains(mappedResult.Errors, e => !e.Message.Contains("MAPPED"));
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity0_Accumulate_MultipleErrors_ShouldMapAllErrors() {
+        // Given
+        var error1 = new Error("Error 1");
+        var error2 = new Error("Error 2");
+        var result = Result.Failure(new[] { error1, error2 });
+        // When
+        var mappedResult = result.MapError(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // Accumulate preserves original errors + adds mapped errors
+        Assert.Equal(4, mappedResult.Errors.Count()); // 2 original + 2 mapped
+        Assert.Equal(2, mappedResult.Errors.Count(e => e.Message.Contains("MAPPED")));
+        Assert.Equal(2, mappedResult.Errors.Count(e => !e.Message.Contains("MAPPED")));
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity0_ShortCircuit_SingleError_ShouldMapError() {
+        // Given
+        var result = Result.Failure("Test error");
+        // Testing ShortCircuit policy with single error
+        // When
+        var mappedResult = result.MapError(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
+        Assert.Single(mappedResult.Errors);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity0_ShortCircuit_MultipleErrors_ShouldMapAllErrors() {
+        // Given
+        var error1 = new Error("Error 1");
+        var error2 = new Error("Error 2");
+        var result = Result.Failure(new[] { error1, error2 });
+        // When
+        var mappedResult = result.MapError(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // All errors should be mapped
+        Assert.Equal(2, mappedResult.Errors.Count());
+        Assert.All(mappedResult.Errors, e => Assert.Contains("MAPPED", e.Message));
+    }
+    
+    #endregion // Arity 0 - Sync MapError
+    
     #region Arity 1 - Sync MapError
     
     [Fact]
@@ -44,6 +147,87 @@ public class ResultMapErrorSyncTestsArity1
         // Then
         Assert.False(mappedResult.IsSuccess);
         Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity1_Success_ShortCircuit_ShouldNotMapError() {
+        // Given
+        var value1 = 42;
+        var result = Result.Success(value1);
+        // When
+        var mappedResult = result.MapError<int>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.True(mappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity1_Success_Accumulate_ShouldNotMapError() {
+        // Given
+        var value1 = 42;
+        var result = Result.Success(value1);
+        // When
+        var mappedResult = result.MapError<int>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.True(mappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity1_Accumulate_SingleError_ShouldMapError() {
+        // Given
+        var result = Result.Failure<int>("Test error");
+        // Testing Accumulate policy with single error - preserves original error in Reasons
+        // When
+        var mappedResult = result.MapError<int>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // Accumulate preserves original errors + adds mapped errors to Reasons
+        Assert.Equal(2, mappedResult.Errors.Count()); // Original + Mapped
+        Assert.Contains(mappedResult.Errors, e => e.Message.Contains("MAPPED"));
+        Assert.Contains(mappedResult.Errors, e => !e.Message.Contains("MAPPED"));
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity1_Accumulate_MultipleErrors_ShouldMapAllErrors() {
+        // Given
+        var error1 = new Error("Error 1");
+        var error2 = new Error("Error 2");
+        var result = Result.Failure<int>(new[] { error1, error2 });
+        // When
+        var mappedResult = result.MapError<int>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // Accumulate preserves original errors + adds mapped errors
+        Assert.Equal(4, mappedResult.Errors.Count()); // 2 original + 2 mapped
+        Assert.Equal(2, mappedResult.Errors.Count(e => e.Message.Contains("MAPPED")));
+        Assert.Equal(2, mappedResult.Errors.Count(e => !e.Message.Contains("MAPPED")));
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity1_ShortCircuit_SingleError_ShouldMapError() {
+        // Given
+        var result = Result.Failure<int>("Test error");
+        // Testing ShortCircuit policy with single error
+        // When
+        var mappedResult = result.MapError<int>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
+        Assert.Single(mappedResult.Errors);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity1_ShortCircuit_MultipleErrors_ShouldMapAllErrors() {
+        // Given
+        var error1 = new Error("Error 1");
+        var error2 = new Error("Error 2");
+        var result = Result.Failure<int>(new[] { error1, error2 });
+        // When
+        var mappedResult = result.MapError<int>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // All errors should be mapped
+        Assert.Equal(2, mappedResult.Errors.Count());
+        Assert.All(mappedResult.Errors, e => Assert.Contains("MAPPED", e.Message));
     }
     
     #endregion // Arity 1 - Sync MapError
@@ -71,6 +255,89 @@ public class ResultMapErrorSyncTestsArity1
         // Then
         Assert.False(mappedResult.IsSuccess);
         Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity2_Success_ShortCircuit_ShouldNotMapError() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var result = Result.Success(value1, value2);
+        // When
+        var mappedResult = result.MapError<int, string>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.True(mappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity2_Success_Accumulate_ShouldNotMapError() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var result = Result.Success(value1, value2);
+        // When
+        var mappedResult = result.MapError<int, string>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.True(mappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity2_Accumulate_SingleError_ShouldMapError() {
+        // Given
+        var result = Result.Failure<int, string>("Test error");
+        // Testing Accumulate policy with single error - preserves original error in Reasons
+        // When
+        var mappedResult = result.MapError<int, string>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // Accumulate preserves original errors + adds mapped errors to Reasons
+        Assert.Equal(2, mappedResult.Errors.Count()); // Original + Mapped
+        Assert.Contains(mappedResult.Errors, e => e.Message.Contains("MAPPED"));
+        Assert.Contains(mappedResult.Errors, e => !e.Message.Contains("MAPPED"));
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity2_Accumulate_MultipleErrors_ShouldMapAllErrors() {
+        // Given
+        var error1 = new Error("Error 1");
+        var error2 = new Error("Error 2");
+        var result = Result.Failure<int, string>(new[] { error1, error2 });
+        // When
+        var mappedResult = result.MapError<int, string>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // Accumulate preserves original errors + adds mapped errors
+        Assert.Equal(4, mappedResult.Errors.Count()); // 2 original + 2 mapped
+        Assert.Equal(2, mappedResult.Errors.Count(e => e.Message.Contains("MAPPED")));
+        Assert.Equal(2, mappedResult.Errors.Count(e => !e.Message.Contains("MAPPED")));
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity2_ShortCircuit_SingleError_ShouldMapError() {
+        // Given
+        var result = Result.Failure<int, string>("Test error");
+        // Testing ShortCircuit policy with single error
+        // When
+        var mappedResult = result.MapError<int, string>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
+        Assert.Single(mappedResult.Errors);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity2_ShortCircuit_MultipleErrors_ShouldMapAllErrors() {
+        // Given
+        var error1 = new Error("Error 1");
+        var error2 = new Error("Error 2");
+        var result = Result.Failure<int, string>(new[] { error1, error2 });
+        // When
+        var mappedResult = result.MapError<int, string>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // All errors should be mapped
+        Assert.Equal(2, mappedResult.Errors.Count());
+        Assert.All(mappedResult.Errors, e => Assert.Contains("MAPPED", e.Message));
     }
     
     #endregion // Arity 2 - Sync MapError
@@ -101,6 +368,91 @@ public class ResultMapErrorSyncTestsArity1
         Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
     }
     
+    [Fact]
+    public void MapErrorWithPolicy_Arity3_Success_ShortCircuit_ShouldNotMapError() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var result = Result.Success(value1, value2, value3);
+        // When
+        var mappedResult = result.MapError<int, string, bool>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.True(mappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity3_Success_Accumulate_ShouldNotMapError() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var result = Result.Success(value1, value2, value3);
+        // When
+        var mappedResult = result.MapError<int, string, bool>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.True(mappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity3_Accumulate_SingleError_ShouldMapError() {
+        // Given
+        var result = Result.Failure<int, string, bool>("Test error");
+        // Testing Accumulate policy with single error - preserves original error in Reasons
+        // When
+        var mappedResult = result.MapError<int, string, bool>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // Accumulate preserves original errors + adds mapped errors to Reasons
+        Assert.Equal(2, mappedResult.Errors.Count()); // Original + Mapped
+        Assert.Contains(mappedResult.Errors, e => e.Message.Contains("MAPPED"));
+        Assert.Contains(mappedResult.Errors, e => !e.Message.Contains("MAPPED"));
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity3_Accumulate_MultipleErrors_ShouldMapAllErrors() {
+        // Given
+        var error1 = new Error("Error 1");
+        var error2 = new Error("Error 2");
+        var result = Result.Failure<int, string, bool>(new[] { error1, error2 });
+        // When
+        var mappedResult = result.MapError<int, string, bool>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // Accumulate preserves original errors + adds mapped errors
+        Assert.Equal(4, mappedResult.Errors.Count()); // 2 original + 2 mapped
+        Assert.Equal(2, mappedResult.Errors.Count(e => e.Message.Contains("MAPPED")));
+        Assert.Equal(2, mappedResult.Errors.Count(e => !e.Message.Contains("MAPPED")));
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity3_ShortCircuit_SingleError_ShouldMapError() {
+        // Given
+        var result = Result.Failure<int, string, bool>("Test error");
+        // Testing ShortCircuit policy with single error
+        // When
+        var mappedResult = result.MapError<int, string, bool>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
+        Assert.Single(mappedResult.Errors);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity3_ShortCircuit_MultipleErrors_ShouldMapAllErrors() {
+        // Given
+        var error1 = new Error("Error 1");
+        var error2 = new Error("Error 2");
+        var result = Result.Failure<int, string, bool>(new[] { error1, error2 });
+        // When
+        var mappedResult = result.MapError<int, string, bool>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // All errors should be mapped
+        Assert.Equal(2, mappedResult.Errors.Count());
+        Assert.All(mappedResult.Errors, e => Assert.Contains("MAPPED", e.Message));
+    }
+    
     #endregion // Arity 3 - Sync MapError
     
     #region Arity 4 - Sync MapError
@@ -128,6 +480,93 @@ public class ResultMapErrorSyncTestsArity1
         // Then
         Assert.False(mappedResult.IsSuccess);
         Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity4_Success_ShortCircuit_ShouldNotMapError() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var result = Result.Success(value1, value2, value3, value4);
+        // When
+        var mappedResult = result.MapError<int, string, bool, double>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.True(mappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity4_Success_Accumulate_ShouldNotMapError() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var result = Result.Success(value1, value2, value3, value4);
+        // When
+        var mappedResult = result.MapError<int, string, bool, double>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.True(mappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity4_Accumulate_SingleError_ShouldMapError() {
+        // Given
+        var result = Result.Failure<int, string, bool, double>("Test error");
+        // Testing Accumulate policy with single error - preserves original error in Reasons
+        // When
+        var mappedResult = result.MapError<int, string, bool, double>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // Accumulate preserves original errors + adds mapped errors to Reasons
+        Assert.Equal(2, mappedResult.Errors.Count()); // Original + Mapped
+        Assert.Contains(mappedResult.Errors, e => e.Message.Contains("MAPPED"));
+        Assert.Contains(mappedResult.Errors, e => !e.Message.Contains("MAPPED"));
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity4_Accumulate_MultipleErrors_ShouldMapAllErrors() {
+        // Given
+        var error1 = new Error("Error 1");
+        var error2 = new Error("Error 2");
+        var result = Result.Failure<int, string, bool, double>(new[] { error1, error2 });
+        // When
+        var mappedResult = result.MapError<int, string, bool, double>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // Accumulate preserves original errors + adds mapped errors
+        Assert.Equal(4, mappedResult.Errors.Count()); // 2 original + 2 mapped
+        Assert.Equal(2, mappedResult.Errors.Count(e => e.Message.Contains("MAPPED")));
+        Assert.Equal(2, mappedResult.Errors.Count(e => !e.Message.Contains("MAPPED")));
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity4_ShortCircuit_SingleError_ShouldMapError() {
+        // Given
+        var result = Result.Failure<int, string, bool, double>("Test error");
+        // Testing ShortCircuit policy with single error
+        // When
+        var mappedResult = result.MapError<int, string, bool, double>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
+        Assert.Single(mappedResult.Errors);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity4_ShortCircuit_MultipleErrors_ShouldMapAllErrors() {
+        // Given
+        var error1 = new Error("Error 1");
+        var error2 = new Error("Error 2");
+        var result = Result.Failure<int, string, bool, double>(new[] { error1, error2 });
+        // When
+        var mappedResult = result.MapError<int, string, bool, double>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // All errors should be mapped
+        Assert.Equal(2, mappedResult.Errors.Count());
+        Assert.All(mappedResult.Errors, e => Assert.Contains("MAPPED", e.Message));
     }
     
     #endregion // Arity 4 - Sync MapError
@@ -160,6 +599,95 @@ public class ResultMapErrorSyncTestsArity1
         Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
     }
     
+    [Fact]
+    public void MapErrorWithPolicy_Arity5_Success_ShortCircuit_ShouldNotMapError() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var result = Result.Success(value1, value2, value3, value4, value5);
+        // When
+        var mappedResult = result.MapError<int, string, bool, double, long>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.True(mappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity5_Success_Accumulate_ShouldNotMapError() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var result = Result.Success(value1, value2, value3, value4, value5);
+        // When
+        var mappedResult = result.MapError<int, string, bool, double, long>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.True(mappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity5_Accumulate_SingleError_ShouldMapError() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long>("Test error");
+        // Testing Accumulate policy with single error - preserves original error in Reasons
+        // When
+        var mappedResult = result.MapError<int, string, bool, double, long>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // Accumulate preserves original errors + adds mapped errors to Reasons
+        Assert.Equal(2, mappedResult.Errors.Count()); // Original + Mapped
+        Assert.Contains(mappedResult.Errors, e => e.Message.Contains("MAPPED"));
+        Assert.Contains(mappedResult.Errors, e => !e.Message.Contains("MAPPED"));
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity5_Accumulate_MultipleErrors_ShouldMapAllErrors() {
+        // Given
+        var error1 = new Error("Error 1");
+        var error2 = new Error("Error 2");
+        var result = Result.Failure<int, string, bool, double, long>(new[] { error1, error2 });
+        // When
+        var mappedResult = result.MapError<int, string, bool, double, long>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // Accumulate preserves original errors + adds mapped errors
+        Assert.Equal(4, mappedResult.Errors.Count()); // 2 original + 2 mapped
+        Assert.Equal(2, mappedResult.Errors.Count(e => e.Message.Contains("MAPPED")));
+        Assert.Equal(2, mappedResult.Errors.Count(e => !e.Message.Contains("MAPPED")));
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity5_ShortCircuit_SingleError_ShouldMapError() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long>("Test error");
+        // Testing ShortCircuit policy with single error
+        // When
+        var mappedResult = result.MapError<int, string, bool, double, long>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
+        Assert.Single(mappedResult.Errors);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity5_ShortCircuit_MultipleErrors_ShouldMapAllErrors() {
+        // Given
+        var error1 = new Error("Error 1");
+        var error2 = new Error("Error 2");
+        var result = Result.Failure<int, string, bool, double, long>(new[] { error1, error2 });
+        // When
+        var mappedResult = result.MapError<int, string, bool, double, long>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // All errors should be mapped
+        Assert.Equal(2, mappedResult.Errors.Count());
+        Assert.All(mappedResult.Errors, e => Assert.Contains("MAPPED", e.Message));
+    }
+    
     #endregion // Arity 5 - Sync MapError
     
     #region Arity 6 - Sync MapError
@@ -172,10 +700,10 @@ public class ResultMapErrorSyncTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
+        var value6 = DateTime.UtcNow;
         var result = Result.Success(value1, value2, value3, value4, value5, value6);
         // When
-        var mappedResult = result.MapError<int, string, bool, double, long, string>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")));
+        var mappedResult = result.MapError<int, string, bool, double, long, DateTime>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")));
         // Then
         Assert.True(mappedResult.IsSuccess);
     }
@@ -183,12 +711,103 @@ public class ResultMapErrorSyncTestsArity1
     [Fact]
     public void MapError_Arity6_Failure_ShouldMapError() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
         // When
-        var mappedResult = result.MapError<int, string, bool, double, long, string>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")));
+        var mappedResult = result.MapError<int, string, bool, double, long, DateTime>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")));
         // Then
         Assert.False(mappedResult.IsSuccess);
         Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity6_Success_ShortCircuit_ShouldNotMapError() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var result = Result.Success(value1, value2, value3, value4, value5, value6);
+        // When
+        var mappedResult = result.MapError<int, string, bool, double, long, DateTime>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.True(mappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity6_Success_Accumulate_ShouldNotMapError() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var result = Result.Success(value1, value2, value3, value4, value5, value6);
+        // When
+        var mappedResult = result.MapError<int, string, bool, double, long, DateTime>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.True(mappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity6_Accumulate_SingleError_ShouldMapError() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
+        // Testing Accumulate policy with single error - preserves original error in Reasons
+        // When
+        var mappedResult = result.MapError<int, string, bool, double, long, DateTime>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // Accumulate preserves original errors + adds mapped errors to Reasons
+        Assert.Equal(2, mappedResult.Errors.Count()); // Original + Mapped
+        Assert.Contains(mappedResult.Errors, e => e.Message.Contains("MAPPED"));
+        Assert.Contains(mappedResult.Errors, e => !e.Message.Contains("MAPPED"));
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity6_Accumulate_MultipleErrors_ShouldMapAllErrors() {
+        // Given
+        var error1 = new Error("Error 1");
+        var error2 = new Error("Error 2");
+        var result = Result.Failure<int, string, bool, double, long, DateTime>(new[] { error1, error2 });
+        // When
+        var mappedResult = result.MapError<int, string, bool, double, long, DateTime>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // Accumulate preserves original errors + adds mapped errors
+        Assert.Equal(4, mappedResult.Errors.Count()); // 2 original + 2 mapped
+        Assert.Equal(2, mappedResult.Errors.Count(e => e.Message.Contains("MAPPED")));
+        Assert.Equal(2, mappedResult.Errors.Count(e => !e.Message.Contains("MAPPED")));
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity6_ShortCircuit_SingleError_ShouldMapError() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
+        // Testing ShortCircuit policy with single error
+        // When
+        var mappedResult = result.MapError<int, string, bool, double, long, DateTime>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
+        Assert.Single(mappedResult.Errors);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity6_ShortCircuit_MultipleErrors_ShouldMapAllErrors() {
+        // Given
+        var error1 = new Error("Error 1");
+        var error2 = new Error("Error 2");
+        var result = Result.Failure<int, string, bool, double, long, DateTime>(new[] { error1, error2 });
+        // When
+        var mappedResult = result.MapError<int, string, bool, double, long, DateTime>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // All errors should be mapped
+        Assert.Equal(2, mappedResult.Errors.Count());
+        Assert.All(mappedResult.Errors, e => Assert.Contains("MAPPED", e.Message));
     }
     
     #endregion // Arity 6 - Sync MapError
@@ -203,11 +822,11 @@ public class ResultMapErrorSyncTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
         // When
-        var mappedResult = result.MapError<int, string, bool, double, long, string, string>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")));
+        var mappedResult = result.MapError<int, string, bool, double, long, DateTime, Guid>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")));
         // Then
         Assert.True(mappedResult.IsSuccess);
     }
@@ -215,12 +834,105 @@ public class ResultMapErrorSyncTestsArity1
     [Fact]
     public void MapError_Arity7_Failure_ShouldMapError() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
         // When
-        var mappedResult = result.MapError<int, string, bool, double, long, string, string>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")));
+        var mappedResult = result.MapError<int, string, bool, double, long, DateTime, Guid>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")));
         // Then
         Assert.False(mappedResult.IsSuccess);
         Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity7_Success_ShortCircuit_ShouldNotMapError() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
+        // When
+        var mappedResult = result.MapError<int, string, bool, double, long, DateTime, Guid>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.True(mappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity7_Success_Accumulate_ShouldNotMapError() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
+        // When
+        var mappedResult = result.MapError<int, string, bool, double, long, DateTime, Guid>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.True(mappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity7_Accumulate_SingleError_ShouldMapError() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
+        // Testing Accumulate policy with single error - preserves original error in Reasons
+        // When
+        var mappedResult = result.MapError<int, string, bool, double, long, DateTime, Guid>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // Accumulate preserves original errors + adds mapped errors to Reasons
+        Assert.Equal(2, mappedResult.Errors.Count()); // Original + Mapped
+        Assert.Contains(mappedResult.Errors, e => e.Message.Contains("MAPPED"));
+        Assert.Contains(mappedResult.Errors, e => !e.Message.Contains("MAPPED"));
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity7_Accumulate_MultipleErrors_ShouldMapAllErrors() {
+        // Given
+        var error1 = new Error("Error 1");
+        var error2 = new Error("Error 2");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>(new[] { error1, error2 });
+        // When
+        var mappedResult = result.MapError<int, string, bool, double, long, DateTime, Guid>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // Accumulate preserves original errors + adds mapped errors
+        Assert.Equal(4, mappedResult.Errors.Count()); // 2 original + 2 mapped
+        Assert.Equal(2, mappedResult.Errors.Count(e => e.Message.Contains("MAPPED")));
+        Assert.Equal(2, mappedResult.Errors.Count(e => !e.Message.Contains("MAPPED")));
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity7_ShortCircuit_SingleError_ShouldMapError() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
+        // Testing ShortCircuit policy with single error
+        // When
+        var mappedResult = result.MapError<int, string, bool, double, long, DateTime, Guid>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
+        Assert.Single(mappedResult.Errors);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity7_ShortCircuit_MultipleErrors_ShouldMapAllErrors() {
+        // Given
+        var error1 = new Error("Error 1");
+        var error2 = new Error("Error 2");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>(new[] { error1, error2 });
+        // When
+        var mappedResult = result.MapError<int, string, bool, double, long, DateTime, Guid>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // All errors should be mapped
+        Assert.Equal(2, mappedResult.Errors.Count());
+        Assert.All(mappedResult.Errors, e => Assert.Contains("MAPPED", e.Message));
     }
     
     #endregion // Arity 7 - Sync MapError
@@ -235,12 +947,12 @@ public class ResultMapErrorSyncTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
         // When
-        var mappedResult = result.MapError<int, string, bool, double, long, string, string, string>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")));
+        var mappedResult = result.MapError<int, string, bool, double, long, DateTime, Guid, TimeSpan>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")));
         // Then
         Assert.True(mappedResult.IsSuccess);
     }
@@ -248,12 +960,107 @@ public class ResultMapErrorSyncTestsArity1
     [Fact]
     public void MapError_Arity8_Failure_ShouldMapError() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
         // When
-        var mappedResult = result.MapError<int, string, bool, double, long, string, string, string>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")));
+        var mappedResult = result.MapError<int, string, bool, double, long, DateTime, Guid, TimeSpan>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")));
         // Then
         Assert.False(mappedResult.IsSuccess);
         Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity8_Success_ShortCircuit_ShouldNotMapError() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
+        // When
+        var mappedResult = result.MapError<int, string, bool, double, long, DateTime, Guid, TimeSpan>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.True(mappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity8_Success_Accumulate_ShouldNotMapError() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
+        // When
+        var mappedResult = result.MapError<int, string, bool, double, long, DateTime, Guid, TimeSpan>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.True(mappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity8_Accumulate_SingleError_ShouldMapError() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
+        // Testing Accumulate policy with single error - preserves original error in Reasons
+        // When
+        var mappedResult = result.MapError<int, string, bool, double, long, DateTime, Guid, TimeSpan>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // Accumulate preserves original errors + adds mapped errors to Reasons
+        Assert.Equal(2, mappedResult.Errors.Count()); // Original + Mapped
+        Assert.Contains(mappedResult.Errors, e => e.Message.Contains("MAPPED"));
+        Assert.Contains(mappedResult.Errors, e => !e.Message.Contains("MAPPED"));
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity8_Accumulate_MultipleErrors_ShouldMapAllErrors() {
+        // Given
+        var error1 = new Error("Error 1");
+        var error2 = new Error("Error 2");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>(new[] { error1, error2 });
+        // When
+        var mappedResult = result.MapError<int, string, bool, double, long, DateTime, Guid, TimeSpan>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.Accumulate);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // Accumulate preserves original errors + adds mapped errors
+        Assert.Equal(4, mappedResult.Errors.Count()); // 2 original + 2 mapped
+        Assert.Equal(2, mappedResult.Errors.Count(e => e.Message.Contains("MAPPED")));
+        Assert.Equal(2, mappedResult.Errors.Count(e => !e.Message.Contains("MAPPED")));
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity8_ShortCircuit_SingleError_ShouldMapError() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
+        // Testing ShortCircuit policy with single error
+        // When
+        var mappedResult = result.MapError<int, string, bool, double, long, DateTime, Guid, TimeSpan>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        Assert.Contains("MAPPED", mappedResult.Errors.First().Message);
+        Assert.Single(mappedResult.Errors);
+    }
+    
+    [Fact]
+    public void MapErrorWithPolicy_Arity8_ShortCircuit_MultipleErrors_ShouldMapAllErrors() {
+        // Given
+        var error1 = new Error("Error 1");
+        var error2 = new Error("Error 2");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>(new[] { error1, error2 });
+        // When
+        var mappedResult = result.MapError<int, string, bool, double, long, DateTime, Guid, TimeSpan>(errors => errors.Select(e => e.WithMessage(e.Message + " MAPPED")), MapErrorChainPolicy.ShortCircuit);
+        // Then
+        Assert.False(mappedResult.IsSuccess);
+        // All errors should be mapped
+        Assert.Equal(2, mappedResult.Errors.Count());
+        Assert.All(mappedResult.Errors, e => Assert.Contains("MAPPED", e.Message));
     }
     
     #endregion // Arity 8 - Sync MapError

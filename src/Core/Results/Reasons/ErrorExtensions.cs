@@ -14,4 +14,18 @@ public static class ErrorExtensions {
 
         return new AggregateException(arr.Select(e => e.Exception ?? new Exception(e.Message)));
     }
+
+    public static string ToDisplayString(this IEnumerable<IError> errors) {
+        var arr = errors as IError[] ?? errors.ToArray();
+        if (arr.Length == 0) {
+            return "No errors";
+        }
+
+        if (arr.Length == 1) {
+            var error = arr[0];
+            return $"[{error.Code}] {error.Message}";
+        }
+
+        return string.Join("; ", arr.Select(e => $"[{e.Code}] {e.Message}"));
+    }
 }

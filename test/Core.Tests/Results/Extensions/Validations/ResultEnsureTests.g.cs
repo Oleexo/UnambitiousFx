@@ -12,9 +12,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Extensions.Validations;
 using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
@@ -263,10 +260,10 @@ public class ResultEnsureSyncTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
+        var value6 = DateTime.UtcNow;
         var result = Result.Success(value1, value2, value3, value4, value5, value6);
-        Func<int, string, bool, double, long, string, bool> predicate = (_, _, _, _, _, _) => true;
-        Func<int, string, bool, double, long, string, IError> errorFactory = (_, _, _, _, _, _) => new Error("Validation failed");
+        Func<int, string, bool, double, long, DateTime, bool> predicate = (_, _, _, _, _, _) => true;
+        Func<int, string, bool, double, long, DateTime, IError> errorFactory = (_, _, _, _, _, _) => new Error("Validation failed");
         // When
         var ensuredResult = result.Ensure(predicate, errorFactory);
         // Then
@@ -276,9 +273,9 @@ public class ResultEnsureSyncTestsArity1
     [Fact]
     public void Ensure_Arity6_FailureResult_ShouldNotValidate() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string>("Test error");
-        Func<int, string, bool, double, long, string, bool> predicate = (_, _, _, _, _, _) => true;
-        Func<int, string, bool, double, long, string, IError> errorFactory = (_, _, _, _, _, _) => new Error("Validation failed");
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
+        Func<int, string, bool, double, long, DateTime, bool> predicate = (_, _, _, _, _, _) => true;
+        Func<int, string, bool, double, long, DateTime, IError> errorFactory = (_, _, _, _, _, _) => new Error("Validation failed");
         // When
         var ensuredResult = result.Ensure(predicate, errorFactory);
         // Then
@@ -293,10 +290,10 @@ public class ResultEnsureSyncTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
+        var value6 = DateTime.UtcNow;
         var result = Result.Success(value1, value2, value3, value4, value5, value6);
-        Func<int, string, bool, double, long, string, bool> predicate = (_, _, _, _, _, _) => false;
-        Func<int, string, bool, double, long, string, IError> errorFactory = (_, _, _, _, _, _) => new Error("Validation failed");
+        Func<int, string, bool, double, long, DateTime, bool> predicate = (_, _, _, _, _, _) => false;
+        Func<int, string, bool, double, long, DateTime, IError> errorFactory = (_, _, _, _, _, _) => new Error("Validation failed");
         // When
         var ensuredResult = result.Ensure(predicate, errorFactory);
         // Then
@@ -315,11 +312,11 @@ public class ResultEnsureSyncTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
-        Func<int, string, bool, double, long, string, string, bool> predicate = (_, _, _, _, _, _, _) => true;
-        Func<int, string, bool, double, long, string, string, IError> errorFactory = (_, _, _, _, _, _, _) => new Error("Validation failed");
+        Func<int, string, bool, double, long, DateTime, Guid, bool> predicate = (_, _, _, _, _, _, _) => true;
+        Func<int, string, bool, double, long, DateTime, Guid, IError> errorFactory = (_, _, _, _, _, _, _) => new Error("Validation failed");
         // When
         var ensuredResult = result.Ensure(predicate, errorFactory);
         // Then
@@ -329,9 +326,9 @@ public class ResultEnsureSyncTestsArity1
     [Fact]
     public void Ensure_Arity7_FailureResult_ShouldNotValidate() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string>("Test error");
-        Func<int, string, bool, double, long, string, string, bool> predicate = (_, _, _, _, _, _, _) => true;
-        Func<int, string, bool, double, long, string, string, IError> errorFactory = (_, _, _, _, _, _, _) => new Error("Validation failed");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
+        Func<int, string, bool, double, long, DateTime, Guid, bool> predicate = (_, _, _, _, _, _, _) => true;
+        Func<int, string, bool, double, long, DateTime, Guid, IError> errorFactory = (_, _, _, _, _, _, _) => new Error("Validation failed");
         // When
         var ensuredResult = result.Ensure(predicate, errorFactory);
         // Then
@@ -346,11 +343,11 @@ public class ResultEnsureSyncTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
-        Func<int, string, bool, double, long, string, string, bool> predicate = (_, _, _, _, _, _, _) => false;
-        Func<int, string, bool, double, long, string, string, IError> errorFactory = (_, _, _, _, _, _, _) => new Error("Validation failed");
+        Func<int, string, bool, double, long, DateTime, Guid, bool> predicate = (_, _, _, _, _, _, _) => false;
+        Func<int, string, bool, double, long, DateTime, Guid, IError> errorFactory = (_, _, _, _, _, _, _) => new Error("Validation failed");
         // When
         var ensuredResult = result.Ensure(predicate, errorFactory);
         // Then
@@ -369,12 +366,12 @@ public class ResultEnsureSyncTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
-        Func<int, string, bool, double, long, string, string, string, bool> predicate = (_, _, _, _, _, _, _, _) => true;
-        Func<int, string, bool, double, long, string, string, string, IError> errorFactory = (_, _, _, _, _, _, _, _) => new Error("Validation failed");
+        Func<int, string, bool, double, long, DateTime, Guid, TimeSpan, bool> predicate = (_, _, _, _, _, _, _, _) => true;
+        Func<int, string, bool, double, long, DateTime, Guid, TimeSpan, IError> errorFactory = (_, _, _, _, _, _, _, _) => new Error("Validation failed");
         // When
         var ensuredResult = result.Ensure(predicate, errorFactory);
         // Then
@@ -384,9 +381,9 @@ public class ResultEnsureSyncTestsArity1
     [Fact]
     public void Ensure_Arity8_FailureResult_ShouldNotValidate() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string, string>("Test error");
-        Func<int, string, bool, double, long, string, string, string, bool> predicate = (_, _, _, _, _, _, _, _) => true;
-        Func<int, string, bool, double, long, string, string, string, IError> errorFactory = (_, _, _, _, _, _, _, _) => new Error("Validation failed");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
+        Func<int, string, bool, double, long, DateTime, Guid, TimeSpan, bool> predicate = (_, _, _, _, _, _, _, _) => true;
+        Func<int, string, bool, double, long, DateTime, Guid, TimeSpan, IError> errorFactory = (_, _, _, _, _, _, _, _) => new Error("Validation failed");
         // When
         var ensuredResult = result.Ensure(predicate, errorFactory);
         // Then
@@ -401,12 +398,12 @@ public class ResultEnsureSyncTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
-        Func<int, string, bool, double, long, string, string, string, bool> predicate = (_, _, _, _, _, _, _, _) => false;
-        Func<int, string, bool, double, long, string, string, string, IError> errorFactory = (_, _, _, _, _, _, _, _) => new Error("Validation failed");
+        Func<int, string, bool, double, long, DateTime, Guid, TimeSpan, bool> predicate = (_, _, _, _, _, _, _, _) => false;
+        Func<int, string, bool, double, long, DateTime, Guid, TimeSpan, IError> errorFactory = (_, _, _, _, _, _, _, _) => new Error("Validation failed");
         // When
         var ensuredResult = result.Ensure(predicate, errorFactory);
         // Then

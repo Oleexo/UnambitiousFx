@@ -13,8 +13,6 @@ using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
 
@@ -30,7 +28,7 @@ public class ResultRecoverSyncTestsArity1
         var value1 = 42;
         var result = Result.Success(value1);
         // When
-        var recoveredResult = result.Recover<int>(errors => 999);
+        var recoveredResult = result.Recover<int>(errors => (value1));
         // Then
         Assert.True(recoveredResult.IsSuccess);
     }
@@ -38,13 +36,66 @@ public class ResultRecoverSyncTestsArity1
     [Fact]
     public void Recover_Arity1_Failure_ShouldRecover() {
         // Given
+        var value1 = 42;
         var result = Result.Failure<int>("Test error");
         // When
-        var recoveredResult = result.Recover<int>(errors => 999);
+        var recoveredResult = result.Recover<int>(errors => (value1));
         // Then
         Assert.True(recoveredResult.IsSuccess);
         Assert.True(recoveredResult.TryGet(out var recoveredValue));
-        Assert.Equal(999, recoveredValue);
+        Assert.Equal(42, recoveredValue);
+    }
+    
+    [Fact]
+    public void RecoverWithValues_Arity1_Success_ShouldNotRecover() {
+        // Given
+        var value1 = 42;
+        var result = Result.Success(value1);
+        // When
+        var recoveredResult = result.Recover<int>(errors => (value1));
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+        Assert.True(recoveredResult.TryGet(out var recoveredValue));
+        Assert.Equal(value1, recoveredValue);
+    }
+    
+    [Fact]
+    public void RecoverWithValues_Arity1_Failure_ShouldRecover() {
+        // Given
+        var value1 = 42;
+        var result = Result.Failure<int>("Test error");
+        // When
+        var recoveredResult = result.Recover<int>(errors => (value1));
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+        Assert.True(recoveredResult.TryGet(out var recoveredValue));
+        Assert.Equal(42, recoveredValue);
+    }
+    
+    [Fact]
+    public void RecoverWithDirectValues_Arity1_Success_ShouldNotRecover() {
+        // Given
+        var value1 = 42;
+        var result = Result.Success(value1);
+        // When
+        var recoveredResult = result.Recover(value1);
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+        Assert.True(recoveredResult.TryGet(out var recoveredValue));
+        Assert.Equal(value1, recoveredValue);
+    }
+    
+    [Fact]
+    public void RecoverWithDirectValues_Arity1_Failure_ShouldRecover() {
+        // Given
+        var value1 = 42;
+        var result = Result.Failure<int>("Test error");
+        // When
+        var recoveredResult = result.Recover(value1);
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+        Assert.True(recoveredResult.TryGet(out var recoveredValue));
+        Assert.Equal(value1, recoveredValue);
     }
     
     #endregion // Arity 1 - Sync Recover
@@ -58,7 +109,7 @@ public class ResultRecoverSyncTestsArity1
         var value2 = "test";
         var result = Result.Success(value1, value2);
         // When
-        var recoveredResult = result.Recover<int, string>(errors => (999, "recovered"));
+        var recoveredResult = result.Recover<int, string>(errors => (value1, value2));
         // Then
         Assert.True(recoveredResult.IsSuccess);
     }
@@ -66,11 +117,70 @@ public class ResultRecoverSyncTestsArity1
     [Fact]
     public void Recover_Arity2_Failure_ShouldRecover() {
         // Given
+        var value1 = 42;
+        var value2 = "test";
         var result = Result.Failure<int, string>("Test error");
         // When
-        var recoveredResult = result.Recover<int, string>(errors => (999, "recovered"));
+        var recoveredResult = result.Recover<int, string>(errors => (value1, value2));
         // Then
         Assert.True(recoveredResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void RecoverWithValues_Arity2_Success_ShouldNotRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var result = Result.Success(value1, value2);
+        // When
+        var recoveredResult = result.Recover<int, string>(errors => (value1, value2));
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void RecoverWithValues_Arity2_Failure_ShouldRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var result = Result.Failure<int, string>("Test error");
+        // When
+        var recoveredResult = result.Recover<int, string>(errors => (value1, value2));
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+        Assert.True(recoveredResult.TryGet(out var recoveredValue1, out var recoveredValue2, out _));
+        Assert.Equal(value1, recoveredValue1);
+        Assert.Equal(value2, recoveredValue2);
+    }
+    
+    [Fact]
+    public void RecoverWithDirectValues_Arity2_Success_ShouldNotRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var result = Result.Success(value1, value2);
+        // When
+        var recoveredResult = result.Recover(value1, value2);
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+        Assert.True(recoveredResult.TryGet(out var recoveredValue1, out var recoveredValue2, out _));
+        Assert.Equal(value1, recoveredValue1);
+        Assert.Equal(value2, recoveredValue2);
+    }
+    
+    [Fact]
+    public void RecoverWithDirectValues_Arity2_Failure_ShouldRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var result = Result.Failure<int, string>("Test error");
+        // When
+        var recoveredResult = result.Recover(value1, value2);
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+        Assert.True(recoveredResult.TryGet(out var recoveredValue1, out var recoveredValue2, out _));
+        Assert.Equal(value1, recoveredValue1);
+        Assert.Equal(value2, recoveredValue2);
     }
     
     #endregion // Arity 2 - Sync Recover
@@ -85,7 +195,7 @@ public class ResultRecoverSyncTestsArity1
         var value3 = true;
         var result = Result.Success(value1, value2, value3);
         // When
-        var recoveredResult = result.Recover<int, string, bool>(errors => (999, "recovered", false));
+        var recoveredResult = result.Recover<int, string, bool>(errors => (value1, value2, value3));
         // Then
         Assert.True(recoveredResult.IsSuccess);
     }
@@ -93,11 +203,78 @@ public class ResultRecoverSyncTestsArity1
     [Fact]
     public void Recover_Arity3_Failure_ShouldRecover() {
         // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
         var result = Result.Failure<int, string, bool>("Test error");
         // When
-        var recoveredResult = result.Recover<int, string, bool>(errors => (999, "recovered", false));
+        var recoveredResult = result.Recover<int, string, bool>(errors => (value1, value2, value3));
         // Then
         Assert.True(recoveredResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void RecoverWithValues_Arity3_Success_ShouldNotRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var result = Result.Success(value1, value2, value3);
+        // When
+        var recoveredResult = result.Recover<int, string, bool>(errors => (value1, value2, value3));
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void RecoverWithValues_Arity3_Failure_ShouldRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var result = Result.Failure<int, string, bool>("Test error");
+        // When
+        var recoveredResult = result.Recover<int, string, bool>(errors => (value1, value2, value3));
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+        Assert.True(recoveredResult.TryGet(out var recoveredValue1, out var recoveredValue2, out var recoveredValue3, out _));
+        Assert.Equal(value1, recoveredValue1);
+        Assert.Equal(value2, recoveredValue2);
+        Assert.True(recoveredValue3);
+    }
+    
+    [Fact]
+    public void RecoverWithDirectValues_Arity3_Success_ShouldNotRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var result = Result.Success(value1, value2, value3);
+        // When
+        var recoveredResult = result.Recover(value1, value2, value3);
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+        Assert.True(recoveredResult.TryGet(out var recoveredValue1, out var recoveredValue2, out var recoveredValue3, out _));
+        Assert.Equal(value1, recoveredValue1);
+        Assert.Equal(value2, recoveredValue2);
+        Assert.Equal(value3, recoveredValue3);
+    }
+    
+    [Fact]
+    public void RecoverWithDirectValues_Arity3_Failure_ShouldRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var result = Result.Failure<int, string, bool>("Test error");
+        // When
+        var recoveredResult = result.Recover(value1, value2, value3);
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+        Assert.True(recoveredResult.TryGet(out var recoveredValue1, out var recoveredValue2, out var recoveredValue3, out _));
+        Assert.Equal(value1, recoveredValue1);
+        Assert.Equal(value2, recoveredValue2);
+        Assert.Equal(value3, recoveredValue3);
     }
     
     #endregion // Arity 3 - Sync Recover
@@ -113,7 +290,7 @@ public class ResultRecoverSyncTestsArity1
         var value4 = 3.14;
         var result = Result.Success(value1, value2, value3, value4);
         // When
-        var recoveredResult = result.Recover<int, string, bool, double>(errors => (999, "recovered", false, 9.99));
+        var recoveredResult = result.Recover<int, string, bool, double>(errors => (value1, value2, value3, value4));
         // Then
         Assert.True(recoveredResult.IsSuccess);
     }
@@ -121,11 +298,86 @@ public class ResultRecoverSyncTestsArity1
     [Fact]
     public void Recover_Arity4_Failure_ShouldRecover() {
         // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
         var result = Result.Failure<int, string, bool, double>("Test error");
         // When
-        var recoveredResult = result.Recover<int, string, bool, double>(errors => (999, "recovered", false, 9.99));
+        var recoveredResult = result.Recover<int, string, bool, double>(errors => (value1, value2, value3, value4));
         // Then
         Assert.True(recoveredResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void RecoverWithValues_Arity4_Success_ShouldNotRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var result = Result.Success(value1, value2, value3, value4);
+        // When
+        var recoveredResult = result.Recover<int, string, bool, double>(errors => (value1, value2, value3, value4));
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void RecoverWithValues_Arity4_Failure_ShouldRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var result = Result.Failure<int, string, bool, double>("Test error");
+        // When
+        var recoveredResult = result.Recover<int, string, bool, double>(errors => (value1, value2, value3, value4));
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+        Assert.True(recoveredResult.TryGet(out var recoveredValue1, out var recoveredValue2, out var recoveredValue3, out var recoveredValue4, out _));
+        Assert.Equal(value1, recoveredValue1);
+        Assert.Equal(value2, recoveredValue2);
+        Assert.True(recoveredValue3);
+        Assert.Equal(value4, recoveredValue4);
+    }
+    
+    [Fact]
+    public void RecoverWithDirectValues_Arity4_Success_ShouldNotRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var result = Result.Success(value1, value2, value3, value4);
+        // When
+        var recoveredResult = result.Recover(value1, value2, value3, value4);
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+        Assert.True(recoveredResult.TryGet(out var recoveredValue1, out var recoveredValue2, out var recoveredValue3, out var recoveredValue4, out _));
+        Assert.Equal(value1, recoveredValue1);
+        Assert.Equal(value2, recoveredValue2);
+        Assert.Equal(value3, recoveredValue3);
+        Assert.Equal(value4, recoveredValue4);
+    }
+    
+    [Fact]
+    public void RecoverWithDirectValues_Arity4_Failure_ShouldRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var result = Result.Failure<int, string, bool, double>("Test error");
+        // When
+        var recoveredResult = result.Recover(value1, value2, value3, value4);
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+        Assert.True(recoveredResult.TryGet(out var recoveredValue1, out var recoveredValue2, out var recoveredValue3, out var recoveredValue4, out _));
+        Assert.Equal(value1, recoveredValue1);
+        Assert.Equal(value2, recoveredValue2);
+        Assert.Equal(value3, recoveredValue3);
+        Assert.Equal(value4, recoveredValue4);
     }
     
     #endregion // Arity 4 - Sync Recover
@@ -142,7 +394,7 @@ public class ResultRecoverSyncTestsArity1
         var value5 = 123L;
         var result = Result.Success(value1, value2, value3, value4, value5);
         // When
-        var recoveredResult = result.Recover<int, string, bool, double, long>(errors => (999, "recovered", false, 9.99, 888L));
+        var recoveredResult = result.Recover<int, string, bool, double, long>(errors => (value1, value2, value3, value4, value5));
         // Then
         Assert.True(recoveredResult.IsSuccess);
     }
@@ -150,11 +402,94 @@ public class ResultRecoverSyncTestsArity1
     [Fact]
     public void Recover_Arity5_Failure_ShouldRecover() {
         // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
         var result = Result.Failure<int, string, bool, double, long>("Test error");
         // When
-        var recoveredResult = result.Recover<int, string, bool, double, long>(errors => (999, "recovered", false, 9.99, 888L));
+        var recoveredResult = result.Recover<int, string, bool, double, long>(errors => (value1, value2, value3, value4, value5));
         // Then
         Assert.True(recoveredResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void RecoverWithValues_Arity5_Success_ShouldNotRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var result = Result.Success(value1, value2, value3, value4, value5);
+        // When
+        var recoveredResult = result.Recover<int, string, bool, double, long>(errors => (value1, value2, value3, value4, value5));
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void RecoverWithValues_Arity5_Failure_ShouldRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var result = Result.Failure<int, string, bool, double, long>("Test error");
+        // When
+        var recoveredResult = result.Recover<int, string, bool, double, long>(errors => (value1, value2, value3, value4, value5));
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+        Assert.True(recoveredResult.TryGet(out var recoveredValue1, out var recoveredValue2, out var recoveredValue3, out var recoveredValue4, out var recoveredValue5, out _));
+        Assert.Equal(value1, recoveredValue1);
+        Assert.Equal(value2, recoveredValue2);
+        Assert.True(recoveredValue3);
+        Assert.Equal(value4, recoveredValue4);
+        Assert.Equal(value5, recoveredValue5);
+    }
+    
+    [Fact]
+    public void RecoverWithDirectValues_Arity5_Success_ShouldNotRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var result = Result.Success(value1, value2, value3, value4, value5);
+        // When
+        var recoveredResult = result.Recover(value1, value2, value3, value4, value5);
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+        Assert.True(recoveredResult.TryGet(out var recoveredValue1, out var recoveredValue2, out var recoveredValue3, out var recoveredValue4, out var recoveredValue5, out _));
+        Assert.Equal(value1, recoveredValue1);
+        Assert.Equal(value2, recoveredValue2);
+        Assert.Equal(value3, recoveredValue3);
+        Assert.Equal(value4, recoveredValue4);
+        Assert.Equal(value5, recoveredValue5);
+    }
+    
+    [Fact]
+    public void RecoverWithDirectValues_Arity5_Failure_ShouldRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var result = Result.Failure<int, string, bool, double, long>("Test error");
+        // When
+        var recoveredResult = result.Recover(value1, value2, value3, value4, value5);
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+        Assert.True(recoveredResult.TryGet(out var recoveredValue1, out var recoveredValue2, out var recoveredValue3, out var recoveredValue4, out var recoveredValue5, out _));
+        Assert.Equal(value1, recoveredValue1);
+        Assert.Equal(value2, recoveredValue2);
+        Assert.Equal(value3, recoveredValue3);
+        Assert.Equal(value4, recoveredValue4);
+        Assert.Equal(value5, recoveredValue5);
     }
     
     #endregion // Arity 5 - Sync Recover
@@ -169,10 +504,10 @@ public class ResultRecoverSyncTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
+        var value6 = DateTime.UtcNow;
         var result = Result.Success(value1, value2, value3, value4, value5, value6);
         // When
-        var recoveredResult = result.Recover<int, string, bool, double, long, string>(errors => (999, "recovered", false, 9.99, 888L, "recovered6"));
+        var recoveredResult = result.Recover<int, string, bool, double, long, DateTime>(errors => (value1, value2, value3, value4, value5, value6));
         // Then
         Assert.True(recoveredResult.IsSuccess);
     }
@@ -180,11 +515,102 @@ public class ResultRecoverSyncTestsArity1
     [Fact]
     public void Recover_Arity6_Failure_ShouldRecover() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string>("Test error");
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
         // When
-        var recoveredResult = result.Recover<int, string, bool, double, long, string>(errors => (999, "recovered", false, 9.99, 888L, "recovered6"));
+        var recoveredResult = result.Recover<int, string, bool, double, long, DateTime>(errors => (value1, value2, value3, value4, value5, value6));
         // Then
         Assert.True(recoveredResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void RecoverWithValues_Arity6_Success_ShouldNotRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var result = Result.Success(value1, value2, value3, value4, value5, value6);
+        // When
+        var recoveredResult = result.Recover<int, string, bool, double, long, DateTime>(errors => (value1, value2, value3, value4, value5, value6));
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void RecoverWithValues_Arity6_Failure_ShouldRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
+        // When
+        var recoveredResult = result.Recover<int, string, bool, double, long, DateTime>(errors => (value1, value2, value3, value4, value5, value6));
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+        Assert.True(recoveredResult.TryGet(out var recoveredValue1, out var recoveredValue2, out var recoveredValue3, out var recoveredValue4, out var recoveredValue5, out var recoveredValue6, out _));
+        Assert.Equal(value1, recoveredValue1);
+        Assert.Equal(value2, recoveredValue2);
+        Assert.True(recoveredValue3);
+        Assert.Equal(value4, recoveredValue4);
+        Assert.Equal(value5, recoveredValue5);
+        Assert.Equal(value6, recoveredValue6);
+    }
+    
+    [Fact]
+    public void RecoverWithDirectValues_Arity6_Success_ShouldNotRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var result = Result.Success(value1, value2, value3, value4, value5, value6);
+        // When
+        var recoveredResult = result.Recover(value1, value2, value3, value4, value5, value6);
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+        Assert.True(recoveredResult.TryGet(out var recoveredValue1, out var recoveredValue2, out var recoveredValue3, out var recoveredValue4, out var recoveredValue5, out var recoveredValue6, out _));
+        Assert.Equal(value1, recoveredValue1);
+        Assert.Equal(value2, recoveredValue2);
+        Assert.Equal(value3, recoveredValue3);
+        Assert.Equal(value4, recoveredValue4);
+        Assert.Equal(value5, recoveredValue5);
+        Assert.Equal(value6, recoveredValue6);
+    }
+    
+    [Fact]
+    public void RecoverWithDirectValues_Arity6_Failure_ShouldRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
+        // When
+        var recoveredResult = result.Recover(value1, value2, value3, value4, value5, value6);
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+        Assert.True(recoveredResult.TryGet(out var recoveredValue1, out var recoveredValue2, out var recoveredValue3, out var recoveredValue4, out var recoveredValue5, out var recoveredValue6, out _));
+        Assert.Equal(value1, recoveredValue1);
+        Assert.Equal(value2, recoveredValue2);
+        Assert.Equal(value3, recoveredValue3);
+        Assert.Equal(value4, recoveredValue4);
+        Assert.Equal(value5, recoveredValue5);
+        Assert.Equal(value6, recoveredValue6);
     }
     
     #endregion // Arity 6 - Sync Recover
@@ -199,11 +625,11 @@ public class ResultRecoverSyncTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
         // When
-        var recoveredResult = result.Recover<int, string, bool, double, long, string, string>(errors => (999, "recovered", false, 9.99, 888L, "recovered6", "recovered7"));
+        var recoveredResult = result.Recover<int, string, bool, double, long, DateTime, Guid>(errors => (value1, value2, value3, value4, value5, value6, value7));
         // Then
         Assert.True(recoveredResult.IsSuccess);
     }
@@ -211,11 +637,110 @@ public class ResultRecoverSyncTestsArity1
     [Fact]
     public void Recover_Arity7_Failure_ShouldRecover() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string>("Test error");
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
         // When
-        var recoveredResult = result.Recover<int, string, bool, double, long, string, string>(errors => (999, "recovered", false, 9.99, 888L, "recovered6", "recovered7"));
+        var recoveredResult = result.Recover<int, string, bool, double, long, DateTime, Guid>(errors => (value1, value2, value3, value4, value5, value6, value7));
         // Then
         Assert.True(recoveredResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void RecoverWithValues_Arity7_Success_ShouldNotRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
+        // When
+        var recoveredResult = result.Recover<int, string, bool, double, long, DateTime, Guid>(errors => (value1, value2, value3, value4, value5, value6, value7));
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void RecoverWithValues_Arity7_Failure_ShouldRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
+        // When
+        var recoveredResult = result.Recover<int, string, bool, double, long, DateTime, Guid>(errors => (value1, value2, value3, value4, value5, value6, value7));
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+        Assert.True(recoveredResult.TryGet(out var recoveredValue1, out var recoveredValue2, out var recoveredValue3, out var recoveredValue4, out var recoveredValue5, out var recoveredValue6, out var recoveredValue7, out _));
+        Assert.Equal(value1, recoveredValue1);
+        Assert.Equal(value2, recoveredValue2);
+        Assert.True(recoveredValue3);
+        Assert.Equal(value4, recoveredValue4);
+        Assert.Equal(value5, recoveredValue5);
+        Assert.Equal(value6, recoveredValue6);
+        Assert.Equal(value7, recoveredValue7);
+    }
+    
+    [Fact]
+    public void RecoverWithDirectValues_Arity7_Success_ShouldNotRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
+        // When
+        var recoveredResult = result.Recover(value1, value2, value3, value4, value5, value6, value7);
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+        Assert.True(recoveredResult.TryGet(out var recoveredValue1, out var recoveredValue2, out var recoveredValue3, out var recoveredValue4, out var recoveredValue5, out var recoveredValue6, out var recoveredValue7, out _));
+        Assert.Equal(value1, recoveredValue1);
+        Assert.Equal(value2, recoveredValue2);
+        Assert.Equal(value3, recoveredValue3);
+        Assert.Equal(value4, recoveredValue4);
+        Assert.Equal(value5, recoveredValue5);
+        Assert.Equal(value6, recoveredValue6);
+        Assert.Equal(value7, recoveredValue7);
+    }
+    
+    [Fact]
+    public void RecoverWithDirectValues_Arity7_Failure_ShouldRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
+        // When
+        var recoveredResult = result.Recover(value1, value2, value3, value4, value5, value6, value7);
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+        Assert.True(recoveredResult.TryGet(out var recoveredValue1, out var recoveredValue2, out var recoveredValue3, out var recoveredValue4, out var recoveredValue5, out var recoveredValue6, out var recoveredValue7, out _));
+        Assert.Equal(value1, recoveredValue1);
+        Assert.Equal(value2, recoveredValue2);
+        Assert.Equal(value3, recoveredValue3);
+        Assert.Equal(value4, recoveredValue4);
+        Assert.Equal(value5, recoveredValue5);
+        Assert.Equal(value6, recoveredValue6);
+        Assert.Equal(value7, recoveredValue7);
     }
     
     #endregion // Arity 7 - Sync Recover
@@ -230,12 +755,12 @@ public class ResultRecoverSyncTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
         // When
-        var recoveredResult = result.Recover<int, string, bool, double, long, string, string, string>(errors => (999, "recovered", false, 9.99, 888L, "recovered6", "recovered7", "recovered8"));
+        var recoveredResult = result.Recover<int, string, bool, double, long, DateTime, Guid, TimeSpan>(errors => (value1, value2, value3, value4, value5, value6, value7, value8));
         // Then
         Assert.True(recoveredResult.IsSuccess);
     }
@@ -243,11 +768,118 @@ public class ResultRecoverSyncTestsArity1
     [Fact]
     public void Recover_Arity8_Failure_ShouldRecover() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string, string>("Test error");
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
         // When
-        var recoveredResult = result.Recover<int, string, bool, double, long, string, string, string>(errors => (999, "recovered", false, 9.99, 888L, "recovered6", "recovered7", "recovered8"));
+        var recoveredResult = result.Recover<int, string, bool, double, long, DateTime, Guid, TimeSpan>(errors => (value1, value2, value3, value4, value5, value6, value7, value8));
         // Then
         Assert.True(recoveredResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void RecoverWithValues_Arity8_Success_ShouldNotRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
+        // When
+        var recoveredResult = result.Recover<int, string, bool, double, long, DateTime, Guid, TimeSpan>(errors => (value1, value2, value3, value4, value5, value6, value7, value8));
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+    }
+    
+    [Fact]
+    public void RecoverWithValues_Arity8_Failure_ShouldRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
+        // When
+        var recoveredResult = result.Recover<int, string, bool, double, long, DateTime, Guid, TimeSpan>(errors => (value1, value2, value3, value4, value5, value6, value7, value8));
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+        Assert.True(recoveredResult.TryGet(out var recoveredValue1, out var recoveredValue2, out var recoveredValue3, out var recoveredValue4, out var recoveredValue5, out var recoveredValue6, out var recoveredValue7, out var recoveredValue8, out _));
+        Assert.Equal(value1, recoveredValue1);
+        Assert.Equal(value2, recoveredValue2);
+        Assert.True(recoveredValue3);
+        Assert.Equal(value4, recoveredValue4);
+        Assert.Equal(value5, recoveredValue5);
+        Assert.Equal(value6, recoveredValue6);
+        Assert.Equal(value7, recoveredValue7);
+        Assert.Equal(value8, recoveredValue8);
+    }
+    
+    [Fact]
+    public void RecoverWithDirectValues_Arity8_Success_ShouldNotRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
+        // When
+        var recoveredResult = result.Recover(value1, value2, value3, value4, value5, value6, value7, value8);
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+        Assert.True(recoveredResult.TryGet(out var recoveredValue1, out var recoveredValue2, out var recoveredValue3, out var recoveredValue4, out var recoveredValue5, out var recoveredValue6, out var recoveredValue7, out var recoveredValue8, out _));
+        Assert.Equal(value1, recoveredValue1);
+        Assert.Equal(value2, recoveredValue2);
+        Assert.Equal(value3, recoveredValue3);
+        Assert.Equal(value4, recoveredValue4);
+        Assert.Equal(value5, recoveredValue5);
+        Assert.Equal(value6, recoveredValue6);
+        Assert.Equal(value7, recoveredValue7);
+        Assert.Equal(value8, recoveredValue8);
+    }
+    
+    [Fact]
+    public void RecoverWithDirectValues_Arity8_Failure_ShouldRecover() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
+        // When
+        var recoveredResult = result.Recover(value1, value2, value3, value4, value5, value6, value7, value8);
+        // Then
+        Assert.True(recoveredResult.IsSuccess);
+        Assert.True(recoveredResult.TryGet(out var recoveredValue1, out var recoveredValue2, out var recoveredValue3, out var recoveredValue4, out var recoveredValue5, out var recoveredValue6, out var recoveredValue7, out var recoveredValue8, out _));
+        Assert.Equal(value1, recoveredValue1);
+        Assert.Equal(value2, recoveredValue2);
+        Assert.Equal(value3, recoveredValue3);
+        Assert.Equal(value4, recoveredValue4);
+        Assert.Equal(value5, recoveredValue5);
+        Assert.Equal(value6, recoveredValue6);
+        Assert.Equal(value7, recoveredValue7);
+        Assert.Equal(value8, recoveredValue8);
     }
     
     #endregion // Arity 8 - Sync Recover

@@ -12,9 +12,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Extensions.Transformations.ValueTasks;
 using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
@@ -29,10 +26,9 @@ public class ResultTryValueTaskTestsArity1
     public async Task TryValueTask_Arity1_Success_ShouldTransform() {
         // Given
         var value1 = 42;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1));
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
         // When
-        var result = await valueTaskResult;
-        var transformedResult = await result.TryAsync<int, string>(x => ValueTask.FromResult(x.ToString() + "_tried"));
+        var transformedResult = await taskResult.TryAsync<int, string>(x => ValueTask.FromResult(x.ToString() + "_tried"));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -40,10 +36,9 @@ public class ResultTryValueTaskTestsArity1
     [Fact]
     public async Task TryValueTask_Arity1_Failure_ShouldNotTransform() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
         // When
-        var result = await valueTaskResult;
-        var transformedResult = await result.TryAsync<int, string>(x => ValueTask.FromResult(x.ToString() + "_tried"));
+        var transformedResult = await taskResult.TryAsync<int, string>(x => ValueTask.FromResult(x.ToString() + "_tried"));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -52,10 +47,10 @@ public class ResultTryValueTaskTestsArity1
     public async Task TryValueTask_Arity1_Exception_ShouldReturnExceptionalError() {
         // Given
         var value1 = 42;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1));
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
+        Func<int, ValueTask<string>> tryCall = (value1) => { throw new InvalidOperationException("Test exception"); };
         // When
-        var result = await valueTaskResult;
-        var transformedResult = await result.TryAsync<int, string>(x => throw new Exception("Boom"));
+        var transformedResult = await taskResult.TryAsync<int, string>(tryCall);
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -69,10 +64,9 @@ public class ResultTryValueTaskTestsArity1
         // Given
         var value1 = 42;
         var value2 = "test";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
         // When
-        var result = await valueTaskResult;
-        var transformedResult = await result.TryAsync<int, string, string, string>((x1, x2) => ValueTask.FromResult((x1 + "_tried", x2 + "_tried")));
+        var transformedResult = await taskResult.TryAsync<int, string, int, string>((x1, x2) => ValueTask.FromResult((x1, x2)));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -80,10 +74,9 @@ public class ResultTryValueTaskTestsArity1
     [Fact]
     public async Task TryValueTask_Arity2_Failure_ShouldNotTransform() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
         // When
-        var result = await valueTaskResult;
-        var transformedResult = await result.TryAsync<int, string, string, string>((x1, x2) => ValueTask.FromResult((x1 + "_tried", x2 + "_tried")));
+        var transformedResult = await taskResult.TryAsync<int, string, int, string>((x1, x2) => ValueTask.FromResult((x1, x2)));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -93,10 +86,10 @@ public class ResultTryValueTaskTestsArity1
         // Given
         var value1 = 42;
         var value2 = "test";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        Func<int, string, ValueTask<(int, string)>> tryCall = (value1, value2) => { throw new InvalidOperationException("Test exception"); };
         // When
-        var result = await valueTaskResult;
-        var transformedResult = await result.TryAsync<int, string, string, string>((x1, x2) => throw new Exception("Boom"));
+        var transformedResult = await taskResult.TryAsync<int, string, int, string>(tryCall);
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -111,10 +104,9 @@ public class ResultTryValueTaskTestsArity1
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
         // When
-        var result = await valueTaskResult;
-        var transformedResult = await result.TryAsync<int, string, bool, string, string, string>((x1, x2, x3) => ValueTask.FromResult((x1 + "_tried", x2 + "_tried", x3 + "_tried")));
+        var transformedResult = await taskResult.TryAsync<int, string, bool, int, string, bool>((x1, x2, x3) => ValueTask.FromResult((x1, x2, x3)));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -122,10 +114,9 @@ public class ResultTryValueTaskTestsArity1
     [Fact]
     public async Task TryValueTask_Arity3_Failure_ShouldNotTransform() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
         // When
-        var result = await valueTaskResult;
-        var transformedResult = await result.TryAsync<int, string, bool, string, string, string>((x1, x2, x3) => ValueTask.FromResult((x1 + "_tried", x2 + "_tried", x3 + "_tried")));
+        var transformedResult = await taskResult.TryAsync<int, string, bool, int, string, bool>((x1, x2, x3) => ValueTask.FromResult((x1, x2, x3)));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -136,10 +127,10 @@ public class ResultTryValueTaskTestsArity1
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        Func<int, string, bool, ValueTask<(int, string, bool)>> tryCall = (value1, value2, value3) => { throw new InvalidOperationException("Test exception"); };
         // When
-        var result = await valueTaskResult;
-        var transformedResult = await result.TryAsync<int, string, bool, string, string, string>((x1, x2, x3) => throw new Exception("Boom"));
+        var transformedResult = await taskResult.TryAsync<int, string, bool, int, string, bool>(tryCall);
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -155,10 +146,9 @@ public class ResultTryValueTaskTestsArity1
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
         // When
-        var result = await valueTaskResult;
-        var transformedResult = await result.TryAsync<int, string, bool, double, string, string, string, string>((x1, x2, x3, x4) => ValueTask.FromResult((x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried")));
+        var transformedResult = await taskResult.TryAsync<int, string, bool, double, int, string, bool, double>((x1, x2, x3, x4) => ValueTask.FromResult((x1, x2, x3, x4)));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -166,10 +156,9 @@ public class ResultTryValueTaskTestsArity1
     [Fact]
     public async Task TryValueTask_Arity4_Failure_ShouldNotTransform() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
         // When
-        var result = await valueTaskResult;
-        var transformedResult = await result.TryAsync<int, string, bool, double, string, string, string, string>((x1, x2, x3, x4) => ValueTask.FromResult((x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried")));
+        var transformedResult = await taskResult.TryAsync<int, string, bool, double, int, string, bool, double>((x1, x2, x3, x4) => ValueTask.FromResult((x1, x2, x3, x4)));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -181,10 +170,10 @@ public class ResultTryValueTaskTestsArity1
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        Func<int, string, bool, double, ValueTask<(int, string, bool, double)>> tryCall = (value1, value2, value3, value4) => { throw new InvalidOperationException("Test exception"); };
         // When
-        var result = await valueTaskResult;
-        var transformedResult = await result.TryAsync<int, string, bool, double, string, string, string, string>((x1, x2, x3, x4) => throw new Exception("Boom"));
+        var transformedResult = await taskResult.TryAsync<int, string, bool, double, int, string, bool, double>(tryCall);
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -201,10 +190,9 @@ public class ResultTryValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
         // When
-        var result = await valueTaskResult;
-        var transformedResult = await result.TryAsync<int, string, bool, double, long, string, string, string, string, string>((x1, x2, x3, x4, x5) => ValueTask.FromResult((x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried")));
+        var transformedResult = await taskResult.TryAsync<int, string, bool, double, long, int, string, bool, double, long>((x1, x2, x3, x4, x5) => ValueTask.FromResult((x1, x2, x3, x4, x5)));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -212,10 +200,9 @@ public class ResultTryValueTaskTestsArity1
     [Fact]
     public async Task TryValueTask_Arity5_Failure_ShouldNotTransform() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
         // When
-        var result = await valueTaskResult;
-        var transformedResult = await result.TryAsync<int, string, bool, double, long, string, string, string, string, string>((x1, x2, x3, x4, x5) => ValueTask.FromResult((x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried")));
+        var transformedResult = await taskResult.TryAsync<int, string, bool, double, long, int, string, bool, double, long>((x1, x2, x3, x4, x5) => ValueTask.FromResult((x1, x2, x3, x4, x5)));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -228,10 +215,10 @@ public class ResultTryValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        Func<int, string, bool, double, long, ValueTask<(int, string, bool, double, long)>> tryCall = (value1, value2, value3, value4, value5) => { throw new InvalidOperationException("Test exception"); };
         // When
-        var result = await valueTaskResult;
-        var transformedResult = await result.TryAsync<int, string, bool, double, long, string, string, string, string, string>((x1, x2, x3, x4, x5) => throw new Exception("Boom"));
+        var transformedResult = await taskResult.TryAsync<int, string, bool, double, long, int, string, bool, double, long>(tryCall);
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -248,11 +235,10 @@ public class ResultTryValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        var value6 = DateTime.UtcNow;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
         // When
-        var result = await valueTaskResult;
-        var transformedResult = await result.TryAsync<int, string, bool, double, long, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult((x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried")));
+        var transformedResult = await taskResult.TryAsync<int, string, bool, double, long, DateTime, int, string, bool, double, long, DateTime>((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult((x1, x2, x3, x4, x5, x6)));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -260,10 +246,9 @@ public class ResultTryValueTaskTestsArity1
     [Fact]
     public async Task TryValueTask_Arity6_Failure_ShouldNotTransform() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
         // When
-        var result = await valueTaskResult;
-        var transformedResult = await result.TryAsync<int, string, bool, double, long, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult((x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried")));
+        var transformedResult = await taskResult.TryAsync<int, string, bool, double, long, DateTime, int, string, bool, double, long, DateTime>((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult((x1, x2, x3, x4, x5, x6)));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -276,11 +261,11 @@ public class ResultTryValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        var value6 = DateTime.UtcNow;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        Func<int, string, bool, double, long, DateTime, ValueTask<(int, string, bool, double, long, DateTime)>> tryCall = (value1, value2, value3, value4, value5, value6) => { throw new InvalidOperationException("Test exception"); };
         // When
-        var result = await valueTaskResult;
-        var transformedResult = await result.TryAsync<int, string, bool, double, long, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6) => throw new Exception("Boom"));
+        var transformedResult = await taskResult.TryAsync<int, string, bool, double, long, DateTime, int, string, bool, double, long, DateTime>(tryCall);
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -297,12 +282,11 @@ public class ResultTryValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
         // When
-        var result = await valueTaskResult;
-        var transformedResult = await result.TryAsync<int, string, bool, double, long, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult((x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried", x7 + "_tried")));
+        var transformedResult = await taskResult.TryAsync<int, string, bool, double, long, DateTime, Guid, int, string, bool, double, long, DateTime, Guid>((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult((x1, x2, x3, x4, x5, x6, x7)));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -310,10 +294,9 @@ public class ResultTryValueTaskTestsArity1
     [Fact]
     public async Task TryValueTask_Arity7_Failure_ShouldNotTransform() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
         // When
-        var result = await valueTaskResult;
-        var transformedResult = await result.TryAsync<int, string, bool, double, long, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult((x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried", x7 + "_tried")));
+        var transformedResult = await taskResult.TryAsync<int, string, bool, double, long, DateTime, Guid, int, string, bool, double, long, DateTime, Guid>((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult((x1, x2, x3, x4, x5, x6, x7)));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -326,12 +309,12 @@ public class ResultTryValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        Func<int, string, bool, double, long, DateTime, Guid, ValueTask<(int, string, bool, double, long, DateTime, Guid)>> tryCall = (value1, value2, value3, value4, value5, value6, value7) => { throw new InvalidOperationException("Test exception"); };
         // When
-        var result = await valueTaskResult;
-        var transformedResult = await result.TryAsync<int, string, bool, double, long, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7) => throw new Exception("Boom"));
+        var transformedResult = await taskResult.TryAsync<int, string, bool, double, long, DateTime, Guid, int, string, bool, double, long, DateTime, Guid>(tryCall);
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -348,13 +331,12 @@ public class ResultTryValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
         // When
-        var result = await valueTaskResult;
-        var transformedResult = await result.TryAsync<int, string, bool, double, long, string, string, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult((x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried", x7 + "_tried", x8 + "_tried")));
+        var transformedResult = await taskResult.TryAsync<int, string, bool, double, long, DateTime, Guid, TimeSpan, int, string, bool, double, long, DateTime, Guid, TimeSpan>((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult((x1, x2, x3, x4, x5, x6, x7, x8)));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
@@ -362,10 +344,9 @@ public class ResultTryValueTaskTestsArity1
     [Fact]
     public async Task TryValueTask_Arity8_Failure_ShouldNotTransform() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
         // When
-        var result = await valueTaskResult;
-        var transformedResult = await result.TryAsync<int, string, bool, double, long, string, string, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult((x1 + "_tried", x2 + "_tried", x3 + "_tried", x4 + "_tried", x5 + "_tried", x6 + "_tried", x7 + "_tried", x8 + "_tried")));
+        var transformedResult = await taskResult.TryAsync<int, string, bool, double, long, DateTime, Guid, TimeSpan, int, string, bool, double, long, DateTime, Guid, TimeSpan>((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult((x1, x2, x3, x4, x5, x6, x7, x8)));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
@@ -378,13 +359,13 @@ public class ResultTryValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        Func<int, string, bool, double, long, DateTime, Guid, TimeSpan, ValueTask<(int, string, bool, double, long, DateTime, Guid, TimeSpan)>> tryCall = (value1, value2, value3, value4, value5, value6, value7, value8) => { throw new InvalidOperationException("Test exception"); };
         // When
-        var result = await valueTaskResult;
-        var transformedResult = await result.TryAsync<int, string, bool, double, long, string, string, string, string, string, string, string, string, string, string, string>((x1, x2, x3, x4, x5, x6, x7, x8) => throw new Exception("Boom"));
+        var transformedResult = await taskResult.TryAsync<int, string, bool, double, long, DateTime, Guid, TimeSpan, int, string, bool, double, long, DateTime, Guid, TimeSpan>(tryCall);
         // Then
         Assert.False(transformedResult.IsSuccess);
     }

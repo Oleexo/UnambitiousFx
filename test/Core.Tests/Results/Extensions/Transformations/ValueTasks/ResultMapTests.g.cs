@@ -12,9 +12,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Extensions.Transformations.ValueTasks;
 using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
@@ -169,7 +166,7 @@ public class ResultMapValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
+        var value6 = DateTime.UtcNow;
         var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
         // When
         var transformedResult = await taskResult.MapAsync((x1, x2, x3, x4, x5, x6) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped", x5 + "_mapped", x6 + "_mapped"));
@@ -180,7 +177,7 @@ public class ResultMapValueTaskTestsArity1
     [Fact]
     public async Task MapValueTask_Arity6_Failure_ShouldNotTransform() {
         // Given
-        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
         // When
         var transformedResult = await taskResult.MapAsync((x1, x2, x3, x4, x5, x6) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped", x5 + "_mapped", x6 + "_mapped"));
         // Then
@@ -199,8 +196,8 @@ public class ResultMapValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
         // When
         var transformedResult = await taskResult.MapAsync((x1, x2, x3, x4, x5, x6, x7) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped", x5 + "_mapped", x6 + "_mapped", x7 + "_mapped"));
@@ -211,7 +208,7 @@ public class ResultMapValueTaskTestsArity1
     [Fact]
     public async Task MapValueTask_Arity7_Failure_ShouldNotTransform() {
         // Given
-        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
         // When
         var transformedResult = await taskResult.MapAsync((x1, x2, x3, x4, x5, x6, x7) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped", x5 + "_mapped", x6 + "_mapped", x7 + "_mapped"));
         // Then
@@ -230,9 +227,9 @@ public class ResultMapValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
         var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
         // When
         var transformedResult = await taskResult.MapAsync((x1, x2, x3, x4, x5, x6, x7, x8) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped", x5 + "_mapped", x6 + "_mapped", x7 + "_mapped", x8 + "_mapped"));
@@ -243,7 +240,7 @@ public class ResultMapValueTaskTestsArity1
     [Fact]
     public async Task MapValueTask_Arity8_Failure_ShouldNotTransform() {
         // Given
-        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
         // When
         var transformedResult = await taskResult.MapAsync((x1, x2, x3, x4, x5, x6, x7, x8) => (x1 + "_mapped", x2 + "_mapped", x3 + "_mapped", x4 + "_mapped", x5 + "_mapped", x6 + "_mapped", x7 + "_mapped", x8 + "_mapped"));
         // Then

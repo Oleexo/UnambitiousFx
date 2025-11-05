@@ -12,9 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
 using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
 
@@ -30,7 +28,7 @@ public class ResultRecoverTaskTestsArity1
         var value1 = 42;
         var taskResult = Task.FromResult(Result.Success(value1));
         // When
-        var recoveredResult = await taskResult.RecoverAsync<int>(errors => Task.FromResult(999));
+        var recoveredResult = await taskResult.RecoverAsync<int>(errors => Task.FromResult(42));
         // Then
         Assert.True(recoveredResult.IsSuccess);
     }
@@ -40,11 +38,11 @@ public class ResultRecoverTaskTestsArity1
         // Given
         var taskResult = Task.FromResult(Result.Failure<int>("Test error"));
         // When
-        var recoveredResult = await taskResult.RecoverAsync<int>(errors => Task.FromResult(999));
+        var recoveredResult = await taskResult.RecoverAsync<int>(errors => Task.FromResult(42));
         // Then
         Assert.True(recoveredResult.IsSuccess);
         Assert.True(recoveredResult.TryGet(out var recoveredValue));
-        Assert.Equal(999, recoveredValue);
+        Assert.Equal(42, recoveredValue);
     }
     
     #endregion // Arity 1 - Task Recover
@@ -58,7 +56,7 @@ public class ResultRecoverTaskTestsArity1
         var value2 = "test";
         var taskResult = Task.FromResult(Result.Success(value1, value2));
         // When
-        var recoveredResult = await taskResult.RecoverAsync<int, string>(errors => Task.FromResult((999, "recovered")));
+        var recoveredResult = await taskResult.RecoverAsync<int, string>(errors => Task.FromResult((100, "World")));
         // Then
         Assert.True(recoveredResult.IsSuccess);
     }
@@ -68,7 +66,7 @@ public class ResultRecoverTaskTestsArity1
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string>("Test error"));
         // When
-        var recoveredResult = await taskResult.RecoverAsync<int, string>(errors => Task.FromResult((999, "recovered")));
+        var recoveredResult = await taskResult.RecoverAsync<int, string>(errors => Task.FromResult((100, "World")));
         // Then
         Assert.True(recoveredResult.IsSuccess);
     }
@@ -85,7 +83,7 @@ public class ResultRecoverTaskTestsArity1
         var value3 = true;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3));
         // When
-        var recoveredResult = await taskResult.RecoverAsync<int, string, bool>(errors => Task.FromResult((999, "recovered", false)));
+        var recoveredResult = await taskResult.RecoverAsync<int, string, bool>(errors => Task.FromResult((100, "World", false)));
         // Then
         Assert.True(recoveredResult.IsSuccess);
     }
@@ -95,7 +93,7 @@ public class ResultRecoverTaskTestsArity1
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool>("Test error"));
         // When
-        var recoveredResult = await taskResult.RecoverAsync<int, string, bool>(errors => Task.FromResult((999, "recovered", false)));
+        var recoveredResult = await taskResult.RecoverAsync<int, string, bool>(errors => Task.FromResult((100, "World", false)));
         // Then
         Assert.True(recoveredResult.IsSuccess);
     }
@@ -113,7 +111,7 @@ public class ResultRecoverTaskTestsArity1
         var value4 = 3.14;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4));
         // When
-        var recoveredResult = await taskResult.RecoverAsync<int, string, bool, double>(errors => Task.FromResult((999, "recovered", false, 9.99)));
+        var recoveredResult = await taskResult.RecoverAsync<int, string, bool, double>(errors => Task.FromResult((100, "World", false, 6.28)));
         // Then
         Assert.True(recoveredResult.IsSuccess);
     }
@@ -123,7 +121,7 @@ public class ResultRecoverTaskTestsArity1
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool, double>("Test error"));
         // When
-        var recoveredResult = await taskResult.RecoverAsync<int, string, bool, double>(errors => Task.FromResult((999, "recovered", false, 9.99)));
+        var recoveredResult = await taskResult.RecoverAsync<int, string, bool, double>(errors => Task.FromResult((100, "World", false, 6.28)));
         // Then
         Assert.True(recoveredResult.IsSuccess);
     }
@@ -142,7 +140,7 @@ public class ResultRecoverTaskTestsArity1
         var value5 = 123L;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5));
         // When
-        var recoveredResult = await taskResult.RecoverAsync<int, string, bool, double, long>(errors => Task.FromResult((999, "recovered", false, 9.99, 888L)));
+        var recoveredResult = await taskResult.RecoverAsync<int, string, bool, double, long>(errors => Task.FromResult((100, "World", false, 6.28, 456L)));
         // Then
         Assert.True(recoveredResult.IsSuccess);
     }
@@ -152,7 +150,7 @@ public class ResultRecoverTaskTestsArity1
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
         // When
-        var recoveredResult = await taskResult.RecoverAsync<int, string, bool, double, long>(errors => Task.FromResult((999, "recovered", false, 9.99, 888L)));
+        var recoveredResult = await taskResult.RecoverAsync<int, string, bool, double, long>(errors => Task.FromResult((100, "World", false, 6.28, 456L)));
         // Then
         Assert.True(recoveredResult.IsSuccess);
     }
@@ -169,10 +167,10 @@ public class ResultRecoverTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
+        var value6 = DateTime.UtcNow;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
         // When
-        var recoveredResult = await taskResult.RecoverAsync<int, string, bool, double, long, string>(errors => Task.FromResult((999, "recovered", false, 9.99, 888L, "recovered6")));
+        var recoveredResult = await taskResult.RecoverAsync<int, string, bool, double, long, DateTime>(errors => Task.FromResult((100, "World", false, 6.28, 456L, DateTime.UtcNow.AddDays(1))));
         // Then
         Assert.True(recoveredResult.IsSuccess);
     }
@@ -180,9 +178,9 @@ public class ResultRecoverTaskTestsArity1
     [Fact]
     public async Task RecoverTask_Arity6_Failure_ShouldRecover() {
         // Given
-        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
         // When
-        var recoveredResult = await taskResult.RecoverAsync<int, string, bool, double, long, string>(errors => Task.FromResult((999, "recovered", false, 9.99, 888L, "recovered6")));
+        var recoveredResult = await taskResult.RecoverAsync<int, string, bool, double, long, DateTime>(errors => Task.FromResult((100, "World", false, 6.28, 456L, DateTime.UtcNow.AddDays(1))));
         // Then
         Assert.True(recoveredResult.IsSuccess);
     }
@@ -199,11 +197,11 @@ public class ResultRecoverTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
         // When
-        var recoveredResult = await taskResult.RecoverAsync<int, string, bool, double, long, string, string>(errors => Task.FromResult((999, "recovered", false, 9.99, 888L, "recovered6", "recovered7")));
+        var recoveredResult = await taskResult.RecoverAsync<int, string, bool, double, long, DateTime, Guid>(errors => Task.FromResult((100, "World", false, 6.28, 456L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
         // Then
         Assert.True(recoveredResult.IsSuccess);
     }
@@ -211,9 +209,9 @@ public class ResultRecoverTaskTestsArity1
     [Fact]
     public async Task RecoverTask_Arity7_Failure_ShouldRecover() {
         // Given
-        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
         // When
-        var recoveredResult = await taskResult.RecoverAsync<int, string, bool, double, long, string, string>(errors => Task.FromResult((999, "recovered", false, 9.99, 888L, "recovered6", "recovered7")));
+        var recoveredResult = await taskResult.RecoverAsync<int, string, bool, double, long, DateTime, Guid>(errors => Task.FromResult((100, "World", false, 6.28, 456L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
         // Then
         Assert.True(recoveredResult.IsSuccess);
     }
@@ -230,12 +228,12 @@ public class ResultRecoverTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
         // When
-        var recoveredResult = await taskResult.RecoverAsync<int, string, bool, double, long, string, string, string>(errors => Task.FromResult((999, "recovered", false, 9.99, 888L, "recovered6", "recovered7", "recovered8")));
+        var recoveredResult = await taskResult.RecoverAsync<int, string, bool, double, long, DateTime, Guid, TimeSpan>(errors => Task.FromResult((100, "World", false, 6.28, 456L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(10))));
         // Then
         Assert.True(recoveredResult.IsSuccess);
     }
@@ -243,9 +241,9 @@ public class ResultRecoverTaskTestsArity1
     [Fact]
     public async Task RecoverTask_Arity8_Failure_ShouldRecover() {
         // Given
-        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
         // When
-        var recoveredResult = await taskResult.RecoverAsync<int, string, bool, double, long, string, string, string>(errors => Task.FromResult((999, "recovered", false, 9.99, 888L, "recovered6", "recovered7", "recovered8")));
+        var recoveredResult = await taskResult.RecoverAsync<int, string, bool, double, long, DateTime, Guid, TimeSpan>(errors => Task.FromResult((100, "World", false, 6.28, 456L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(10))));
         // Then
         Assert.True(recoveredResult.IsSuccess);
     }

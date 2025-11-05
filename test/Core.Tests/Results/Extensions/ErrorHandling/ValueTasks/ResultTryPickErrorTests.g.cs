@@ -12,8 +12,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
 using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
@@ -27,9 +25,9 @@ public class ResultTryPickErrorValueTaskTestsArity0
     [Fact]
     public async Task TryPickErrorValueTask_Arity0_Success_ShouldReturnFalse() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Success());
+        var taskResult = ValueTask.FromResult(Result.Success());
         // When
-        var result = await valueTaskResult.TryPickErrorAsync(e => ValueTask.FromResult(e is Error));
+        var result = await taskResult.TryPickErrorAsync(e => ValueTask.FromResult(e is ExceptionalError));
         // Then
         Assert.False(result.Success);
         Assert.Null(result.Error);
@@ -38,9 +36,9 @@ public class ResultTryPickErrorValueTaskTestsArity0
     [Fact]
     public async Task TryPickErrorValueTask_Arity0_Failure_ShouldReturnFoundError() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure(new Error("Test error")));
+        var taskResult = ValueTask.FromResult(Result.Failure("Test error"));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync(e => ValueTask.FromResult(e is Error));
+        var result = await taskResult.TryPickErrorAsync(e => ValueTask.FromResult(e is ExceptionalError));
         // Then
         Assert.True(result.Success);
         Assert.NotNull(result.Error);
@@ -50,9 +48,9 @@ public class ResultTryPickErrorValueTaskTestsArity0
     [Fact]
     public async Task TryPickErrorValueTask_Arity0_Failure_ShouldReturnNotFound() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure(new Error("Test error")));
+        var taskResult = ValueTask.FromResult(Result.Failure("Test error"));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync(e => ValueTask.FromResult(e is ExceptionalError));
+        var result = await taskResult.TryPickErrorAsync(e => ValueTask.FromResult(e is Error));
         // Then
         Assert.False(result.Success);
         Assert.Null(result.Error);
@@ -66,9 +64,9 @@ public class ResultTryPickErrorValueTaskTestsArity0
     public async Task TryPickErrorValueTask_Arity1_Success_ShouldReturnFalse() {
         // Given
         var value1 = 42;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1));
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync<int>(e => ValueTask.FromResult(e is Error));
+        var result = await taskResult.TryPickErrorAsync<int>(e => ValueTask.FromResult(e is ExceptionalError));
         // Then
         Assert.False(result.Success);
         Assert.Null(result.Error);
@@ -77,9 +75,9 @@ public class ResultTryPickErrorValueTaskTestsArity0
     [Fact]
     public async Task TryPickErrorValueTask_Arity1_Failure_ShouldReturnFoundError() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int>(new Error("Test error")));
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync<int>(e => ValueTask.FromResult(e is Error));
+        var result = await taskResult.TryPickErrorAsync<int>(e => ValueTask.FromResult(e is ExceptionalError));
         // Then
         Assert.True(result.Success);
         Assert.NotNull(result.Error);
@@ -89,9 +87,9 @@ public class ResultTryPickErrorValueTaskTestsArity0
     [Fact]
     public async Task TryPickErrorValueTask_Arity1_Failure_ShouldReturnNotFound() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int>(new Error("Test error")));
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync<int>(e => ValueTask.FromResult(e is ExceptionalError));
+        var result = await taskResult.TryPickErrorAsync<int>(e => ValueTask.FromResult(e is Error));
         // Then
         Assert.False(result.Success);
         Assert.Null(result.Error);
@@ -106,9 +104,9 @@ public class ResultTryPickErrorValueTaskTestsArity0
         // Given
         var value1 = 42;
         var value2 = "test";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync<int, string>(e => ValueTask.FromResult(e is Error));
+        var result = await taskResult.TryPickErrorAsync<int, string>(e => ValueTask.FromResult(e is ExceptionalError));
         // Then
         Assert.False(result.Success);
         Assert.Null(result.Error);
@@ -117,9 +115,9 @@ public class ResultTryPickErrorValueTaskTestsArity0
     [Fact]
     public async Task TryPickErrorValueTask_Arity2_Failure_ShouldReturnFoundError() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string>(new Error("Test error")));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync<int, string>(e => ValueTask.FromResult(e is Error));
+        var result = await taskResult.TryPickErrorAsync<int, string>(e => ValueTask.FromResult(e is ExceptionalError));
         // Then
         Assert.True(result.Success);
         Assert.NotNull(result.Error);
@@ -129,9 +127,9 @@ public class ResultTryPickErrorValueTaskTestsArity0
     [Fact]
     public async Task TryPickErrorValueTask_Arity2_Failure_ShouldReturnNotFound() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string>(new Error("Test error")));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync<int, string>(e => ValueTask.FromResult(e is ExceptionalError));
+        var result = await taskResult.TryPickErrorAsync<int, string>(e => ValueTask.FromResult(e is Error));
         // Then
         Assert.False(result.Success);
         Assert.Null(result.Error);
@@ -147,9 +145,9 @@ public class ResultTryPickErrorValueTaskTestsArity0
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync<int, string, bool>(e => ValueTask.FromResult(e is Error));
+        var result = await taskResult.TryPickErrorAsync<int, string, bool>(e => ValueTask.FromResult(e is ExceptionalError));
         // Then
         Assert.False(result.Success);
         Assert.Null(result.Error);
@@ -158,9 +156,9 @@ public class ResultTryPickErrorValueTaskTestsArity0
     [Fact]
     public async Task TryPickErrorValueTask_Arity3_Failure_ShouldReturnFoundError() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool>(new Error("Test error")));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync<int, string, bool>(e => ValueTask.FromResult(e is Error));
+        var result = await taskResult.TryPickErrorAsync<int, string, bool>(e => ValueTask.FromResult(e is ExceptionalError));
         // Then
         Assert.True(result.Success);
         Assert.NotNull(result.Error);
@@ -170,9 +168,9 @@ public class ResultTryPickErrorValueTaskTestsArity0
     [Fact]
     public async Task TryPickErrorValueTask_Arity3_Failure_ShouldReturnNotFound() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool>(new Error("Test error")));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync<int, string, bool>(e => ValueTask.FromResult(e is ExceptionalError));
+        var result = await taskResult.TryPickErrorAsync<int, string, bool>(e => ValueTask.FromResult(e is Error));
         // Then
         Assert.False(result.Success);
         Assert.Null(result.Error);
@@ -189,9 +187,9 @@ public class ResultTryPickErrorValueTaskTestsArity0
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync<int, string, bool, double>(e => ValueTask.FromResult(e is Error));
+        var result = await taskResult.TryPickErrorAsync<int, string, bool, double>(e => ValueTask.FromResult(e is ExceptionalError));
         // Then
         Assert.False(result.Success);
         Assert.Null(result.Error);
@@ -200,9 +198,9 @@ public class ResultTryPickErrorValueTaskTestsArity0
     [Fact]
     public async Task TryPickErrorValueTask_Arity4_Failure_ShouldReturnFoundError() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>(new Error("Test error")));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync<int, string, bool, double>(e => ValueTask.FromResult(e is Error));
+        var result = await taskResult.TryPickErrorAsync<int, string, bool, double>(e => ValueTask.FromResult(e is ExceptionalError));
         // Then
         Assert.True(result.Success);
         Assert.NotNull(result.Error);
@@ -212,9 +210,9 @@ public class ResultTryPickErrorValueTaskTestsArity0
     [Fact]
     public async Task TryPickErrorValueTask_Arity4_Failure_ShouldReturnNotFound() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>(new Error("Test error")));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync<int, string, bool, double>(e => ValueTask.FromResult(e is ExceptionalError));
+        var result = await taskResult.TryPickErrorAsync<int, string, bool, double>(e => ValueTask.FromResult(e is Error));
         // Then
         Assert.False(result.Success);
         Assert.Null(result.Error);
@@ -232,9 +230,9 @@ public class ResultTryPickErrorValueTaskTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync<int, string, bool, double, long>(e => ValueTask.FromResult(e is Error));
+        var result = await taskResult.TryPickErrorAsync<int, string, bool, double, long>(e => ValueTask.FromResult(e is ExceptionalError));
         // Then
         Assert.False(result.Success);
         Assert.Null(result.Error);
@@ -243,9 +241,9 @@ public class ResultTryPickErrorValueTaskTestsArity0
     [Fact]
     public async Task TryPickErrorValueTask_Arity5_Failure_ShouldReturnFoundError() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>(new Error("Test error")));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync<int, string, bool, double, long>(e => ValueTask.FromResult(e is Error));
+        var result = await taskResult.TryPickErrorAsync<int, string, bool, double, long>(e => ValueTask.FromResult(e is ExceptionalError));
         // Then
         Assert.True(result.Success);
         Assert.NotNull(result.Error);
@@ -255,9 +253,9 @@ public class ResultTryPickErrorValueTaskTestsArity0
     [Fact]
     public async Task TryPickErrorValueTask_Arity5_Failure_ShouldReturnNotFound() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>(new Error("Test error")));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync<int, string, bool, double, long>(e => ValueTask.FromResult(e is ExceptionalError));
+        var result = await taskResult.TryPickErrorAsync<int, string, bool, double, long>(e => ValueTask.FromResult(e is Error));
         // Then
         Assert.False(result.Success);
         Assert.Null(result.Error);
@@ -275,10 +273,10 @@ public class ResultTryPickErrorValueTaskTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        var value6 = DateTime.UtcNow;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync<int, string, bool, double, long, string>(e => ValueTask.FromResult(e is Error));
+        var result = await taskResult.TryPickErrorAsync<int, string, bool, double, long, DateTime>(e => ValueTask.FromResult(e is ExceptionalError));
         // Then
         Assert.False(result.Success);
         Assert.Null(result.Error);
@@ -287,9 +285,9 @@ public class ResultTryPickErrorValueTaskTestsArity0
     [Fact]
     public async Task TryPickErrorValueTask_Arity6_Failure_ShouldReturnFoundError() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string>(new Error("Test error")));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync<int, string, bool, double, long, string>(e => ValueTask.FromResult(e is Error));
+        var result = await taskResult.TryPickErrorAsync<int, string, bool, double, long, DateTime>(e => ValueTask.FromResult(e is ExceptionalError));
         // Then
         Assert.True(result.Success);
         Assert.NotNull(result.Error);
@@ -299,9 +297,9 @@ public class ResultTryPickErrorValueTaskTestsArity0
     [Fact]
     public async Task TryPickErrorValueTask_Arity6_Failure_ShouldReturnNotFound() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string>(new Error("Test error")));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync<int, string, bool, double, long, string>(e => ValueTask.FromResult(e is ExceptionalError));
+        var result = await taskResult.TryPickErrorAsync<int, string, bool, double, long, DateTime>(e => ValueTask.FromResult(e is Error));
         // Then
         Assert.False(result.Success);
         Assert.Null(result.Error);
@@ -319,11 +317,11 @@ public class ResultTryPickErrorValueTaskTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync<int, string, bool, double, long, string, string>(e => ValueTask.FromResult(e is Error));
+        var result = await taskResult.TryPickErrorAsync<int, string, bool, double, long, DateTime, Guid>(e => ValueTask.FromResult(e is ExceptionalError));
         // Then
         Assert.False(result.Success);
         Assert.Null(result.Error);
@@ -332,9 +330,9 @@ public class ResultTryPickErrorValueTaskTestsArity0
     [Fact]
     public async Task TryPickErrorValueTask_Arity7_Failure_ShouldReturnFoundError() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string>(new Error("Test error")));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync<int, string, bool, double, long, string, string>(e => ValueTask.FromResult(e is Error));
+        var result = await taskResult.TryPickErrorAsync<int, string, bool, double, long, DateTime, Guid>(e => ValueTask.FromResult(e is ExceptionalError));
         // Then
         Assert.True(result.Success);
         Assert.NotNull(result.Error);
@@ -344,9 +342,9 @@ public class ResultTryPickErrorValueTaskTestsArity0
     [Fact]
     public async Task TryPickErrorValueTask_Arity7_Failure_ShouldReturnNotFound() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string>(new Error("Test error")));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync<int, string, bool, double, long, string, string>(e => ValueTask.FromResult(e is ExceptionalError));
+        var result = await taskResult.TryPickErrorAsync<int, string, bool, double, long, DateTime, Guid>(e => ValueTask.FromResult(e is Error));
         // Then
         Assert.False(result.Success);
         Assert.Null(result.Error);
@@ -364,12 +362,12 @@ public class ResultTryPickErrorValueTaskTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync<int, string, bool, double, long, string, string, string>(e => ValueTask.FromResult(e is Error));
+        var result = await taskResult.TryPickErrorAsync<int, string, bool, double, long, DateTime, Guid, TimeSpan>(e => ValueTask.FromResult(e is ExceptionalError));
         // Then
         Assert.False(result.Success);
         Assert.Null(result.Error);
@@ -378,9 +376,9 @@ public class ResultTryPickErrorValueTaskTestsArity0
     [Fact]
     public async Task TryPickErrorValueTask_Arity8_Failure_ShouldReturnFoundError() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>(new Error("Test error")));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync<int, string, bool, double, long, string, string, string>(e => ValueTask.FromResult(e is Error));
+        var result = await taskResult.TryPickErrorAsync<int, string, bool, double, long, DateTime, Guid, TimeSpan>(e => ValueTask.FromResult(e is ExceptionalError));
         // Then
         Assert.True(result.Success);
         Assert.NotNull(result.Error);
@@ -390,9 +388,9 @@ public class ResultTryPickErrorValueTaskTestsArity0
     [Fact]
     public async Task TryPickErrorValueTask_Arity8_Failure_ShouldReturnNotFound() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>(new Error("Test error")));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
         // When
-        var result = await valueTaskResult.TryPickErrorAsync<int, string, bool, double, long, string, string, string>(e => ValueTask.FromResult(e is ExceptionalError));
+        var result = await taskResult.TryPickErrorAsync<int, string, bool, double, long, DateTime, Guid, TimeSpan>(e => ValueTask.FromResult(e is Error));
         // Then
         Assert.False(result.Success);
         Assert.Null(result.Error);

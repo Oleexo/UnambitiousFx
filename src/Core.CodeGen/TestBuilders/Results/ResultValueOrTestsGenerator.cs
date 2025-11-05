@@ -132,7 +132,7 @@ internal sealed class ResultValueOrTestsGenerator : ResultTestGeneratorBase {
     private string GenerateAsyncSuccessBody(ushort arity,
                                             string asyncType) {
         var testValues     = GenerateTestValues(arity);
-        var creation       = GenerateAsyncResultCreation(arity, asyncType);
+        var creation       = GenerateAsyncSuccessResultCreation(arity, asyncType);
         var fallbackValues = GenerateFallbackValues(arity);
         var call           = GenerateValueOrAsyncCall(arity);
         var assertions     = GenerateValueOrSuccessAssertions(arity);
@@ -151,7 +151,7 @@ internal sealed class ResultValueOrTestsGenerator : ResultTestGeneratorBase {
     private string GenerateAsyncSuccessWithFactoryBody(ushort arity,
                                                        string asyncType) {
         var testValues        = GenerateTestValues(arity);
-        var creation          = GenerateAsyncResultCreation(arity, asyncType);
+        var creation          = GenerateAsyncSuccessResultCreation(arity, asyncType);
         var factoryDefinition = GenerateFactoryDefinition(arity);
         var call              = GenerateValueOrAsyncWithFactoryCall(arity);
         var assertions        = GenerateValueOrSuccessAssertions(arity);
@@ -175,24 +175,6 @@ internal sealed class ResultValueOrTestsGenerator : ResultTestGeneratorBase {
 
     private string GenerateValueOrSyncWithFactoryCall(ushort arity) {
         return "var actualValue = result.ValueOr(factory);";
-    }
-
-    private string GenerateAsyncResultCreation(ushort arity,
-                                               string asyncType) {
-        string core;
-        if (arity == 0) {
-            core = "Result.Success()";
-        }
-        else if (arity == 1) {
-            core = "Result.Success(value1)";
-        }
-        else {
-            var values = string.Join(", ", Enumerable.Range(1, arity)
-                                                     .Select(i => $"value{i}"));
-            core = $"Result.Success({values})";
-        }
-
-        return $"var taskResult = {asyncType}.FromResult({core});";
     }
 
     private string GenerateAsyncFailureResultCreation(ushort arity,
@@ -240,7 +222,7 @@ internal sealed class ResultValueOrTestsGenerator : ResultTestGeneratorBase {
 
     private string GenerateFallbackValues(ushort arity) {
         return string.Join('\n', Enumerable.Range(1, arity)
-                                           .Select(i => $"var fallback{i} = {GetFallbackValue(i)};"));
+                                           .Select(i => $"var fallback{i} = {GetOtherValue(i)};"));
     }
 
     private string GenerateFactoryDefinition(ushort arity) {
@@ -249,13 +231,9 @@ internal sealed class ResultValueOrTestsGenerator : ResultTestGeneratorBase {
         }
 
         var fallbackDecls = string.Join('\n', Enumerable.Range(1, arity)
-                                                        .Select(i => $"var fallback{i} = {GetFallbackValue(i)};"));
+                                                        .Select(i => $"var fallback{i} = {GetOtherValue(i)};"));
         var tupleType   = $"({string.Join(", ", Enumerable.Range(1, arity).Select(GetTestType))})";
         var tupleValues = $"({string.Join(", ", Enumerable.Range(1, arity).Select(i => $"fallback{i}"))})";
         return $"{fallbackDecls}\nFunc<{tupleType}> factory = () => {tupleValues};";
-    }
-
-    private string GetFallbackValue(int index) {
-        return index switch { 1 => "999", 2 => "\"fallback\"", 3 => "false", 4 => "9.99", 5 => "999L", _ => $"\"fallback{index}\"" };
     }
 }

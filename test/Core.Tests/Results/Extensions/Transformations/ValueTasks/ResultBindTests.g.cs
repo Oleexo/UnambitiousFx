@@ -12,99 +12,2508 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Extensions.Transformations.ValueTasks;
 using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Transformations.ValueTasks;
 
-public class ResultBindValueTaskTestsArity1
+public class ResultBindValueTaskTestsInput0Output0
 {
-    #region Arity 1 - ValueTask Bind
+    #region Input 0 → Output 0 - ValueTask Bind
     
     [Fact]
-    public async Task BindValueTask_Arity1_Success_ShouldTransform() {
+    public async Task BindAsyncValueTask_SyncResult_Input0Output0_Success_ShouldTransform() {
         // Given
-        var value1 = 42;
-        var taskResult = ValueTask.FromResult(Result.Success(value1));
+        var result = Result.Success();
         // When
-        var transformedResult = await taskResult.BindAsync(x => Result.Success(x * 2));
+        var transformedResult = await result.BindAsync(() => ValueTask.FromResult(Result.Success()));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
     
     [Fact]
-    public async Task BindValueTask_Arity1_Failure_ShouldNotTransform() {
+    public async Task BindAsyncValueTask_SyncResult_Input0Output0_Failure_ShouldNotTransform() {
         // Given
-        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        var result = Result.Failure("Test error");
         // When
-        var transformedResult = await taskResult.BindAsync(x => Result.Success(x * 2));
+        var transformedResult = await result.BindAsync(() => ValueTask.FromResult(Result.Success()));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
     
-    #endregion // Arity 1 - ValueTask Bind
-    
-    #region Arity 2 - ValueTask Bind
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input0Output0_Success_ShouldTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Success());
+        // When
+        var transformedResult = await taskResult.BindAsync(() => Result.Success());
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
     
     [Fact]
-    public async Task BindValueTask_Arity2_Success_ShouldTransform() {
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input0Output0_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(() => Result.Success());
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input0Output0_Success_ShouldTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Success());
+        // When
+        var transformedResult = await taskResult.BindAsync(() => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input0Output0_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(() => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 0 → Output 0 - ValueTask Bind
+    
+    #region Input 0 → Output 1 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input0Output1_Success_ShouldTransform() {
+        // Given
+        var result = Result.Success();
+        // When
+        var transformedResult = await result.BindAsync(() => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input0Output1_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure("Test error");
+        // When
+        var transformedResult = await result.BindAsync(() => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input0Output1_Success_ShouldTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Success());
+        // When
+        var transformedResult = await taskResult.BindAsync(() => Result.Success(100));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input0Output1_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(() => Result.Success(100));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input0Output1_Success_ShouldTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Success());
+        // When
+        var transformedResult = await taskResult.BindAsync(() => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input0Output1_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(() => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 0 → Output 1 - ValueTask Bind
+    
+    #region Input 0 → Output 2 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input0Output2_Success_ShouldTransform() {
+        // Given
+        var result = Result.Success();
+        // When
+        var transformedResult = await result.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input0Output2_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure("Test error");
+        // When
+        var transformedResult = await result.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input0Output2_Success_ShouldTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Success());
+        // When
+        var transformedResult = await taskResult.BindAsync(() => Result.Success(100, "output2"));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input0Output2_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(() => Result.Success(100, "output2"));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input0Output2_Success_ShouldTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Success());
+        // When
+        var transformedResult = await taskResult.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input0Output2_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 0 → Output 2 - ValueTask Bind
+    
+    #region Input 0 → Output 3 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input0Output3_Success_ShouldTransform() {
+        // Given
+        var result = Result.Success();
+        // When
+        var transformedResult = await result.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input0Output3_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure("Test error");
+        // When
+        var transformedResult = await result.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input0Output3_Success_ShouldTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Success());
+        // When
+        var transformedResult = await taskResult.BindAsync(() => Result.Success(100, "output2", false));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input0Output3_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(() => Result.Success(100, "output2", false));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input0Output3_Success_ShouldTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Success());
+        // When
+        var transformedResult = await taskResult.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input0Output3_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 0 → Output 3 - ValueTask Bind
+    
+    #region Input 0 → Output 4 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input0Output4_Success_ShouldTransform() {
+        // Given
+        var result = Result.Success();
+        // When
+        var transformedResult = await result.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input0Output4_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure("Test error");
+        // When
+        var transformedResult = await result.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input0Output4_Success_ShouldTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Success());
+        // When
+        var transformedResult = await taskResult.BindAsync(() => Result.Success(100, "output2", false, 6));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input0Output4_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(() => Result.Success(100, "output2", false, 6));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input0Output4_Success_ShouldTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Success());
+        // When
+        var transformedResult = await taskResult.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input0Output4_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 0 → Output 4 - ValueTask Bind
+    
+    #region Input 0 → Output 5 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input0Output5_Success_ShouldTransform() {
+        // Given
+        var result = Result.Success();
+        // When
+        var transformedResult = await result.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input0Output5_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure("Test error");
+        // When
+        var transformedResult = await result.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input0Output5_Success_ShouldTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Success());
+        // When
+        var transformedResult = await taskResult.BindAsync(() => Result.Success(100, "output2", false, 6, 5000L));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input0Output5_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(() => Result.Success(100, "output2", false, 6, 5000L));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input0Output5_Success_ShouldTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Success());
+        // When
+        var transformedResult = await taskResult.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input0Output5_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 0 → Output 5 - ValueTask Bind
+    
+    #region Input 0 → Output 6 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input0Output6_Success_ShouldTransform() {
+        // Given
+        var result = Result.Success();
+        // When
+        var transformedResult = await result.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input0Output6_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure("Test error");
+        // When
+        var transformedResult = await result.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input0Output6_Success_ShouldTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Success());
+        // When
+        var transformedResult = await taskResult.BindAsync(() => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input0Output6_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(() => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input0Output6_Success_ShouldTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Success());
+        // When
+        var transformedResult = await taskResult.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input0Output6_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 0 → Output 6 - ValueTask Bind
+    
+    #region Input 0 → Output 7 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input0Output7_Success_ShouldTransform() {
+        // Given
+        var result = Result.Success();
+        // When
+        var transformedResult = await result.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input0Output7_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure("Test error");
+        // When
+        var transformedResult = await result.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input0Output7_Success_ShouldTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Success());
+        // When
+        var transformedResult = await taskResult.BindAsync(() => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid()));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input0Output7_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(() => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid()));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input0Output7_Success_ShouldTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Success());
+        // When
+        var transformedResult = await taskResult.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input0Output7_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 0 → Output 7 - ValueTask Bind
+    
+    #region Input 0 → Output 8 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input0Output8_Success_ShouldTransform() {
+        // Given
+        var result = Result.Success();
+        // When
+        var transformedResult = await result.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input0Output8_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure("Test error");
+        // When
+        var transformedResult = await result.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input0Output8_Success_ShouldTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Success());
+        // When
+        var transformedResult = await taskResult.BindAsync(() => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input0Output8_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(() => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input0Output8_Success_ShouldTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Success());
+        // When
+        var transformedResult = await taskResult.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input0Output8_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(() => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 0 → Output 8 - ValueTask Bind
+    
+    #region Input 1 → Output 0 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input1Output0_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var result = Result.Success(value1);
+        // When
+        var transformedResult = await result.BindAsync(x => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input1Output0_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int>("Test error");
+        // When
+        var transformedResult = await result.BindAsync(x => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input1Output0_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => Result.Success());
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input1Output0_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => Result.Success());
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input1Output0_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input1Output0_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 1 → Output 0 - ValueTask Bind
+    
+    #region Input 1 → Output 1 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input1Output1_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var result = Result.Success(value1);
+        // When
+        var transformedResult = await result.BindAsync(x => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input1Output1_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int>("Test error");
+        // When
+        var transformedResult = await result.BindAsync(x => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input1Output1_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => Result.Success(100));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input1Output1_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => Result.Success(100));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input1Output1_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input1Output1_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 1 → Output 1 - ValueTask Bind
+    
+    #region Input 1 → Output 2 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input1Output2_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var result = Result.Success(value1);
+        // When
+        var transformedResult = await result.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input1Output2_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int>("Test error");
+        // When
+        var transformedResult = await result.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input1Output2_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => Result.Success(100, "output2"));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input1Output2_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => Result.Success(100, "output2"));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input1Output2_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input1Output2_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 1 → Output 2 - ValueTask Bind
+    
+    #region Input 1 → Output 3 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input1Output3_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var result = Result.Success(value1);
+        // When
+        var transformedResult = await result.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input1Output3_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int>("Test error");
+        // When
+        var transformedResult = await result.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input1Output3_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => Result.Success(100, "output2", false));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input1Output3_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => Result.Success(100, "output2", false));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input1Output3_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input1Output3_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 1 → Output 3 - ValueTask Bind
+    
+    #region Input 1 → Output 4 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input1Output4_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var result = Result.Success(value1);
+        // When
+        var transformedResult = await result.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input1Output4_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int>("Test error");
+        // When
+        var transformedResult = await result.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input1Output4_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => Result.Success(100, "output2", false, 6));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input1Output4_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => Result.Success(100, "output2", false, 6));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input1Output4_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input1Output4_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 1 → Output 4 - ValueTask Bind
+    
+    #region Input 1 → Output 5 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input1Output5_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var result = Result.Success(value1);
+        // When
+        var transformedResult = await result.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input1Output5_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int>("Test error");
+        // When
+        var transformedResult = await result.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input1Output5_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => Result.Success(100, "output2", false, 6, 5000L));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input1Output5_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => Result.Success(100, "output2", false, 6, 5000L));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input1Output5_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input1Output5_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 1 → Output 5 - ValueTask Bind
+    
+    #region Input 1 → Output 6 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input1Output6_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var result = Result.Success(value1);
+        // When
+        var transformedResult = await result.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input1Output6_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int>("Test error");
+        // When
+        var transformedResult = await result.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input1Output6_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input1Output6_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input1Output6_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input1Output6_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 1 → Output 6 - ValueTask Bind
+    
+    #region Input 1 → Output 7 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input1Output7_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var result = Result.Success(value1);
+        // When
+        var transformedResult = await result.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input1Output7_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int>("Test error");
+        // When
+        var transformedResult = await result.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input1Output7_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid()));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input1Output7_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid()));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input1Output7_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input1Output7_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 1 → Output 7 - ValueTask Bind
+    
+    #region Input 1 → Output 8 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input1Output8_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var result = Result.Success(value1);
+        // When
+        var transformedResult = await result.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input1Output8_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int>("Test error");
+        // When
+        var transformedResult = await result.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input1Output8_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input1Output8_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input1Output8_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input1Output8_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync(x => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 1 → Output 8 - ValueTask Bind
+    
+    #region Input 2 → Output 0 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input2Output0_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var result = Result.Success(value1, value2);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input2Output0_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input2Output0_Success_ShouldTransform() {
         // Given
         var value1 = 42;
         var value2 = "test";
         var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
         // When
-        var transformedResult = await taskResult.BindAsync((x1, x2) => Result.Success(x1 + "_bound", x2 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2) => Result.Success());
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
     
     [Fact]
-    public async Task BindValueTask_Arity2_Failure_ShouldNotTransform() {
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input2Output0_Failure_ShouldNotTransform() {
         // Given
         var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
         // When
-        var transformedResult = await taskResult.BindAsync((x1, x2) => Result.Success(x1 + "_bound", x2 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2) => Result.Success());
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
     
-    #endregion // Arity 2 - ValueTask Bind
-    
-    #region Arity 3 - ValueTask Bind
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input2Output0_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
     
     [Fact]
-    public async Task BindValueTask_Arity3_Success_ShouldTransform() {
+    public async Task BindAsyncValueTask_AsyncResult_Input2Output0_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 2 → Output 0 - ValueTask Bind
+    
+    #region Input 2 → Output 1 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input2Output1_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var result = Result.Success(value1, value2);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input2Output1_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input2Output1_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => Result.Success(100));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input2Output1_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => Result.Success(100));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input2Output1_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input2Output1_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 2 → Output 1 - ValueTask Bind
+    
+    #region Input 2 → Output 2 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input2Output2_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var result = Result.Success(value1, value2);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input2Output2_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input2Output2_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => Result.Success(100, "output2"));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input2Output2_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => Result.Success(100, "output2"));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input2Output2_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input2Output2_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 2 → Output 2 - ValueTask Bind
+    
+    #region Input 2 → Output 3 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input2Output3_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var result = Result.Success(value1, value2);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input2Output3_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input2Output3_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => Result.Success(100, "output2", false));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input2Output3_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => Result.Success(100, "output2", false));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input2Output3_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input2Output3_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 2 → Output 3 - ValueTask Bind
+    
+    #region Input 2 → Output 4 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input2Output4_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var result = Result.Success(value1, value2);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input2Output4_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input2Output4_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => Result.Success(100, "output2", false, 6));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input2Output4_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => Result.Success(100, "output2", false, 6));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input2Output4_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input2Output4_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 2 → Output 4 - ValueTask Bind
+    
+    #region Input 2 → Output 5 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input2Output5_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var result = Result.Success(value1, value2);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input2Output5_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input2Output5_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => Result.Success(100, "output2", false, 6, 5000L));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input2Output5_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => Result.Success(100, "output2", false, 6, 5000L));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input2Output5_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input2Output5_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 2 → Output 5 - ValueTask Bind
+    
+    #region Input 2 → Output 6 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input2Output6_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var result = Result.Success(value1, value2);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input2Output6_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input2Output6_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input2Output6_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input2Output6_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input2Output6_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 2 → Output 6 - ValueTask Bind
+    
+    #region Input 2 → Output 7 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input2Output7_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var result = Result.Success(value1, value2);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input2Output7_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input2Output7_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid()));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input2Output7_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid()));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input2Output7_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input2Output7_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 2 → Output 7 - ValueTask Bind
+    
+    #region Input 2 → Output 8 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input2Output8_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var result = Result.Success(value1, value2);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input2Output8_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input2Output8_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input2Output8_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input2Output8_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input2Output8_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 2 → Output 8 - ValueTask Bind
+    
+    #region Input 3 → Output 0 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input3Output0_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var result = Result.Success(value1, value2, value3);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input3Output0_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input3Output0_Success_ShouldTransform() {
         // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
         var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
         // When
-        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => Result.Success());
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
     
     [Fact]
-    public async Task BindValueTask_Arity3_Failure_ShouldNotTransform() {
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input3Output0_Failure_ShouldNotTransform() {
         // Given
         var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
         // When
-        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => Result.Success());
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
     
-    #endregion // Arity 3 - ValueTask Bind
-    
-    #region Arity 4 - ValueTask Bind
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input3Output0_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
     
     [Fact]
-    public async Task BindValueTask_Arity4_Success_ShouldTransform() {
+    public async Task BindAsyncValueTask_AsyncResult_Input3Output0_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 3 → Output 0 - ValueTask Bind
+    
+    #region Input 3 → Output 1 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input3Output1_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var result = Result.Success(value1, value2, value3);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input3Output1_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input3Output1_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => Result.Success(100));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input3Output1_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => Result.Success(100));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input3Output1_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input3Output1_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 3 → Output 1 - ValueTask Bind
+    
+    #region Input 3 → Output 2 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input3Output2_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var result = Result.Success(value1, value2, value3);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input3Output2_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input3Output2_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => Result.Success(100, "output2"));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input3Output2_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => Result.Success(100, "output2"));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input3Output2_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input3Output2_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 3 → Output 2 - ValueTask Bind
+    
+    #region Input 3 → Output 3 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input3Output3_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var result = Result.Success(value1, value2, value3);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input3Output3_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input3Output3_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => Result.Success(100, "output2", false));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input3Output3_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => Result.Success(100, "output2", false));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input3Output3_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input3Output3_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 3 → Output 3 - ValueTask Bind
+    
+    #region Input 3 → Output 4 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input3Output4_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var result = Result.Success(value1, value2, value3);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input3Output4_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input3Output4_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => Result.Success(100, "output2", false, 6));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input3Output4_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => Result.Success(100, "output2", false, 6));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input3Output4_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input3Output4_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 3 → Output 4 - ValueTask Bind
+    
+    #region Input 3 → Output 5 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input3Output5_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var result = Result.Success(value1, value2, value3);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input3Output5_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input3Output5_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => Result.Success(100, "output2", false, 6, 5000L));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input3Output5_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => Result.Success(100, "output2", false, 6, 5000L));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input3Output5_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input3Output5_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 3 → Output 5 - ValueTask Bind
+    
+    #region Input 3 → Output 6 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input3Output6_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var result = Result.Success(value1, value2, value3);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input3Output6_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input3Output6_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input3Output6_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input3Output6_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input3Output6_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 3 → Output 6 - ValueTask Bind
+    
+    #region Input 3 → Output 7 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input3Output7_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var result = Result.Success(value1, value2, value3);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input3Output7_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input3Output7_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid()));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input3Output7_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid()));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input3Output7_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input3Output7_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 3 → Output 7 - ValueTask Bind
+    
+    #region Input 3 → Output 8 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input3Output8_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var result = Result.Success(value1, value2, value3);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input3Output8_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input3Output8_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input3Output8_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input3Output8_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input3Output8_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 3 → Output 8 - ValueTask Bind
+    
+    #region Input 4 → Output 0 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input4Output0_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var result = Result.Success(value1, value2, value3, value4);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input4Output0_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input4Output0_Success_ShouldTransform() {
         // Given
         var value1 = 42;
         var value2 = "test";
@@ -112,27 +2521,684 @@ public class ResultBindValueTaskTestsArity1
         var value4 = 3.14;
         var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
         // When
-        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => Result.Success());
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
     
     [Fact]
-    public async Task BindValueTask_Arity4_Failure_ShouldNotTransform() {
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input4Output0_Failure_ShouldNotTransform() {
         // Given
         var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
         // When
-        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => Result.Success());
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
     
-    #endregion // Arity 4 - ValueTask Bind
-    
-    #region Arity 5 - ValueTask Bind
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input4Output0_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
     
     [Fact]
-    public async Task BindValueTask_Arity5_Success_ShouldTransform() {
+    public async Task BindAsyncValueTask_AsyncResult_Input4Output0_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 4 → Output 0 - ValueTask Bind
+    
+    #region Input 4 → Output 1 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input4Output1_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var result = Result.Success(value1, value2, value3, value4);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input4Output1_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input4Output1_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => Result.Success(100));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input4Output1_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => Result.Success(100));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input4Output1_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input4Output1_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 4 → Output 1 - ValueTask Bind
+    
+    #region Input 4 → Output 2 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input4Output2_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var result = Result.Success(value1, value2, value3, value4);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input4Output2_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input4Output2_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => Result.Success(100, "output2"));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input4Output2_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => Result.Success(100, "output2"));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input4Output2_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input4Output2_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 4 → Output 2 - ValueTask Bind
+    
+    #region Input 4 → Output 3 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input4Output3_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var result = Result.Success(value1, value2, value3, value4);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input4Output3_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input4Output3_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => Result.Success(100, "output2", false));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input4Output3_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => Result.Success(100, "output2", false));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input4Output3_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input4Output3_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 4 → Output 3 - ValueTask Bind
+    
+    #region Input 4 → Output 4 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input4Output4_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var result = Result.Success(value1, value2, value3, value4);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input4Output4_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input4Output4_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => Result.Success(100, "output2", false, 6));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input4Output4_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => Result.Success(100, "output2", false, 6));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input4Output4_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input4Output4_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 4 → Output 4 - ValueTask Bind
+    
+    #region Input 4 → Output 5 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input4Output5_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var result = Result.Success(value1, value2, value3, value4);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input4Output5_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input4Output5_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => Result.Success(100, "output2", false, 6, 5000L));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input4Output5_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => Result.Success(100, "output2", false, 6, 5000L));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input4Output5_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input4Output5_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 4 → Output 5 - ValueTask Bind
+    
+    #region Input 4 → Output 6 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input4Output6_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var result = Result.Success(value1, value2, value3, value4);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input4Output6_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input4Output6_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input4Output6_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input4Output6_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input4Output6_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 4 → Output 6 - ValueTask Bind
+    
+    #region Input 4 → Output 7 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input4Output7_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var result = Result.Success(value1, value2, value3, value4);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input4Output7_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input4Output7_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid()));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input4Output7_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid()));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input4Output7_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input4Output7_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 4 → Output 7 - ValueTask Bind
+    
+    #region Input 4 → Output 8 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input4Output8_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var result = Result.Success(value1, value2, value3, value4);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input4Output8_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input4Output8_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input4Output8_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input4Output8_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input4Output8_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 4 → Output 8 - ValueTask Bind
+    
+    #region Input 5 → Output 0 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input5Output0_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var result = Result.Success(value1, value2, value3, value4, value5);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input5Output0_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input5Output0_Success_ShouldTransform() {
         // Given
         var value1 = 42;
         var value2 = "test";
@@ -141,113 +3207,2972 @@ public class ResultBindValueTaskTestsArity1
         var value5 = 123L;
         var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
         // When
-        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound", x5 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => Result.Success());
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
     
     [Fact]
-    public async Task BindValueTask_Arity5_Failure_ShouldNotTransform() {
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input5Output0_Failure_ShouldNotTransform() {
         // Given
         var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
         // When
-        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound", x5 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => Result.Success());
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
     
-    #endregion // Arity 5 - ValueTask Bind
-    
-    #region Arity 6 - ValueTask Bind
-    
     [Fact]
-    public async Task BindValueTask_Arity6_Success_ShouldTransform() {
+    public async Task BindAsyncValueTask_AsyncResult_Input5Output0_Success_ShouldTransform() {
         // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input5Output0_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 5 → Output 0 - ValueTask Bind
+    
+    #region Input 5 → Output 1 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input5Output1_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var result = Result.Success(value1, value2, value3, value4, value5);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input5Output1_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input5Output1_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => Result.Success(100));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input5Output1_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => Result.Success(100));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input5Output1_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input5Output1_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 5 → Output 1 - ValueTask Bind
+    
+    #region Input 5 → Output 2 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input5Output2_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var result = Result.Success(value1, value2, value3, value4, value5);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input5Output2_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input5Output2_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => Result.Success(100, "output2"));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input5Output2_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => Result.Success(100, "output2"));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input5Output2_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input5Output2_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 5 → Output 2 - ValueTask Bind
+    
+    #region Input 5 → Output 3 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input5Output3_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var result = Result.Success(value1, value2, value3, value4, value5);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input5Output3_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input5Output3_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => Result.Success(100, "output2", false));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input5Output3_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => Result.Success(100, "output2", false));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input5Output3_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input5Output3_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 5 → Output 3 - ValueTask Bind
+    
+    #region Input 5 → Output 4 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input5Output4_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var result = Result.Success(value1, value2, value3, value4, value5);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input5Output4_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input5Output4_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => Result.Success(100, "output2", false, 6));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input5Output4_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => Result.Success(100, "output2", false, 6));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input5Output4_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input5Output4_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 5 → Output 4 - ValueTask Bind
+    
+    #region Input 5 → Output 5 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input5Output5_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var result = Result.Success(value1, value2, value3, value4, value5);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input5Output5_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input5Output5_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => Result.Success(100, "output2", false, 6, 5000L));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input5Output5_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => Result.Success(100, "output2", false, 6, 5000L));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input5Output5_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input5Output5_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 5 → Output 5 - ValueTask Bind
+    
+    #region Input 5 → Output 6 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input5Output6_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var result = Result.Success(value1, value2, value3, value4, value5);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input5Output6_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input5Output6_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input5Output6_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input5Output6_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input5Output6_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 5 → Output 6 - ValueTask Bind
+    
+    #region Input 5 → Output 7 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input5Output7_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var result = Result.Success(value1, value2, value3, value4, value5);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input5Output7_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input5Output7_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid()));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input5Output7_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid()));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input5Output7_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input5Output7_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 5 → Output 7 - ValueTask Bind
+    
+    #region Input 5 → Output 8 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input5Output8_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var result = Result.Success(value1, value2, value3, value4, value5);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input5Output8_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input5Output8_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input5Output8_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input5Output8_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input5Output8_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 5 → Output 8 - ValueTask Bind
+    
+    #region Input 6 → Output 0 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input6Output0_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var result = Result.Success(value1, value2, value3, value4, value5, value6);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input6Output0_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input6Output0_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
         var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
         // When
-        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound", x5 + "_bound", x6 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => Result.Success());
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
     
     [Fact]
-    public async Task BindValueTask_Arity6_Failure_ShouldNotTransform() {
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input6Output0_Failure_ShouldNotTransform() {
         // Given
-        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
         // When
-        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound", x5 + "_bound", x6 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => Result.Success());
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
     
-    #endregion // Arity 6 - ValueTask Bind
-    
-    #region Arity 7 - ValueTask Bind
-    
     [Fact]
-    public async Task BindValueTask_Arity7_Success_ShouldTransform() {
+    public async Task BindAsyncValueTask_AsyncResult_Input6Output0_Success_ShouldTransform() {
         // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
+        var value6 = DateTime.UtcNow;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input6Output0_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 6 → Output 0 - ValueTask Bind
+    
+    #region Input 6 → Output 1 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input6Output1_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var result = Result.Success(value1, value2, value3, value4, value5, value6);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input6Output1_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input6Output1_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => Result.Success(100));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input6Output1_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => Result.Success(100));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input6Output1_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input6Output1_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 6 → Output 1 - ValueTask Bind
+    
+    #region Input 6 → Output 2 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input6Output2_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var result = Result.Success(value1, value2, value3, value4, value5, value6);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input6Output2_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input6Output2_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => Result.Success(100, "output2"));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input6Output2_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => Result.Success(100, "output2"));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input6Output2_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input6Output2_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 6 → Output 2 - ValueTask Bind
+    
+    #region Input 6 → Output 3 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input6Output3_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var result = Result.Success(value1, value2, value3, value4, value5, value6);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input6Output3_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input6Output3_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => Result.Success(100, "output2", false));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input6Output3_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => Result.Success(100, "output2", false));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input6Output3_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input6Output3_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 6 → Output 3 - ValueTask Bind
+    
+    #region Input 6 → Output 4 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input6Output4_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var result = Result.Success(value1, value2, value3, value4, value5, value6);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input6Output4_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input6Output4_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => Result.Success(100, "output2", false, 6));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input6Output4_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => Result.Success(100, "output2", false, 6));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input6Output4_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input6Output4_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 6 → Output 4 - ValueTask Bind
+    
+    #region Input 6 → Output 5 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input6Output5_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var result = Result.Success(value1, value2, value3, value4, value5, value6);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input6Output5_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input6Output5_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => Result.Success(100, "output2", false, 6, 5000L));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input6Output5_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => Result.Success(100, "output2", false, 6, 5000L));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input6Output5_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input6Output5_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 6 → Output 5 - ValueTask Bind
+    
+    #region Input 6 → Output 6 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input6Output6_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var result = Result.Success(value1, value2, value3, value4, value5, value6);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input6Output6_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input6Output6_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input6Output6_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input6Output6_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input6Output6_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 6 → Output 6 - ValueTask Bind
+    
+    #region Input 6 → Output 7 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input6Output7_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var result = Result.Success(value1, value2, value3, value4, value5, value6);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input6Output7_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input6Output7_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid()));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input6Output7_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid()));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input6Output7_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input6Output7_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 6 → Output 7 - ValueTask Bind
+    
+    #region Input 6 → Output 8 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input6Output8_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var result = Result.Success(value1, value2, value3, value4, value5, value6);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input6Output8_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input6Output8_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input6Output8_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input6Output8_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input6Output8_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 6 → Output 8 - ValueTask Bind
+    
+    #region Input 7 → Output 0 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input7Output0_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input7Output0_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input7Output0_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
         // When
-        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound", x5 + "_bound", x6 + "_bound", x7 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => Result.Success());
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
     
     [Fact]
-    public async Task BindValueTask_Arity7_Failure_ShouldNotTransform() {
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input7Output0_Failure_ShouldNotTransform() {
         // Given
-        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
         // When
-        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound", x5 + "_bound", x6 + "_bound", x7 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => Result.Success());
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
     
-    #endregion // Arity 7 - ValueTask Bind
-    
-    #region Arity 8 - ValueTask Bind
-    
     [Fact]
-    public async Task BindValueTask_Arity8_Success_ShouldTransform() {
+    public async Task BindAsyncValueTask_AsyncResult_Input7Output0_Success_ShouldTransform() {
         // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
-        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
         // When
-        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound", x5 + "_bound", x6 + "_bound", x7 + "_bound", x8 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success()));
         // Then
         Assert.True(transformedResult.IsSuccess);
     }
     
     [Fact]
-    public async Task BindValueTask_Arity8_Failure_ShouldNotTransform() {
+    public async Task BindAsyncValueTask_AsyncResult_Input7Output0_Failure_ShouldNotTransform() {
         // Given
-        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
         // When
-        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => Result.Success(x1 + "_bound", x2 + "_bound", x3 + "_bound", x4 + "_bound", x5 + "_bound", x6 + "_bound", x7 + "_bound", x8 + "_bound"));
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success()));
         // Then
         Assert.False(transformedResult.IsSuccess);
     }
     
-    #endregion // Arity 8 - ValueTask Bind
+    #endregion // Input 7 → Output 0 - ValueTask Bind
+    
+    #region Input 7 → Output 1 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input7Output1_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input7Output1_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input7Output1_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => Result.Success(100));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input7Output1_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => Result.Success(100));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input7Output1_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input7Output1_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 7 → Output 1 - ValueTask Bind
+    
+    #region Input 7 → Output 2 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input7Output2_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input7Output2_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input7Output2_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => Result.Success(100, "output2"));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input7Output2_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => Result.Success(100, "output2"));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input7Output2_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input7Output2_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 7 → Output 2 - ValueTask Bind
+    
+    #region Input 7 → Output 3 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input7Output3_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input7Output3_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input7Output3_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => Result.Success(100, "output2", false));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input7Output3_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => Result.Success(100, "output2", false));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input7Output3_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input7Output3_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 7 → Output 3 - ValueTask Bind
+    
+    #region Input 7 → Output 4 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input7Output4_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input7Output4_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input7Output4_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => Result.Success(100, "output2", false, 6));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input7Output4_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => Result.Success(100, "output2", false, 6));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input7Output4_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input7Output4_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 7 → Output 4 - ValueTask Bind
+    
+    #region Input 7 → Output 5 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input7Output5_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input7Output5_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input7Output5_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => Result.Success(100, "output2", false, 6, 5000L));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input7Output5_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => Result.Success(100, "output2", false, 6, 5000L));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input7Output5_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input7Output5_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 7 → Output 5 - ValueTask Bind
+    
+    #region Input 7 → Output 6 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input7Output6_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input7Output6_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input7Output6_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input7Output6_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input7Output6_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input7Output6_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 7 → Output 6 - ValueTask Bind
+    
+    #region Input 7 → Output 7 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input7Output7_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input7Output7_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input7Output7_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid()));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input7Output7_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid()));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input7Output7_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input7Output7_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 7 → Output 7 - ValueTask Bind
+    
+    #region Input 7 → Output 8 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input7Output8_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input7Output8_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input7Output8_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input7Output8_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input7Output8_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input7Output8_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 7 → Output 8 - ValueTask Bind
+    
+    #region Input 8 → Output 0 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input8Output0_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input8Output0_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input8Output0_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => Result.Success());
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input8Output0_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => Result.Success());
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input8Output0_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input8Output0_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success()));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 8 → Output 0 - ValueTask Bind
+    
+    #region Input 8 → Output 1 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input8Output1_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input8Output1_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input8Output1_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => Result.Success(100));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input8Output1_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => Result.Success(100));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input8Output1_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input8Output1_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 8 → Output 1 - ValueTask Bind
+    
+    #region Input 8 → Output 2 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input8Output2_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input8Output2_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input8Output2_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => Result.Success(100, "output2"));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input8Output2_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => Result.Success(100, "output2"));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input8Output2_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input8Output2_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2")));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 8 → Output 2 - ValueTask Bind
+    
+    #region Input 8 → Output 3 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input8Output3_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input8Output3_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input8Output3_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => Result.Success(100, "output2", false));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input8Output3_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => Result.Success(100, "output2", false));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input8Output3_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input8Output3_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2", false)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 8 → Output 3 - ValueTask Bind
+    
+    #region Input 8 → Output 4 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input8Output4_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input8Output4_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input8Output4_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => Result.Success(100, "output2", false, 6));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input8Output4_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => Result.Success(100, "output2", false, 6));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input8Output4_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input8Output4_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2", false, 6)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 8 → Output 4 - ValueTask Bind
+    
+    #region Input 8 → Output 5 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input8Output5_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input8Output5_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input8Output5_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => Result.Success(100, "output2", false, 6, 5000L));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input8Output5_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => Result.Success(100, "output2", false, 6, 5000L));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input8Output5_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input8Output5_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 8 → Output 5 - ValueTask Bind
+    
+    #region Input 8 → Output 6 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input8Output6_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input8Output6_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input8Output6_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input8Output6_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input8Output6_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input8Output6_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 8 → Output 6 - ValueTask Bind
+    
+    #region Input 8 → Output 7 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input8Output7_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input8Output7_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input8Output7_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid()));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input8Output7_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid()));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input8Output7_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input8Output7_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid())));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 8 → Output 7 - ValueTask Bind
+    
+    #region Input 8 → Output 8 - ValueTask Bind
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input8Output8_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_SyncResult_Input8Output8_Failure_ShouldNotTransform() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
+        // When
+        var transformedResult = await result.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input8Output8_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80)));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_SyncBind_Input8Output8_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80)));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input8Output8_Success_ShouldTransform() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.True(transformedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task BindAsyncValueTask_AsyncResult_Input8Output8_Failure_ShouldNotTransform() {
+        // Given
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
+        // When
+        var transformedResult = await taskResult.BindAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult(Result.Success(100, "output2", false, 6, 5000L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(80))));
+        // Then
+        Assert.False(transformedResult.IsSuccess);
+    }
+    
+    #endregion // Input 8 → Output 8 - ValueTask Bind
 }

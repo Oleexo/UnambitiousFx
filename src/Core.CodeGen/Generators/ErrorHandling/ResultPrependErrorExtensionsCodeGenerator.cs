@@ -116,7 +116,7 @@ internal sealed class ResultPrependErrorExtensionsCodeGenerator : BaseCodeGenera
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}.{subNamespace}";
 
         var classWriter = new ClassWriter(
-            "ResultExtensions",
+            Config.ClassName,
             Visibility.Public,
             ClassModifier.Static | ClassModifier.Partial
         );

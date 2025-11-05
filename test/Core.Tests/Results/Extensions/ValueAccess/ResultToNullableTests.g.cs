@@ -12,9 +12,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Extensions.ValueAccess;
 using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
@@ -182,7 +179,7 @@ public class ResultToNullableSyncTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
+        var value6 = DateTime.UtcNow;
         var result = Result.Success(value1, value2, value3, value4, value5, value6);
         // When
         var nullableValue = result.ToNullable();
@@ -199,7 +196,7 @@ public class ResultToNullableSyncTestsArity1
     [Fact]
     public void ToNullable_Arity6_Failure_ShouldReturnNull() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
         // When
         var nullableValue = result.ToNullable();
         // Then
@@ -218,8 +215,8 @@ public class ResultToNullableSyncTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
         // When
         var nullableValue = result.ToNullable();
@@ -237,7 +234,7 @@ public class ResultToNullableSyncTestsArity1
     [Fact]
     public void ToNullable_Arity7_Failure_ShouldReturnNull() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
         // When
         var nullableValue = result.ToNullable();
         // Then
@@ -256,9 +253,9 @@ public class ResultToNullableSyncTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
         // When
         var nullableValue = result.ToNullable();
@@ -277,7 +274,7 @@ public class ResultToNullableSyncTestsArity1
     [Fact]
     public void ToNullable_Arity8_Failure_ShouldReturnNull() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
         // When
         var nullableValue = result.ToNullable();
         // Then

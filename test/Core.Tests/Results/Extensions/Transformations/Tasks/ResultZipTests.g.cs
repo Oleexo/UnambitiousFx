@@ -12,9 +12,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Extensions.Transformations.Tasks;
 using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
@@ -163,7 +160,7 @@ public class ResultZipTaskTestsArity2
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
+        var value6 = DateTime.UtcNow;
         var taskResult1 = Task.FromResult(Result.Success(value1));
         var taskResult2 = Task.FromResult(Result.Success(value2));
         var taskResult3 = Task.FromResult(Result.Success(value3));
@@ -184,7 +181,7 @@ public class ResultZipTaskTestsArity2
         var taskResult3 = Task.FromResult(Result.Failure<bool>("Test error"));
         var taskResult4 = Task.FromResult(Result.Failure<double>("Test error"));
         var taskResult5 = Task.FromResult(Result.Failure<long>("Test error"));
-        var taskResult6 = Task.FromResult(Result.Failure<string>("Test error"));
+        var taskResult6 = Task.FromResult(Result.Failure<DateTime>("Test error"));
         // When
         var zippedResult = await taskResult1.ZipAsync(taskResult2, taskResult3, taskResult4, taskResult5, taskResult6);
         // Then
@@ -203,8 +200,8 @@ public class ResultZipTaskTestsArity2
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var taskResult1 = Task.FromResult(Result.Success(value1));
         var taskResult2 = Task.FromResult(Result.Success(value2));
         var taskResult3 = Task.FromResult(Result.Success(value3));
@@ -226,8 +223,8 @@ public class ResultZipTaskTestsArity2
         var taskResult3 = Task.FromResult(Result.Failure<bool>("Test error"));
         var taskResult4 = Task.FromResult(Result.Failure<double>("Test error"));
         var taskResult5 = Task.FromResult(Result.Failure<long>("Test error"));
-        var taskResult6 = Task.FromResult(Result.Failure<string>("Test error"));
-        var taskResult7 = Task.FromResult(Result.Failure<string>("Test error"));
+        var taskResult6 = Task.FromResult(Result.Failure<DateTime>("Test error"));
+        var taskResult7 = Task.FromResult(Result.Failure<Guid>("Test error"));
         // When
         var zippedResult = await taskResult1.ZipAsync(taskResult2, taskResult3, taskResult4, taskResult5, taskResult6, taskResult7);
         // Then
@@ -246,9 +243,9 @@ public class ResultZipTaskTestsArity2
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
         var taskResult1 = Task.FromResult(Result.Success(value1));
         var taskResult2 = Task.FromResult(Result.Success(value2));
         var taskResult3 = Task.FromResult(Result.Success(value3));
@@ -271,9 +268,9 @@ public class ResultZipTaskTestsArity2
         var taskResult3 = Task.FromResult(Result.Failure<bool>("Test error"));
         var taskResult4 = Task.FromResult(Result.Failure<double>("Test error"));
         var taskResult5 = Task.FromResult(Result.Failure<long>("Test error"));
-        var taskResult6 = Task.FromResult(Result.Failure<string>("Test error"));
-        var taskResult7 = Task.FromResult(Result.Failure<string>("Test error"));
-        var taskResult8 = Task.FromResult(Result.Failure<string>("Test error"));
+        var taskResult6 = Task.FromResult(Result.Failure<DateTime>("Test error"));
+        var taskResult7 = Task.FromResult(Result.Failure<Guid>("Test error"));
+        var taskResult8 = Task.FromResult(Result.Failure<TimeSpan>("Test error"));
         // When
         var zippedResult = await taskResult1.ZipAsync(taskResult2, taskResult3, taskResult4, taskResult5, taskResult6, taskResult7, taskResult8);
         // Then

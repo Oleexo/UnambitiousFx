@@ -12,9 +12,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Extensions.ValueAccess.ValueTasks;
 using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
@@ -30,10 +27,10 @@ public class ResultMatchValueTaskTestsArity1
         // Given
         // Given: A successful ValueTask<Result>
         var value1 = 42;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1));
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
         // When
         // When: Calling MatchAsync
-        var matchResult = await valueTaskResult.MatchAsync(x => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
+        var matchResult = await taskResult.MatchAsync(x => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
         // Then
         // Then: Should return success value
         Assert.Equal("success", matchResult);
@@ -43,10 +40,10 @@ public class ResultMatchValueTaskTestsArity1
     public async Task MatchValueTask_Arity1_Failure_ShouldReturnFailureValue() {
         // Given
         // Given: A failed ValueTask<Result>
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
         // When
         // When: Calling MatchAsync
-        var matchResult = await valueTaskResult.MatchAsync(x => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
+        var matchResult = await taskResult.MatchAsync(x => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
         // Then
         // Then: Should return failure value
         Assert.Equal("failure", matchResult);
@@ -62,10 +59,10 @@ public class ResultMatchValueTaskTestsArity1
         // Given: A successful ValueTask<Result>
         var value1 = 42;
         var value2 = "test";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
         // When
         // When: Calling MatchAsync
-        var matchResult = await valueTaskResult.MatchAsync((x1, x2) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
+        var matchResult = await taskResult.MatchAsync((x1, x2) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
         // Then
         // Then: Should return success value
         Assert.Equal("success", matchResult);
@@ -75,10 +72,10 @@ public class ResultMatchValueTaskTestsArity1
     public async Task MatchValueTask_Arity2_Failure_ShouldReturnFailureValue() {
         // Given
         // Given: A failed ValueTask<Result>
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
         // When
         // When: Calling MatchAsync
-        var matchResult = await valueTaskResult.MatchAsync((x1, x2) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
+        var matchResult = await taskResult.MatchAsync((x1, x2) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
         // Then
         // Then: Should return failure value
         Assert.Equal("failure", matchResult);
@@ -95,10 +92,10 @@ public class ResultMatchValueTaskTestsArity1
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
         // When
         // When: Calling MatchAsync
-        var matchResult = await valueTaskResult.MatchAsync((x1, x2, x3) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
+        var matchResult = await taskResult.MatchAsync((x1, x2, x3) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
         // Then
         // Then: Should return success value
         Assert.Equal("success", matchResult);
@@ -108,10 +105,10 @@ public class ResultMatchValueTaskTestsArity1
     public async Task MatchValueTask_Arity3_Failure_ShouldReturnFailureValue() {
         // Given
         // Given: A failed ValueTask<Result>
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
         // When
         // When: Calling MatchAsync
-        var matchResult = await valueTaskResult.MatchAsync((x1, x2, x3) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
+        var matchResult = await taskResult.MatchAsync((x1, x2, x3) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
         // Then
         // Then: Should return failure value
         Assert.Equal("failure", matchResult);
@@ -129,10 +126,10 @@ public class ResultMatchValueTaskTestsArity1
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
         // When
         // When: Calling MatchAsync
-        var matchResult = await valueTaskResult.MatchAsync((x1, x2, x3, x4) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
+        var matchResult = await taskResult.MatchAsync((x1, x2, x3, x4) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
         // Then
         // Then: Should return success value
         Assert.Equal("success", matchResult);
@@ -142,10 +139,10 @@ public class ResultMatchValueTaskTestsArity1
     public async Task MatchValueTask_Arity4_Failure_ShouldReturnFailureValue() {
         // Given
         // Given: A failed ValueTask<Result>
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
         // When
         // When: Calling MatchAsync
-        var matchResult = await valueTaskResult.MatchAsync((x1, x2, x3, x4) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
+        var matchResult = await taskResult.MatchAsync((x1, x2, x3, x4) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
         // Then
         // Then: Should return failure value
         Assert.Equal("failure", matchResult);
@@ -164,10 +161,10 @@ public class ResultMatchValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
         // When
         // When: Calling MatchAsync
-        var matchResult = await valueTaskResult.MatchAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
+        var matchResult = await taskResult.MatchAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
         // Then
         // Then: Should return success value
         Assert.Equal("success", matchResult);
@@ -177,10 +174,10 @@ public class ResultMatchValueTaskTestsArity1
     public async Task MatchValueTask_Arity5_Failure_ShouldReturnFailureValue() {
         // Given
         // Given: A failed ValueTask<Result>
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
         // When
         // When: Calling MatchAsync
-        var matchResult = await valueTaskResult.MatchAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
+        var matchResult = await taskResult.MatchAsync((x1, x2, x3, x4, x5) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
         // Then
         // Then: Should return failure value
         Assert.Equal("failure", matchResult);
@@ -199,11 +196,11 @@ public class ResultMatchValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        var value6 = DateTime.UtcNow;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
         // When
         // When: Calling MatchAsync
-        var matchResult = await valueTaskResult.MatchAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
+        var matchResult = await taskResult.MatchAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
         // Then
         // Then: Should return success value
         Assert.Equal("success", matchResult);
@@ -213,10 +210,10 @@ public class ResultMatchValueTaskTestsArity1
     public async Task MatchValueTask_Arity6_Failure_ShouldReturnFailureValue() {
         // Given
         // Given: A failed ValueTask<Result>
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
         // When
         // When: Calling MatchAsync
-        var matchResult = await valueTaskResult.MatchAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
+        var matchResult = await taskResult.MatchAsync((x1, x2, x3, x4, x5, x6) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
         // Then
         // Then: Should return failure value
         Assert.Equal("failure", matchResult);
@@ -235,12 +232,12 @@ public class ResultMatchValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
         // When
         // When: Calling MatchAsync
-        var matchResult = await valueTaskResult.MatchAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
+        var matchResult = await taskResult.MatchAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
         // Then
         // Then: Should return success value
         Assert.Equal("success", matchResult);
@@ -250,10 +247,10 @@ public class ResultMatchValueTaskTestsArity1
     public async Task MatchValueTask_Arity7_Failure_ShouldReturnFailureValue() {
         // Given
         // Given: A failed ValueTask<Result>
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
         // When
         // When: Calling MatchAsync
-        var matchResult = await valueTaskResult.MatchAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
+        var matchResult = await taskResult.MatchAsync((x1, x2, x3, x4, x5, x6, x7) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
         // Then
         // Then: Should return failure value
         Assert.Equal("failure", matchResult);
@@ -272,13 +269,13 @@ public class ResultMatchValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
         // When
         // When: Calling MatchAsync
-        var matchResult = await valueTaskResult.MatchAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
+        var matchResult = await taskResult.MatchAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
         // Then
         // Then: Should return success value
         Assert.Equal("success", matchResult);
@@ -288,10 +285,10 @@ public class ResultMatchValueTaskTestsArity1
     public async Task MatchValueTask_Arity8_Failure_ShouldReturnFailureValue() {
         // Given
         // Given: A failed ValueTask<Result>
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
         // When
         // When: Calling MatchAsync
-        var matchResult = await valueTaskResult.MatchAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
+        var matchResult = await taskResult.MatchAsync((x1, x2, x3, x4, x5, x6, x7, x8) => ValueTask.FromResult("success"), errors => ValueTask.FromResult("failure"));
         // Then
         // Then: Should return failure value
         Assert.Equal("failure", matchResult);

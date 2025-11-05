@@ -78,34 +78,6 @@ internal sealed class ResultMapTestsGenerator : ResultTestGeneratorBase {
         return BuildTestBody([failureCreation], [call], ["Assert.False(transformedResult.IsSuccess);"]);
     }
 
-    private string GenerateTaskSuccessBody(ushort arity) {
-        var testValues = GenerateTestValues(arity);
-        var creation   = GenerateTaskResultCreation(arity);
-        var call       = GenerateMapTaskCall(arity);
-        var assertions = GenerateMapSuccessAssertions(arity);
-        return BuildTestBody([testValues, creation], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
-    }
-
-    private string GenerateTaskFailureBody(ushort arity) {
-        var creation = GenerateTaskFailureResultCreation(arity);
-        var call     = GenerateMapTaskCall(arity);
-        return BuildTestBody([creation], [call], ["Assert.False(transformedResult.IsSuccess);"]);
-    }
-
-    private string GenerateValueTaskSuccessBody(ushort arity) {
-        var testValues = GenerateTestValues(arity);
-        var creation   = GenerateValueTaskResultCreation(arity);
-        var call       = GenerateMapValueTaskCall(arity);
-        var assertions = GenerateMapSuccessAssertions(arity);
-        return BuildTestBody([testValues, creation], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
-    }
-
-    private string GenerateValueTaskFailureBody(ushort arity) {
-        var creation = GenerateValueTaskFailureResultCreation(arity);
-        var call     = GenerateMapValueTaskCall(arity);
-        return BuildTestBody([creation], [call], ["Assert.False(transformedResult.IsSuccess);"]);
-    }
-
     private string GenerateMapSyncCall(ushort arity) {
         if (arity == 1) {
             return "var transformedResult = result.Map(x => x * 2);";
@@ -116,30 +88,6 @@ internal sealed class ResultMapTestsGenerator : ResultTestGeneratorBase {
         var tupleItems = string.Join(", ", Enumerable.Range(1, arity)
                                                      .Select(i => $"x{i} + \"_mapped\""));
         return $"var transformedResult = result.Map(({parameters}) => ({tupleItems}));";
-    }
-
-    private string GenerateMapTaskCall(ushort arity) {
-        if (arity == 1) {
-            return "var transformedResult = await taskResult.MapAsync(x => x * 2);";
-        }
-
-        var parameters = string.Join(", ", Enumerable.Range(1, arity)
-                                                     .Select(i => $"x{i}"));
-        var tupleItems = string.Join(", ", Enumerable.Range(1, arity)
-                                                     .Select(i => $"x{i} + \"_mapped\""));
-        return $"var transformedResult = await taskResult.MapAsync(({parameters}) => ({tupleItems}));";
-    }
-
-    private string GenerateMapValueTaskCall(ushort arity) {
-        if (arity == 1) {
-            return "var transformedResult = await valueTaskResult.MapAsync(x => x * 2);";
-        }
-
-        var parameters = string.Join(", ", Enumerable.Range(1, arity)
-                                                     .Select(i => $"x{i}"));
-        var tupleItems = string.Join(", ", Enumerable.Range(1, arity)
-                                                     .Select(i => $"x{i} + \"_mapped\""));
-        return $"var transformedResult = await valueTaskResult.MapAsync(({parameters}) => ({tupleItems}));";
     }
 
     private string GenerateMapSuccessAssertions(ushort arity) {
@@ -153,7 +101,7 @@ internal sealed class ResultMapTestsGenerator : ResultTestGeneratorBase {
     private string GenerateAsyncSuccessBody(ushort arity,
                                             string asyncType) {
         var testValues = GenerateTestValues(arity);
-        var creation   = GenerateAsyncResultCreation(arity, asyncType);
+        var creation   = GenerateAsyncSuccessResultCreation(arity, asyncType);
         var call       = GenerateMapAsyncCall(arity);
         var assertions = GenerateMapSuccessAssertions(arity);
         return BuildTestBody([testValues, creation], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
@@ -164,21 +112,6 @@ internal sealed class ResultMapTestsGenerator : ResultTestGeneratorBase {
         var creation = GenerateAsyncFailureResultCreation(arity, asyncType);
         var call     = GenerateMapAsyncCall(arity);
         return BuildTestBody([creation], [call], ["Assert.False(transformedResult.IsSuccess);"]);
-    }
-
-    private string GenerateAsyncResultCreation(ushort arity,
-                                               string asyncType) {
-        string core;
-        if (arity == 1) {
-            core = "Result.Success(value1)";
-        }
-        else {
-            var values = string.Join(", ", Enumerable.Range(1, arity)
-                                                     .Select(i => $"value{i}"));
-            core = $"Result.Success({values})";
-        }
-
-        return $"var taskResult = {asyncType}.FromResult({core});";
     }
 
     private string GenerateAsyncFailureResultCreation(ushort arity,

@@ -83,10 +83,12 @@ internal sealed class FailureResult<TValue1, TValue2, TValue3, TValue4> : Result
         return false;   
     }
     
-    public override void Deconstruct(out bool isSuccess, out (TValue1, TValue2, TValue3, TValue4)? value, out IEnumerable<IError>? error) {
-        isSuccess = false;
-        value = default;
-        error = Errors;
+    public override void Deconstruct(out TValue1? value1, out TValue2? value2, out TValue3? value3, out TValue4? value4, out IEnumerable<IError>? error) {
+        value1 = default;
+        value2 = default;
+        value3 = default;
+        value4 = default;
+        error = null;
     }
     
 }

@@ -1,11 +1,10 @@
-using System.Text.Encodings.Web;
-using System.Text.Json;
 using Application.Application.Todos;
 using Application.Domain.Entities;
 using Application.Domain.Events;
 using Application.Domain.Repositories;
 using Application.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using UnambitiousFx.Core.Results.Reasons;
 using UnambitiousFx.Mediator;
 using UnambitiousFx.Mediator.Abstractions;
 using UnambitiousFx.Mediator.Pipelines;
@@ -36,7 +35,7 @@ todoEndpoints.MapGet("/{id:guid}", async ([FromRoute]    Guid    id,
     var query  = new TodoQuery { Id = id };
     var result = await sender.SendAsync<TodoQuery, Todo>(query, cancellationToken);
     return result.Match(Results.Ok,
-                        error => Results.BadRequest(error.Message));
+                        error => Results.BadRequest(error.ToDisplayString()));
 });
 
 todoEndpoints.MapGet("/", async ([FromServices] IRequestHandler<ListTodoQuery, IEnumerable<Todo>> handler,
@@ -48,7 +47,7 @@ todoEndpoints.MapGet("/", async ([FromServices] IRequestHandler<ListTodoQuery, I
     var result = await handler.HandleAsync(ctx, query, cancellationToken);
 
     return result.Match(Results.Ok,
-                        error => Results.BadRequest(error.Message));
+                        error => Results.BadRequest(error.ToDisplayString()));
 });
 
 todoEndpoints.MapPost("/", async ([FromServices] ISender         sender,
@@ -59,7 +58,7 @@ todoEndpoints.MapPost("/", async ([FromServices] ISender         sender,
     var result = await sender.SendAsync<CreateTodoCommand, Guid>(command, cancellationToken);
 
     return result.Match(id => Results.Created("/todo/" + id, id),
-                        error => Results.BadRequest(error.Message));
+                        error => Results.BadRequest(error.ToDisplayString()));
 });
 
 todoEndpoints.MapPut("/{id:guid}", async ([FromServices] IRequestHandler<UpdateTodoCommand> handler,
@@ -75,8 +74,8 @@ todoEndpoints.MapPut("/{id:guid}", async ([FromServices] IRequestHandler<UpdateT
     var ctx    = contextFactory.Create();
     var result = await handler.HandleAsync(ctx, command, cancellationToken);
 
-    return result.Match(() => Results.TryGet(),
-                        error => Results.BadRequest(error.Message));
+    return result.Match(() => Results.Ok(),
+                        error => Results.BadRequest(error.ToDisplayString()));
 });
 
 todoEndpoints.MapDelete("/{id:guid}", async ([FromServices] ISender sender,
@@ -86,8 +85,8 @@ todoEndpoints.MapDelete("/{id:guid}", async ([FromServices] ISender sender,
 
     var result = await sender.SendAsync(command, cancellationToken);
 
-    return result.Match(() => Results.TryGet(),
-                        error => Results.BadRequest(error.Message));
+    return result.Match(() => Results.Ok(),
+                        error => Results.BadRequest(error.ToDisplayString()));
 });
 
 

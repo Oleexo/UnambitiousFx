@@ -13,8 +13,6 @@ using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
 
@@ -49,33 +47,6 @@ public class ResultAppendErrorSyncTestsArity0
     
     #endregion // Arity 0 - Sync AppendError
     
-    #region Arity 0 - Async AppendErrorAsync on Result
-    
-    [Fact]
-    public async Task AppendErrorAsync_Arity0_Success_ShouldNotAppendError() {
-        // Given
-        var result = Result.Success();
-        // When
-        var appendedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.AppendErrorAsync(result, "Appended error");
-        // Then
-        Assert.True(appendedResult.IsSuccess);
-    }
-    
-    [Fact]
-    public async Task AppendErrorAsync_Arity0_Failure_ShouldAppendError() {
-        // Given
-        var result = Result.Failure("Test error");
-        // When
-        var appendedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.AppendErrorAsync(result, "Appended error");
-        // Then
-        Assert.False(appendedResult.IsSuccess);
-        Assert.Single(appendedResult.Errors);
-        Assert.Contains("Appended error", appendedResult.Errors.First().Message);
-        Assert.StartsWith("Test error", appendedResult.Errors.First().Message);
-    }
-    
-    #endregion // Arity 0 - Async AppendErrorAsync on Result
-    
     #region Arity 1 - Sync AppendError
     
     [Fact]
@@ -103,34 +74,6 @@ public class ResultAppendErrorSyncTestsArity0
     }
     
     #endregion // Arity 1 - Sync AppendError
-    
-    #region Arity 1 - Async AppendErrorAsync on Result
-    
-    [Fact]
-    public async Task AppendErrorAsync_Arity1_Success_ShouldNotAppendError() {
-        // Given
-        var value1 = 42;
-        var result = Result.Success(value1);
-        // When
-        var appendedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.AppendErrorAsync<int>(result, "Appended error");
-        // Then
-        Assert.True(appendedResult.IsSuccess);
-    }
-    
-    [Fact]
-    public async Task AppendErrorAsync_Arity1_Failure_ShouldAppendError() {
-        // Given
-        var result = Result.Failure<int>("Test error");
-        // When
-        var appendedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.AppendErrorAsync<int>(result, "Appended error");
-        // Then
-        Assert.False(appendedResult.IsSuccess);
-        Assert.Single(appendedResult.Errors);
-        Assert.Contains("Appended error", appendedResult.Errors.First().Message);
-        Assert.StartsWith("Test error", appendedResult.Errors.First().Message);
-    }
-    
-    #endregion // Arity 1 - Async AppendErrorAsync on Result
     
     #region Arity 2 - Sync AppendError
     
@@ -160,35 +103,6 @@ public class ResultAppendErrorSyncTestsArity0
     }
     
     #endregion // Arity 2 - Sync AppendError
-    
-    #region Arity 2 - Async AppendErrorAsync on Result
-    
-    [Fact]
-    public async Task AppendErrorAsync_Arity2_Success_ShouldNotAppendError() {
-        // Given
-        var value1 = 42;
-        var value2 = "test";
-        var result = Result.Success(value1, value2);
-        // When
-        var appendedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.AppendErrorAsync<int, string>(result, "Appended error");
-        // Then
-        Assert.True(appendedResult.IsSuccess);
-    }
-    
-    [Fact]
-    public async Task AppendErrorAsync_Arity2_Failure_ShouldAppendError() {
-        // Given
-        var result = Result.Failure<int, string>("Test error");
-        // When
-        var appendedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.AppendErrorAsync<int, string>(result, "Appended error");
-        // Then
-        Assert.False(appendedResult.IsSuccess);
-        Assert.Single(appendedResult.Errors);
-        Assert.Contains("Appended error", appendedResult.Errors.First().Message);
-        Assert.StartsWith("Test error", appendedResult.Errors.First().Message);
-    }
-    
-    #endregion // Arity 2 - Async AppendErrorAsync on Result
     
     #region Arity 3 - Sync AppendError
     
@@ -220,36 +134,6 @@ public class ResultAppendErrorSyncTestsArity0
     
     #endregion // Arity 3 - Sync AppendError
     
-    #region Arity 3 - Async AppendErrorAsync on Result
-    
-    [Fact]
-    public async Task AppendErrorAsync_Arity3_Success_ShouldNotAppendError() {
-        // Given
-        var value1 = 42;
-        var value2 = "test";
-        var value3 = true;
-        var result = Result.Success(value1, value2, value3);
-        // When
-        var appendedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.AppendErrorAsync<int, string, bool>(result, "Appended error");
-        // Then
-        Assert.True(appendedResult.IsSuccess);
-    }
-    
-    [Fact]
-    public async Task AppendErrorAsync_Arity3_Failure_ShouldAppendError() {
-        // Given
-        var result = Result.Failure<int, string, bool>("Test error");
-        // When
-        var appendedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.AppendErrorAsync<int, string, bool>(result, "Appended error");
-        // Then
-        Assert.False(appendedResult.IsSuccess);
-        Assert.Single(appendedResult.Errors);
-        Assert.Contains("Appended error", appendedResult.Errors.First().Message);
-        Assert.StartsWith("Test error", appendedResult.Errors.First().Message);
-    }
-    
-    #endregion // Arity 3 - Async AppendErrorAsync on Result
-    
     #region Arity 4 - Sync AppendError
     
     [Fact]
@@ -280,37 +164,6 @@ public class ResultAppendErrorSyncTestsArity0
     }
     
     #endregion // Arity 4 - Sync AppendError
-    
-    #region Arity 4 - Async AppendErrorAsync on Result
-    
-    [Fact]
-    public async Task AppendErrorAsync_Arity4_Success_ShouldNotAppendError() {
-        // Given
-        var value1 = 42;
-        var value2 = "test";
-        var value3 = true;
-        var value4 = 3.14;
-        var result = Result.Success(value1, value2, value3, value4);
-        // When
-        var appendedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.AppendErrorAsync<int, string, bool, double>(result, "Appended error");
-        // Then
-        Assert.True(appendedResult.IsSuccess);
-    }
-    
-    [Fact]
-    public async Task AppendErrorAsync_Arity4_Failure_ShouldAppendError() {
-        // Given
-        var result = Result.Failure<int, string, bool, double>("Test error");
-        // When
-        var appendedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.AppendErrorAsync<int, string, bool, double>(result, "Appended error");
-        // Then
-        Assert.False(appendedResult.IsSuccess);
-        Assert.Single(appendedResult.Errors);
-        Assert.Contains("Appended error", appendedResult.Errors.First().Message);
-        Assert.StartsWith("Test error", appendedResult.Errors.First().Message);
-    }
-    
-    #endregion // Arity 4 - Async AppendErrorAsync on Result
     
     #region Arity 5 - Sync AppendError
     
@@ -344,38 +197,6 @@ public class ResultAppendErrorSyncTestsArity0
     
     #endregion // Arity 5 - Sync AppendError
     
-    #region Arity 5 - Async AppendErrorAsync on Result
-    
-    [Fact]
-    public async Task AppendErrorAsync_Arity5_Success_ShouldNotAppendError() {
-        // Given
-        var value1 = 42;
-        var value2 = "test";
-        var value3 = true;
-        var value4 = 3.14;
-        var value5 = 123L;
-        var result = Result.Success(value1, value2, value3, value4, value5);
-        // When
-        var appendedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.AppendErrorAsync<int, string, bool, double, long>(result, "Appended error");
-        // Then
-        Assert.True(appendedResult.IsSuccess);
-    }
-    
-    [Fact]
-    public async Task AppendErrorAsync_Arity5_Failure_ShouldAppendError() {
-        // Given
-        var result = Result.Failure<int, string, bool, double, long>("Test error");
-        // When
-        var appendedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.AppendErrorAsync<int, string, bool, double, long>(result, "Appended error");
-        // Then
-        Assert.False(appendedResult.IsSuccess);
-        Assert.Single(appendedResult.Errors);
-        Assert.Contains("Appended error", appendedResult.Errors.First().Message);
-        Assert.StartsWith("Test error", appendedResult.Errors.First().Message);
-    }
-    
-    #endregion // Arity 5 - Async AppendErrorAsync on Result
-    
     #region Arity 6 - Sync AppendError
     
     [Fact]
@@ -386,10 +207,10 @@ public class ResultAppendErrorSyncTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
+        var value6 = DateTime.UtcNow;
         var result = Result.Success(value1, value2, value3, value4, value5, value6);
         // When
-        var appendedResult = result.AppendError<int, string, bool, double, long, string>("Appended error");
+        var appendedResult = result.AppendError<int, string, bool, double, long, DateTime>("Appended error");
         // Then
         Assert.True(appendedResult.IsSuccess);
     }
@@ -397,9 +218,9 @@ public class ResultAppendErrorSyncTestsArity0
     [Fact]
     public void AppendError_Arity6_Failure_ShouldAppendError() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
         // When
-        var appendedResult = result.AppendError<int, string, bool, double, long, string>("Appended error");
+        var appendedResult = result.AppendError<int, string, bool, double, long, DateTime>("Appended error");
         // Then
         Assert.False(appendedResult.IsSuccess);
         Assert.Single(appendedResult.Errors);
@@ -408,39 +229,6 @@ public class ResultAppendErrorSyncTestsArity0
     }
     
     #endregion // Arity 6 - Sync AppendError
-    
-    #region Arity 6 - Async AppendErrorAsync on Result
-    
-    [Fact]
-    public async Task AppendErrorAsync_Arity6_Success_ShouldNotAppendError() {
-        // Given
-        var value1 = 42;
-        var value2 = "test";
-        var value3 = true;
-        var value4 = 3.14;
-        var value5 = 123L;
-        var value6 = "value6";
-        var result = Result.Success(value1, value2, value3, value4, value5, value6);
-        // When
-        var appendedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.AppendErrorAsync<int, string, bool, double, long, string>(result, "Appended error");
-        // Then
-        Assert.True(appendedResult.IsSuccess);
-    }
-    
-    [Fact]
-    public async Task AppendErrorAsync_Arity6_Failure_ShouldAppendError() {
-        // Given
-        var result = Result.Failure<int, string, bool, double, long, string>("Test error");
-        // When
-        var appendedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.AppendErrorAsync<int, string, bool, double, long, string>(result, "Appended error");
-        // Then
-        Assert.False(appendedResult.IsSuccess);
-        Assert.Single(appendedResult.Errors);
-        Assert.Contains("Appended error", appendedResult.Errors.First().Message);
-        Assert.StartsWith("Test error", appendedResult.Errors.First().Message);
-    }
-    
-    #endregion // Arity 6 - Async AppendErrorAsync on Result
     
     #region Arity 7 - Sync AppendError
     
@@ -452,11 +240,11 @@ public class ResultAppendErrorSyncTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
         // When
-        var appendedResult = result.AppendError<int, string, bool, double, long, string, string>("Appended error");
+        var appendedResult = result.AppendError<int, string, bool, double, long, DateTime, Guid>("Appended error");
         // Then
         Assert.True(appendedResult.IsSuccess);
     }
@@ -464,9 +252,9 @@ public class ResultAppendErrorSyncTestsArity0
     [Fact]
     public void AppendError_Arity7_Failure_ShouldAppendError() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
         // When
-        var appendedResult = result.AppendError<int, string, bool, double, long, string, string>("Appended error");
+        var appendedResult = result.AppendError<int, string, bool, double, long, DateTime, Guid>("Appended error");
         // Then
         Assert.False(appendedResult.IsSuccess);
         Assert.Single(appendedResult.Errors);
@@ -475,40 +263,6 @@ public class ResultAppendErrorSyncTestsArity0
     }
     
     #endregion // Arity 7 - Sync AppendError
-    
-    #region Arity 7 - Async AppendErrorAsync on Result
-    
-    [Fact]
-    public async Task AppendErrorAsync_Arity7_Success_ShouldNotAppendError() {
-        // Given
-        var value1 = 42;
-        var value2 = "test";
-        var value3 = true;
-        var value4 = 3.14;
-        var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
-        // When
-        var appendedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.AppendErrorAsync<int, string, bool, double, long, string, string>(result, "Appended error");
-        // Then
-        Assert.True(appendedResult.IsSuccess);
-    }
-    
-    [Fact]
-    public async Task AppendErrorAsync_Arity7_Failure_ShouldAppendError() {
-        // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string>("Test error");
-        // When
-        var appendedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.AppendErrorAsync<int, string, bool, double, long, string, string>(result, "Appended error");
-        // Then
-        Assert.False(appendedResult.IsSuccess);
-        Assert.Single(appendedResult.Errors);
-        Assert.Contains("Appended error", appendedResult.Errors.First().Message);
-        Assert.StartsWith("Test error", appendedResult.Errors.First().Message);
-    }
-    
-    #endregion // Arity 7 - Async AppendErrorAsync on Result
     
     #region Arity 8 - Sync AppendError
     
@@ -520,12 +274,12 @@ public class ResultAppendErrorSyncTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
         // When
-        var appendedResult = result.AppendError<int, string, bool, double, long, string, string, string>("Appended error");
+        var appendedResult = result.AppendError<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Appended error");
         // Then
         Assert.True(appendedResult.IsSuccess);
     }
@@ -533,9 +287,9 @@ public class ResultAppendErrorSyncTestsArity0
     [Fact]
     public void AppendError_Arity8_Failure_ShouldAppendError() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
         // When
-        var appendedResult = result.AppendError<int, string, bool, double, long, string, string, string>("Appended error");
+        var appendedResult = result.AppendError<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Appended error");
         // Then
         Assert.False(appendedResult.IsSuccess);
         Assert.Single(appendedResult.Errors);
@@ -544,39 +298,4 @@ public class ResultAppendErrorSyncTestsArity0
     }
     
     #endregion // Arity 8 - Sync AppendError
-    
-    #region Arity 8 - Async AppendErrorAsync on Result
-    
-    [Fact]
-    public async Task AppendErrorAsync_Arity8_Success_ShouldNotAppendError() {
-        // Given
-        var value1 = 42;
-        var value2 = "test";
-        var value3 = true;
-        var value4 = 3.14;
-        var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
-        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
-        // When
-        var appendedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.AppendErrorAsync<int, string, bool, double, long, string, string, string>(result, "Appended error");
-        // Then
-        Assert.True(appendedResult.IsSuccess);
-    }
-    
-    [Fact]
-    public async Task AppendErrorAsync_Arity8_Failure_ShouldAppendError() {
-        // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string, string>("Test error");
-        // When
-        var appendedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.AppendErrorAsync<int, string, bool, double, long, string, string, string>(result, "Appended error");
-        // Then
-        Assert.False(appendedResult.IsSuccess);
-        Assert.Single(appendedResult.Errors);
-        Assert.Contains("Appended error", appendedResult.Errors.First().Message);
-        Assert.StartsWith("Test error", appendedResult.Errors.First().Message);
-    }
-    
-    #endregion // Arity 8 - Async AppendErrorAsync on Result
 }

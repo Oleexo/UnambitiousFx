@@ -11,7 +11,7 @@ using UnambitiousFx.Core.Results.Reasons;
 
 namespace UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
 
-public static partial class ResultExtensions
+public static partial class ResultMapErrorsExtensions
 {
     #region Arity 0
     
@@ -21,7 +21,7 @@ public static partial class ResultExtensions
     /// <param name="awaitableResult">The awaitable result to map errors for.</param>
     /// <param name="map">The async function to map errors to a new exception.</param>
     /// <returns>A task with a new result containing the mapped exception if the original result failed, otherwise the original successful result.</returns>
-    public static async Task<Result> MapErrorsAsync(this Task<Result> awaitableResult, Func<IEnumerable<IError>, Task<Exception>> map) {
+    public static async Task<Result> MapErrorsAsync(this Task<Result> awaitableResult, Func<IEnumerable<IError>, Task<IError>> map) {
         var result = await awaitableResult;
                         
         if (result.IsSuccess) {
@@ -45,7 +45,7 @@ public static partial class ResultExtensions
     /// <param name="awaitableResult">The awaitable result to map errors for.</param>
     /// <param name="map">The async function to map errors to a new exception.</param>
     /// <returns>A task with a new result containing the mapped exception if the original result failed, otherwise the original successful result.</returns>
-    public static async Task<Result<TValue1>> MapErrorsAsync<TValue1>(this Task<Result<TValue1>> awaitableResult, Func<IEnumerable<IError>, Task<Exception>> map) where TValue1 : notnull {
+    public static async Task<Result<TValue1>> MapErrorsAsync<TValue1>(this Task<Result<TValue1>> awaitableResult, Func<IEnumerable<IError>, Task<IError>> map) where TValue1 : notnull {
         var result = await awaitableResult;
                                
         if (result.IsSuccess) {
@@ -70,7 +70,7 @@ public static partial class ResultExtensions
     /// <param name="awaitableResult">The awaitable result to map errors for.</param>
     /// <param name="map">The async function to map errors to a new exception.</param>
     /// <returns>A task with a new result containing the mapped exception if the original result failed, otherwise the original successful result.</returns>
-    public static async Task<Result<TValue1, TValue2>> MapErrorsAsync<TValue1, TValue2>(this Task<Result<TValue1, TValue2>> awaitableResult, Func<IEnumerable<IError>, Task<Exception>> map) where TValue1 : notnull where TValue2 : notnull {
+    public static async Task<Result<TValue1, TValue2>> MapErrorsAsync<TValue1, TValue2>(this Task<Result<TValue1, TValue2>> awaitableResult, Func<IEnumerable<IError>, Task<IError>> map) where TValue1 : notnull where TValue2 : notnull {
         var result = await awaitableResult;
                                
         if (result.IsSuccess) {
@@ -96,7 +96,7 @@ public static partial class ResultExtensions
     /// <param name="awaitableResult">The awaitable result to map errors for.</param>
     /// <param name="map">The async function to map errors to a new exception.</param>
     /// <returns>A task with a new result containing the mapped exception if the original result failed, otherwise the original successful result.</returns>
-    public static async Task<Result<TValue1, TValue2, TValue3>> MapErrorsAsync<TValue1, TValue2, TValue3>(this Task<Result<TValue1, TValue2, TValue3>> awaitableResult, Func<IEnumerable<IError>, Task<Exception>> map) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull {
+    public static async Task<Result<TValue1, TValue2, TValue3>> MapErrorsAsync<TValue1, TValue2, TValue3>(this Task<Result<TValue1, TValue2, TValue3>> awaitableResult, Func<IEnumerable<IError>, Task<IError>> map) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull {
         var result = await awaitableResult;
                                
         if (result.IsSuccess) {
@@ -123,7 +123,7 @@ public static partial class ResultExtensions
     /// <param name="awaitableResult">The awaitable result to map errors for.</param>
     /// <param name="map">The async function to map errors to a new exception.</param>
     /// <returns>A task with a new result containing the mapped exception if the original result failed, otherwise the original successful result.</returns>
-    public static async Task<Result<TValue1, TValue2, TValue3, TValue4>> MapErrorsAsync<TValue1, TValue2, TValue3, TValue4>(this Task<Result<TValue1, TValue2, TValue3, TValue4>> awaitableResult, Func<IEnumerable<IError>, Task<Exception>> map) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull {
+    public static async Task<Result<TValue1, TValue2, TValue3, TValue4>> MapErrorsAsync<TValue1, TValue2, TValue3, TValue4>(this Task<Result<TValue1, TValue2, TValue3, TValue4>> awaitableResult, Func<IEnumerable<IError>, Task<IError>> map) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull {
         var result = await awaitableResult;
                                
         if (result.IsSuccess) {
@@ -151,7 +151,7 @@ public static partial class ResultExtensions
     /// <param name="awaitableResult">The awaitable result to map errors for.</param>
     /// <param name="map">The async function to map errors to a new exception.</param>
     /// <returns>A task with a new result containing the mapped exception if the original result failed, otherwise the original successful result.</returns>
-    public static async Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5>> MapErrorsAsync<TValue1, TValue2, TValue3, TValue4, TValue5>(this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5>> awaitableResult, Func<IEnumerable<IError>, Task<Exception>> map) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull {
+    public static async Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5>> MapErrorsAsync<TValue1, TValue2, TValue3, TValue4, TValue5>(this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5>> awaitableResult, Func<IEnumerable<IError>, Task<IError>> map) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull {
         var result = await awaitableResult;
                                
         if (result.IsSuccess) {
@@ -180,7 +180,7 @@ public static partial class ResultExtensions
     /// <param name="awaitableResult">The awaitable result to map errors for.</param>
     /// <param name="map">The async function to map errors to a new exception.</param>
     /// <returns>A task with a new result containing the mapped exception if the original result failed, otherwise the original successful result.</returns>
-    public static async Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>> MapErrorsAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>> awaitableResult, Func<IEnumerable<IError>, Task<Exception>> map) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull {
+    public static async Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>> MapErrorsAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>> awaitableResult, Func<IEnumerable<IError>, Task<IError>> map) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull {
         var result = await awaitableResult;
                                
         if (result.IsSuccess) {
@@ -210,7 +210,7 @@ public static partial class ResultExtensions
     /// <param name="awaitableResult">The awaitable result to map errors for.</param>
     /// <param name="map">The async function to map errors to a new exception.</param>
     /// <returns>A task with a new result containing the mapped exception if the original result failed, otherwise the original successful result.</returns>
-    public static async Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>> MapErrorsAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>> awaitableResult, Func<IEnumerable<IError>, Task<Exception>> map) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull {
+    public static async Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>> MapErrorsAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>> awaitableResult, Func<IEnumerable<IError>, Task<IError>> map) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull {
         var result = await awaitableResult;
                                
         if (result.IsSuccess) {
@@ -241,7 +241,7 @@ public static partial class ResultExtensions
     /// <param name="awaitableResult">The awaitable result to map errors for.</param>
     /// <param name="map">The async function to map errors to a new exception.</param>
     /// <returns>A task with a new result containing the mapped exception if the original result failed, otherwise the original successful result.</returns>
-    public static async Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>> MapErrorsAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>> awaitableResult, Func<IEnumerable<IError>, Task<Exception>> map) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull where TValue8 : notnull {
+    public static async Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>> MapErrorsAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>> awaitableResult, Func<IEnumerable<IError>, Task<IError>> map) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull where TValue8 : notnull {
         var result = await awaitableResult;
                                
         if (result.IsSuccess) {

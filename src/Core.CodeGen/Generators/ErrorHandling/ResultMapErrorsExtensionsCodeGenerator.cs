@@ -57,7 +57,7 @@ internal sealed class ResultMapErrorsExtensionsCodeGenerator : BaseCodeGenerator
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}.{subNamespace}";
 
         var classWriter = new ClassWriter(
-            "ResultExtensions",
+            Config.ClassName,
             Visibility.Public,
             ClassModifier.Static | ClassModifier.Partial
         );
@@ -173,7 +173,7 @@ internal sealed class ResultMapErrorsExtensionsCodeGenerator : BaseCodeGenerator
                            : "Task";
         var returnType    = $"{taskType}<{resultType}>";
         var parameterType = $"{taskType}<{resultType}>";
-        var mapType       = $"Func<IEnumerable<IError>, {taskType}<Exception>>";
+        var mapType       = $"Func<IEnumerable<IError>, {taskType}<IError>>";
 
         var documentationBuilder = DocumentationWriter.Create()
                                                       .WithSummary("Asynchronously maps errors in the result to a new exception using the specified mapping function.")

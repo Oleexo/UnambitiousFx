@@ -15,7 +15,7 @@ internal sealed class ResultZipTestsGenerator : ResultTestGeneratorBase {
     }
 
     protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) =>
-        GenerateVariants(arity, ClassName, (GenerateSyncTests, false), (GenerateTaskTests, true), (GenerateValueTaskTests, true));
+        GenerateVariants(arity, ClassName, (GenerateSyncTests, false), (x => GenerateAsyncTests(x, "Task"), true), (x => GenerateAsyncTests(x, "ValueTask"), true));
 
     private ClassWriter GenerateSyncTests(ushort arity) {
         var cw = new ClassWriter($"ResultZipSyncTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Sync Zip" };
@@ -26,21 +26,13 @@ internal sealed class ResultZipTestsGenerator : ResultTestGeneratorBase {
         return cw;
     }
 
-    private ClassWriter GenerateTaskTests(ushort arity) {
-        var cw = new ClassWriter($"ResultZipTaskTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Task Zip" };
-        cw.AddMethod(GenerateTaskSuccessTest(arity));
-        cw.AddMethod(GenerateTaskFailureTest(arity));
-        cw.AddUsing("UnambitiousFx.Core.Results.Extensions.Transformations.Tasks");
-        cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.Tasks";
-        return cw;
-    }
-
-    private ClassWriter GenerateValueTaskTests(ushort arity) {
-        var cw = new ClassWriter($"ResultZipValueTaskTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - ValueTask Zip" };
-        cw.AddMethod(GenerateValueTaskSuccessTest(arity));
-        cw.AddMethod(GenerateValueTaskFailureTest(arity));
-        cw.AddUsing("UnambitiousFx.Core.Results.Extensions.Transformations.ValueTasks");
-        cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.ValueTasks";
+    private ClassWriter GenerateAsyncTests(ushort arity,
+                                           string asyncType) {
+        var cw = new ClassWriter($"ResultZip{asyncType}TestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - {asyncType} Zip" };
+        cw.AddMethod(GenerateAsyncSuccessTest(arity, asyncType));
+        cw.AddMethod(GenerateAsyncFailureTest(arity, asyncType));
+        cw.AddUsing($"UnambitiousFx.Core.Results.Extensions.Transformations.{asyncType}s");
+        cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.{asyncType}s";
         return cw;
     }
 
@@ -50,17 +42,15 @@ internal sealed class ResultZipTestsGenerator : ResultTestGeneratorBase {
     private MethodWriter GenerateSyncFailureTest(ushort arity) => new($"Zip_Arity{arity}_Failure_ShouldNotZip", "void", GenerateSyncFailureBody(arity),
                                                                       attributes: [new FactAttributeReference()], usings: GetUsings());
 
-    private MethodWriter GenerateTaskSuccessTest(ushort arity) => new($"ZipTask_Arity{arity}_Success_ShouldZip", "async Task", GenerateTaskSuccessBody(arity),
-                                                                      attributes: [new FactAttributeReference()], usings: GetUsings());
+    private MethodWriter GenerateAsyncSuccessTest(ushort arity,
+                                                  string asyncType) =>
+        new($"Zip{asyncType}_Arity{arity}_Success_ShouldZip", "async Task", GenerateAsyncSuccessBody(arity, asyncType),
+            attributes: [new FactAttributeReference()], usings: GetUsings());
 
-    private MethodWriter GenerateTaskFailureTest(ushort arity) => new($"ZipTask_Arity{arity}_Failure_ShouldNotZip", "async Task", GenerateTaskFailureBody(arity),
-                                                                      attributes: [new FactAttributeReference()], usings: GetUsings());
-
-    private MethodWriter GenerateValueTaskSuccessTest(ushort arity) => new($"ZipValueTask_Arity{arity}_Success_ShouldZip", "async Task", GenerateValueTaskSuccessBody(arity),
-                                                                           attributes: [new FactAttributeReference()], usings: GetUsings());
-
-    private MethodWriter GenerateValueTaskFailureTest(ushort arity) => new($"ZipValueTask_Arity{arity}_Failure_ShouldNotZip", "async Task", GenerateValueTaskFailureBody(arity),
-                                                                           attributes: [new FactAttributeReference()], usings: GetUsings());
+    private MethodWriter GenerateAsyncFailureTest(ushort arity,
+                                                  string asyncType) =>
+        new($"Zip{asyncType}_Arity{arity}_Failure_ShouldNotZip", "async Task", GenerateAsyncFailureBody(arity, asyncType),
+            attributes: [new FactAttributeReference()], usings: GetUsings());
 
     private string GenerateSyncSuccessBody(ushort arity) {
         var testValues = GenerateTestValues(arity);
@@ -76,45 +66,49 @@ internal sealed class ResultZipTestsGenerator : ResultTestGeneratorBase {
         return BuildTestBody([creation], [call], ["Assert.False(zippedResult.IsSuccess);"]);
     }
 
-    private string GenerateTaskSuccessBody(ushort arity) {
+    private string GenerateAsyncSuccessBody(ushort arity,
+                                            string asyncType) {
         var testValues = GenerateTestValues(arity);
-        var creation   = GenerateTaskResultCreations(arity);
-        var call       = GenerateZipTaskCall(arity);
+        var creation   = GenerateAsyncResultCreations(arity, asyncType);
+        var call       = GenerateZipAsyncCall(arity, asyncType);
         var assertions = GenerateZipSuccessAssertions(arity);
         return BuildTestBody([testValues, creation], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
     }
 
-    private string GenerateTaskFailureBody(ushort arity) {
-        var creation = GenerateTaskFailureResultCreations(arity);
-        var call     = GenerateZipTaskCall(arity);
+    private string GenerateAsyncFailureBody(ushort arity,
+                                            string asyncType) {
+        var creation = GenerateAsyncFailureResultCreations(arity, asyncType);
+        var call     = GenerateZipAsyncCall(arity, asyncType);
         return BuildTestBody([creation], [call], ["Assert.False(zippedResult.IsSuccess);"]);
     }
 
-    private string GenerateValueTaskSuccessBody(ushort arity) {
-        var testValues = GenerateTestValues(arity);
-        var creation   = GenerateValueTaskResultCreations(arity);
-        var call       = GenerateZipValueTaskCall(arity);
-        var assertions = GenerateZipSuccessAssertions(arity);
-        return BuildTestBody([testValues, creation], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
+    private string GenerateAsyncResultCreations(ushort arity,
+                                                string asyncType) {
+        var varPrefix = $"{asyncType.ToLowerInvariant()}Result";
+        return string.Join('\n', Enumerable.Range(1, arity)
+                                           .Select(i => $"var {varPrefix}{i} = {asyncType}.FromResult(Result.Success(value{i}));"));
     }
 
-    private string GenerateValueTaskFailureBody(ushort arity) {
-        var creation = GenerateValueTaskFailureResultCreations(arity);
-        var call     = GenerateZipValueTaskCall(arity);
-        return BuildTestBody([creation], [call], ["Assert.False(zippedResult.IsSuccess);"]);
+    private string GenerateAsyncFailureResultCreations(ushort arity,
+                                                       string asyncType) {
+        var varPrefix = $"{asyncType.ToLowerInvariant()}Result";
+        return string.Join('\n', Enumerable.Range(1, arity)
+                                           .Select(i => $"var {varPrefix}{i} = {asyncType}.FromResult(Result.Failure<{GetTestType(i)}>(\"Test error\"));"));
+    }
+
+    private string GenerateZipAsyncCall(ushort arity,
+                                        string asyncType) {
+        var varPrefix = $"{asyncType.ToLowerInvariant()}Result";
+        if (arity == 2) {
+            return $"var zippedResult = await {varPrefix}1.ZipAsync({varPrefix}2);";
+        }
+        var args = string.Join(", ", Enumerable.Range(2, arity - 1).Select(i => $"{varPrefix}{i}"));
+        return $"var zippedResult = await {varPrefix}1.ZipAsync({args});";
     }
 
     private string GenerateZipSyncCall(ushort arity) => arity == 2
                                                             ? "var zippedResult = result1.Zip(result2);"
                                                             : $"var zippedResult = result1.Zip({string.Join(", ", Enumerable.Range(2, arity - 1).Select(i => $"result{i}"))});";
-
-    private string GenerateZipTaskCall(ushort arity) => arity == 2
-                                                            ? "var zippedResult = await taskResult1.ZipAsync(taskResult2);"
-                                                            : $"var zippedResult = await taskResult1.ZipAsync({string.Join(", ", Enumerable.Range(2, arity - 1).Select(i => $"taskResult{i}"))});";
-
-    private string GenerateZipValueTaskCall(ushort arity) => arity == 2
-                                                                 ? "var zippedResult = await valueTaskResult1.ZipAsync(valueTaskResult2);"
-                                                                 : $"var zippedResult = await valueTaskResult1.ZipAsync({string.Join(", ", Enumerable.Range(2, arity - 1).Select(i => $"valueTaskResult{i}"))});";
 
     private string GenerateFailureTestValues(ushort arity) => GenerateTestValues(arity); // reuse
 
@@ -124,20 +118,6 @@ internal sealed class ResultZipTestsGenerator : ResultTestGeneratorBase {
     private string GenerateFailureResultCreations(ushort arity) => string.Join('\n', Enumerable.Range(1, arity)
                                                                                                .Select(i => $"var result{i} = Result.Failure<{GetTestType(i)}>(\"Test error\");"));
 
-    private string GenerateTaskResultCreations(ushort arity) => string.Join('\n', Enumerable.Range(1, arity)
-                                                                                            .Select(i => $"var taskResult{i} = Task.FromResult(Result.Success(value{i}));"));
-
-    private string GenerateTaskFailureResultCreations(ushort arity) => string.Join('\n', Enumerable.Range(1, arity)
-                                                                                                   .Select(i =>
-                                                                                                               $"var taskResult{i} = Task.FromResult(Result.Failure<{GetTestType(i)}>(\"Test error\"));"));
-
-    private string GenerateValueTaskResultCreations(ushort arity) => string.Join('\n', Enumerable.Range(1, arity)
-                                                                                                 .Select(i =>
-                                                                                                             $"var valueTaskResult{i} = ValueTask.FromResult(Result.Success(value{i}));"));
-
-    private string GenerateValueTaskFailureResultCreations(ushort arity) => string.Join('\n', Enumerable.Range(1, arity)
-                                                                                                        .Select(i =>
-                                                                                                                    $"var valueTaskResult{i} = ValueTask.FromResult(Result.Failure<{GetTestType(i)}>(\"Test error\"));"));
 
     private string GenerateZipSuccessAssertions(ushort arity) => "Assert.True(zippedResult.IsSuccess);";
 }

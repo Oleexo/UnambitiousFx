@@ -12,9 +12,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Extensions.SideEffects;
 using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
@@ -216,7 +213,7 @@ public class ResultTapSyncTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
+        var value6 = DateTime.UtcNow;
         var sideEffectExecuted = false;
         var result = Result.Success(value1, value2, value3, value4, value5, value6);
         // When
@@ -230,7 +227,7 @@ public class ResultTapSyncTestsArity0
     public void Tap_Arity6_Failure_ShouldNotExecuteSideEffect() {
         // Given
         var sideEffectExecuted = false;
-        var result = Result.Failure<int, string, bool, double, long, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
         // When
         var tappedResult = result.Tap((x1, x2, x3, x4, x5, x6) => sideEffectExecuted = true);
         // Then
@@ -250,8 +247,8 @@ public class ResultTapSyncTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var sideEffectExecuted = false;
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
         // When
@@ -265,7 +262,7 @@ public class ResultTapSyncTestsArity0
     public void Tap_Arity7_Failure_ShouldNotExecuteSideEffect() {
         // Given
         var sideEffectExecuted = false;
-        var result = Result.Failure<int, string, bool, double, long, string, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
         // When
         var tappedResult = result.Tap((x1, x2, x3, x4, x5, x6, x7) => sideEffectExecuted = true);
         // Then
@@ -285,9 +282,9 @@ public class ResultTapSyncTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
         var sideEffectExecuted = false;
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
         // When
@@ -301,7 +298,7 @@ public class ResultTapSyncTestsArity0
     public void Tap_Arity8_Failure_ShouldNotExecuteSideEffect() {
         // Given
         var sideEffectExecuted = false;
-        var result = Result.Failure<int, string, bool, double, long, string, string, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
         // When
         var tappedResult = result.Tap((x1, x2, x3, x4, x5, x6, x7, x8) => sideEffectExecuted = true);
         // Then

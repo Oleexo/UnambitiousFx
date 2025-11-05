@@ -11,7 +11,7 @@ using UnambitiousFx.Core.Results.Extensions.ValueAccess.Tasks;
 
 namespace UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
 
-public static partial class ResultExtensions
+public static partial class ResultPrependErrorExtensions
 {
     #region Arity 0
     

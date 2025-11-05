@@ -134,30 +134,36 @@ internal static class ResultBaseClassBuilder {
                               ));
 
         // Generate Deconstruct method
-        var deconstructParams = new List<MethodParameter> { new("out bool", "isSuccess") };
+        var deconstructParams = new List<MethodParameter>();
         if (arity == 1) {
             deconstructParams.Add(new MethodParameter("out TValue1?", "value"));
         }
         else {
-            var tupleType = $"({string.Join(", ", Enumerable.Range(1, arity).Select(i => $"TValue{i}"))})";
-            deconstructParams.Add(new MethodParameter($"out {tupleType}?", "value"));
+            deconstructParams.AddRange(Enumerable.Range(1, arity)
+                                                 .Select(x => new MethodParameter($"out TValue{x}?", $"value{x}")));
         }
 
         deconstructParams.Add(new MethodParameter("out IEnumerable<IError>?", "error"));
 
-        var deconstructDoc = DocumentationWriter.Create()
-                                                .WithSummary("Deconstructs the result into its components.")
-                                                .WithParameter("isSuccess", "Whether the result is successful")
-                                                .WithParameter("value",     "The success value(s) if successful")
-                                                .WithParameter("error",     "The exception if failed")
-                                                .Build();
+        var deconstructDocBuilder = DocumentationWriter.Create()
+                                                       .WithSummary("Deconstructs the result into its components.");
+        if (arity == 1) {
+            deconstructDocBuilder = deconstructDocBuilder.WithParameter("value", "The success value(s) if successful");
+        }
+        else {
+            for (var i = 1; i <= arity; i++) {
+                deconstructDocBuilder = deconstructDocBuilder.WithParameter($"value{i}", "The success value(s) if successful");
+            }
+        }
+
+        deconstructDocBuilder.WithParameter("error", "The exception if failed");
 
         classWriter.AddMethod(new AbstractMethodWriter(
                                   "Deconstruct",
                                   "void",
                                   Visibility.Public,
                                   deconstructParams.ToArray(),
-                                  documentation: deconstructDoc,
+                                  documentation: deconstructDocBuilder.Build(),
                                   usings: ["UnambitiousFx.Core.Results.Reasons"]
                               ));
 

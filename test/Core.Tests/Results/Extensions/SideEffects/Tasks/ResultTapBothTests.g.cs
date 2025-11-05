@@ -12,9 +12,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Extensions.SideEffects.Tasks;
 using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
@@ -53,6 +50,34 @@ public class ResultTapBothTaskTestsArity0
         Assert.False(tappedResult.IsSuccess);
     }
     
+    [Fact]
+    public async Task TapBothTaskWithSyncActions_Arity0_Success_ShouldExecuteSuccessSideEffect() {
+        // Given
+        var successExecuted = false;
+        var failureExecuted = false;
+        var taskResult = Task.FromResult(Result.Success());
+        // When
+        var tappedResult = await taskResult.TapBothAsync(() => successExecuted = true, _ => failureExecuted = true);
+        // Then
+        Assert.True(successExecuted);
+        Assert.False(failureExecuted);
+        Assert.True(tappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task TapBothTaskWithSyncActions_Arity0_Failure_ShouldExecuteFailureSideEffect() {
+        // Given
+        var successExecuted = false;
+        var failureExecuted = false;
+        var taskResult = Task.FromResult(Result.Failure("Test error"));
+        // When
+        var tappedResult = await taskResult.TapBothAsync(() => successExecuted = true, _ => failureExecuted = true);
+        // Then
+        Assert.False(successExecuted);
+        Assert.True(failureExecuted);
+        Assert.False(tappedResult.IsSuccess);
+    }
+    
     #endregion // Arity 0 - Task TapBoth
     
     #region Arity 1 - Task TapBoth
@@ -62,9 +87,10 @@ public class ResultTapBothTaskTestsArity0
         // Given
         var successExecuted = false;
         var failureExecuted = false;
+        var value1 = 42;
         var taskResult = Task.FromResult(Result.Success(value1));
         // When
-        var tappedResult = await taskResult.TapBothAsync<int>(() => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
+        var tappedResult = await taskResult.TapBothAsync<int>((_) => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
         // Then
         Assert.True(successExecuted);
         Assert.False(failureExecuted);
@@ -78,7 +104,36 @@ public class ResultTapBothTaskTestsArity0
         var failureExecuted = false;
         var taskResult = Task.FromResult(Result.Failure<int>("Test error"));
         // When
-        var tappedResult = await taskResult.TapBothAsync<int>(() => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
+        var tappedResult = await taskResult.TapBothAsync<int>((_) => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
+        // Then
+        Assert.False(successExecuted);
+        Assert.True(failureExecuted);
+        Assert.False(tappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task TapBothTaskWithSyncActions_Arity1_Success_ShouldExecuteSuccessSideEffect() {
+        // Given
+        var successExecuted = false;
+        var failureExecuted = false;
+        var value1 = 42;
+        var taskResult = Task.FromResult(Result.Success(value1));
+        // When
+        var tappedResult = await taskResult.TapBothAsync<int>((_) => successExecuted = true, _ => failureExecuted = true);
+        // Then
+        Assert.True(successExecuted);
+        Assert.False(failureExecuted);
+        Assert.True(tappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task TapBothTaskWithSyncActions_Arity1_Failure_ShouldExecuteFailureSideEffect() {
+        // Given
+        var successExecuted = false;
+        var failureExecuted = false;
+        var taskResult = Task.FromResult(Result.Failure<int>("Test error"));
+        // When
+        var tappedResult = await taskResult.TapBothAsync<int>((_) => successExecuted = true, _ => failureExecuted = true);
         // Then
         Assert.False(successExecuted);
         Assert.True(failureExecuted);
@@ -94,9 +149,11 @@ public class ResultTapBothTaskTestsArity0
         // Given
         var successExecuted = false;
         var failureExecuted = false;
+        var value1 = 42;
+        var value2 = "test";
         var taskResult = Task.FromResult(Result.Success(value1, value2));
         // When
-        var tappedResult = await taskResult.TapBothAsync<int, string>(() => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
+        var tappedResult = await taskResult.TapBothAsync<int, string>((_, _) => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
         // Then
         Assert.True(successExecuted);
         Assert.False(failureExecuted);
@@ -110,7 +167,37 @@ public class ResultTapBothTaskTestsArity0
         var failureExecuted = false;
         var taskResult = Task.FromResult(Result.Failure<int, string>("Test error"));
         // When
-        var tappedResult = await taskResult.TapBothAsync<int, string>(() => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
+        var tappedResult = await taskResult.TapBothAsync<int, string>((_, _) => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
+        // Then
+        Assert.False(successExecuted);
+        Assert.True(failureExecuted);
+        Assert.False(tappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task TapBothTaskWithSyncActions_Arity2_Success_ShouldExecuteSuccessSideEffect() {
+        // Given
+        var successExecuted = false;
+        var failureExecuted = false;
+        var value1 = 42;
+        var value2 = "test";
+        var taskResult = Task.FromResult(Result.Success(value1, value2));
+        // When
+        var tappedResult = await taskResult.TapBothAsync<int, string>((_, _) => successExecuted = true, _ => failureExecuted = true);
+        // Then
+        Assert.True(successExecuted);
+        Assert.False(failureExecuted);
+        Assert.True(tappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task TapBothTaskWithSyncActions_Arity2_Failure_ShouldExecuteFailureSideEffect() {
+        // Given
+        var successExecuted = false;
+        var failureExecuted = false;
+        var taskResult = Task.FromResult(Result.Failure<int, string>("Test error"));
+        // When
+        var tappedResult = await taskResult.TapBothAsync<int, string>((_, _) => successExecuted = true, _ => failureExecuted = true);
         // Then
         Assert.False(successExecuted);
         Assert.True(failureExecuted);
@@ -126,9 +213,12 @@ public class ResultTapBothTaskTestsArity0
         // Given
         var successExecuted = false;
         var failureExecuted = false;
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3));
         // When
-        var tappedResult = await taskResult.TapBothAsync<int, string, bool>(() => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
+        var tappedResult = await taskResult.TapBothAsync<int, string, bool>((_, _, _) => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
         // Then
         Assert.True(successExecuted);
         Assert.False(failureExecuted);
@@ -142,7 +232,38 @@ public class ResultTapBothTaskTestsArity0
         var failureExecuted = false;
         var taskResult = Task.FromResult(Result.Failure<int, string, bool>("Test error"));
         // When
-        var tappedResult = await taskResult.TapBothAsync<int, string, bool>(() => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
+        var tappedResult = await taskResult.TapBothAsync<int, string, bool>((_, _, _) => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
+        // Then
+        Assert.False(successExecuted);
+        Assert.True(failureExecuted);
+        Assert.False(tappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task TapBothTaskWithSyncActions_Arity3_Success_ShouldExecuteSuccessSideEffect() {
+        // Given
+        var successExecuted = false;
+        var failureExecuted = false;
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var taskResult = Task.FromResult(Result.Success(value1, value2, value3));
+        // When
+        var tappedResult = await taskResult.TapBothAsync<int, string, bool>((_, _, _) => successExecuted = true, _ => failureExecuted = true);
+        // Then
+        Assert.True(successExecuted);
+        Assert.False(failureExecuted);
+        Assert.True(tappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task TapBothTaskWithSyncActions_Arity3_Failure_ShouldExecuteFailureSideEffect() {
+        // Given
+        var successExecuted = false;
+        var failureExecuted = false;
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool>("Test error"));
+        // When
+        var tappedResult = await taskResult.TapBothAsync<int, string, bool>((_, _, _) => successExecuted = true, _ => failureExecuted = true);
         // Then
         Assert.False(successExecuted);
         Assert.True(failureExecuted);
@@ -158,9 +279,13 @@ public class ResultTapBothTaskTestsArity0
         // Given
         var successExecuted = false;
         var failureExecuted = false;
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4));
         // When
-        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double>(() => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
+        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double>((_, _, _, _) => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
         // Then
         Assert.True(successExecuted);
         Assert.False(failureExecuted);
@@ -174,7 +299,39 @@ public class ResultTapBothTaskTestsArity0
         var failureExecuted = false;
         var taskResult = Task.FromResult(Result.Failure<int, string, bool, double>("Test error"));
         // When
-        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double>(() => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
+        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double>((_, _, _, _) => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
+        // Then
+        Assert.False(successExecuted);
+        Assert.True(failureExecuted);
+        Assert.False(tappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task TapBothTaskWithSyncActions_Arity4_Success_ShouldExecuteSuccessSideEffect() {
+        // Given
+        var successExecuted = false;
+        var failureExecuted = false;
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4));
+        // When
+        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double>((_, _, _, _) => successExecuted = true, _ => failureExecuted = true);
+        // Then
+        Assert.True(successExecuted);
+        Assert.False(failureExecuted);
+        Assert.True(tappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task TapBothTaskWithSyncActions_Arity4_Failure_ShouldExecuteFailureSideEffect() {
+        // Given
+        var successExecuted = false;
+        var failureExecuted = false;
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        // When
+        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double>((_, _, _, _) => successExecuted = true, _ => failureExecuted = true);
         // Then
         Assert.False(successExecuted);
         Assert.True(failureExecuted);
@@ -190,9 +347,14 @@ public class ResultTapBothTaskTestsArity0
         // Given
         var successExecuted = false;
         var failureExecuted = false;
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5));
         // When
-        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double, long>(() => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
+        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double, long>((_, _, _, _, _) => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
         // Then
         Assert.True(successExecuted);
         Assert.False(failureExecuted);
@@ -206,7 +368,40 @@ public class ResultTapBothTaskTestsArity0
         var failureExecuted = false;
         var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
         // When
-        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double, long>(() => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
+        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double, long>((_, _, _, _, _) => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
+        // Then
+        Assert.False(successExecuted);
+        Assert.True(failureExecuted);
+        Assert.False(tappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task TapBothTaskWithSyncActions_Arity5_Success_ShouldExecuteSuccessSideEffect() {
+        // Given
+        var successExecuted = false;
+        var failureExecuted = false;
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        // When
+        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double, long>((_, _, _, _, _) => successExecuted = true, _ => failureExecuted = true);
+        // Then
+        Assert.True(successExecuted);
+        Assert.False(failureExecuted);
+        Assert.True(tappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task TapBothTaskWithSyncActions_Arity5_Failure_ShouldExecuteFailureSideEffect() {
+        // Given
+        var successExecuted = false;
+        var failureExecuted = false;
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        // When
+        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double, long>((_, _, _, _, _) => successExecuted = true, _ => failureExecuted = true);
         // Then
         Assert.False(successExecuted);
         Assert.True(failureExecuted);
@@ -222,9 +417,15 @@ public class ResultTapBothTaskTestsArity0
         // Given
         var successExecuted = false;
         var failureExecuted = false;
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
         // When
-        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double, long, string>(() => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
+        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double, long, DateTime>((_, _, _, _, _, _) => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
         // Then
         Assert.True(successExecuted);
         Assert.False(failureExecuted);
@@ -236,9 +437,43 @@ public class ResultTapBothTaskTestsArity0
         // Given
         var successExecuted = false;
         var failureExecuted = false;
-        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
         // When
-        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double, long, string>(() => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
+        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double, long, DateTime>((_, _, _, _, _, _) => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
+        // Then
+        Assert.False(successExecuted);
+        Assert.True(failureExecuted);
+        Assert.False(tappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task TapBothTaskWithSyncActions_Arity6_Success_ShouldExecuteSuccessSideEffect() {
+        // Given
+        var successExecuted = false;
+        var failureExecuted = false;
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        // When
+        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double, long, DateTime>((_, _, _, _, _, _) => successExecuted = true, _ => failureExecuted = true);
+        // Then
+        Assert.True(successExecuted);
+        Assert.False(failureExecuted);
+        Assert.True(tappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task TapBothTaskWithSyncActions_Arity6_Failure_ShouldExecuteFailureSideEffect() {
+        // Given
+        var successExecuted = false;
+        var failureExecuted = false;
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
+        // When
+        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double, long, DateTime>((_, _, _, _, _, _) => successExecuted = true, _ => failureExecuted = true);
         // Then
         Assert.False(successExecuted);
         Assert.True(failureExecuted);
@@ -254,9 +489,16 @@ public class ResultTapBothTaskTestsArity0
         // Given
         var successExecuted = false;
         var failureExecuted = false;
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
         // When
-        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double, long, string, string>(() => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
+        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double, long, DateTime, Guid>((_, _, _, _, _, _, _) => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
         // Then
         Assert.True(successExecuted);
         Assert.False(failureExecuted);
@@ -268,9 +510,44 @@ public class ResultTapBothTaskTestsArity0
         // Given
         var successExecuted = false;
         var failureExecuted = false;
-        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
         // When
-        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double, long, string, string>(() => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
+        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double, long, DateTime, Guid>((_, _, _, _, _, _, _) => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
+        // Then
+        Assert.False(successExecuted);
+        Assert.True(failureExecuted);
+        Assert.False(tappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task TapBothTaskWithSyncActions_Arity7_Success_ShouldExecuteSuccessSideEffect() {
+        // Given
+        var successExecuted = false;
+        var failureExecuted = false;
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        // When
+        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double, long, DateTime, Guid>((_, _, _, _, _, _, _) => successExecuted = true, _ => failureExecuted = true);
+        // Then
+        Assert.True(successExecuted);
+        Assert.False(failureExecuted);
+        Assert.True(tappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task TapBothTaskWithSyncActions_Arity7_Failure_ShouldExecuteFailureSideEffect() {
+        // Given
+        var successExecuted = false;
+        var failureExecuted = false;
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
+        // When
+        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double, long, DateTime, Guid>((_, _, _, _, _, _, _) => successExecuted = true, _ => failureExecuted = true);
         // Then
         Assert.False(successExecuted);
         Assert.True(failureExecuted);
@@ -286,9 +563,17 @@ public class ResultTapBothTaskTestsArity0
         // Given
         var successExecuted = false;
         var failureExecuted = false;
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
         // When
-        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double, long, string, string, string>(() => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
+        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double, long, DateTime, Guid, TimeSpan>((_, _, _, _, _, _, _, _) => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
         // Then
         Assert.True(successExecuted);
         Assert.False(failureExecuted);
@@ -300,9 +585,45 @@ public class ResultTapBothTaskTestsArity0
         // Given
         var successExecuted = false;
         var failureExecuted = false;
-        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
         // When
-        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double, long, string, string, string>(() => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
+        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double, long, DateTime, Guid, TimeSpan>((_, _, _, _, _, _, _, _) => { successExecuted = true; return Task.CompletedTask; }, _ => { failureExecuted = true; return Task.CompletedTask; });
+        // Then
+        Assert.False(successExecuted);
+        Assert.True(failureExecuted);
+        Assert.False(tappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task TapBothTaskWithSyncActions_Arity8_Success_ShouldExecuteSuccessSideEffect() {
+        // Given
+        var successExecuted = false;
+        var failureExecuted = false;
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        // When
+        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double, long, DateTime, Guid, TimeSpan>((_, _, _, _, _, _, _, _) => successExecuted = true, _ => failureExecuted = true);
+        // Then
+        Assert.True(successExecuted);
+        Assert.False(failureExecuted);
+        Assert.True(tappedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task TapBothTaskWithSyncActions_Arity8_Failure_ShouldExecuteFailureSideEffect() {
+        // Given
+        var successExecuted = false;
+        var failureExecuted = false;
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
+        // When
+        var tappedResult = await taskResult.TapBothAsync<int, string, bool, double, long, DateTime, Guid, TimeSpan>((_, _, _, _, _, _, _, _) => successExecuted = true, _ => failureExecuted = true);
         // Then
         Assert.False(successExecuted);
         Assert.True(failureExecuted);

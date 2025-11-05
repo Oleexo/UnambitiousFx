@@ -12,9 +12,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Extensions.ValueAccess.ValueTasks;
 using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
@@ -29,9 +26,9 @@ public class ResultToNullableValueTaskTestsArity1
     public async Task ToNullableValueTask_Arity1_Success_ShouldReturnValue() {
         // Given
         var value1 = 42;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1));
+        var taskResult = ValueTask.FromResult(Result.Success(value1));
         // When
-        var nullableValue = await valueTaskResult.ToNullableAsync();
+        var nullableValue = await taskResult.ToNullableAsync();
         // Then
         Assert.Equal(value1, nullableValue);
     }
@@ -39,9 +36,9 @@ public class ResultToNullableValueTaskTestsArity1
     [Fact]
     public async Task ToNullableValueTask_Arity1_Failure_ShouldReturnNull() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
         // When
-        var nullableValue = await valueTaskResult.ToNullableAsync();
+        var nullableValue = await taskResult.ToNullableAsync();
         // Then
         Assert.Equal(default, nullableValue);
     }
@@ -55,9 +52,9 @@ public class ResultToNullableValueTaskTestsArity1
         // Given
         var value1 = 42;
         var value2 = "test";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2));
         // When
-        var nullableValue = await valueTaskResult.ToNullableAsync();
+        var nullableValue = await taskResult.ToNullableAsync();
         // Then
         Assert.NotNull(nullableValue);
         Assert.Equal(value1, nullableValue.Value.Item1);
@@ -67,9 +64,9 @@ public class ResultToNullableValueTaskTestsArity1
     [Fact]
     public async Task ToNullableValueTask_Arity2_Failure_ShouldReturnNull() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
         // When
-        var nullableValue = await valueTaskResult.ToNullableAsync();
+        var nullableValue = await taskResult.ToNullableAsync();
         // Then
         Assert.Equal(default, nullableValue);
     }
@@ -84,9 +81,9 @@ public class ResultToNullableValueTaskTestsArity1
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3));
         // When
-        var nullableValue = await valueTaskResult.ToNullableAsync();
+        var nullableValue = await taskResult.ToNullableAsync();
         // Then
         Assert.NotNull(nullableValue);
         Assert.Equal(value1, nullableValue.Value.Item1);
@@ -97,9 +94,9 @@ public class ResultToNullableValueTaskTestsArity1
     [Fact]
     public async Task ToNullableValueTask_Arity3_Failure_ShouldReturnNull() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
         // When
-        var nullableValue = await valueTaskResult.ToNullableAsync();
+        var nullableValue = await taskResult.ToNullableAsync();
         // Then
         Assert.Equal(default, nullableValue);
     }
@@ -115,9 +112,9 @@ public class ResultToNullableValueTaskTestsArity1
         var value2 = "test";
         var value3 = true;
         var value4 = 3.14;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4));
         // When
-        var nullableValue = await valueTaskResult.ToNullableAsync();
+        var nullableValue = await taskResult.ToNullableAsync();
         // Then
         Assert.NotNull(nullableValue);
         Assert.Equal(value1, nullableValue.Value.Item1);
@@ -129,9 +126,9 @@ public class ResultToNullableValueTaskTestsArity1
     [Fact]
     public async Task ToNullableValueTask_Arity4_Failure_ShouldReturnNull() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
         // When
-        var nullableValue = await valueTaskResult.ToNullableAsync();
+        var nullableValue = await taskResult.ToNullableAsync();
         // Then
         Assert.Equal(default, nullableValue);
     }
@@ -148,9 +145,9 @@ public class ResultToNullableValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5));
         // When
-        var nullableValue = await valueTaskResult.ToNullableAsync();
+        var nullableValue = await taskResult.ToNullableAsync();
         // Then
         Assert.NotNull(nullableValue);
         Assert.Equal(value1, nullableValue.Value.Item1);
@@ -163,9 +160,9 @@ public class ResultToNullableValueTaskTestsArity1
     [Fact]
     public async Task ToNullableValueTask_Arity5_Failure_ShouldReturnNull() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
         // When
-        var nullableValue = await valueTaskResult.ToNullableAsync();
+        var nullableValue = await taskResult.ToNullableAsync();
         // Then
         Assert.Equal(default, nullableValue);
     }
@@ -182,10 +179,10 @@ public class ResultToNullableValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
+        var value6 = DateTime.UtcNow;
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
         // When
-        var nullableValue = await valueTaskResult.ToNullableAsync();
+        var nullableValue = await taskResult.ToNullableAsync();
         // Then
         Assert.NotNull(nullableValue);
         Assert.Equal(value1, nullableValue.Value.Item1);
@@ -199,9 +196,9 @@ public class ResultToNullableValueTaskTestsArity1
     [Fact]
     public async Task ToNullableValueTask_Arity6_Failure_ShouldReturnNull() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
         // When
-        var nullableValue = await valueTaskResult.ToNullableAsync();
+        var nullableValue = await taskResult.ToNullableAsync();
         // Then
         Assert.Equal(default, nullableValue);
     }
@@ -218,11 +215,11 @@ public class ResultToNullableValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
         // When
-        var nullableValue = await valueTaskResult.ToNullableAsync();
+        var nullableValue = await taskResult.ToNullableAsync();
         // Then
         Assert.NotNull(nullableValue);
         Assert.Equal(value1, nullableValue.Value.Item1);
@@ -237,9 +234,9 @@ public class ResultToNullableValueTaskTestsArity1
     [Fact]
     public async Task ToNullableValueTask_Arity7_Failure_ShouldReturnNull() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
         // When
-        var nullableValue = await valueTaskResult.ToNullableAsync();
+        var nullableValue = await taskResult.ToNullableAsync();
         // Then
         Assert.Equal(default, nullableValue);
     }
@@ -256,12 +253,12 @@ public class ResultToNullableValueTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
-        var valueTaskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
         // When
-        var nullableValue = await valueTaskResult.ToNullableAsync();
+        var nullableValue = await taskResult.ToNullableAsync();
         // Then
         Assert.NotNull(nullableValue);
         Assert.Equal(value1, nullableValue.Value.Item1);
@@ -277,9 +274,9 @@ public class ResultToNullableValueTaskTestsArity1
     [Fact]
     public async Task ToNullableValueTask_Arity8_Failure_ShouldReturnNull() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
         // When
-        var nullableValue = await valueTaskResult.ToNullableAsync();
+        var nullableValue = await taskResult.ToNullableAsync();
         // Then
         Assert.Equal(default, nullableValue);
     }

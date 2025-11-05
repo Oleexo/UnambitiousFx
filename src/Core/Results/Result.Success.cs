@@ -29,10 +29,8 @@ internal sealed class SuccessResult : Result, ISuccessResult {
     public override void IfFailure(Action<IEnumerable<IError>> action) {
     }
 
-    public override void Deconstruct(out bool                 isSuccess,
-                                     out IEnumerable<IError>? error) {
-        isSuccess = true;
-        error     = null;
+    public override void Deconstruct(out IEnumerable<IError>? error) {
+        error = null;
     }
 
     public override string ToString() {

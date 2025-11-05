@@ -131,7 +131,7 @@ internal sealed class ResultValueOrThrowTestsGenerator : ResultTestGeneratorBase
     private string GenerateAsyncSuccessBody(ushort arity,
                                             string asyncType) {
         var testValues = GenerateTestValues(arity);
-        var creation   = GenerateAsyncResultCreation(arity, asyncType);
+        var creation   = GenerateAsyncSuccessResultCreation(arity, asyncType);
         var call       = GenerateValueOrThrowAsyncCall(arity);
         var assertions = GenerateValueOrThrowSuccessAssertions(arity);
         return BuildTestBody([testValues, creation], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
@@ -150,7 +150,7 @@ internal sealed class ResultValueOrThrowTestsGenerator : ResultTestGeneratorBase
     private string GenerateAsyncSuccessWithFactoryBody(ushort arity,
                                                        string asyncType) {
         var testValues        = GenerateTestValues(arity);
-        var creation          = GenerateAsyncResultCreation(arity, asyncType);
+        var creation          = GenerateAsyncSuccessResultCreation(arity, asyncType);
         var factoryDefinition = GenerateExceptionFactoryDefinition();
         var call              = GenerateValueOrThrowAsyncWithFactoryCall(arity);
         var assertions        = GenerateValueOrThrowSuccessAssertions(arity);
@@ -179,24 +179,6 @@ internal sealed class ResultValueOrThrowTestsGenerator : ResultTestGeneratorBase
         return arity == 1
                    ? "var actualValue = result.ValueOrThrow(factory);"
                    : "var actualValue = result.ValueOrThrow(factory);";
-    }
-
-    private string GenerateAsyncResultCreation(ushort arity,
-                                               string asyncType) {
-        string core;
-        if (arity == 0) {
-            core = "Result.Success()";
-        }
-        else if (arity == 1) {
-            core = "Result.Success(value1)";
-        }
-        else {
-            var values = string.Join(", ", Enumerable.Range(1, arity)
-                                                     .Select(i => $"value{i}"));
-            core = $"Result.Success({values})";
-        }
-
-        return $"var taskResult = {asyncType}.FromResult({core});";
     }
 
     private string GenerateAsyncFailureResultCreation(ushort arity,

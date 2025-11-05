@@ -12,9 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
 using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
 
@@ -29,7 +27,7 @@ public class ResultMatchErrorTaskTestsArity0
         // Given
         var taskResult = Task.FromResult(Result.Success());
         // When
-        var matchResult = await taskResult.MatchErrorAsync<Error, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
+        var matchResult = await taskResult.MatchErrorAsync<ExceptionalError, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
         // Then
         Assert.Equal("default", matchResult);
     }
@@ -37,9 +35,9 @@ public class ResultMatchErrorTaskTestsArity0
     [Fact]
     public async Task MatchErrorTask_Arity0_Failure_ShouldMatchError() {
         // Given
-        var taskResult = Task.FromResult(Result.Failure(new Error("Test error")));
+        var taskResult = Task.FromResult(Result.Failure("Test error"));
         // When
-        var matchResult = await taskResult.MatchErrorAsync<Error, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
+        var matchResult = await taskResult.MatchErrorAsync<ExceptionalError, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
         // Then
         Assert.Equal("matched", matchResult);
     }
@@ -54,7 +52,7 @@ public class ResultMatchErrorTaskTestsArity0
         var value1 = 42;
         var taskResult = Task.FromResult(Result.Success(value1));
         // When
-        var matchResult = await taskResult.MatchErrorAsync<Error, int, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
+        var matchResult = await taskResult.MatchErrorAsync<ExceptionalError, int, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
         // Then
         Assert.Equal("default", matchResult);
     }
@@ -62,9 +60,9 @@ public class ResultMatchErrorTaskTestsArity0
     [Fact]
     public async Task MatchErrorTask_Arity1_Failure_ShouldMatchError() {
         // Given
-        var taskResult = Task.FromResult(Result.Failure<int>(new Error("Test error")));
+        var taskResult = Task.FromResult(Result.Failure<int>("Test error"));
         // When
-        var matchResult = await taskResult.MatchErrorAsync<Error, int, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
+        var matchResult = await taskResult.MatchErrorAsync<ExceptionalError, int, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
         // Then
         Assert.Equal("matched", matchResult);
     }
@@ -80,7 +78,7 @@ public class ResultMatchErrorTaskTestsArity0
         var value2 = "test";
         var taskResult = Task.FromResult(Result.Success(value1, value2));
         // When
-        var matchResult = await taskResult.MatchErrorAsync<Error, int, string, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
+        var matchResult = await taskResult.MatchErrorAsync<ExceptionalError, int, string, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
         // Then
         Assert.Equal("default", matchResult);
     }
@@ -88,9 +86,9 @@ public class ResultMatchErrorTaskTestsArity0
     [Fact]
     public async Task MatchErrorTask_Arity2_Failure_ShouldMatchError() {
         // Given
-        var taskResult = Task.FromResult(Result.Failure<int, string>(new Error("Test error")));
+        var taskResult = Task.FromResult(Result.Failure<int, string>("Test error"));
         // When
-        var matchResult = await taskResult.MatchErrorAsync<Error, int, string, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
+        var matchResult = await taskResult.MatchErrorAsync<ExceptionalError, int, string, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
         // Then
         Assert.Equal("matched", matchResult);
     }
@@ -107,7 +105,7 @@ public class ResultMatchErrorTaskTestsArity0
         var value3 = true;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3));
         // When
-        var matchResult = await taskResult.MatchErrorAsync<Error, int, string, bool, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
+        var matchResult = await taskResult.MatchErrorAsync<ExceptionalError, int, string, bool, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
         // Then
         Assert.Equal("default", matchResult);
     }
@@ -115,9 +113,9 @@ public class ResultMatchErrorTaskTestsArity0
     [Fact]
     public async Task MatchErrorTask_Arity3_Failure_ShouldMatchError() {
         // Given
-        var taskResult = Task.FromResult(Result.Failure<int, string, bool>(new Error("Test error")));
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool>("Test error"));
         // When
-        var matchResult = await taskResult.MatchErrorAsync<Error, int, string, bool, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
+        var matchResult = await taskResult.MatchErrorAsync<ExceptionalError, int, string, bool, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
         // Then
         Assert.Equal("matched", matchResult);
     }
@@ -135,7 +133,7 @@ public class ResultMatchErrorTaskTestsArity0
         var value4 = 3.14;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4));
         // When
-        var matchResult = await taskResult.MatchErrorAsync<Error, int, string, bool, double, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
+        var matchResult = await taskResult.MatchErrorAsync<ExceptionalError, int, string, bool, double, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
         // Then
         Assert.Equal("default", matchResult);
     }
@@ -143,9 +141,9 @@ public class ResultMatchErrorTaskTestsArity0
     [Fact]
     public async Task MatchErrorTask_Arity4_Failure_ShouldMatchError() {
         // Given
-        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double>(new Error("Test error")));
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double>("Test error"));
         // When
-        var matchResult = await taskResult.MatchErrorAsync<Error, int, string, bool, double, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
+        var matchResult = await taskResult.MatchErrorAsync<ExceptionalError, int, string, bool, double, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
         // Then
         Assert.Equal("matched", matchResult);
     }
@@ -164,7 +162,7 @@ public class ResultMatchErrorTaskTestsArity0
         var value5 = 123L;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5));
         // When
-        var matchResult = await taskResult.MatchErrorAsync<Error, int, string, bool, double, long, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
+        var matchResult = await taskResult.MatchErrorAsync<ExceptionalError, int, string, bool, double, long, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
         // Then
         Assert.Equal("default", matchResult);
     }
@@ -172,9 +170,9 @@ public class ResultMatchErrorTaskTestsArity0
     [Fact]
     public async Task MatchErrorTask_Arity5_Failure_ShouldMatchError() {
         // Given
-        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long>(new Error("Test error")));
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
         // When
-        var matchResult = await taskResult.MatchErrorAsync<Error, int, string, bool, double, long, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
+        var matchResult = await taskResult.MatchErrorAsync<ExceptionalError, int, string, bool, double, long, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
         // Then
         Assert.Equal("matched", matchResult);
     }
@@ -191,10 +189,10 @@ public class ResultMatchErrorTaskTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
+        var value6 = DateTime.UtcNow;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
         // When
-        var matchResult = await taskResult.MatchErrorAsync<Error, int, string, bool, double, long, string, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
+        var matchResult = await taskResult.MatchErrorAsync<ExceptionalError, int, string, bool, double, long, DateTime, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
         // Then
         Assert.Equal("default", matchResult);
     }
@@ -202,9 +200,9 @@ public class ResultMatchErrorTaskTestsArity0
     [Fact]
     public async Task MatchErrorTask_Arity6_Failure_ShouldMatchError() {
         // Given
-        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string>(new Error("Test error")));
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
         // When
-        var matchResult = await taskResult.MatchErrorAsync<Error, int, string, bool, double, long, string, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
+        var matchResult = await taskResult.MatchErrorAsync<ExceptionalError, int, string, bool, double, long, DateTime, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
         // Then
         Assert.Equal("matched", matchResult);
     }
@@ -221,11 +219,11 @@ public class ResultMatchErrorTaskTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
         // When
-        var matchResult = await taskResult.MatchErrorAsync<Error, int, string, bool, double, long, string, string, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
+        var matchResult = await taskResult.MatchErrorAsync<ExceptionalError, int, string, bool, double, long, DateTime, Guid, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
         // Then
         Assert.Equal("default", matchResult);
     }
@@ -233,9 +231,9 @@ public class ResultMatchErrorTaskTestsArity0
     [Fact]
     public async Task MatchErrorTask_Arity7_Failure_ShouldMatchError() {
         // Given
-        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string, string>(new Error("Test error")));
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
         // When
-        var matchResult = await taskResult.MatchErrorAsync<Error, int, string, bool, double, long, string, string, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
+        var matchResult = await taskResult.MatchErrorAsync<ExceptionalError, int, string, bool, double, long, DateTime, Guid, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
         // Then
         Assert.Equal("matched", matchResult);
     }
@@ -252,12 +250,12 @@ public class ResultMatchErrorTaskTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
         // When
-        var matchResult = await taskResult.MatchErrorAsync<Error, int, string, bool, double, long, string, string, string, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
+        var matchResult = await taskResult.MatchErrorAsync<ExceptionalError, int, string, bool, double, long, DateTime, Guid, TimeSpan, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
         // Then
         Assert.Equal("default", matchResult);
     }
@@ -265,9 +263,9 @@ public class ResultMatchErrorTaskTestsArity0
     [Fact]
     public async Task MatchErrorTask_Arity8_Failure_ShouldMatchError() {
         // Given
-        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>(new Error("Test error")));
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
         // When
-        var matchResult = await taskResult.MatchErrorAsync<Error, int, string, bool, double, long, string, string, string, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
+        var matchResult = await taskResult.MatchErrorAsync<ExceptionalError, int, string, bool, double, long, DateTime, Guid, TimeSpan, string>(error => Task.FromResult("matched"), () => Task.FromResult("default"));
         // Then
         Assert.Equal("matched", matchResult);
     }

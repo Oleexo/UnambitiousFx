@@ -13,44 +13,40 @@ internal sealed class ResultFindErrorTestsGenerator : ResultTestGeneratorBase {
     private const string ClassName           = "ResultFindErrorTests";
     private const string ExtensionsNamespace = "Results.Extensions.ErrorHandling";
 
-    public ResultFindErrorTestsGenerator(string              baseNamespace,
+    public ResultFindErrorTestsGenerator(string               baseNamespace,
                                          FileOrganizationMode fileOrganization)
         : base(new GenerationConfig(baseNamespace,
                                     StartArity,
                                     ExtensionsNamespace,
                                     ClassName,
                                     fileOrganization,
-                                    true)) { }
+                                    true)) {
+    }
 
     protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
         return GenerateVariants(arity,
                                 ClassName,
-                                (GenerateSyncTests,      false),
-                                (GenerateTaskTests,      true),
-                                (GenerateValueTaskTests, true));
+                                (GenerateSyncTests, false),
+                                (x => GenerateAsyncTests(x, "Task"), true),
+                                (x => GenerateAsyncTests(x, "ValueTask"), true));
     }
 
     private ClassWriter GenerateSyncTests(ushort arity) {
         var cw = new ClassWriter($"ResultFindErrorSyncTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Sync FindError" };
         cw.AddMethod(GenerateSyncSuccessTest(arity));
         cw.AddMethod(GenerateSyncFailureTest(arity));
+        cw.AddUsing("UnambitiousFx.Core.Results.Extensions.ErrorHandling");
         cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
         return cw;
     }
 
-    private ClassWriter GenerateTaskTests(ushort arity) {
-        var cw = new ClassWriter($"ResultFindErrorTaskTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Task FindError" };
-        cw.AddMethod(GenerateTaskSuccessTest(arity));
-        cw.AddMethod(GenerateTaskFailureTest(arity));
-        cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.Tasks";
-        return cw;
-    }
-
-    private ClassWriter GenerateValueTaskTests(ushort arity) {
-        var cw = new ClassWriter($"ResultFindErrorValueTaskTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - ValueTask FindError" };
-        cw.AddMethod(GenerateValueTaskSuccessTest(arity));
-        cw.AddMethod(GenerateValueTaskFailureTest(arity));
-        cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.ValueTasks";
+    private ClassWriter GenerateAsyncTests(ushort arity,
+                                           string asyncType) {
+        var cw = new ClassWriter($"ResultFindError{asyncType}TestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - {asyncType} FindError" };
+        cw.AddMethod(GenerateAsyncSuccessTest(arity, asyncType));
+        cw.AddMethod(GenerateAsyncFailureTest(arity, asyncType));
+        cw.AddUsing($"UnambitiousFx.Core.Results.Extensions.ErrorHandling.{asyncType}s");
+        cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.{asyncType}s";
         return cw;
     }
 
@@ -70,43 +66,33 @@ internal sealed class ResultFindErrorTestsGenerator : ResultTestGeneratorBase {
                                 usings: GetUsings());
     }
 
-    private MethodWriter GenerateTaskSuccessTest(ushort arity) {
-        return new MethodWriter($"FindErrorTask_Arity{arity}_Success_ShouldReturnNull",
+    private MethodWriter GenerateAsyncSuccessTest(ushort arity,
+                                                  string asyncType) {
+        return new MethodWriter($"FindError{asyncType}_Arity{arity}_Success_ShouldReturnNull",
                                 "async Task",
-                                GenerateTaskSuccessBody(arity),
+                                GenerateAsyncSuccessBody(arity, asyncType),
                                 attributes: [new FactAttributeReference()],
                                 usings: GetUsings());
     }
 
-    private MethodWriter GenerateTaskFailureTest(ushort arity) {
-        return new MethodWriter($"FindErrorTask_Arity{arity}_Failure_ShouldReturnError",
+    private MethodWriter GenerateAsyncFailureTest(ushort arity,
+                                                  string asyncType) {
+        return new MethodWriter($"FindError{asyncType}_Arity{arity}_Failure_ShouldReturnError",
                                 "async Task",
-                                GenerateTaskFailureBody(arity),
-                                attributes: [new FactAttributeReference()],
-                                usings: GetUsings());
-    }
-
-    private MethodWriter GenerateValueTaskSuccessTest(ushort arity) {
-        return new MethodWriter($"FindErrorValueTask_Arity{arity}_Success_ShouldReturnNull",
-                                "async Task",
-                                GenerateValueTaskSuccessBody(arity),
-                                attributes: [new FactAttributeReference()],
-                                usings: GetUsings());
-    }
-
-    private MethodWriter GenerateValueTaskFailureTest(ushort arity) {
-        return new MethodWriter($"FindErrorValueTask_Arity{arity}_Failure_ShouldReturnError",
-                                "async Task",
-                                GenerateValueTaskFailureBody(arity),
+                                GenerateAsyncFailureBody(arity, asyncType),
                                 attributes: [new FactAttributeReference()],
                                 usings: GetUsings());
     }
 
     private string GenerateSyncSuccessBody(ushort arity) {
-        var testValues   = arity == 0 ? string.Empty : GenerateTestValues(arity);
-        var creation     = GenerateResultCreation(arity);
-        var call         = GenerateFindErrorSyncCall(arity);
-        var givenLines   = arity == 0 ? new[] { creation } : new[] { testValues, creation };
+        var testValues = arity == 0
+                             ? string.Empty
+                             : GenerateTestValues(arity);
+        var creation = GenerateResultCreation(arity);
+        var call     = GenerateFindErrorSyncCall(arity);
+        var givenLines = arity == 0
+                             ? new[] { creation }
+                             : new[] { testValues, creation };
         return BuildTestBody(givenLines,
                              [call],
                              ["Assert.Null(foundError);"]);
@@ -120,66 +106,48 @@ internal sealed class ResultFindErrorTestsGenerator : ResultTestGeneratorBase {
                              ["Assert.NotNull(foundError);", "Assert.Equal(\"Test error\", foundError.Message);"]);
     }
 
-    private string GenerateTaskSuccessBody(ushort arity) {
-        var testValues   = arity == 0 ? string.Empty : GenerateTestValues(arity);
-        var creation     = GenerateTaskResultCreation(arity);
-        var call         = GenerateFindErrorTaskCall(arity);
-        var givenLines   = arity == 0 ? new[] { creation } : new[] { testValues, creation };
+    private string GenerateAsyncSuccessBody(ushort arity,
+                                            string asyncType) {
+        var testValues = arity == 0
+                             ? string.Empty
+                             : GenerateTestValues(arity);
+        var creation = GenerateAsyncSuccessResultCreation(arity, asyncType);
+        var call     = GenerateFindErrorAsyncCall(arity, asyncType);
+        var givenLines = arity == 0
+                             ? new[] { creation }
+                             : new[] { testValues, creation };
         return BuildTestBody(givenLines,
                              [call],
                              ["Assert.Null(foundError);"]);
     }
 
-    private string GenerateTaskFailureBody(ushort arity) {
-        var creation = GenerateTaskErrorTypeFailureResultCreation(arity);
-        var call     = GenerateFindErrorTaskCall(arity);
+    private string GenerateAsyncFailureBody(ushort arity,
+                                            string asyncType) {
+        var creation = GenerateAsyncFailureResultCreation(arity, asyncType);
+        var call     = GenerateFindErrorAsyncCall(arity, asyncType);
         return BuildTestBody([creation],
                              [call],
                              ["Assert.NotNull(foundError);", "Assert.Equal(\"Test error\", foundError.Message);"]);
     }
 
-    private string GenerateValueTaskSuccessBody(ushort arity) {
-        var testValues   = arity == 0 ? string.Empty : GenerateTestValues(arity);
-        var creation     = GenerateValueTaskResultCreation(arity);
-        var call         = GenerateFindErrorValueTaskCall(arity);
-        var givenLines   = arity == 0 ? new[] { creation } : new[] { testValues, creation };
-        return BuildTestBody(givenLines,
-                             [call],
-                             ["Assert.Null(foundError);"]);
-    }
+    private string GenerateFindErrorAsyncCall(ushort arity,
+                                              string asyncType) {
+        var typeParams = string.Join(", ", Enumerable.Range(1, arity)
+                                                     .Select(GetTestType));
+        if (arity == 0) {
+            return $"var foundError = await taskResult.FindErrorAsync(e => {asyncType}.FromResult(e.Message == \"Test error\"));";
+        }
 
-    private string GenerateValueTaskFailureBody(ushort arity) {
-        var creation = GenerateValueTaskErrorTypeFailureResultCreation(arity);
-        var call     = GenerateFindErrorValueTaskCall(arity);
-        return BuildTestBody([creation],
-                             [call],
-                             ["Assert.NotNull(foundError);", "Assert.Equal(\"Test error\", foundError.Message);"]);
+        return $"var foundError = await taskResult.FindErrorAsync<{typeParams}>(e => {asyncType}.FromResult(e.Message == \"Test error\"));";
     }
 
     private string GenerateFindErrorSyncCall(ushort arity) {
         var typeParams = string.Join(", ", Enumerable.Range(1, arity)
                                                      .Select(GetTestType));
         if (arity == 0) {
-            return "var foundError = result.FindError(e => e is Error);";
+            return "var foundError = result.FindError(e => e.Message == \"Test error\");";
         }
-        return $"var foundError = result.FindError<{typeParams}>(e => e is Error);";
-    }
 
-    private string GenerateFindErrorTaskCall(ushort arity) {
-        var typeParams = string.Join(", ", Enumerable.Range(1, arity)
-                                                     .Select(GetTestType));
-        if (arity == 0) {
-            return "var foundError = await taskResult.FindErrorAsync(e => Task.FromResult(e is Error));";
-        }
-        return $"var foundError = await taskResult.FindErrorAsync<{typeParams}>(e => Task.FromResult(e is Error));";
-    }
-
-    private string GenerateFindErrorValueTaskCall(ushort arity) {
-        var typeParams = string.Join(", ", Enumerable.Range(1, arity)
-                                                     .Select(GetTestType));
-        if (arity == 0) {
-            return "var foundError = await valueTaskResult.FindErrorAsync(e => ValueTask.FromResult(e is Error));";
-        }
-        return $"var foundError = await valueTaskResult.FindErrorAsync<{typeParams}>(e => ValueTask.FromResult(e is Error));";
+        return $"var foundError = result.FindError<{typeParams}>(e => e.Message == \"Test error\");";
     }
 }

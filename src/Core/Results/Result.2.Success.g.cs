@@ -72,9 +72,9 @@ internal sealed class SuccessResult<TValue1, TValue2> : Result<TValue1, TValue2>
         return true;
     }
     
-    public override void Deconstruct(out bool isSuccess, out (TValue1, TValue2)? value, out IEnumerable<IError>? error) {
-        isSuccess = true;
-        value = (_value1, _value2);
+    public override void Deconstruct(out TValue1? value1, out TValue2? value2, out IEnumerable<IError>? error) {
+        value1 = _value1;
+        value2 = _value2;
         error = null;
     }
     

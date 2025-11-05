@@ -17,11 +17,13 @@ internal sealed class ResultToNullableTestsGenerator : ResultTestGeneratorBase {
         : base(new GenerationConfig(baseNamespace, StartArity, ExtensionsNamespace, ClassName, fileOrganization, true)) {
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) => GenerateVariants(arity,
-                                                                                                           ClassName,
-                                                                                                           (GenerateSyncTests, false),
-                                                                                                           (GenerateTaskTests, true),
-                                                                                                           (GenerateValueTaskTests, true));
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
+        return GenerateVariants(arity,
+                                ClassName,
+                                (GenerateSyncTests, false),
+                                (x => GenerateAsyncTests(x, "Task"), true),
+                                (x => GenerateAsyncTests(x, "ValueTask"), true));
+    }
 
     private ClassWriter GenerateSyncTests(ushort arity) {
         var cw = new ClassWriter($"ResultToNullableSyncTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Sync ToNullable" };
@@ -32,44 +34,40 @@ internal sealed class ResultToNullableTestsGenerator : ResultTestGeneratorBase {
         return cw;
     }
 
-    private ClassWriter GenerateTaskTests(ushort arity) {
-        var cw = new ClassWriter($"ResultToNullableTaskTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Task ToNullable" };
-        cw.AddMethod(GenerateTaskSuccessTest(arity));
-        cw.AddMethod(GenerateTaskFailureTest(arity));
-        cw.AddUsing("UnambitiousFx.Core.Results.Extensions.ValueAccess.Tasks");
-        cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.Tasks";
+    private ClassWriter GenerateAsyncTests(ushort arity,
+                                           string asyncType) {
+        var cw = new ClassWriter($"ResultToNullable{asyncType}TestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - {asyncType} ToNullable" };
+        cw.AddMethod(GenerateAsyncSuccessTest(arity, asyncType));
+        cw.AddMethod(GenerateAsyncFailureTest(arity, asyncType));
+        cw.AddUsing($"UnambitiousFx.Core.Results.Extensions.ValueAccess.{asyncType}s");
+        cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.{asyncType}s";
         return cw;
     }
 
-    private ClassWriter GenerateValueTaskTests(ushort arity) {
-        var cw = new ClassWriter($"ResultToNullableValueTaskTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - ValueTask ToNullable" };
-        cw.AddMethod(GenerateValueTaskSuccessTest(arity));
-        cw.AddMethod(GenerateValueTaskFailureTest(arity));
-        cw.AddUsing("UnambitiousFx.Core.Results.Extensions.ValueAccess.ValueTasks");
-        cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.ValueTasks";
-        return cw;
+    private MethodWriter GenerateSyncSuccessTest(ushort arity) {
+        return new MethodWriter(
+            $"ToNullable_Arity{arity}_Success_ShouldReturnValue",
+            "void",
+            GenerateSyncSuccessBody(arity),
+            attributes: [new FactAttributeReference()], usings: GetUsings());
     }
 
-    private MethodWriter GenerateSyncSuccessTest(ushort arity) => new(
-        $"ToNullable_Arity{arity}_Success_ShouldReturnValue",
-        "void",
-        GenerateSyncSuccessBody(arity),
-        attributes: [new FactAttributeReference()], usings: GetUsings());
+    private MethodWriter GenerateSyncFailureTest(ushort arity) {
+        return new MethodWriter($"ToNullable_Arity{arity}_Failure_ShouldReturnNull", "void", GenerateSyncFailureBody(arity),
+                                attributes: [new FactAttributeReference()], usings: GetUsings());
+    }
 
-    private MethodWriter GenerateSyncFailureTest(ushort arity) => new($"ToNullable_Arity{arity}_Failure_ShouldReturnNull", "void", GenerateSyncFailureBody(arity),
-                                                                      attributes: [new FactAttributeReference()], usings: GetUsings());
+    private MethodWriter GenerateAsyncSuccessTest(ushort arity,
+                                                  string asyncType) {
+        return new MethodWriter($"ToNullable{asyncType}_Arity{arity}_Success_ShouldReturnValue", "async Task", GenerateAsyncSuccessBody(arity, asyncType),
+                                attributes: [new FactAttributeReference()], usings: GetUsings());
+    }
 
-    private MethodWriter GenerateTaskSuccessTest(ushort arity) => new($"ToNullableTask_Arity{arity}_Success_ShouldReturnValue", "async Task", GenerateTaskSuccessBody(arity),
-                                                                      attributes: [new FactAttributeReference()], usings: GetUsings());
-
-    private MethodWriter GenerateTaskFailureTest(ushort arity) => new($"ToNullableTask_Arity{arity}_Failure_ShouldReturnNull", "async Task", GenerateTaskFailureBody(arity),
-                                                                      attributes: [new FactAttributeReference()], usings: GetUsings());
-
-    private MethodWriter GenerateValueTaskSuccessTest(ushort arity) => new($"ToNullableValueTask_Arity{arity}_Success_ShouldReturnValue", "async Task",
-                                                                           GenerateValueTaskSuccessBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-
-    private MethodWriter GenerateValueTaskFailureTest(ushort arity) => new($"ToNullableValueTask_Arity{arity}_Failure_ShouldReturnNull", "async Task",
-                                                                           GenerateValueTaskFailureBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
+    private MethodWriter GenerateAsyncFailureTest(ushort arity,
+                                                  string asyncType) {
+        return new MethodWriter($"ToNullable{asyncType}_Arity{arity}_Failure_ShouldReturnNull", "async Task", GenerateAsyncFailureBody(arity, asyncType),
+                                attributes: [new FactAttributeReference()], usings: GetUsings());
+    }
 
     private string GenerateSyncSuccessBody(ushort arity) {
         var          testValues = GenerateTestValues(arity);
@@ -88,32 +86,19 @@ internal sealed class ResultToNullableTestsGenerator : ResultTestGeneratorBase {
         return BuildTestBody([failureCreation], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
     }
 
-    private string GenerateTaskSuccessBody(ushort arity) {
+    private string GenerateAsyncSuccessBody(ushort arity,
+                                            string asyncType) {
         var testValues = GenerateTestValues(arity);
-        var creation   = GenerateTaskResultCreation(arity);
-        var call       = "var nullableValue = await taskResult.ToNullableAsync();";
+        var creation   = GenerateAsyncSuccessResultCreation(arity, asyncType);
+        var call       = $"var nullableValue = await taskResult.ToNullableAsync();";
         var assertions = GenerateToNullableSuccessAssertions(arity);
         return BuildTestBody([testValues, creation], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
     }
 
-    private string GenerateTaskFailureBody(ushort arity) {
-        var creation   = GenerateTaskFailureResultCreation(arity);
-        var call       = "var nullableValue = await taskResult.ToNullableAsync();";
-        var assertions = GenerateToNullableFailureAssertions();
-        return BuildTestBody([creation], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
-    }
-
-    private string GenerateValueTaskSuccessBody(ushort arity) {
-        var testValues = GenerateTestValues(arity);
-        var creation   = GenerateValueTaskResultCreation(arity);
-        var call       = "var nullableValue = await valueTaskResult.ToNullableAsync();";
-        var assertions = GenerateToNullableSuccessAssertions(arity);
-        return BuildTestBody([testValues, creation], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
-    }
-
-    private string GenerateValueTaskFailureBody(ushort arity) {
-        var creation   = GenerateValueTaskFailureResultCreation(arity);
-        var call       = "var nullableValue = await valueTaskResult.ToNullableAsync();";
+    private string GenerateAsyncFailureBody(ushort arity,
+                                            string asyncType) {
+        var creation   = GenerateAsyncFailureResultCreation(arity, asyncType);
+        var call       = $"var nullableValue = await taskResult.ToNullableAsync();";
         var assertions = GenerateToNullableFailureAssertions();
         return BuildTestBody([creation], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
     }
@@ -128,5 +113,8 @@ internal sealed class ResultToNullableTestsGenerator : ResultTestGeneratorBase {
         return $"Assert.NotNull(nullableValue);\n{equals}";
     }
 
-    private string GenerateToNullableFailureAssertions() => "Assert.Equal(default, nullableValue);"; // arity-independent (default tuple == null)
+    private string GenerateToNullableFailureAssertions() {
+        return "Assert.Equal(default, nullableValue);";
+        // arity-independent (default tuple == null)
+    }
 }

@@ -13,8 +13,6 @@ using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
 
@@ -29,7 +27,7 @@ public class ResultFindErrorSyncTestsArity0
         // Given
         var result = Result.Success();
         // When
-        var foundError = result.FindError(e => e is Error);
+        var foundError = result.FindError(e => e.Message == "Test error");
         // Then
         Assert.Null(foundError);
     }
@@ -39,7 +37,7 @@ public class ResultFindErrorSyncTestsArity0
         // Given
         var result = Result.Failure(new Error("Test error"));
         // When
-        var foundError = result.FindError(e => e is Error);
+        var foundError = result.FindError(e => e.Message == "Test error");
         // Then
         Assert.NotNull(foundError);
         Assert.Equal("Test error", foundError.Message);
@@ -55,7 +53,7 @@ public class ResultFindErrorSyncTestsArity0
         var value1 = 42;
         var result = Result.Success(value1);
         // When
-        var foundError = result.FindError<int>(e => e is Error);
+        var foundError = result.FindError<int>(e => e.Message == "Test error");
         // Then
         Assert.Null(foundError);
     }
@@ -65,7 +63,7 @@ public class ResultFindErrorSyncTestsArity0
         // Given
         var result = Result.Failure<int>(new Error("Test error"));
         // When
-        var foundError = result.FindError<int>(e => e is Error);
+        var foundError = result.FindError<int>(e => e.Message == "Test error");
         // Then
         Assert.NotNull(foundError);
         Assert.Equal("Test error", foundError.Message);
@@ -82,7 +80,7 @@ public class ResultFindErrorSyncTestsArity0
         var value2 = "test";
         var result = Result.Success(value1, value2);
         // When
-        var foundError = result.FindError<int, string>(e => e is Error);
+        var foundError = result.FindError<int, string>(e => e.Message == "Test error");
         // Then
         Assert.Null(foundError);
     }
@@ -92,7 +90,7 @@ public class ResultFindErrorSyncTestsArity0
         // Given
         var result = Result.Failure<int, string>(new Error("Test error"));
         // When
-        var foundError = result.FindError<int, string>(e => e is Error);
+        var foundError = result.FindError<int, string>(e => e.Message == "Test error");
         // Then
         Assert.NotNull(foundError);
         Assert.Equal("Test error", foundError.Message);
@@ -110,7 +108,7 @@ public class ResultFindErrorSyncTestsArity0
         var value3 = true;
         var result = Result.Success(value1, value2, value3);
         // When
-        var foundError = result.FindError<int, string, bool>(e => e is Error);
+        var foundError = result.FindError<int, string, bool>(e => e.Message == "Test error");
         // Then
         Assert.Null(foundError);
     }
@@ -120,7 +118,7 @@ public class ResultFindErrorSyncTestsArity0
         // Given
         var result = Result.Failure<int, string, bool>(new Error("Test error"));
         // When
-        var foundError = result.FindError<int, string, bool>(e => e is Error);
+        var foundError = result.FindError<int, string, bool>(e => e.Message == "Test error");
         // Then
         Assert.NotNull(foundError);
         Assert.Equal("Test error", foundError.Message);
@@ -139,7 +137,7 @@ public class ResultFindErrorSyncTestsArity0
         var value4 = 3.14;
         var result = Result.Success(value1, value2, value3, value4);
         // When
-        var foundError = result.FindError<int, string, bool, double>(e => e is Error);
+        var foundError = result.FindError<int, string, bool, double>(e => e.Message == "Test error");
         // Then
         Assert.Null(foundError);
     }
@@ -149,7 +147,7 @@ public class ResultFindErrorSyncTestsArity0
         // Given
         var result = Result.Failure<int, string, bool, double>(new Error("Test error"));
         // When
-        var foundError = result.FindError<int, string, bool, double>(e => e is Error);
+        var foundError = result.FindError<int, string, bool, double>(e => e.Message == "Test error");
         // Then
         Assert.NotNull(foundError);
         Assert.Equal("Test error", foundError.Message);
@@ -169,7 +167,7 @@ public class ResultFindErrorSyncTestsArity0
         var value5 = 123L;
         var result = Result.Success(value1, value2, value3, value4, value5);
         // When
-        var foundError = result.FindError<int, string, bool, double, long>(e => e is Error);
+        var foundError = result.FindError<int, string, bool, double, long>(e => e.Message == "Test error");
         // Then
         Assert.Null(foundError);
     }
@@ -179,7 +177,7 @@ public class ResultFindErrorSyncTestsArity0
         // Given
         var result = Result.Failure<int, string, bool, double, long>(new Error("Test error"));
         // When
-        var foundError = result.FindError<int, string, bool, double, long>(e => e is Error);
+        var foundError = result.FindError<int, string, bool, double, long>(e => e.Message == "Test error");
         // Then
         Assert.NotNull(foundError);
         Assert.Equal("Test error", foundError.Message);
@@ -197,10 +195,10 @@ public class ResultFindErrorSyncTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
+        var value6 = DateTime.UtcNow;
         var result = Result.Success(value1, value2, value3, value4, value5, value6);
         // When
-        var foundError = result.FindError<int, string, bool, double, long, string>(e => e is Error);
+        var foundError = result.FindError<int, string, bool, double, long, DateTime>(e => e.Message == "Test error");
         // Then
         Assert.Null(foundError);
     }
@@ -208,9 +206,9 @@ public class ResultFindErrorSyncTestsArity0
     [Fact]
     public void FindError_Arity6_Failure_ShouldReturnError() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string>(new Error("Test error"));
+        var result = Result.Failure<int, string, bool, double, long, DateTime>(new Error("Test error"));
         // When
-        var foundError = result.FindError<int, string, bool, double, long, string>(e => e is Error);
+        var foundError = result.FindError<int, string, bool, double, long, DateTime>(e => e.Message == "Test error");
         // Then
         Assert.NotNull(foundError);
         Assert.Equal("Test error", foundError.Message);
@@ -228,11 +226,11 @@ public class ResultFindErrorSyncTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
         // When
-        var foundError = result.FindError<int, string, bool, double, long, string, string>(e => e is Error);
+        var foundError = result.FindError<int, string, bool, double, long, DateTime, Guid>(e => e.Message == "Test error");
         // Then
         Assert.Null(foundError);
     }
@@ -240,9 +238,9 @@ public class ResultFindErrorSyncTestsArity0
     [Fact]
     public void FindError_Arity7_Failure_ShouldReturnError() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string>(new Error("Test error"));
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>(new Error("Test error"));
         // When
-        var foundError = result.FindError<int, string, bool, double, long, string, string>(e => e is Error);
+        var foundError = result.FindError<int, string, bool, double, long, DateTime, Guid>(e => e.Message == "Test error");
         // Then
         Assert.NotNull(foundError);
         Assert.Equal("Test error", foundError.Message);
@@ -260,12 +258,12 @@ public class ResultFindErrorSyncTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
         // When
-        var foundError = result.FindError<int, string, bool, double, long, string, string, string>(e => e is Error);
+        var foundError = result.FindError<int, string, bool, double, long, DateTime, Guid, TimeSpan>(e => e.Message == "Test error");
         // Then
         Assert.Null(foundError);
     }
@@ -273,9 +271,9 @@ public class ResultFindErrorSyncTestsArity0
     [Fact]
     public void FindError_Arity8_Failure_ShouldReturnError() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string, string>(new Error("Test error"));
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>(new Error("Test error"));
         // When
-        var foundError = result.FindError<int, string, bool, double, long, string, string, string>(e => e is Error);
+        var foundError = result.FindError<int, string, bool, double, long, DateTime, Guid, TimeSpan>(e => e.Message == "Test error");
         // Then
         Assert.NotNull(foundError);
         Assert.Equal("Test error", foundError.Message);

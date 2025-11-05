@@ -87,9 +87,12 @@ internal sealed class SuccessResult<TValue1, TValue2, TValue3, TValue4, TValue5>
         return true;
     }
     
-    public override void Deconstruct(out bool isSuccess, out (TValue1, TValue2, TValue3, TValue4, TValue5)? value, out IEnumerable<IError>? error) {
-        isSuccess = true;
-        value = (_value1, _value2, _value3, _value4, _value5);
+    public override void Deconstruct(out TValue1? value1, out TValue2? value2, out TValue3? value3, out TValue4? value4, out TValue5? value5, out IEnumerable<IError>? error) {
+        value1 = _value1;
+        value2 = _value2;
+        value3 = _value3;
+        value4 = _value4;
+        value5 = _value5;
         error = null;
     }
     

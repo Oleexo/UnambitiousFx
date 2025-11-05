@@ -7,76 +7,80 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results;
 /// <summary>
 ///     Test generator for Result.MapErrors extension methods (sync, Task, ValueTask).
 /// </summary>
-internal sealed class ResultMapErrorsTestsGenerator : ResultTestGeneratorBase
-{
-    private const int StartArity = 0; // Changed to 0 to support non-generic Result
-    private const string ClassName = "ResultMapErrorsTests";
+internal sealed class ResultMapErrorsTestsGenerator : ResultTestGeneratorBase {
+    private const int    StartArity          = 0; // Changed to 0 to support non-generic Result
+    private const string ClassName           = "ResultMapErrorsTests";
     private const string ExtensionsNamespace = "Results.Extensions.ErrorHandling";
 
-    public ResultMapErrorsTestsGenerator(string baseNamespace,
+    public ResultMapErrorsTestsGenerator(string               baseNamespace,
                                          FileOrganizationMode fileOrganization)
         : base(new GenerationConfig(baseNamespace,
                                     StartArity,
                                     ExtensionsNamespace,
                                     ClassName,
                                     fileOrganization,
-                                    true))
-    {
+                                    true)) {
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
-    {
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
         return GenerateVariants(arity,
                                 ClassName,
-                                (GenerateSyncTests,      false),
-                                (GenerateTaskTests,      true),
-                                (GenerateValueTaskTests, true));
+                                (GenerateSyncTests, false),
+                                (x => GenerateAsyncTests(x, "Task"), true),
+                                (x => GenerateAsyncTests(x, "ValueTask"), true));
     }
 
-    private ClassWriter GenerateSyncTests(ushort arity)
-    {
+    private ClassWriter GenerateSyncTests(ushort arity) {
         var cw = new ClassWriter($"ResultMapErrorsSyncTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Sync MapErrors" };
         cw.AddMethod(GenerateSyncSuccessTest(arity));
         cw.AddMethod(GenerateSyncFailureTest(arity));
+        cw.AddUsing("UnambitiousFx.Core.Results.Extensions.ErrorHandling");
         cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
         return cw;
     }
 
-    private ClassWriter GenerateTaskTests(ushort arity)
-    {
-        var cw = new ClassWriter($"ResultMapErrorsTaskTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Task MapErrors" };
-        cw.AddMethod(GenerateTaskSuccessTest(arity));
-        cw.AddMethod(GenerateTaskFailureTest(arity));
-        cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.Tasks";
+    private ClassWriter GenerateAsyncTests(ushort arity,
+                                           string asyncType) {
+        var cw = new ClassWriter($"ResultMapErrors{asyncType}TestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - {asyncType} MapErrors" };
+        cw.AddMethod(GenerateAsyncSuccessTest(arity, asyncType));
+        cw.AddMethod(GenerateAsyncFailureTest(arity, asyncType));
+        cw.AddUsing($"UnambitiousFx.Core.Results.Extensions.ErrorHandling.{asyncType}s");
+        cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.{asyncType}s";
         return cw;
     }
 
-    private ClassWriter GenerateValueTaskTests(ushort arity)
-    {
-        var cw = new ClassWriter($"ResultMapErrorsValueTaskTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - ValueTask MapErrors" };
-        cw.AddMethod(GenerateValueTaskSuccessTest(arity));
-        cw.AddMethod(GenerateValueTaskFailureTest(arity));
-        cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.ValueTasks";
-        return cw;
+    private MethodWriter GenerateSyncSuccessTest(ushort arity) {
+        return new MethodWriter($"MapErrors_Arity{arity}_Success_ShouldNotMapErrors", "void", GenerateSyncSuccessBody(arity),
+                                attributes: [new FactAttributeReference()], usings: GetUsings());
     }
 
-    private MethodWriter GenerateSyncSuccessTest(ushort arity) => new($"MapErrors_Arity{arity}_Success_ShouldNotMapErrors", "void", GenerateSyncSuccessBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateSyncFailureTest(ushort arity) => new($"MapErrors_Arity{arity}_Failure_ShouldMapErrors", "void", GenerateSyncFailureBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateTaskSuccessTest(ushort arity) => new($"MapErrorsTask_Arity{arity}_Success_ShouldNotMapErrors", "async Task", GenerateTaskSuccessBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateTaskFailureTest(ushort arity) => new($"MapErrorsTask_Arity{arity}_Failure_ShouldMapErrors", "async Task", GenerateTaskFailureBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateValueTaskSuccessTest(ushort arity) => new($"MapErrorsValueTask_Arity{arity}_Success_ShouldNotMapErrors", "async Task", GenerateValueTaskSuccessBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
-    private MethodWriter GenerateValueTaskFailureTest(ushort arity) => new($"MapErrorsValueTask_Arity{arity}_Failure_ShouldMapErrors", "async Task", GenerateValueTaskFailureBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
+    private MethodWriter GenerateSyncFailureTest(ushort arity) {
+        return new MethodWriter($"MapErrors_Arity{arity}_Failure_ShouldMapErrors", "void", GenerateSyncFailureBody(arity),
+                                attributes: [new FactAttributeReference()], usings: GetUsings());
+    }
 
-    private string GenerateSyncSuccessBody(ushort arity)
-    {
+    private MethodWriter GenerateAsyncSuccessTest(ushort arity,
+                                                  string asyncType) {
+        return new MethodWriter($"MapErrors{asyncType}_Arity{arity}_Success_ShouldNotMapErrors", "async Task",
+                                GenerateAsyncSuccessBody(arity, asyncType), attributes: [new FactAttributeReference()],
+                                usings: GetUsings());
+    }
+
+    private MethodWriter GenerateAsyncFailureTest(ushort arity,
+                                                  string asyncType) {
+        return new MethodWriter($"MapErrors{asyncType}_Arity{arity}_Failure_ShouldMapErrors", "async Task",
+                                GenerateAsyncFailureBody(arity, asyncType), attributes: [new FactAttributeReference()],
+                                usings: GetUsings());
+    }
+
+    private string GenerateSyncSuccessBody(ushort arity) {
         var testValues = GenerateTestValues(arity);
         var creation   = GenerateResultCreation(arity);
         var call       = GenerateMapErrorsSyncCall(arity);
         return BuildTestBody([testValues, creation], [call], ["Assert.True(mappedResult.IsSuccess);"]);
     }
 
-    private string GenerateSyncFailureBody(ushort arity)
-    {
+    private string GenerateSyncFailureBody(ushort arity) {
         var failureCreation = GenerateFailureResultCreation(arity);
         var call            = GenerateMapErrorsSyncCall(arity);
         return BuildTestBody([failureCreation],
@@ -84,41 +88,33 @@ internal sealed class ResultMapErrorsTestsGenerator : ResultTestGeneratorBase
                              ["Assert.False(mappedResult.IsSuccess);", "Assert.Contains(\"MAPPED\", mappedResult.Errors.First().Message);"]);
     }
 
-    private string GenerateTaskSuccessBody(ushort arity)
-    {
+    private string GenerateAsyncSuccessBody(ushort arity,
+                                            string asyncType) {
         var testValues = GenerateTestValues(arity);
-        var creation   = GenerateTaskResultCreation(arity);
-        var call       = GenerateMapErrorsTaskCall(arity);
+        var creation   = GenerateAsyncSuccessResultCreation(arity, asyncType);
+        var call       = GenerateMapErrorsAsyncCall(arity, asyncType);
         return BuildTestBody([testValues, creation], [call], ["Assert.True(mappedResult.IsSuccess);"]);
     }
 
-    private string GenerateTaskFailureBody(ushort arity)
-    {
-        var creation = GenerateTaskFailureResultCreation(arity);
-        var call     = GenerateMapErrorsTaskCall(arity);
+    private string GenerateAsyncFailureBody(ushort arity,
+                                            string asyncType) {
+        var creation = GenerateAsyncFailureResultCreation(arity, asyncType);
+        var call     = GenerateMapErrorsAsyncCall(arity, asyncType);
         return BuildTestBody([creation],
                              [call],
                              ["Assert.False(mappedResult.IsSuccess);", "Assert.Contains(\"MAPPED\", mappedResult.Errors.First().Message);"]);
     }
 
-    private string GenerateValueTaskSuccessBody(ushort arity)
-    {
-        var testValues = GenerateTestValues(arity);
-        var creation   = GenerateValueTaskResultCreation(arity);
-        var call       = GenerateMapErrorsValueTaskCall(arity);
-        return BuildTestBody([testValues, creation], [call], ["Assert.True(mappedResult.IsSuccess);"]);
+    private string GenerateMapErrorsSyncCall(ushort arity) {
+        return arity == 0
+                   ? "var mappedResult = result.MapErrors(errors => new Error(errors.First().Message + \" MAPPED\"));"
+                   : $"var mappedResult = result.MapErrors<{GenerateTypeParams(arity)}>(errors => new Error(errors.First().Message + \" MAPPED\"));";
     }
 
-    private string GenerateValueTaskFailureBody(ushort arity)
-    {
-        var creation = GenerateValueTaskFailureResultCreation(arity);
-        var call     = GenerateMapErrorsValueTaskCall(arity);
-        return BuildTestBody([creation],
-                             [call],
-                             ["Assert.False(mappedResult.IsSuccess);", "Assert.Contains(\"MAPPED\", mappedResult.Errors.First().Message);"]);
+    private string GenerateMapErrorsAsyncCall(ushort arity,
+                                              string asyncType) {
+        return arity == 0
+                   ? $"var mappedResult = await taskResult.MapErrorsAsync(errors => {asyncType}.FromResult<IError>(new Error(errors.First().Message + \" MAPPED\")));"
+                   : $"var mappedResult = await taskResult.MapErrorsAsync<{GenerateTypeParams(arity)}>(errors => {asyncType}.FromResult<IError>(new Error(errors.First().Message + \" MAPPED\")));";
     }
-
-    private string GenerateMapErrorsSyncCall(ushort arity) => arity == 0 ? "var mappedResult = result.MapErrors(errors => new Error(errors.First().Message + \" MAPPED\"));" : $"var mappedResult = result.MapErrors<{GenerateTypeParams(arity)}>(errors => new Error(errors.First().Message + \" MAPPED\"));";
-    private string GenerateMapErrorsTaskCall(ushort arity) => arity == 0 ? "var mappedResult = await taskResult.MapErrorsAsync(errors => Task.FromResult(new Error(errors.First().Message + \" MAPPED\")));" : $"var mappedResult = await taskResult.MapErrorsAsync<{GenerateTypeParams(arity)}>(errors => Task.FromResult(new Error(errors.First().Message + \" MAPPED\")));";
-    private string GenerateMapErrorsValueTaskCall(ushort arity) => arity == 0 ? "var mappedResult = await valueTaskResult.MapErrorsAsync(errors => ValueTask.FromResult(new Error(errors.First().Message + \" MAPPED\")));" : $"var mappedResult = await valueTaskResult.MapErrorsAsync<{GenerateTypeParams(arity)}>(errors => ValueTask.FromResult(new Error(errors.First().Message + \" MAPPED\")));";
 }

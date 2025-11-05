@@ -12,9 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
 using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
 
@@ -25,11 +23,34 @@ public class ResultAppendErrorTaskTestsArity0
     #region Arity 0 - Task AppendError
     
     [Fact]
-    public async Task AppendErrorTask_Arity0_Success_ShouldNotAppendError() {
+    public async Task AppendErrorAsync_Arity0_Success_ShouldNotAppendError() {
         // Given
         var result = Result.Success();
         // When
-        var appendedResult = await Task.FromResult(result).AppendErrorAsync("Appended error");
+        var appendedResult = await result.AppendErrorAsync("Appended error");
+        // Then
+        Assert.True(appendedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task AppendErrorAsync_Arity0_Failure_ShouldAppendError() {
+        // Given
+        var result = Result.Failure("Test error");
+        // When
+        var appendedResult = await result.AppendErrorAsync("Appended error");
+        // Then
+        Assert.False(appendedResult.IsSuccess);
+        Assert.Single(appendedResult.Errors);
+        Assert.Contains("Appended error", appendedResult.Errors.First().Message);
+        Assert.StartsWith("Test error", appendedResult.Errors.First().Message);
+    }
+    
+    [Fact]
+    public async Task AppendErrorTask_Arity0_Success_ShouldNotAppendError() {
+        // Given
+        var taskResult = Task.FromResult(Result.Success());
+        // When
+        var appendedResult = await taskResult.AppendErrorAsync("Appended error");
         // Then
         Assert.True(appendedResult.IsSuccess);
     }
@@ -37,9 +58,9 @@ public class ResultAppendErrorTaskTestsArity0
     [Fact]
     public async Task AppendErrorTask_Arity0_Failure_ShouldAppendError() {
         // Given
-        var result = Result.Failure("Test error");
+        var taskResult = Task.FromResult(Result.Failure("Test error"));
         // When
-        var appendedResult = await Task.FromResult(result).AppendErrorAsync("Appended error");
+        var appendedResult = await taskResult.AppendErrorAsync("Appended error");
         // Then
         Assert.False(appendedResult.IsSuccess);
         Assert.Single(appendedResult.Errors);
@@ -52,12 +73,36 @@ public class ResultAppendErrorTaskTestsArity0
     #region Arity 1 - Task AppendError
     
     [Fact]
-    public async Task AppendErrorTask_Arity1_Success_ShouldNotAppendError() {
+    public async Task AppendErrorAsync_Arity1_Success_ShouldNotAppendError() {
         // Given
         var value1 = 42;
         var result = Result.Success(value1);
         // When
-        var appendedResult = await Task.FromResult(result).AppendErrorAsync<int>("Appended error");
+        var appendedResult = await result.AppendErrorAsync<int>("Appended error");
+        // Then
+        Assert.True(appendedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task AppendErrorAsync_Arity1_Failure_ShouldAppendError() {
+        // Given
+        var result = Result.Failure<int>("Test error");
+        // When
+        var appendedResult = await result.AppendErrorAsync<int>("Appended error");
+        // Then
+        Assert.False(appendedResult.IsSuccess);
+        Assert.Single(appendedResult.Errors);
+        Assert.Contains("Appended error", appendedResult.Errors.First().Message);
+        Assert.StartsWith("Test error", appendedResult.Errors.First().Message);
+    }
+    
+    [Fact]
+    public async Task AppendErrorTask_Arity1_Success_ShouldNotAppendError() {
+        // Given
+        var value1 = 42;
+        var taskResult = Task.FromResult(Result.Success(value1));
+        // When
+        var appendedResult = await taskResult.AppendErrorAsync<int>("Appended error");
         // Then
         Assert.True(appendedResult.IsSuccess);
     }
@@ -65,9 +110,9 @@ public class ResultAppendErrorTaskTestsArity0
     [Fact]
     public async Task AppendErrorTask_Arity1_Failure_ShouldAppendError() {
         // Given
-        var result = Result.Failure<int>("Test error");
+        var taskResult = Task.FromResult(Result.Failure<int>("Test error"));
         // When
-        var appendedResult = await Task.FromResult(result).AppendErrorAsync<int>("Appended error");
+        var appendedResult = await taskResult.AppendErrorAsync<int>("Appended error");
         // Then
         Assert.False(appendedResult.IsSuccess);
         Assert.Single(appendedResult.Errors);
@@ -80,13 +125,38 @@ public class ResultAppendErrorTaskTestsArity0
     #region Arity 2 - Task AppendError
     
     [Fact]
-    public async Task AppendErrorTask_Arity2_Success_ShouldNotAppendError() {
+    public async Task AppendErrorAsync_Arity2_Success_ShouldNotAppendError() {
         // Given
         var value1 = 42;
         var value2 = "test";
         var result = Result.Success(value1, value2);
         // When
-        var appendedResult = await Task.FromResult(result).AppendErrorAsync<int, string>("Appended error");
+        var appendedResult = await result.AppendErrorAsync<int, string>("Appended error");
+        // Then
+        Assert.True(appendedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task AppendErrorAsync_Arity2_Failure_ShouldAppendError() {
+        // Given
+        var result = Result.Failure<int, string>("Test error");
+        // When
+        var appendedResult = await result.AppendErrorAsync<int, string>("Appended error");
+        // Then
+        Assert.False(appendedResult.IsSuccess);
+        Assert.Single(appendedResult.Errors);
+        Assert.Contains("Appended error", appendedResult.Errors.First().Message);
+        Assert.StartsWith("Test error", appendedResult.Errors.First().Message);
+    }
+    
+    [Fact]
+    public async Task AppendErrorTask_Arity2_Success_ShouldNotAppendError() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var taskResult = Task.FromResult(Result.Success(value1, value2));
+        // When
+        var appendedResult = await taskResult.AppendErrorAsync<int, string>("Appended error");
         // Then
         Assert.True(appendedResult.IsSuccess);
     }
@@ -94,9 +164,9 @@ public class ResultAppendErrorTaskTestsArity0
     [Fact]
     public async Task AppendErrorTask_Arity2_Failure_ShouldAppendError() {
         // Given
-        var result = Result.Failure<int, string>("Test error");
+        var taskResult = Task.FromResult(Result.Failure<int, string>("Test error"));
         // When
-        var appendedResult = await Task.FromResult(result).AppendErrorAsync<int, string>("Appended error");
+        var appendedResult = await taskResult.AppendErrorAsync<int, string>("Appended error");
         // Then
         Assert.False(appendedResult.IsSuccess);
         Assert.Single(appendedResult.Errors);
@@ -109,14 +179,40 @@ public class ResultAppendErrorTaskTestsArity0
     #region Arity 3 - Task AppendError
     
     [Fact]
-    public async Task AppendErrorTask_Arity3_Success_ShouldNotAppendError() {
+    public async Task AppendErrorAsync_Arity3_Success_ShouldNotAppendError() {
         // Given
         var value1 = 42;
         var value2 = "test";
         var value3 = true;
         var result = Result.Success(value1, value2, value3);
         // When
-        var appendedResult = await Task.FromResult(result).AppendErrorAsync<int, string, bool>("Appended error");
+        var appendedResult = await result.AppendErrorAsync<int, string, bool>("Appended error");
+        // Then
+        Assert.True(appendedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task AppendErrorAsync_Arity3_Failure_ShouldAppendError() {
+        // Given
+        var result = Result.Failure<int, string, bool>("Test error");
+        // When
+        var appendedResult = await result.AppendErrorAsync<int, string, bool>("Appended error");
+        // Then
+        Assert.False(appendedResult.IsSuccess);
+        Assert.Single(appendedResult.Errors);
+        Assert.Contains("Appended error", appendedResult.Errors.First().Message);
+        Assert.StartsWith("Test error", appendedResult.Errors.First().Message);
+    }
+    
+    [Fact]
+    public async Task AppendErrorTask_Arity3_Success_ShouldNotAppendError() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var taskResult = Task.FromResult(Result.Success(value1, value2, value3));
+        // When
+        var appendedResult = await taskResult.AppendErrorAsync<int, string, bool>("Appended error");
         // Then
         Assert.True(appendedResult.IsSuccess);
     }
@@ -124,9 +220,9 @@ public class ResultAppendErrorTaskTestsArity0
     [Fact]
     public async Task AppendErrorTask_Arity3_Failure_ShouldAppendError() {
         // Given
-        var result = Result.Failure<int, string, bool>("Test error");
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool>("Test error"));
         // When
-        var appendedResult = await Task.FromResult(result).AppendErrorAsync<int, string, bool>("Appended error");
+        var appendedResult = await taskResult.AppendErrorAsync<int, string, bool>("Appended error");
         // Then
         Assert.False(appendedResult.IsSuccess);
         Assert.Single(appendedResult.Errors);
@@ -139,7 +235,7 @@ public class ResultAppendErrorTaskTestsArity0
     #region Arity 4 - Task AppendError
     
     [Fact]
-    public async Task AppendErrorTask_Arity4_Success_ShouldNotAppendError() {
+    public async Task AppendErrorAsync_Arity4_Success_ShouldNotAppendError() {
         // Given
         var value1 = 42;
         var value2 = "test";
@@ -147,7 +243,34 @@ public class ResultAppendErrorTaskTestsArity0
         var value4 = 3.14;
         var result = Result.Success(value1, value2, value3, value4);
         // When
-        var appendedResult = await Task.FromResult(result).AppendErrorAsync<int, string, bool, double>("Appended error");
+        var appendedResult = await result.AppendErrorAsync<int, string, bool, double>("Appended error");
+        // Then
+        Assert.True(appendedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task AppendErrorAsync_Arity4_Failure_ShouldAppendError() {
+        // Given
+        var result = Result.Failure<int, string, bool, double>("Test error");
+        // When
+        var appendedResult = await result.AppendErrorAsync<int, string, bool, double>("Appended error");
+        // Then
+        Assert.False(appendedResult.IsSuccess);
+        Assert.Single(appendedResult.Errors);
+        Assert.Contains("Appended error", appendedResult.Errors.First().Message);
+        Assert.StartsWith("Test error", appendedResult.Errors.First().Message);
+    }
+    
+    [Fact]
+    public async Task AppendErrorTask_Arity4_Success_ShouldNotAppendError() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4));
+        // When
+        var appendedResult = await taskResult.AppendErrorAsync<int, string, bool, double>("Appended error");
         // Then
         Assert.True(appendedResult.IsSuccess);
     }
@@ -155,9 +278,9 @@ public class ResultAppendErrorTaskTestsArity0
     [Fact]
     public async Task AppendErrorTask_Arity4_Failure_ShouldAppendError() {
         // Given
-        var result = Result.Failure<int, string, bool, double>("Test error");
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double>("Test error"));
         // When
-        var appendedResult = await Task.FromResult(result).AppendErrorAsync<int, string, bool, double>("Appended error");
+        var appendedResult = await taskResult.AppendErrorAsync<int, string, bool, double>("Appended error");
         // Then
         Assert.False(appendedResult.IsSuccess);
         Assert.Single(appendedResult.Errors);
@@ -170,7 +293,7 @@ public class ResultAppendErrorTaskTestsArity0
     #region Arity 5 - Task AppendError
     
     [Fact]
-    public async Task AppendErrorTask_Arity5_Success_ShouldNotAppendError() {
+    public async Task AppendErrorAsync_Arity5_Success_ShouldNotAppendError() {
         // Given
         var value1 = 42;
         var value2 = "test";
@@ -179,7 +302,35 @@ public class ResultAppendErrorTaskTestsArity0
         var value5 = 123L;
         var result = Result.Success(value1, value2, value3, value4, value5);
         // When
-        var appendedResult = await Task.FromResult(result).AppendErrorAsync<int, string, bool, double, long>("Appended error");
+        var appendedResult = await result.AppendErrorAsync<int, string, bool, double, long>("Appended error");
+        // Then
+        Assert.True(appendedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task AppendErrorAsync_Arity5_Failure_ShouldAppendError() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long>("Test error");
+        // When
+        var appendedResult = await result.AppendErrorAsync<int, string, bool, double, long>("Appended error");
+        // Then
+        Assert.False(appendedResult.IsSuccess);
+        Assert.Single(appendedResult.Errors);
+        Assert.Contains("Appended error", appendedResult.Errors.First().Message);
+        Assert.StartsWith("Test error", appendedResult.Errors.First().Message);
+    }
+    
+    [Fact]
+    public async Task AppendErrorTask_Arity5_Success_ShouldNotAppendError() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5));
+        // When
+        var appendedResult = await taskResult.AppendErrorAsync<int, string, bool, double, long>("Appended error");
         // Then
         Assert.True(appendedResult.IsSuccess);
     }
@@ -187,9 +338,9 @@ public class ResultAppendErrorTaskTestsArity0
     [Fact]
     public async Task AppendErrorTask_Arity5_Failure_ShouldAppendError() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long>("Test error");
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
         // When
-        var appendedResult = await Task.FromResult(result).AppendErrorAsync<int, string, bool, double, long>("Appended error");
+        var appendedResult = await taskResult.AppendErrorAsync<int, string, bool, double, long>("Appended error");
         // Then
         Assert.False(appendedResult.IsSuccess);
         Assert.Single(appendedResult.Errors);
@@ -202,6 +353,35 @@ public class ResultAppendErrorTaskTestsArity0
     #region Arity 6 - Task AppendError
     
     [Fact]
+    public async Task AppendErrorAsync_Arity6_Success_ShouldNotAppendError() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var result = Result.Success(value1, value2, value3, value4, value5, value6);
+        // When
+        var appendedResult = await result.AppendErrorAsync<int, string, bool, double, long, DateTime>("Appended error");
+        // Then
+        Assert.True(appendedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task AppendErrorAsync_Arity6_Failure_ShouldAppendError() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
+        // When
+        var appendedResult = await result.AppendErrorAsync<int, string, bool, double, long, DateTime>("Appended error");
+        // Then
+        Assert.False(appendedResult.IsSuccess);
+        Assert.Single(appendedResult.Errors);
+        Assert.Contains("Appended error", appendedResult.Errors.First().Message);
+        Assert.StartsWith("Test error", appendedResult.Errors.First().Message);
+    }
+    
+    [Fact]
     public async Task AppendErrorTask_Arity6_Success_ShouldNotAppendError() {
         // Given
         var value1 = 42;
@@ -209,10 +389,10 @@ public class ResultAppendErrorTaskTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var result = Result.Success(value1, value2, value3, value4, value5, value6);
+        var value6 = DateTime.UtcNow;
+        var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
         // When
-        var appendedResult = await Task.FromResult(result).AppendErrorAsync<int, string, bool, double, long, string>("Appended error");
+        var appendedResult = await taskResult.AppendErrorAsync<int, string, bool, double, long, DateTime>("Appended error");
         // Then
         Assert.True(appendedResult.IsSuccess);
     }
@@ -220,9 +400,9 @@ public class ResultAppendErrorTaskTestsArity0
     [Fact]
     public async Task AppendErrorTask_Arity6_Failure_ShouldAppendError() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string>("Test error");
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
         // When
-        var appendedResult = await Task.FromResult(result).AppendErrorAsync<int, string, bool, double, long, string>("Appended error");
+        var appendedResult = await taskResult.AppendErrorAsync<int, string, bool, double, long, DateTime>("Appended error");
         // Then
         Assert.False(appendedResult.IsSuccess);
         Assert.Single(appendedResult.Errors);
@@ -235,6 +415,36 @@ public class ResultAppendErrorTaskTestsArity0
     #region Arity 7 - Task AppendError
     
     [Fact]
+    public async Task AppendErrorAsync_Arity7_Success_ShouldNotAppendError() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
+        // When
+        var appendedResult = await result.AppendErrorAsync<int, string, bool, double, long, DateTime, Guid>("Appended error");
+        // Then
+        Assert.True(appendedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task AppendErrorAsync_Arity7_Failure_ShouldAppendError() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
+        // When
+        var appendedResult = await result.AppendErrorAsync<int, string, bool, double, long, DateTime, Guid>("Appended error");
+        // Then
+        Assert.False(appendedResult.IsSuccess);
+        Assert.Single(appendedResult.Errors);
+        Assert.Contains("Appended error", appendedResult.Errors.First().Message);
+        Assert.StartsWith("Test error", appendedResult.Errors.First().Message);
+    }
+    
+    [Fact]
     public async Task AppendErrorTask_Arity7_Success_ShouldNotAppendError() {
         // Given
         var value1 = 42;
@@ -242,11 +452,11 @@ public class ResultAppendErrorTaskTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
         // When
-        var appendedResult = await Task.FromResult(result).AppendErrorAsync<int, string, bool, double, long, string, string>("Appended error");
+        var appendedResult = await taskResult.AppendErrorAsync<int, string, bool, double, long, DateTime, Guid>("Appended error");
         // Then
         Assert.True(appendedResult.IsSuccess);
     }
@@ -254,9 +464,9 @@ public class ResultAppendErrorTaskTestsArity0
     [Fact]
     public async Task AppendErrorTask_Arity7_Failure_ShouldAppendError() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string>("Test error");
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
         // When
-        var appendedResult = await Task.FromResult(result).AppendErrorAsync<int, string, bool, double, long, string, string>("Appended error");
+        var appendedResult = await taskResult.AppendErrorAsync<int, string, bool, double, long, DateTime, Guid>("Appended error");
         // Then
         Assert.False(appendedResult.IsSuccess);
         Assert.Single(appendedResult.Errors);
@@ -269,6 +479,37 @@ public class ResultAppendErrorTaskTestsArity0
     #region Arity 8 - Task AppendError
     
     [Fact]
+    public async Task AppendErrorAsync_Arity8_Success_ShouldNotAppendError() {
+        // Given
+        var value1 = 42;
+        var value2 = "test";
+        var value3 = true;
+        var value4 = 3.14;
+        var value5 = 123L;
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
+        // When
+        var appendedResult = await result.AppendErrorAsync<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Appended error");
+        // Then
+        Assert.True(appendedResult.IsSuccess);
+    }
+    
+    [Fact]
+    public async Task AppendErrorAsync_Arity8_Failure_ShouldAppendError() {
+        // Given
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
+        // When
+        var appendedResult = await result.AppendErrorAsync<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Appended error");
+        // Then
+        Assert.False(appendedResult.IsSuccess);
+        Assert.Single(appendedResult.Errors);
+        Assert.Contains("Appended error", appendedResult.Errors.First().Message);
+        Assert.StartsWith("Test error", appendedResult.Errors.First().Message);
+    }
+    
+    [Fact]
     public async Task AppendErrorTask_Arity8_Success_ShouldNotAppendError() {
         // Given
         var value1 = 42;
@@ -276,12 +517,12 @@ public class ResultAppendErrorTaskTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
-        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
+        var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
         // When
-        var appendedResult = await Task.FromResult(result).AppendErrorAsync<int, string, bool, double, long, string, string, string>("Appended error");
+        var appendedResult = await taskResult.AppendErrorAsync<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Appended error");
         // Then
         Assert.True(appendedResult.IsSuccess);
     }
@@ -289,9 +530,9 @@ public class ResultAppendErrorTaskTestsArity0
     [Fact]
     public async Task AppendErrorTask_Arity8_Failure_ShouldAppendError() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string, string>("Test error");
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
         // When
-        var appendedResult = await Task.FromResult(result).AppendErrorAsync<int, string, bool, double, long, string, string, string>("Appended error");
+        var appendedResult = await taskResult.AppendErrorAsync<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Appended error");
         // Then
         Assert.False(appendedResult.IsSuccess);
         Assert.Single(appendedResult.Errors);

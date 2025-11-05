@@ -44,9 +44,7 @@ internal sealed class FailureResult : Result, IFailureResult {
         action(Errors);
     }
 
-    public override void Deconstruct(out bool                 isSuccess,
-                                     out IEnumerable<IError>? error) {
-        isSuccess = false;
-        error     = Errors;
+    public override void Deconstruct(out IEnumerable<IError>? error) {
+        error = Errors;
     }
 }

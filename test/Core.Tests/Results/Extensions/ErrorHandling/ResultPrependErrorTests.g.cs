@@ -13,8 +13,6 @@ using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
 
@@ -49,33 +47,6 @@ public class ResultPrependErrorSyncTestsArity0
     
     #endregion // Arity 0 - Sync PrependError
     
-    #region Arity 0 - Async PrependErrorAsync on Result
-    
-    [Fact]
-    public async Task PrependErrorAsync_Arity0_Success_ShouldNotPrependError() {
-        // Given
-        var result = Result.Success();
-        // When
-        var prependedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.PrependErrorAsync(result, "Prepended error");
-        // Then
-        Assert.True(prependedResult.IsSuccess);
-    }
-    
-    [Fact]
-    public async Task PrependErrorAsync_Arity0_Failure_ShouldPrependError() {
-        // Given
-        var result = Result.Failure("Test error");
-        // When
-        var prependedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.PrependErrorAsync(result, "Prepended error");
-        // Then
-        Assert.False(prependedResult.IsSuccess);
-        Assert.Single(prependedResult.Errors);
-        Assert.Contains("Prepended error", prependedResult.Errors.First().Message);
-        Assert.EndsWith("Test error", prependedResult.Errors.First().Message);
-    }
-    
-    #endregion // Arity 0 - Async PrependErrorAsync on Result
-    
     #region Arity 1 - Sync PrependError
     
     [Fact]
@@ -103,34 +74,6 @@ public class ResultPrependErrorSyncTestsArity0
     }
     
     #endregion // Arity 1 - Sync PrependError
-    
-    #region Arity 1 - Async PrependErrorAsync on Result
-    
-    [Fact]
-    public async Task PrependErrorAsync_Arity1_Success_ShouldNotPrependError() {
-        // Given
-        var value1 = 42;
-        var result = Result.Success(value1);
-        // When
-        var prependedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.PrependErrorAsync<int>(result, "Prepended error");
-        // Then
-        Assert.True(prependedResult.IsSuccess);
-    }
-    
-    [Fact]
-    public async Task PrependErrorAsync_Arity1_Failure_ShouldPrependError() {
-        // Given
-        var result = Result.Failure<int>("Test error");
-        // When
-        var prependedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.PrependErrorAsync<int>(result, "Prepended error");
-        // Then
-        Assert.False(prependedResult.IsSuccess);
-        Assert.Single(prependedResult.Errors);
-        Assert.Contains("Prepended error", prependedResult.Errors.First().Message);
-        Assert.EndsWith("Test error", prependedResult.Errors.First().Message);
-    }
-    
-    #endregion // Arity 1 - Async PrependErrorAsync on Result
     
     #region Arity 2 - Sync PrependError
     
@@ -160,35 +103,6 @@ public class ResultPrependErrorSyncTestsArity0
     }
     
     #endregion // Arity 2 - Sync PrependError
-    
-    #region Arity 2 - Async PrependErrorAsync on Result
-    
-    [Fact]
-    public async Task PrependErrorAsync_Arity2_Success_ShouldNotPrependError() {
-        // Given
-        var value1 = 42;
-        var value2 = "test";
-        var result = Result.Success(value1, value2);
-        // When
-        var prependedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.PrependErrorAsync<int, string>(result, "Prepended error");
-        // Then
-        Assert.True(prependedResult.IsSuccess);
-    }
-    
-    [Fact]
-    public async Task PrependErrorAsync_Arity2_Failure_ShouldPrependError() {
-        // Given
-        var result = Result.Failure<int, string>("Test error");
-        // When
-        var prependedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.PrependErrorAsync<int, string>(result, "Prepended error");
-        // Then
-        Assert.False(prependedResult.IsSuccess);
-        Assert.Single(prependedResult.Errors);
-        Assert.Contains("Prepended error", prependedResult.Errors.First().Message);
-        Assert.EndsWith("Test error", prependedResult.Errors.First().Message);
-    }
-    
-    #endregion // Arity 2 - Async PrependErrorAsync on Result
     
     #region Arity 3 - Sync PrependError
     
@@ -220,36 +134,6 @@ public class ResultPrependErrorSyncTestsArity0
     
     #endregion // Arity 3 - Sync PrependError
     
-    #region Arity 3 - Async PrependErrorAsync on Result
-    
-    [Fact]
-    public async Task PrependErrorAsync_Arity3_Success_ShouldNotPrependError() {
-        // Given
-        var value1 = 42;
-        var value2 = "test";
-        var value3 = true;
-        var result = Result.Success(value1, value2, value3);
-        // When
-        var prependedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.PrependErrorAsync<int, string, bool>(result, "Prepended error");
-        // Then
-        Assert.True(prependedResult.IsSuccess);
-    }
-    
-    [Fact]
-    public async Task PrependErrorAsync_Arity3_Failure_ShouldPrependError() {
-        // Given
-        var result = Result.Failure<int, string, bool>("Test error");
-        // When
-        var prependedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.PrependErrorAsync<int, string, bool>(result, "Prepended error");
-        // Then
-        Assert.False(prependedResult.IsSuccess);
-        Assert.Single(prependedResult.Errors);
-        Assert.Contains("Prepended error", prependedResult.Errors.First().Message);
-        Assert.EndsWith("Test error", prependedResult.Errors.First().Message);
-    }
-    
-    #endregion // Arity 3 - Async PrependErrorAsync on Result
-    
     #region Arity 4 - Sync PrependError
     
     [Fact]
@@ -280,37 +164,6 @@ public class ResultPrependErrorSyncTestsArity0
     }
     
     #endregion // Arity 4 - Sync PrependError
-    
-    #region Arity 4 - Async PrependErrorAsync on Result
-    
-    [Fact]
-    public async Task PrependErrorAsync_Arity4_Success_ShouldNotPrependError() {
-        // Given
-        var value1 = 42;
-        var value2 = "test";
-        var value3 = true;
-        var value4 = 3.14;
-        var result = Result.Success(value1, value2, value3, value4);
-        // When
-        var prependedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.PrependErrorAsync<int, string, bool, double>(result, "Prepended error");
-        // Then
-        Assert.True(prependedResult.IsSuccess);
-    }
-    
-    [Fact]
-    public async Task PrependErrorAsync_Arity4_Failure_ShouldPrependError() {
-        // Given
-        var result = Result.Failure<int, string, bool, double>("Test error");
-        // When
-        var prependedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.PrependErrorAsync<int, string, bool, double>(result, "Prepended error");
-        // Then
-        Assert.False(prependedResult.IsSuccess);
-        Assert.Single(prependedResult.Errors);
-        Assert.Contains("Prepended error", prependedResult.Errors.First().Message);
-        Assert.EndsWith("Test error", prependedResult.Errors.First().Message);
-    }
-    
-    #endregion // Arity 4 - Async PrependErrorAsync on Result
     
     #region Arity 5 - Sync PrependError
     
@@ -344,38 +197,6 @@ public class ResultPrependErrorSyncTestsArity0
     
     #endregion // Arity 5 - Sync PrependError
     
-    #region Arity 5 - Async PrependErrorAsync on Result
-    
-    [Fact]
-    public async Task PrependErrorAsync_Arity5_Success_ShouldNotPrependError() {
-        // Given
-        var value1 = 42;
-        var value2 = "test";
-        var value3 = true;
-        var value4 = 3.14;
-        var value5 = 123L;
-        var result = Result.Success(value1, value2, value3, value4, value5);
-        // When
-        var prependedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.PrependErrorAsync<int, string, bool, double, long>(result, "Prepended error");
-        // Then
-        Assert.True(prependedResult.IsSuccess);
-    }
-    
-    [Fact]
-    public async Task PrependErrorAsync_Arity5_Failure_ShouldPrependError() {
-        // Given
-        var result = Result.Failure<int, string, bool, double, long>("Test error");
-        // When
-        var prependedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.PrependErrorAsync<int, string, bool, double, long>(result, "Prepended error");
-        // Then
-        Assert.False(prependedResult.IsSuccess);
-        Assert.Single(prependedResult.Errors);
-        Assert.Contains("Prepended error", prependedResult.Errors.First().Message);
-        Assert.EndsWith("Test error", prependedResult.Errors.First().Message);
-    }
-    
-    #endregion // Arity 5 - Async PrependErrorAsync on Result
-    
     #region Arity 6 - Sync PrependError
     
     [Fact]
@@ -386,10 +207,10 @@ public class ResultPrependErrorSyncTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
+        var value6 = DateTime.UtcNow;
         var result = Result.Success(value1, value2, value3, value4, value5, value6);
         // When
-        var prependedResult = result.PrependError<int, string, bool, double, long, string>("Prepended error");
+        var prependedResult = result.PrependError<int, string, bool, double, long, DateTime>("Prepended error");
         // Then
         Assert.True(prependedResult.IsSuccess);
     }
@@ -397,9 +218,9 @@ public class ResultPrependErrorSyncTestsArity0
     [Fact]
     public void PrependError_Arity6_Failure_ShouldPrependError() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
         // When
-        var prependedResult = result.PrependError<int, string, bool, double, long, string>("Prepended error");
+        var prependedResult = result.PrependError<int, string, bool, double, long, DateTime>("Prepended error");
         // Then
         Assert.False(prependedResult.IsSuccess);
         Assert.Single(prependedResult.Errors);
@@ -408,39 +229,6 @@ public class ResultPrependErrorSyncTestsArity0
     }
     
     #endregion // Arity 6 - Sync PrependError
-    
-    #region Arity 6 - Async PrependErrorAsync on Result
-    
-    [Fact]
-    public async Task PrependErrorAsync_Arity6_Success_ShouldNotPrependError() {
-        // Given
-        var value1 = 42;
-        var value2 = "test";
-        var value3 = true;
-        var value4 = 3.14;
-        var value5 = 123L;
-        var value6 = "value6";
-        var result = Result.Success(value1, value2, value3, value4, value5, value6);
-        // When
-        var prependedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.PrependErrorAsync<int, string, bool, double, long, string>(result, "Prepended error");
-        // Then
-        Assert.True(prependedResult.IsSuccess);
-    }
-    
-    [Fact]
-    public async Task PrependErrorAsync_Arity6_Failure_ShouldPrependError() {
-        // Given
-        var result = Result.Failure<int, string, bool, double, long, string>("Test error");
-        // When
-        var prependedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.PrependErrorAsync<int, string, bool, double, long, string>(result, "Prepended error");
-        // Then
-        Assert.False(prependedResult.IsSuccess);
-        Assert.Single(prependedResult.Errors);
-        Assert.Contains("Prepended error", prependedResult.Errors.First().Message);
-        Assert.EndsWith("Test error", prependedResult.Errors.First().Message);
-    }
-    
-    #endregion // Arity 6 - Async PrependErrorAsync on Result
     
     #region Arity 7 - Sync PrependError
     
@@ -452,11 +240,11 @@ public class ResultPrependErrorSyncTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
         // When
-        var prependedResult = result.PrependError<int, string, bool, double, long, string, string>("Prepended error");
+        var prependedResult = result.PrependError<int, string, bool, double, long, DateTime, Guid>("Prepended error");
         // Then
         Assert.True(prependedResult.IsSuccess);
     }
@@ -464,9 +252,9 @@ public class ResultPrependErrorSyncTestsArity0
     [Fact]
     public void PrependError_Arity7_Failure_ShouldPrependError() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
         // When
-        var prependedResult = result.PrependError<int, string, bool, double, long, string, string>("Prepended error");
+        var prependedResult = result.PrependError<int, string, bool, double, long, DateTime, Guid>("Prepended error");
         // Then
         Assert.False(prependedResult.IsSuccess);
         Assert.Single(prependedResult.Errors);
@@ -475,40 +263,6 @@ public class ResultPrependErrorSyncTestsArity0
     }
     
     #endregion // Arity 7 - Sync PrependError
-    
-    #region Arity 7 - Async PrependErrorAsync on Result
-    
-    [Fact]
-    public async Task PrependErrorAsync_Arity7_Success_ShouldNotPrependError() {
-        // Given
-        var value1 = 42;
-        var value2 = "test";
-        var value3 = true;
-        var value4 = 3.14;
-        var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
-        // When
-        var prependedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.PrependErrorAsync<int, string, bool, double, long, string, string>(result, "Prepended error");
-        // Then
-        Assert.True(prependedResult.IsSuccess);
-    }
-    
-    [Fact]
-    public async Task PrependErrorAsync_Arity7_Failure_ShouldPrependError() {
-        // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string>("Test error");
-        // When
-        var prependedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.PrependErrorAsync<int, string, bool, double, long, string, string>(result, "Prepended error");
-        // Then
-        Assert.False(prependedResult.IsSuccess);
-        Assert.Single(prependedResult.Errors);
-        Assert.Contains("Prepended error", prependedResult.Errors.First().Message);
-        Assert.EndsWith("Test error", prependedResult.Errors.First().Message);
-    }
-    
-    #endregion // Arity 7 - Async PrependErrorAsync on Result
     
     #region Arity 8 - Sync PrependError
     
@@ -520,12 +274,12 @@ public class ResultPrependErrorSyncTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
         // When
-        var prependedResult = result.PrependError<int, string, bool, double, long, string, string, string>("Prepended error");
+        var prependedResult = result.PrependError<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Prepended error");
         // Then
         Assert.True(prependedResult.IsSuccess);
     }
@@ -533,9 +287,9 @@ public class ResultPrependErrorSyncTestsArity0
     [Fact]
     public void PrependError_Arity8_Failure_ShouldPrependError() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
         // When
-        var prependedResult = result.PrependError<int, string, bool, double, long, string, string, string>("Prepended error");
+        var prependedResult = result.PrependError<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Prepended error");
         // Then
         Assert.False(prependedResult.IsSuccess);
         Assert.Single(prependedResult.Errors);
@@ -544,39 +298,4 @@ public class ResultPrependErrorSyncTestsArity0
     }
     
     #endregion // Arity 8 - Sync PrependError
-    
-    #region Arity 8 - Async PrependErrorAsync on Result
-    
-    [Fact]
-    public async Task PrependErrorAsync_Arity8_Success_ShouldNotPrependError() {
-        // Given
-        var value1 = 42;
-        var value2 = "test";
-        var value3 = true;
-        var value4 = 3.14;
-        var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
-        var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
-        // When
-        var prependedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.PrependErrorAsync<int, string, bool, double, long, string, string, string>(result, "Prepended error");
-        // Then
-        Assert.True(prependedResult.IsSuccess);
-    }
-    
-    [Fact]
-    public async Task PrependErrorAsync_Arity8_Failure_ShouldPrependError() {
-        // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string, string>("Test error");
-        // When
-        var prependedResult = await UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks.ResultExtensions.PrependErrorAsync<int, string, bool, double, long, string, string, string>(result, "Prepended error");
-        // Then
-        Assert.False(prependedResult.IsSuccess);
-        Assert.Single(prependedResult.Errors);
-        Assert.Contains("Prepended error", prependedResult.Errors.First().Message);
-        Assert.EndsWith("Test error", prependedResult.Errors.First().Message);
-    }
-    
-    #endregion // Arity 8 - Async PrependErrorAsync on Result
 }

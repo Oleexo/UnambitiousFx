@@ -59,14 +59,13 @@ internal static class CodeGeneratorFactory
         // ErrorHandling extensions
         yield return new ResultMapErrorExtensionsCodeGenerator(baseNamespace);
         yield return new ResultMapErrorsExtensionsCodeGenerator(baseNamespace);
-        yield return new ResultHasErrorExtensionsCodeGenerator(baseNamespace);
         yield return new ResultFilterErrorExtensionsCodeGenerator(baseNamespace);
-        yield return new ResultHasExceptionExtensionsCodeGenerator(baseNamespace);
         yield return new ResultRecoveryExtensionsCodeGenerator(baseNamespace);
         yield return new ResultAppendErrorExtensionsCodeGenerator(baseNamespace);
         yield return new ResultPrependErrorExtensionsCodeGenerator(baseNamespace);
         yield return new ResultAccumulateExtensionsCodeGenerator(baseNamespace);
         yield return new ResultFindErrorExtensionsCodeGenerator(baseNamespace);
+        yield return new ResultTryPickErrorExtensionsCodeGenerator(baseNamespace);
         yield return new ResultMatchErrorExtensionsCodeGenerator(baseNamespace);
         yield return new ResultShapeErrorExtensionsCodeGenerator(baseNamespace);
     }
@@ -104,8 +103,6 @@ internal static class CodeGeneratorFactory
         yield return new ResultMapErrorsTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
         yield return new ResultPrependErrorTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
         yield return new ResultAppendErrorTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
-        yield return new ResultHasErrorTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
-        yield return new ResultHasExceptionTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
         yield return new ResultFindErrorTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
         yield return new ResultMatchErrorTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);
         yield return new ResultFilterErrorTestsGenerator(baseNamespace, FileOrganizationMode.SingleFile);

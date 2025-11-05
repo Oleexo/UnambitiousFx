@@ -1,11 +1,9 @@
-using System.Diagnostics.CodeAnalysis;
 using UnambitiousFx.Core.Results.Reasons;
 
 namespace UnambitiousFx.Core.Results;
 
 public abstract partial class Result : BaseResult {
-    public abstract void Deconstruct(out bool                 isSuccess,
-                                     out IEnumerable<IError>? error);
+    public abstract void Deconstruct(out IEnumerable<IError>? error);
 
     public override string ToString() {
         if (IsSuccess) {
@@ -88,7 +86,6 @@ public abstract partial class Result : BaseResult {
     public static Result Failure(IEnumerable<IError> errors) {
         return new FailureResult(errors);
     }
+
     #endregion
-
-
 }

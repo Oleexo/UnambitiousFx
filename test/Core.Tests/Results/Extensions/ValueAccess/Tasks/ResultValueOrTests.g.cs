@@ -12,9 +12,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Extensions.ValueAccess.Tasks;
 using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
@@ -30,7 +27,7 @@ public class ResultValueOrTaskTestsArity1
         // Given
         var value1 = 42;
         var taskResult = Task.FromResult(Result.Success(value1));
-        var fallback1 = 999;
+        var fallback1 = 100;
         // When
         var actualValue = await taskResult.ValueOrAsync(fallback1);
         // Then
@@ -41,7 +38,7 @@ public class ResultValueOrTaskTestsArity1
     public async Task ValueOrTask_Arity1_Failure_ShouldReturnFallback() {
         // Given
         var taskResult = Task.FromResult(Result.Failure<int>("Test error"));
-        var fallback1 = 999;
+        var fallback1 = 100;
         // When
         var actualValue = await taskResult.ValueOrAsync(fallback1);
         // Then
@@ -83,8 +80,8 @@ public class ResultValueOrTaskTestsArity1
         var value1 = 42;
         var value2 = "test";
         var taskResult = Task.FromResult(Result.Success(value1, value2));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var fallback1 = 100;
+        var fallback2 = "World";
         // When
         var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2);
         // Then
@@ -96,8 +93,8 @@ public class ResultValueOrTaskTestsArity1
     public async Task ValueOrTask_Arity2_Failure_ShouldReturnFallback() {
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string>("Test error"));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var fallback1 = 100;
+        var fallback2 = "World";
         // When
         var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2);
         // Then
@@ -111,8 +108,8 @@ public class ResultValueOrTaskTestsArity1
         var value1 = 42;
         var value2 = "test";
         var taskResult = Task.FromResult(Result.Success(value1, value2));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var fallback1 = 100;
+        var fallback2 = "World";
         Func<(int, string)> factory = () => (fallback1, fallback2);
         // When
         var actualValue = await taskResult.ValueOrAsync(factory);
@@ -125,8 +122,8 @@ public class ResultValueOrTaskTestsArity1
     public async Task ValueOrTaskWithFactory_Arity2_Failure_ShouldReturnFactoryValue() {
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string>("Test error"));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var fallback1 = 100;
+        var fallback2 = "World";
         Func<(int, string)> factory = () => (fallback1, fallback2);
         // When
         var actualValue = await taskResult.ValueOrAsync(factory);
@@ -146,8 +143,8 @@ public class ResultValueOrTaskTestsArity1
         var value2 = "test";
         var value3 = true;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var fallback1 = 100;
+        var fallback2 = "World";
         var fallback3 = false;
         // When
         var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2, fallback3);
@@ -161,8 +158,8 @@ public class ResultValueOrTaskTestsArity1
     public async Task ValueOrTask_Arity3_Failure_ShouldReturnFallback() {
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool>("Test error"));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var fallback1 = 100;
+        var fallback2 = "World";
         var fallback3 = false;
         // When
         var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2, fallback3);
@@ -179,8 +176,8 @@ public class ResultValueOrTaskTestsArity1
         var value2 = "test";
         var value3 = true;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var fallback1 = 100;
+        var fallback2 = "World";
         var fallback3 = false;
         Func<(int, string, bool)> factory = () => (fallback1, fallback2, fallback3);
         // When
@@ -195,8 +192,8 @@ public class ResultValueOrTaskTestsArity1
     public async Task ValueOrTaskWithFactory_Arity3_Failure_ShouldReturnFactoryValue() {
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool>("Test error"));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var fallback1 = 100;
+        var fallback2 = "World";
         var fallback3 = false;
         Func<(int, string, bool)> factory = () => (fallback1, fallback2, fallback3);
         // When
@@ -219,10 +216,10 @@ public class ResultValueOrTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var fallback1 = 100;
+        var fallback2 = "World";
         var fallback3 = false;
-        var fallback4 = 9.99;
+        var fallback4 = 6.28;
         // When
         var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4);
         // Then
@@ -236,10 +233,10 @@ public class ResultValueOrTaskTestsArity1
     public async Task ValueOrTask_Arity4_Failure_ShouldReturnFallback() {
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool, double>("Test error"));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var fallback1 = 100;
+        var fallback2 = "World";
         var fallback3 = false;
-        var fallback4 = 9.99;
+        var fallback4 = 6.28;
         // When
         var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4);
         // Then
@@ -257,10 +254,10 @@ public class ResultValueOrTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var fallback1 = 100;
+        var fallback2 = "World";
         var fallback3 = false;
-        var fallback4 = 9.99;
+        var fallback4 = 6.28;
         Func<(int, string, bool, double)> factory = () => (fallback1, fallback2, fallback3, fallback4);
         // When
         var actualValue = await taskResult.ValueOrAsync(factory);
@@ -275,10 +272,10 @@ public class ResultValueOrTaskTestsArity1
     public async Task ValueOrTaskWithFactory_Arity4_Failure_ShouldReturnFactoryValue() {
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool, double>("Test error"));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var fallback1 = 100;
+        var fallback2 = "World";
         var fallback3 = false;
-        var fallback4 = 9.99;
+        var fallback4 = 6.28;
         Func<(int, string, bool, double)> factory = () => (fallback1, fallback2, fallback3, fallback4);
         // When
         var actualValue = await taskResult.ValueOrAsync(factory);
@@ -302,11 +299,11 @@ public class ResultValueOrTaskTestsArity1
         var value4 = 3.14;
         var value5 = 123L;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var fallback1 = 100;
+        var fallback2 = "World";
         var fallback3 = false;
-        var fallback4 = 9.99;
-        var fallback5 = 999L;
+        var fallback4 = 6.28;
+        var fallback5 = 456L;
         // When
         var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4, fallback5);
         // Then
@@ -321,11 +318,11 @@ public class ResultValueOrTaskTestsArity1
     public async Task ValueOrTask_Arity5_Failure_ShouldReturnFallback() {
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var fallback1 = 100;
+        var fallback2 = "World";
         var fallback3 = false;
-        var fallback4 = 9.99;
-        var fallback5 = 999L;
+        var fallback4 = 6.28;
+        var fallback5 = 456L;
         // When
         var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4, fallback5);
         // Then
@@ -345,11 +342,11 @@ public class ResultValueOrTaskTestsArity1
         var value4 = 3.14;
         var value5 = 123L;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var fallback1 = 100;
+        var fallback2 = "World";
         var fallback3 = false;
-        var fallback4 = 9.99;
-        var fallback5 = 999L;
+        var fallback4 = 6.28;
+        var fallback5 = 456L;
         Func<(int, string, bool, double, long)> factory = () => (fallback1, fallback2, fallback3, fallback4, fallback5);
         // When
         var actualValue = await taskResult.ValueOrAsync(factory);
@@ -365,11 +362,11 @@ public class ResultValueOrTaskTestsArity1
     public async Task ValueOrTaskWithFactory_Arity5_Failure_ShouldReturnFactoryValue() {
         // Given
         var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var fallback1 = 100;
+        var fallback2 = "World";
         var fallback3 = false;
-        var fallback4 = 9.99;
-        var fallback5 = 999L;
+        var fallback4 = 6.28;
+        var fallback5 = 456L;
         Func<(int, string, bool, double, long)> factory = () => (fallback1, fallback2, fallback3, fallback4, fallback5);
         // When
         var actualValue = await taskResult.ValueOrAsync(factory);
@@ -393,14 +390,14 @@ public class ResultValueOrTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
+        var value6 = DateTime.UtcNow;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var fallback1 = 100;
+        var fallback2 = "World";
         var fallback3 = false;
-        var fallback4 = 9.99;
-        var fallback5 = 999L;
-        var fallback6 = "fallback6";
+        var fallback4 = 6.28;
+        var fallback5 = 456L;
+        var fallback6 = DateTime.UtcNow.AddDays(1);
         // When
         var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4, fallback5, fallback6);
         // Then
@@ -415,13 +412,13 @@ public class ResultValueOrTaskTestsArity1
     [Fact]
     public async Task ValueOrTask_Arity6_Failure_ShouldReturnFallback() {
         // Given
-        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
+        var fallback1 = 100;
+        var fallback2 = "World";
         var fallback3 = false;
-        var fallback4 = 9.99;
-        var fallback5 = 999L;
-        var fallback6 = "fallback6";
+        var fallback4 = 6.28;
+        var fallback5 = 456L;
+        var fallback6 = DateTime.UtcNow.AddDays(1);
         // When
         var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4, fallback5, fallback6);
         // Then
@@ -441,15 +438,15 @@ public class ResultValueOrTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
+        var value6 = DateTime.UtcNow;
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var fallback1 = 100;
+        var fallback2 = "World";
         var fallback3 = false;
-        var fallback4 = 9.99;
-        var fallback5 = 999L;
-        var fallback6 = "fallback6";
-        Func<(int, string, bool, double, long, string)> factory = () => (fallback1, fallback2, fallback3, fallback4, fallback5, fallback6);
+        var fallback4 = 6.28;
+        var fallback5 = 456L;
+        var fallback6 = DateTime.UtcNow.AddDays(1);
+        Func<(int, string, bool, double, long, DateTime)> factory = () => (fallback1, fallback2, fallback3, fallback4, fallback5, fallback6);
         // When
         var actualValue = await taskResult.ValueOrAsync(factory);
         // Then
@@ -464,14 +461,14 @@ public class ResultValueOrTaskTestsArity1
     [Fact]
     public async Task ValueOrTaskWithFactory_Arity6_Failure_ShouldReturnFactoryValue() {
         // Given
-        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
+        var fallback1 = 100;
+        var fallback2 = "World";
         var fallback3 = false;
-        var fallback4 = 9.99;
-        var fallback5 = 999L;
-        var fallback6 = "fallback6";
-        Func<(int, string, bool, double, long, string)> factory = () => (fallback1, fallback2, fallback3, fallback4, fallback5, fallback6);
+        var fallback4 = 6.28;
+        var fallback5 = 456L;
+        var fallback6 = DateTime.UtcNow.AddDays(1);
+        Func<(int, string, bool, double, long, DateTime)> factory = () => (fallback1, fallback2, fallback3, fallback4, fallback5, fallback6);
         // When
         var actualValue = await taskResult.ValueOrAsync(factory);
         // Then
@@ -495,16 +492,16 @@ public class ResultValueOrTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var fallback1 = 100;
+        var fallback2 = "World";
         var fallback3 = false;
-        var fallback4 = 9.99;
-        var fallback5 = 999L;
-        var fallback6 = "fallback6";
-        var fallback7 = "fallback7";
+        var fallback4 = 6.28;
+        var fallback5 = 456L;
+        var fallback6 = DateTime.UtcNow.AddDays(1);
+        var fallback7 = Guid.NewGuid();
         // When
         var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4, fallback5, fallback6, fallback7);
         // Then
@@ -520,14 +517,14 @@ public class ResultValueOrTaskTestsArity1
     [Fact]
     public async Task ValueOrTask_Arity7_Failure_ShouldReturnFallback() {
         // Given
-        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
+        var fallback1 = 100;
+        var fallback2 = "World";
         var fallback3 = false;
-        var fallback4 = 9.99;
-        var fallback5 = 999L;
-        var fallback6 = "fallback6";
-        var fallback7 = "fallback7";
+        var fallback4 = 6.28;
+        var fallback5 = 456L;
+        var fallback6 = DateTime.UtcNow.AddDays(1);
+        var fallback7 = Guid.NewGuid();
         // When
         var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4, fallback5, fallback6, fallback7);
         // Then
@@ -548,17 +545,17 @@ public class ResultValueOrTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var fallback1 = 100;
+        var fallback2 = "World";
         var fallback3 = false;
-        var fallback4 = 9.99;
-        var fallback5 = 999L;
-        var fallback6 = "fallback6";
-        var fallback7 = "fallback7";
-        Func<(int, string, bool, double, long, string, string)> factory = () => (fallback1, fallback2, fallback3, fallback4, fallback5, fallback6, fallback7);
+        var fallback4 = 6.28;
+        var fallback5 = 456L;
+        var fallback6 = DateTime.UtcNow.AddDays(1);
+        var fallback7 = Guid.NewGuid();
+        Func<(int, string, bool, double, long, DateTime, Guid)> factory = () => (fallback1, fallback2, fallback3, fallback4, fallback5, fallback6, fallback7);
         // When
         var actualValue = await taskResult.ValueOrAsync(factory);
         // Then
@@ -574,15 +571,15 @@ public class ResultValueOrTaskTestsArity1
     [Fact]
     public async Task ValueOrTaskWithFactory_Arity7_Failure_ShouldReturnFactoryValue() {
         // Given
-        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
+        var fallback1 = 100;
+        var fallback2 = "World";
         var fallback3 = false;
-        var fallback4 = 9.99;
-        var fallback5 = 999L;
-        var fallback6 = "fallback6";
-        var fallback7 = "fallback7";
-        Func<(int, string, bool, double, long, string, string)> factory = () => (fallback1, fallback2, fallback3, fallback4, fallback5, fallback6, fallback7);
+        var fallback4 = 6.28;
+        var fallback5 = 456L;
+        var fallback6 = DateTime.UtcNow.AddDays(1);
+        var fallback7 = Guid.NewGuid();
+        Func<(int, string, bool, double, long, DateTime, Guid)> factory = () => (fallback1, fallback2, fallback3, fallback4, fallback5, fallback6, fallback7);
         // When
         var actualValue = await taskResult.ValueOrAsync(factory);
         // Then
@@ -607,18 +604,18 @@ public class ResultValueOrTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var fallback1 = 100;
+        var fallback2 = "World";
         var fallback3 = false;
-        var fallback4 = 9.99;
-        var fallback5 = 999L;
-        var fallback6 = "fallback6";
-        var fallback7 = "fallback7";
-        var fallback8 = "fallback8";
+        var fallback4 = 6.28;
+        var fallback5 = 456L;
+        var fallback6 = DateTime.UtcNow.AddDays(1);
+        var fallback7 = Guid.NewGuid();
+        var fallback8 = TimeSpan.FromMinutes(10);
         // When
         var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4, fallback5, fallback6, fallback7, fallback8);
         // Then
@@ -635,15 +632,15 @@ public class ResultValueOrTaskTestsArity1
     [Fact]
     public async Task ValueOrTask_Arity8_Failure_ShouldReturnFallback() {
         // Given
-        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
+        var fallback1 = 100;
+        var fallback2 = "World";
         var fallback3 = false;
-        var fallback4 = 9.99;
-        var fallback5 = 999L;
-        var fallback6 = "fallback6";
-        var fallback7 = "fallback7";
-        var fallback8 = "fallback8";
+        var fallback4 = 6.28;
+        var fallback5 = 456L;
+        var fallback6 = DateTime.UtcNow.AddDays(1);
+        var fallback7 = Guid.NewGuid();
+        var fallback8 = TimeSpan.FromMinutes(10);
         // When
         var actualValue = await taskResult.ValueOrAsync(fallback1, fallback2, fallback3, fallback4, fallback5, fallback6, fallback7, fallback8);
         // Then
@@ -665,19 +662,19 @@ public class ResultValueOrTaskTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
         var taskResult = Task.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var fallback1 = 100;
+        var fallback2 = "World";
         var fallback3 = false;
-        var fallback4 = 9.99;
-        var fallback5 = 999L;
-        var fallback6 = "fallback6";
-        var fallback7 = "fallback7";
-        var fallback8 = "fallback8";
-        Func<(int, string, bool, double, long, string, string, string)> factory = () => (fallback1, fallback2, fallback3, fallback4, fallback5, fallback6, fallback7, fallback8);
+        var fallback4 = 6.28;
+        var fallback5 = 456L;
+        var fallback6 = DateTime.UtcNow.AddDays(1);
+        var fallback7 = Guid.NewGuid();
+        var fallback8 = TimeSpan.FromMinutes(10);
+        Func<(int, string, bool, double, long, DateTime, Guid, TimeSpan)> factory = () => (fallback1, fallback2, fallback3, fallback4, fallback5, fallback6, fallback7, fallback8);
         // When
         var actualValue = await taskResult.ValueOrAsync(factory);
         // Then
@@ -694,16 +691,16 @@ public class ResultValueOrTaskTestsArity1
     [Fact]
     public async Task ValueOrTaskWithFactory_Arity8_Failure_ShouldReturnFactoryValue() {
         // Given
-        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
-        var fallback1 = 999;
-        var fallback2 = "fallback";
+        var taskResult = Task.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
+        var fallback1 = 100;
+        var fallback2 = "World";
         var fallback3 = false;
-        var fallback4 = 9.99;
-        var fallback5 = 999L;
-        var fallback6 = "fallback6";
-        var fallback7 = "fallback7";
-        var fallback8 = "fallback8";
-        Func<(int, string, bool, double, long, string, string, string)> factory = () => (fallback1, fallback2, fallback3, fallback4, fallback5, fallback6, fallback7, fallback8);
+        var fallback4 = 6.28;
+        var fallback5 = 456L;
+        var fallback6 = DateTime.UtcNow.AddDays(1);
+        var fallback7 = Guid.NewGuid();
+        var fallback8 = TimeSpan.FromMinutes(10);
+        Func<(int, string, bool, double, long, DateTime, Guid, TimeSpan)> factory = () => (fallback1, fallback2, fallback3, fallback4, fallback5, fallback6, fallback7, fallback8);
         // When
         var actualValue = await taskResult.ValueOrAsync(factory);
         // Then

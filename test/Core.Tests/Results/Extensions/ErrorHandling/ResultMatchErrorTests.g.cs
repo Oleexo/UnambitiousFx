@@ -13,8 +13,6 @@ using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
 
@@ -191,10 +189,10 @@ public class ResultMatchErrorSyncTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
+        var value6 = DateTime.UtcNow;
         var result = Result.Success(value1, value2, value3, value4, value5, value6);
         // When
-        var matchResult = result.MatchError<Error, int, string, bool, double, long, string, string>(error => "matched", () => "default");
+        var matchResult = result.MatchError<Error, int, string, bool, double, long, DateTime, string>(error => "matched", () => "default");
         // Then
         Assert.Equal("default", matchResult);
     }
@@ -202,9 +200,9 @@ public class ResultMatchErrorSyncTestsArity0
     [Fact]
     public void MatchError_Arity6_Failure_ShouldMatchError() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string>(new Error("Test error"));
+        var result = Result.Failure<int, string, bool, double, long, DateTime>(new Error("Test error"));
         // When
-        var matchResult = result.MatchError<Error, int, string, bool, double, long, string, string>(error => "matched", () => "default");
+        var matchResult = result.MatchError<Error, int, string, bool, double, long, DateTime, string>(error => "matched", () => "default");
         // Then
         Assert.Equal("matched", matchResult);
     }
@@ -221,11 +219,11 @@ public class ResultMatchErrorSyncTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
         // When
-        var matchResult = result.MatchError<Error, int, string, bool, double, long, string, string, string>(error => "matched", () => "default");
+        var matchResult = result.MatchError<Error, int, string, bool, double, long, DateTime, Guid, string>(error => "matched", () => "default");
         // Then
         Assert.Equal("default", matchResult);
     }
@@ -233,9 +231,9 @@ public class ResultMatchErrorSyncTestsArity0
     [Fact]
     public void MatchError_Arity7_Failure_ShouldMatchError() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string>(new Error("Test error"));
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>(new Error("Test error"));
         // When
-        var matchResult = result.MatchError<Error, int, string, bool, double, long, string, string, string>(error => "matched", () => "default");
+        var matchResult = result.MatchError<Error, int, string, bool, double, long, DateTime, Guid, string>(error => "matched", () => "default");
         // Then
         Assert.Equal("matched", matchResult);
     }
@@ -252,12 +250,12 @@ public class ResultMatchErrorSyncTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
         // When
-        var matchResult = result.MatchError<Error, int, string, bool, double, long, string, string, string, string>(error => "matched", () => "default");
+        var matchResult = result.MatchError<Error, int, string, bool, double, long, DateTime, Guid, TimeSpan, string>(error => "matched", () => "default");
         // Then
         Assert.Equal("default", matchResult);
     }
@@ -265,9 +263,9 @@ public class ResultMatchErrorSyncTestsArity0
     [Fact]
     public void MatchError_Arity8_Failure_ShouldMatchError() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string, string>(new Error("Test error"));
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>(new Error("Test error"));
         // When
-        var matchResult = result.MatchError<Error, int, string, bool, double, long, string, string, string, string>(error => "matched", () => "default");
+        var matchResult = result.MatchError<Error, int, string, bool, double, long, DateTime, Guid, TimeSpan, string>(error => "matched", () => "default");
         // Then
         Assert.Equal("matched", matchResult);
     }

@@ -12,7 +12,7 @@ using UnambitiousFx.Core.Results.Reasons;
 
 namespace UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
 
-public static partial class ResultExtensions
+public static partial class ResultFindErrorExtensions
 {
     #region Arity 0
     
@@ -40,32 +40,6 @@ public static partial class ResultExtensions
     public static async Task<IError?> FindErrorAsync(this Task<Result> awaitableResult, Func<IError, Task<bool>> predicate) {
         var result = await awaitableResult;
         return await result.FindErrorAsync(predicate);
-    }
-    
-    /// <summary>
-    /// Asynchronously attempts to locate a specific attached error reason via predicate.
-    /// </summary>
-    /// <param name="result">The result to search for errors.</param>
-    /// <param name="predicate">The async predicate function to match errors.</param>
-    /// <returns>A task containing a tuple with success flag and the first error matching the predicate, or null if no match is found.</returns>
-    public static async Task<(bool Success, IError? Error)> TryPickErrorAsync(this Result result, Func<IError, Task<bool>> predicate) {
-        foreach (var error in result.Reasons.OfType<IError>()) {
-            if (await predicate(error)) {
-                return (true, error);
-            }
-        }
-        return (false, null);
-    }
-    
-    /// <summary>
-    /// Asynchronously attempts to locate a specific attached error reason via predicate.
-    /// </summary>
-    /// <param name="awaitableResult">The awaitable result to search for errors.</param>
-    /// <param name="predicate">The async predicate function to match errors.</param>
-    /// <returns>A task containing a tuple with success flag and the first error matching the predicate, or null if no match is found.</returns>
-    public static async Task<(bool Success, IError? Error)> TryPickErrorAsync(this Task<Result> awaitableResult, Func<IError, Task<bool>> predicate) {
-        var result = await awaitableResult;
-        return await result.TryPickErrorAsync(predicate);
     }
     
     #endregion // Arity 0
@@ -100,34 +74,6 @@ public static partial class ResultExtensions
         return await result.FindErrorAsync(predicate);
     }
     
-    /// <summary>
-    /// Asynchronously attempts to locate a specific attached error reason via predicate.
-    /// </summary>
-    /// <typeparam name="TValue1">The type of the first value.</typeparam>
-    /// <param name="result">The result to search for errors.</param>
-    /// <param name="predicate">The async predicate function to match errors.</param>
-    /// <returns>A task containing a tuple with success flag and the first error matching the predicate, or null if no match is found.</returns>
-    public static async Task<(bool Success, IError? Error)> TryPickErrorAsync<TValue1>(this Result<TValue1> result, Func<IError, Task<bool>> predicate) where TValue1 : notnull {
-        foreach (var error in result.Reasons.OfType<IError>()) {
-            if (await predicate(error)) {
-                return (true, error);
-            }
-        }
-        return (false, null);
-    }
-    
-    /// <summary>
-    /// Asynchronously attempts to locate a specific attached error reason via predicate.
-    /// </summary>
-    /// <typeparam name="TValue1">The type of the first value.</typeparam>
-    /// <param name="awaitableResult">The awaitable result to search for errors.</param>
-    /// <param name="predicate">The async predicate function to match errors.</param>
-    /// <returns>A task containing a tuple with success flag and the first error matching the predicate, or null if no match is found.</returns>
-    public static async Task<(bool Success, IError? Error)> TryPickErrorAsync<TValue1>(this Task<Result<TValue1>> awaitableResult, Func<IError, Task<bool>> predicate) where TValue1 : notnull {
-        var result = await awaitableResult;
-        return await result.TryPickErrorAsync(predicate);
-    }
-    
     #endregion // Arity 1
     
     #region Arity 2
@@ -160,36 +106,6 @@ public static partial class ResultExtensions
     public static async Task<IError?> FindErrorAsync<TValue1, TValue2>(this Task<Result<TValue1, TValue2>> awaitableResult, Func<IError, Task<bool>> predicate) where TValue1 : notnull where TValue2 : notnull {
         var result = await awaitableResult;
         return await result.FindErrorAsync(predicate);
-    }
-    
-    /// <summary>
-    /// Asynchronously attempts to locate a specific attached error reason via predicate.
-    /// </summary>
-    /// <typeparam name="TValue1">The type of the first value.</typeparam>
-    /// <typeparam name="TValue2">The type of the second value.</typeparam>
-    /// <param name="result">The result to search for errors.</param>
-    /// <param name="predicate">The async predicate function to match errors.</param>
-    /// <returns>A task containing a tuple with success flag and the first error matching the predicate, or null if no match is found.</returns>
-    public static async Task<(bool Success, IError? Error)> TryPickErrorAsync<TValue1, TValue2>(this Result<TValue1, TValue2> result, Func<IError, Task<bool>> predicate) where TValue1 : notnull where TValue2 : notnull {
-        foreach (var error in result.Reasons.OfType<IError>()) {
-            if (await predicate(error)) {
-                return (true, error);
-            }
-        }
-        return (false, null);
-    }
-    
-    /// <summary>
-    /// Asynchronously attempts to locate a specific attached error reason via predicate.
-    /// </summary>
-    /// <typeparam name="TValue1">The type of the first value.</typeparam>
-    /// <typeparam name="TValue2">The type of the second value.</typeparam>
-    /// <param name="awaitableResult">The awaitable result to search for errors.</param>
-    /// <param name="predicate">The async predicate function to match errors.</param>
-    /// <returns>A task containing a tuple with success flag and the first error matching the predicate, or null if no match is found.</returns>
-    public static async Task<(bool Success, IError? Error)> TryPickErrorAsync<TValue1, TValue2>(this Task<Result<TValue1, TValue2>> awaitableResult, Func<IError, Task<bool>> predicate) where TValue1 : notnull where TValue2 : notnull {
-        var result = await awaitableResult;
-        return await result.TryPickErrorAsync(predicate);
     }
     
     #endregion // Arity 2
@@ -228,38 +144,6 @@ public static partial class ResultExtensions
         return await result.FindErrorAsync(predicate);
     }
     
-    /// <summary>
-    /// Asynchronously attempts to locate a specific attached error reason via predicate.
-    /// </summary>
-    /// <typeparam name="TValue1">The type of the first value.</typeparam>
-    /// <typeparam name="TValue2">The type of the second value.</typeparam>
-    /// <typeparam name="TValue3">The type of the third value.</typeparam>
-    /// <param name="result">The result to search for errors.</param>
-    /// <param name="predicate">The async predicate function to match errors.</param>
-    /// <returns>A task containing a tuple with success flag and the first error matching the predicate, or null if no match is found.</returns>
-    public static async Task<(bool Success, IError? Error)> TryPickErrorAsync<TValue1, TValue2, TValue3>(this Result<TValue1, TValue2, TValue3> result, Func<IError, Task<bool>> predicate) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull {
-        foreach (var error in result.Reasons.OfType<IError>()) {
-            if (await predicate(error)) {
-                return (true, error);
-            }
-        }
-        return (false, null);
-    }
-    
-    /// <summary>
-    /// Asynchronously attempts to locate a specific attached error reason via predicate.
-    /// </summary>
-    /// <typeparam name="TValue1">The type of the first value.</typeparam>
-    /// <typeparam name="TValue2">The type of the second value.</typeparam>
-    /// <typeparam name="TValue3">The type of the third value.</typeparam>
-    /// <param name="awaitableResult">The awaitable result to search for errors.</param>
-    /// <param name="predicate">The async predicate function to match errors.</param>
-    /// <returns>A task containing a tuple with success flag and the first error matching the predicate, or null if no match is found.</returns>
-    public static async Task<(bool Success, IError? Error)> TryPickErrorAsync<TValue1, TValue2, TValue3>(this Task<Result<TValue1, TValue2, TValue3>> awaitableResult, Func<IError, Task<bool>> predicate) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull {
-        var result = await awaitableResult;
-        return await result.TryPickErrorAsync(predicate);
-    }
-    
     #endregion // Arity 3
     
     #region Arity 4
@@ -296,40 +180,6 @@ public static partial class ResultExtensions
     public static async Task<IError?> FindErrorAsync<TValue1, TValue2, TValue3, TValue4>(this Task<Result<TValue1, TValue2, TValue3, TValue4>> awaitableResult, Func<IError, Task<bool>> predicate) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull {
         var result = await awaitableResult;
         return await result.FindErrorAsync(predicate);
-    }
-    
-    /// <summary>
-    /// Asynchronously attempts to locate a specific attached error reason via predicate.
-    /// </summary>
-    /// <typeparam name="TValue1">The type of the first value.</typeparam>
-    /// <typeparam name="TValue2">The type of the second value.</typeparam>
-    /// <typeparam name="TValue3">The type of the third value.</typeparam>
-    /// <typeparam name="TValue4">The type of the fourth value.</typeparam>
-    /// <param name="result">The result to search for errors.</param>
-    /// <param name="predicate">The async predicate function to match errors.</param>
-    /// <returns>A task containing a tuple with success flag and the first error matching the predicate, or null if no match is found.</returns>
-    public static async Task<(bool Success, IError? Error)> TryPickErrorAsync<TValue1, TValue2, TValue3, TValue4>(this Result<TValue1, TValue2, TValue3, TValue4> result, Func<IError, Task<bool>> predicate) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull {
-        foreach (var error in result.Reasons.OfType<IError>()) {
-            if (await predicate(error)) {
-                return (true, error);
-            }
-        }
-        return (false, null);
-    }
-    
-    /// <summary>
-    /// Asynchronously attempts to locate a specific attached error reason via predicate.
-    /// </summary>
-    /// <typeparam name="TValue1">The type of the first value.</typeparam>
-    /// <typeparam name="TValue2">The type of the second value.</typeparam>
-    /// <typeparam name="TValue3">The type of the third value.</typeparam>
-    /// <typeparam name="TValue4">The type of the fourth value.</typeparam>
-    /// <param name="awaitableResult">The awaitable result to search for errors.</param>
-    /// <param name="predicate">The async predicate function to match errors.</param>
-    /// <returns>A task containing a tuple with success flag and the first error matching the predicate, or null if no match is found.</returns>
-    public static async Task<(bool Success, IError? Error)> TryPickErrorAsync<TValue1, TValue2, TValue3, TValue4>(this Task<Result<TValue1, TValue2, TValue3, TValue4>> awaitableResult, Func<IError, Task<bool>> predicate) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull {
-        var result = await awaitableResult;
-        return await result.TryPickErrorAsync(predicate);
     }
     
     #endregion // Arity 4
@@ -372,42 +222,6 @@ public static partial class ResultExtensions
         return await result.FindErrorAsync(predicate);
     }
     
-    /// <summary>
-    /// Asynchronously attempts to locate a specific attached error reason via predicate.
-    /// </summary>
-    /// <typeparam name="TValue1">The type of the first value.</typeparam>
-    /// <typeparam name="TValue2">The type of the second value.</typeparam>
-    /// <typeparam name="TValue3">The type of the third value.</typeparam>
-    /// <typeparam name="TValue4">The type of the fourth value.</typeparam>
-    /// <typeparam name="TValue5">The type of the fifth value.</typeparam>
-    /// <param name="result">The result to search for errors.</param>
-    /// <param name="predicate">The async predicate function to match errors.</param>
-    /// <returns>A task containing a tuple with success flag and the first error matching the predicate, or null if no match is found.</returns>
-    public static async Task<(bool Success, IError? Error)> TryPickErrorAsync<TValue1, TValue2, TValue3, TValue4, TValue5>(this Result<TValue1, TValue2, TValue3, TValue4, TValue5> result, Func<IError, Task<bool>> predicate) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull {
-        foreach (var error in result.Reasons.OfType<IError>()) {
-            if (await predicate(error)) {
-                return (true, error);
-            }
-        }
-        return (false, null);
-    }
-    
-    /// <summary>
-    /// Asynchronously attempts to locate a specific attached error reason via predicate.
-    /// </summary>
-    /// <typeparam name="TValue1">The type of the first value.</typeparam>
-    /// <typeparam name="TValue2">The type of the second value.</typeparam>
-    /// <typeparam name="TValue3">The type of the third value.</typeparam>
-    /// <typeparam name="TValue4">The type of the fourth value.</typeparam>
-    /// <typeparam name="TValue5">The type of the fifth value.</typeparam>
-    /// <param name="awaitableResult">The awaitable result to search for errors.</param>
-    /// <param name="predicate">The async predicate function to match errors.</param>
-    /// <returns>A task containing a tuple with success flag and the first error matching the predicate, or null if no match is found.</returns>
-    public static async Task<(bool Success, IError? Error)> TryPickErrorAsync<TValue1, TValue2, TValue3, TValue4, TValue5>(this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5>> awaitableResult, Func<IError, Task<bool>> predicate) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull {
-        var result = await awaitableResult;
-        return await result.TryPickErrorAsync(predicate);
-    }
-    
     #endregion // Arity 5
     
     #region Arity 6
@@ -448,44 +262,6 @@ public static partial class ResultExtensions
     public static async Task<IError?> FindErrorAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>> awaitableResult, Func<IError, Task<bool>> predicate) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull {
         var result = await awaitableResult;
         return await result.FindErrorAsync(predicate);
-    }
-    
-    /// <summary>
-    /// Asynchronously attempts to locate a specific attached error reason via predicate.
-    /// </summary>
-    /// <typeparam name="TValue1">The type of the first value.</typeparam>
-    /// <typeparam name="TValue2">The type of the second value.</typeparam>
-    /// <typeparam name="TValue3">The type of the third value.</typeparam>
-    /// <typeparam name="TValue4">The type of the fourth value.</typeparam>
-    /// <typeparam name="TValue5">The type of the fifth value.</typeparam>
-    /// <typeparam name="TValue6">The type of the sixth value.</typeparam>
-    /// <param name="result">The result to search for errors.</param>
-    /// <param name="predicate">The async predicate function to match errors.</param>
-    /// <returns>A task containing a tuple with success flag and the first error matching the predicate, or null if no match is found.</returns>
-    public static async Task<(bool Success, IError? Error)> TryPickErrorAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6> result, Func<IError, Task<bool>> predicate) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull {
-        foreach (var error in result.Reasons.OfType<IError>()) {
-            if (await predicate(error)) {
-                return (true, error);
-            }
-        }
-        return (false, null);
-    }
-    
-    /// <summary>
-    /// Asynchronously attempts to locate a specific attached error reason via predicate.
-    /// </summary>
-    /// <typeparam name="TValue1">The type of the first value.</typeparam>
-    /// <typeparam name="TValue2">The type of the second value.</typeparam>
-    /// <typeparam name="TValue3">The type of the third value.</typeparam>
-    /// <typeparam name="TValue4">The type of the fourth value.</typeparam>
-    /// <typeparam name="TValue5">The type of the fifth value.</typeparam>
-    /// <typeparam name="TValue6">The type of the sixth value.</typeparam>
-    /// <param name="awaitableResult">The awaitable result to search for errors.</param>
-    /// <param name="predicate">The async predicate function to match errors.</param>
-    /// <returns>A task containing a tuple with success flag and the first error matching the predicate, or null if no match is found.</returns>
-    public static async Task<(bool Success, IError? Error)> TryPickErrorAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>(this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6>> awaitableResult, Func<IError, Task<bool>> predicate) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull {
-        var result = await awaitableResult;
-        return await result.TryPickErrorAsync(predicate);
     }
     
     #endregion // Arity 6
@@ -532,46 +308,6 @@ public static partial class ResultExtensions
         return await result.FindErrorAsync(predicate);
     }
     
-    /// <summary>
-    /// Asynchronously attempts to locate a specific attached error reason via predicate.
-    /// </summary>
-    /// <typeparam name="TValue1">The type of the first value.</typeparam>
-    /// <typeparam name="TValue2">The type of the second value.</typeparam>
-    /// <typeparam name="TValue3">The type of the third value.</typeparam>
-    /// <typeparam name="TValue4">The type of the fourth value.</typeparam>
-    /// <typeparam name="TValue5">The type of the fifth value.</typeparam>
-    /// <typeparam name="TValue6">The type of the sixth value.</typeparam>
-    /// <typeparam name="TValue7">The type of the seventh value.</typeparam>
-    /// <param name="result">The result to search for errors.</param>
-    /// <param name="predicate">The async predicate function to match errors.</param>
-    /// <returns>A task containing a tuple with success flag and the first error matching the predicate, or null if no match is found.</returns>
-    public static async Task<(bool Success, IError? Error)> TryPickErrorAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7> result, Func<IError, Task<bool>> predicate) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull {
-        foreach (var error in result.Reasons.OfType<IError>()) {
-            if (await predicate(error)) {
-                return (true, error);
-            }
-        }
-        return (false, null);
-    }
-    
-    /// <summary>
-    /// Asynchronously attempts to locate a specific attached error reason via predicate.
-    /// </summary>
-    /// <typeparam name="TValue1">The type of the first value.</typeparam>
-    /// <typeparam name="TValue2">The type of the second value.</typeparam>
-    /// <typeparam name="TValue3">The type of the third value.</typeparam>
-    /// <typeparam name="TValue4">The type of the fourth value.</typeparam>
-    /// <typeparam name="TValue5">The type of the fifth value.</typeparam>
-    /// <typeparam name="TValue6">The type of the sixth value.</typeparam>
-    /// <typeparam name="TValue7">The type of the seventh value.</typeparam>
-    /// <param name="awaitableResult">The awaitable result to search for errors.</param>
-    /// <param name="predicate">The async predicate function to match errors.</param>
-    /// <returns>A task containing a tuple with success flag and the first error matching the predicate, or null if no match is found.</returns>
-    public static async Task<(bool Success, IError? Error)> TryPickErrorAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>(this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7>> awaitableResult, Func<IError, Task<bool>> predicate) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull {
-        var result = await awaitableResult;
-        return await result.TryPickErrorAsync(predicate);
-    }
-    
     #endregion // Arity 7
     
     #region Arity 8
@@ -616,48 +352,6 @@ public static partial class ResultExtensions
     public static async Task<IError?> FindErrorAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>> awaitableResult, Func<IError, Task<bool>> predicate) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull where TValue8 : notnull {
         var result = await awaitableResult;
         return await result.FindErrorAsync(predicate);
-    }
-    
-    /// <summary>
-    /// Asynchronously attempts to locate a specific attached error reason via predicate.
-    /// </summary>
-    /// <typeparam name="TValue1">The type of the first value.</typeparam>
-    /// <typeparam name="TValue2">The type of the second value.</typeparam>
-    /// <typeparam name="TValue3">The type of the third value.</typeparam>
-    /// <typeparam name="TValue4">The type of the fourth value.</typeparam>
-    /// <typeparam name="TValue5">The type of the fifth value.</typeparam>
-    /// <typeparam name="TValue6">The type of the sixth value.</typeparam>
-    /// <typeparam name="TValue7">The type of the seventh value.</typeparam>
-    /// <typeparam name="TValue8">The type of the eighth value.</typeparam>
-    /// <param name="result">The result to search for errors.</param>
-    /// <param name="predicate">The async predicate function to match errors.</param>
-    /// <returns>A task containing a tuple with success flag and the first error matching the predicate, or null if no match is found.</returns>
-    public static async Task<(bool Success, IError? Error)> TryPickErrorAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(this Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8> result, Func<IError, Task<bool>> predicate) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull where TValue8 : notnull {
-        foreach (var error in result.Reasons.OfType<IError>()) {
-            if (await predicate(error)) {
-                return (true, error);
-            }
-        }
-        return (false, null);
-    }
-    
-    /// <summary>
-    /// Asynchronously attempts to locate a specific attached error reason via predicate.
-    /// </summary>
-    /// <typeparam name="TValue1">The type of the first value.</typeparam>
-    /// <typeparam name="TValue2">The type of the second value.</typeparam>
-    /// <typeparam name="TValue3">The type of the third value.</typeparam>
-    /// <typeparam name="TValue4">The type of the fourth value.</typeparam>
-    /// <typeparam name="TValue5">The type of the fifth value.</typeparam>
-    /// <typeparam name="TValue6">The type of the sixth value.</typeparam>
-    /// <typeparam name="TValue7">The type of the seventh value.</typeparam>
-    /// <typeparam name="TValue8">The type of the eighth value.</typeparam>
-    /// <param name="awaitableResult">The awaitable result to search for errors.</param>
-    /// <param name="predicate">The async predicate function to match errors.</param>
-    /// <returns>A task containing a tuple with success flag and the first error matching the predicate, or null if no match is found.</returns>
-    public static async Task<(bool Success, IError? Error)> TryPickErrorAsync<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>(this Task<Result<TValue1, TValue2, TValue3, TValue4, TValue5, TValue6, TValue7, TValue8>> awaitableResult, Func<IError, Task<bool>> predicate) where TValue1 : notnull where TValue2 : notnull where TValue3 : notnull where TValue4 : notnull where TValue5 : notnull where TValue6 : notnull where TValue7 : notnull where TValue8 : notnull {
-        var result = await awaitableResult;
-        return await result.TryPickErrorAsync(predicate);
     }
     
     #endregion // Arity 8

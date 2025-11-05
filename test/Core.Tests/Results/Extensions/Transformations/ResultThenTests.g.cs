@@ -12,9 +12,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Extensions.Transformations;
 using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
@@ -92,7 +89,7 @@ public class ResultThenSyncTestsArity1
         var value3 = true;
         var transformed1 = 100;
         var transformed2 = "World";
-        var transformed3 = 6.28;
+        var transformed3 = false;
         var result = Result.Success(value1, value2, value3);
         // When
         var actualResult = result.Then((v1, v2, v3) => Result.Success(transformed1, transformed2, transformed3));
@@ -109,7 +106,7 @@ public class ResultThenSyncTestsArity1
         // Given
         var result = Result.Failure<int, string, bool>("Test error");
         // When
-        var actualResult = result.Then((v1, v2, v3) => Result.Success(100, "World", 6.28));
+        var actualResult = result.Then((v1, v2, v3) => Result.Success(100, "World", false));
         // Then
         Assert.False(actualResult.IsSuccess);
     }
@@ -127,8 +124,8 @@ public class ResultThenSyncTestsArity1
         var value4 = 3.14;
         var transformed1 = 100;
         var transformed2 = "World";
-        var transformed3 = 6.28;
-        var transformed4 = false;
+        var transformed3 = false;
+        var transformed4 = 6.28;
         var result = Result.Success(value1, value2, value3, value4);
         // When
         var actualResult = result.Then((v1, v2, v3, v4) => Result.Success(transformed1, transformed2, transformed3, transformed4));
@@ -146,7 +143,7 @@ public class ResultThenSyncTestsArity1
         // Given
         var result = Result.Failure<int, string, bool, double>("Test error");
         // When
-        var actualResult = result.Then((v1, v2, v3, v4) => Result.Success(100, "World", 6.28, false));
+        var actualResult = result.Then((v1, v2, v3, v4) => Result.Success(100, "World", false, 6.28));
         // Then
         Assert.False(actualResult.IsSuccess);
     }
@@ -165,9 +162,9 @@ public class ResultThenSyncTestsArity1
         var value5 = 123L;
         var transformed1 = 100;
         var transformed2 = "World";
-        var transformed3 = 6.28;
-        var transformed4 = false;
-        var transformed5 = 'B';
+        var transformed3 = false;
+        var transformed4 = 6.28;
+        var transformed5 = 456L;
         var result = Result.Success(value1, value2, value3, value4, value5);
         // When
         var actualResult = result.Then((v1, v2, v3, v4, v5) => Result.Success(transformed1, transformed2, transformed3, transformed4, transformed5));
@@ -186,7 +183,7 @@ public class ResultThenSyncTestsArity1
         // Given
         var result = Result.Failure<int, string, bool, double, long>("Test error");
         // When
-        var actualResult = result.Then((v1, v2, v3, v4, v5) => Result.Success(100, "World", 6.28, false, 'B'));
+        var actualResult = result.Then((v1, v2, v3, v4, v5) => Result.Success(100, "World", false, 6.28, 456L));
         // Then
         Assert.False(actualResult.IsSuccess);
     }
@@ -203,13 +200,13 @@ public class ResultThenSyncTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
+        var value6 = DateTime.UtcNow;
         var transformed1 = 100;
         var transformed2 = "World";
-        var transformed3 = 6.28;
-        var transformed4 = false;
-        var transformed5 = 'B';
-        var transformed6 = 456L;
+        var transformed3 = false;
+        var transformed4 = 6.28;
+        var transformed5 = 456L;
+        var transformed6 = DateTime.UtcNow.AddDays(1);
         var result = Result.Success(value1, value2, value3, value4, value5, value6);
         // When
         var actualResult = result.Then((v1, v2, v3, v4, v5, v6) => Result.Success(transformed1, transformed2, transformed3, transformed4, transformed5, transformed6));
@@ -227,9 +224,9 @@ public class ResultThenSyncTestsArity1
     [Fact]
     public void Then_Arity6_Failure_ShouldReturnOriginal() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
         // When
-        var actualResult = result.Then((v1, v2, v3, v4, v5, v6) => Result.Success(100, "World", 6.28, false, 'B', 456L));
+        var actualResult = result.Then((v1, v2, v3, v4, v5, v6) => Result.Success(100, "World", false, 6.28, 456L, DateTime.UtcNow.AddDays(1)));
         // Then
         Assert.False(actualResult.IsSuccess);
     }
@@ -246,15 +243,15 @@ public class ResultThenSyncTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var transformed1 = 100;
         var transformed2 = "World";
-        var transformed3 = 6.28;
-        var transformed4 = false;
-        var transformed5 = 'B';
-        var transformed6 = 456L;
-        var transformed7 = 15.0f;
+        var transformed3 = false;
+        var transformed4 = 6.28;
+        var transformed5 = 456L;
+        var transformed6 = DateTime.UtcNow.AddDays(1);
+        var transformed7 = Guid.NewGuid();
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
         // When
         var actualResult = result.Then((v1, v2, v3, v4, v5, v6, v7) => Result.Success(transformed1, transformed2, transformed3, transformed4, transformed5, transformed6, transformed7));
@@ -273,9 +270,9 @@ public class ResultThenSyncTestsArity1
     [Fact]
     public void Then_Arity7_Failure_ShouldReturnOriginal() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
         // When
-        var actualResult = result.Then((v1, v2, v3, v4, v5, v6, v7) => Result.Success(100, "World", 6.28, false, 'B', 456L, 15.0f));
+        var actualResult = result.Then((v1, v2, v3, v4, v5, v6, v7) => Result.Success(100, "World", false, 6.28, 456L, DateTime.UtcNow.AddDays(1), Guid.NewGuid()));
         // Then
         Assert.False(actualResult.IsSuccess);
     }
@@ -292,17 +289,17 @@ public class ResultThenSyncTestsArity1
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
         var transformed1 = 100;
         var transformed2 = "World";
-        var transformed3 = 6.28;
-        var transformed4 = false;
-        var transformed5 = 'B';
-        var transformed6 = 456L;
-        var transformed7 = 15.0f;
-        var transformed8 = 198m;
+        var transformed3 = false;
+        var transformed4 = 6.28;
+        var transformed5 = 456L;
+        var transformed6 = DateTime.UtcNow.AddDays(1);
+        var transformed7 = Guid.NewGuid();
+        var transformed8 = TimeSpan.FromMinutes(10);
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
         // When
         var actualResult = result.Then((v1, v2, v3, v4, v5, v6, v7, v8) => Result.Success(transformed1, transformed2, transformed3, transformed4, transformed5, transformed6, transformed7, transformed8));
@@ -322,9 +319,9 @@ public class ResultThenSyncTestsArity1
     [Fact]
     public void Then_Arity8_Failure_ShouldReturnOriginal() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
         // When
-        var actualResult = result.Then((v1, v2, v3, v4, v5, v6, v7, v8) => Result.Success(100, "World", 6.28, false, 'B', 456L, 15.0f, 198m));
+        var actualResult = result.Then((v1, v2, v3, v4, v5, v6, v7, v8) => Result.Success(100, "World", false, 6.28, 456L, DateTime.UtcNow.AddDays(1), Guid.NewGuid(), TimeSpan.FromMinutes(10)));
         // Then
         Assert.False(actualResult.IsSuccess);
     }

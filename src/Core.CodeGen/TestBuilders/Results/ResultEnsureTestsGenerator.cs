@@ -22,8 +22,9 @@ internal sealed class ResultEnsureTestsGenerator : ResultTestGeneratorBase {
                                     true)) {
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) =>
-        GenerateVariants(arity, ClassName, (GenerateSyncTests, false), (GenerateTaskTests, true), (GenerateValueTaskTests, true));
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
+        return GenerateVariants(arity, ClassName, (GenerateSyncTests, false), (x => GenerateAsyncTests(x, "Task"), true), (x => GenerateAsyncTests(x, "ValueTask"), true));
+    }
 
     private ClassWriter GenerateSyncTests(ushort arity) {
         var cw = new ClassWriter($"ResultEnsureSyncTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Sync Ensure" };
@@ -35,79 +36,67 @@ internal sealed class ResultEnsureTestsGenerator : ResultTestGeneratorBase {
         return cw;
     }
 
-    private ClassWriter GenerateTaskTests(ushort arity) {
-        var cw = new ClassWriter($"ResultEnsureTaskTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Task Ensure" };
-        cw.AddMethod(GenerateTaskSuccessTest(arity));
-        cw.AddMethod(GenerateTaskFailureTest(arity));
-        cw.AddMethod(GenerateTaskValidationFailureTest(arity));
-        cw.AddUsing("UnambitiousFx.Core.Results.Extensions.Validations.Tasks");
-        cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.Tasks";
+    private ClassWriter GenerateAsyncTests(ushort arity,
+                                           string asyncType) {
+        var cw = new ClassWriter($"ResultEnsure{asyncType}TestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - {asyncType} Ensure" };
+        cw.AddMethod(GenerateAsyncSuccessTest(arity, asyncType));
+        cw.AddMethod(GenerateAsyncFailureTest(arity, asyncType));
+        cw.AddMethod(GenerateAsyncValidationFailureTest(arity, asyncType));
+        cw.AddUsing($"UnambitiousFx.Core.Results.Extensions.Validations.{asyncType}s");
+        cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.{asyncType}s";
         return cw;
     }
 
-    private ClassWriter GenerateValueTaskTests(ushort arity) {
-        var cw = new ClassWriter($"ResultEnsureValueTaskTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - ValueTask Ensure" };
-        cw.AddMethod(GenerateValueTaskSuccessTest(arity));
-        cw.AddMethod(GenerateValueTaskFailureTest(arity));
-        cw.AddMethod(GenerateValueTaskValidationFailureTest(arity));
-        cw.AddUsing("UnambitiousFx.Core.Results.Extensions.Validations.ValueTasks");
-        cw.Namespace = $"{Config.BaseNamespace}.{ExtensionsNamespace}.ValueTasks";
-        return cw;
+    private MethodWriter GenerateSyncSuccessTest(ushort arity) {
+        return new MethodWriter($"Ensure_Arity{arity}_ValidCondition_ShouldSucceed",
+                                "void",
+                                GenerateSyncSuccessBody(arity),
+                                attributes: [new FactAttributeReference()],
+                                usings: GetUsings());
     }
 
-    private MethodWriter GenerateSyncSuccessTest(ushort arity) => new($"Ensure_Arity{arity}_ValidCondition_ShouldSucceed",
-                                                                      "void",
-                                                                      GenerateSyncSuccessBody(arity),
-                                                                      attributes: [new FactAttributeReference()],
-                                                                      usings: GetUsings());
+    private MethodWriter GenerateSyncFailureTest(ushort arity) {
+        return new MethodWriter($"Ensure_Arity{arity}_FailureResult_ShouldNotValidate",
+                                "void",
+                                GenerateSyncFailureBody(arity),
+                                attributes: [new FactAttributeReference()],
+                                usings: GetUsings());
+    }
 
-    private MethodWriter GenerateSyncFailureTest(ushort arity) => new($"Ensure_Arity{arity}_FailureResult_ShouldNotValidate",
-                                                                      "void",
-                                                                      GenerateSyncFailureBody(arity),
-                                                                      attributes: [new FactAttributeReference()],
-                                                                      usings: GetUsings());
+    private MethodWriter GenerateSyncValidationFailureTest(ushort arity) {
+        return new MethodWriter($"Ensure_Arity{arity}_InvalidCondition_ShouldFail",
+                                "void",
+                                GenerateSyncValidationFailureBody(arity),
+                                attributes: [new FactAttributeReference()],
+                                usings: GetUsings());
+    }
 
-    private MethodWriter GenerateSyncValidationFailureTest(ushort arity) => new($"Ensure_Arity{arity}_InvalidCondition_ShouldFail",
-                                                                                "void",
-                                                                                GenerateSyncValidationFailureBody(arity),
-                                                                                attributes: [new FactAttributeReference()],
-                                                                                usings: GetUsings());
+    private MethodWriter GenerateAsyncSuccessTest(ushort arity,
+                                                  string asyncType) {
+        return new MethodWriter($"Ensure{asyncType}_Arity{arity}_ValidCondition_ShouldSucceed",
+                                "async Task",
+                                GenerateAsyncSuccessBody(arity, asyncType),
+                                attributes: [new FactAttributeReference()],
+                                usings: GetUsings());
+    }
 
-    private MethodWriter GenerateTaskSuccessTest(ushort arity) => new($"EnsureTask_Arity{arity}_ValidCondition_ShouldSucceed",
-                                                                      "async Task",
-                                                                      GenerateTaskSuccessBody(arity),
-                                                                      attributes: [new FactAttributeReference()],
-                                                                      usings: GetUsings());
+    private MethodWriter GenerateAsyncFailureTest(ushort arity,
+                                                  string asyncType) {
+        return new MethodWriter($"Ensure{asyncType}_Arity{arity}_FailureResult_ShouldNotValidate",
+                                "async Task",
+                                GenerateAsyncFailureBody(arity, asyncType),
+                                attributes: [new FactAttributeReference()],
+                                usings: GetUsings());
+    }
 
-    private MethodWriter GenerateTaskFailureTest(ushort arity) => new($"EnsureTask_Arity{arity}_FailureResult_ShouldNotValidate",
-                                                                      "async Task",
-                                                                      GenerateTaskFailureBody(arity),
-                                                                      attributes: [new FactAttributeReference()],
-                                                                      usings: GetUsings());
-
-    private MethodWriter GenerateTaskValidationFailureTest(ushort arity) => new($"EnsureTask_Arity{arity}_InvalidCondition_ShouldFail",
-                                                                                "async Task",
-                                                                                GenerateTaskValidationFailureBody(arity),
-                                                                                attributes: [new FactAttributeReference()],
-                                                                                usings: GetUsings());
-
-    private MethodWriter GenerateValueTaskSuccessTest(ushort arity) => new($"EnsureValueTask_Arity{arity}_ValidCondition_ShouldSucceed",
-                                                                           "async Task",
-                                                                           GenerateValueTaskSuccessBody(arity),
-                                                                           attributes: [new FactAttributeReference()],
-                                                                           usings: GetUsings());
-
-    private MethodWriter GenerateValueTaskFailureTest(ushort arity) => new($"EnsureValueTask_Arity{arity}_FailureResult_ShouldNotValidate",
-                                                                           "async Task",
-                                                                           GenerateValueTaskFailureBody(arity),
-                                                                           attributes: [new FactAttributeReference()],
-                                                                           usings: GetUsings());
-
-    private MethodWriter GenerateValueTaskValidationFailureTest(ushort arity) => new($"EnsureValueTask_Arity{arity}_InvalidCondition_ShouldFail",
-                                                                                     "async Task",
-                                                                                     GenerateValueTaskValidationFailureBody(arity),
-                                                                                     attributes: [new FactAttributeReference()],
-                                                                                     usings: GetUsings());
+    private MethodWriter GenerateAsyncValidationFailureTest(ushort arity,
+                                                            string asyncType) {
+        return new MethodWriter($"Ensure{asyncType}_Arity{arity}_InvalidCondition_ShouldFail",
+                                "async Task",
+                                GenerateAsyncValidationFailureBody(arity, asyncType),
+                                attributes: [new FactAttributeReference()],
+                                usings: GetUsings());
+    }
 
     private string GenerateSyncSuccessBody(ushort arity) {
         var testValues   = GenerateTestValues(arity);
@@ -138,62 +127,40 @@ internal sealed class ResultEnsureTestsGenerator : ResultTestGeneratorBase {
         return BuildTestBody([testValues, creation, predicate, errorFactory], [call], assertions);
     }
 
-    private string GenerateTaskSuccessBody(ushort arity) {
+    private string GenerateAsyncSuccessBody(ushort arity,
+                                            string asyncType) {
         var testValues   = GenerateTestValues(arity);
-        var creation     = GenerateTaskResultCreation(arity);
-        var predicate    = GeneratePredicate(arity, true, "Task");
-        var errorFactory = GenerateErrorFactory(arity, "Task");
-        var call         = GenerateEnsureTaskCall(arity);
+        var creation     = GenerateAsyncSuccessResultCreation(arity, asyncType);
+        var predicate    = GeneratePredicate(arity, true, asyncType);
+        var errorFactory = GenerateErrorFactory(arity, asyncType);
+        var call         = GenerateEnsureAsyncCall();
         var assertions   = GenerateEnsureSuccessAssertions(arity);
         return BuildTestBody([testValues, creation, predicate, errorFactory], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
     }
 
-    private string GenerateTaskFailureBody(ushort arity) {
-        var creation     = GenerateTaskFailureResultCreation(arity);
-        var predicate    = GeneratePredicate(arity, false, "Task");
-        var errorFactory = GenerateErrorFactory(arity, "Task");
-        var call         = GenerateEnsureTaskCall(arity);
+    private string GenerateAsyncFailureBody(ushort arity,
+                                            string asyncType) {
+        var creation     = GenerateAsyncFailureResultCreation(arity, asyncType);
+        var predicate    = GeneratePredicate(arity, false, asyncType);
+        var errorFactory = GenerateErrorFactory(arity, asyncType);
+        var call         = GenerateEnsureAsyncCall();
         return BuildTestBody([creation, predicate, errorFactory], [call], ["Assert.False(ensuredResult.IsSuccess);"]);
     }
 
-    private string GenerateTaskValidationFailureBody(ushort arity) {
+    private string GenerateAsyncValidationFailureBody(ushort arity,
+                                                      string asyncType) {
         var testValues   = GenerateTestValues(arity);
-        var creation     = GenerateTaskResultCreation(arity);
-        var predicate    = GeneratePredicate(arity, false, "Task");
-        var errorFactory = GenerateErrorFactory(arity, "Task");
-        var call         = GenerateEnsureTaskCall(arity);
+        var creation     = GenerateAsyncSuccessResultCreation(arity, asyncType);
+        var predicate    = GeneratePredicate(arity, false, asyncType);
+        var errorFactory = GenerateErrorFactory(arity, asyncType);
+        var call         = GenerateEnsureAsyncCall();
         var assertions = GenerateValidationFailureAssertions()
            .Split('\n', StringSplitOptions.RemoveEmptyEntries);
         return BuildTestBody([testValues, creation, predicate, errorFactory], [call], assertions);
     }
 
-    private string GenerateValueTaskSuccessBody(ushort arity) {
-        var testValues   = GenerateTestValues(arity);
-        var creation     = GenerateValueTaskResultCreation(arity);
-        var predicate    = GeneratePredicate(arity, true, "ValueTask");
-        var errorFactory = GenerateErrorFactory(arity, "ValueTask");
-        var call         = GenerateEnsureValueTaskCall(arity);
-        var assertions   = GenerateEnsureSuccessAssertions(arity);
-        return BuildTestBody([testValues, creation, predicate, errorFactory], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
-    }
-
-    private string GenerateValueTaskFailureBody(ushort arity) {
-        var creation     = GenerateValueTaskFailureResultCreation(arity);
-        var predicate    = GeneratePredicate(arity, false, "ValueTask");
-        var errorFactory = GenerateErrorFactory(arity, "ValueTask");
-        var call         = GenerateEnsureValueTaskCall(arity);
-        return BuildTestBody([creation, predicate, errorFactory], [call], ["Assert.False(ensuredResult.IsSuccess);"]);
-    }
-
-    private string GenerateValueTaskValidationFailureBody(ushort arity) {
-        var testValues   = GenerateTestValues(arity);
-        var creation     = GenerateValueTaskResultCreation(arity);
-        var predicate    = GeneratePredicate(arity, false, "ValueTask");
-        var errorFactory = GenerateErrorFactory(arity, "ValueTask");
-        var call         = GenerateEnsureValueTaskCall(arity);
-        var assertions = GenerateValidationFailureAssertions()
-           .Split('\n', StringSplitOptions.RemoveEmptyEntries);
-        return BuildTestBody([testValues, creation, predicate, errorFactory], [call], assertions);
+    private string GenerateEnsureAsyncCall() {
+        return "var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);";
     }
 
     // Helper methods restored after refactor
@@ -218,14 +185,22 @@ internal sealed class ResultEnsureTestsGenerator : ResultTestGeneratorBase {
     private string GenerateErrorFactory(ushort  arity,
                                         string? asyncType) {
         if (asyncType is not null) {
-            return $"Func<{GenerateTypeParams(arity)}, {asyncType}<IError>> errorFactory = ({GenerateValueParams(arity)}) => {asyncType}.FromResult<IError>(new Error(\"Validation failed\"));";
+            return
+                $"Func<{GenerateTypeParams(arity)}, {asyncType}<IError>> errorFactory = ({GenerateValueParams(arity)}) => {asyncType}.FromResult<IError>(new Error(\"Validation failed\"));";
         }
+
         return $"Func<{GenerateTypeParams(arity)}, IError> errorFactory = ({GenerateValueParams(arity)}) => new Error(\"Validation failed\");";
     }
 
-    private string GenerateEnsureSyncCall(ushort          arity) => "var ensuredResult = result.Ensure(predicate, errorFactory);";
-    private string GenerateEnsureTaskCall(ushort          arity) => "var ensuredResult = await taskResult.EnsureAsync(predicate, errorFactory);";
-    private string GenerateEnsureValueTaskCall(ushort     arity) => "var ensuredResult = await valueTaskResult.EnsureAsync(predicate, errorFactory);";
-    private string GenerateEnsureSuccessAssertions(ushort arity) => "Assert.True(ensuredResult.IsSuccess);";
-    private string GenerateValidationFailureAssertions() => "Assert.False(ensuredResult.IsSuccess);";
+    private string GenerateEnsureSyncCall(ushort arity) {
+        return "var ensuredResult = result.Ensure(predicate, errorFactory);";
+    }
+
+    private string GenerateEnsureSuccessAssertions(ushort arity) {
+        return "Assert.True(ensuredResult.IsSuccess);";
+    }
+
+    private string GenerateValidationFailureAssertions() {
+        return "Assert.False(ensuredResult.IsSuccess);";
+    }
 }

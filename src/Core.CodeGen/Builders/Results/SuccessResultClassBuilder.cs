@@ -78,20 +78,22 @@ internal static class SuccessResultClassBuilder {
 
     private static void AddDeconstructMethod(ushort      arity,
                                              ClassWriter classWriter) {
-        var deconstructParams = new List<MethodParameter> { new("out bool", "isSuccess") };
+        var deconstructParams = new List<MethodParameter>();
         if (arity == 1) {
             deconstructParams.Add(new MethodParameter("out TValue1?", "value"));
         }
         else {
-            deconstructParams.Add(new MethodParameter($"out ({ResultArityHelpers.JoinValueTypes(arity)})?", "value"));
+            deconstructParams.AddRange(Enumerable.Range(1, arity)
+                                                 .Select(x => new MethodParameter($"out TValue{x}?", $"value{x}")));
         }
 
         deconstructParams.Add(new MethodParameter("out IEnumerable<IError>?", "error"));
 
         var deconstructBody = arity == 1
-                                  ? "isSuccess = true;\nvalue = _value1;\nerror = null;"
-                                  : $"isSuccess = true;\nvalue = ({string.Join(", ", Enumerable.Range(1, arity).Select(i => $"_value{i}"))});\nerror = null;";
-
+                                  ? "value = _value1;"
+                                  : string.Join("\n", Enumerable.Range(1, arity)
+                                                                .Select(i => $"value{i} = _value{i};"));
+        deconstructBody += "\nerror = null;";
         classWriter.AddMethod(new MethodWriter(
                                   "Deconstruct",
                                   "void",

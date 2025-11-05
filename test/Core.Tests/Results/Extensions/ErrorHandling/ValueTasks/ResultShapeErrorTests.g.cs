@@ -12,8 +12,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
 using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
@@ -29,7 +27,7 @@ public class ResultShapeErrorValueTaskTestsArity0
         // Given
         var result = Result.Success();
         // When
-        var shaped = await result.ShapeErrorAsync(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await result.ShapeErrorAsync(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.True(shaped.IsSuccess);
     }
@@ -39,7 +37,7 @@ public class ResultShapeErrorValueTaskTestsArity0
         // Given
         var result = Result.Failure("Test error");
         // When
-        var shaped = await result.ShapeErrorAsync(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await result.ShapeErrorAsync(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.False(shaped.IsSuccess);
         Assert.Contains(shaped.Errors, e => e.Message.Contains("Shaped"));
@@ -48,9 +46,9 @@ public class ResultShapeErrorValueTaskTestsArity0
     [Fact]
     public async Task ShapeErrorValueTaskAwaitable_Arity0_Failure_ShouldShapeErrors() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure("Test error"));
+        var valuetaskResult = ValueTask.FromResult(Result.Failure("Test error"));
         // When
-        var shaped = await valueTaskResult.ShapeErrorAsync(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await valuetaskResult.ShapeErrorAsync(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.False(shaped.IsSuccess);
         Assert.Contains(shaped.Errors, e => e.Message.Contains("Shaped"));
@@ -66,7 +64,7 @@ public class ResultShapeErrorValueTaskTestsArity0
         var value1 = 42;
         var result = Result.Success(value1);
         // When
-        var shaped = await result.ShapeErrorAsync<int>(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await result.ShapeErrorAsync<int>(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.True(shaped.IsSuccess);
     }
@@ -76,7 +74,7 @@ public class ResultShapeErrorValueTaskTestsArity0
         // Given
         var result = Result.Failure<int>("Test error");
         // When
-        var shaped = await result.ShapeErrorAsync<int>(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await result.ShapeErrorAsync<int>(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.False(shaped.IsSuccess);
         Assert.Contains(shaped.Errors, e => e.Message.Contains("Shaped"));
@@ -85,9 +83,9 @@ public class ResultShapeErrorValueTaskTestsArity0
     [Fact]
     public async Task ShapeErrorValueTaskAwaitable_Arity1_Failure_ShouldShapeErrors() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
+        var valuetaskResult = ValueTask.FromResult(Result.Failure<int>("Test error"));
         // When
-        var shaped = await valueTaskResult.ShapeErrorAsync<int>(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await valuetaskResult.ShapeErrorAsync<int>(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.False(shaped.IsSuccess);
         Assert.Contains(shaped.Errors, e => e.Message.Contains("Shaped"));
@@ -104,7 +102,7 @@ public class ResultShapeErrorValueTaskTestsArity0
         var value2 = "test";
         var result = Result.Success(value1, value2);
         // When
-        var shaped = await result.ShapeErrorAsync<int, string>(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await result.ShapeErrorAsync<int, string>(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.True(shaped.IsSuccess);
     }
@@ -114,7 +112,7 @@ public class ResultShapeErrorValueTaskTestsArity0
         // Given
         var result = Result.Failure<int, string>("Test error");
         // When
-        var shaped = await result.ShapeErrorAsync<int, string>(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await result.ShapeErrorAsync<int, string>(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.False(shaped.IsSuccess);
         Assert.Contains(shaped.Errors, e => e.Message.Contains("Shaped"));
@@ -123,9 +121,9 @@ public class ResultShapeErrorValueTaskTestsArity0
     [Fact]
     public async Task ShapeErrorValueTaskAwaitable_Arity2_Failure_ShouldShapeErrors() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
+        var valuetaskResult = ValueTask.FromResult(Result.Failure<int, string>("Test error"));
         // When
-        var shaped = await valueTaskResult.ShapeErrorAsync<int, string>(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await valuetaskResult.ShapeErrorAsync<int, string>(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.False(shaped.IsSuccess);
         Assert.Contains(shaped.Errors, e => e.Message.Contains("Shaped"));
@@ -143,7 +141,7 @@ public class ResultShapeErrorValueTaskTestsArity0
         var value3 = true;
         var result = Result.Success(value1, value2, value3);
         // When
-        var shaped = await result.ShapeErrorAsync<int, string, bool>(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await result.ShapeErrorAsync<int, string, bool>(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.True(shaped.IsSuccess);
     }
@@ -153,7 +151,7 @@ public class ResultShapeErrorValueTaskTestsArity0
         // Given
         var result = Result.Failure<int, string, bool>("Test error");
         // When
-        var shaped = await result.ShapeErrorAsync<int, string, bool>(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await result.ShapeErrorAsync<int, string, bool>(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.False(shaped.IsSuccess);
         Assert.Contains(shaped.Errors, e => e.Message.Contains("Shaped"));
@@ -162,9 +160,9 @@ public class ResultShapeErrorValueTaskTestsArity0
     [Fact]
     public async Task ShapeErrorValueTaskAwaitable_Arity3_Failure_ShouldShapeErrors() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
+        var valuetaskResult = ValueTask.FromResult(Result.Failure<int, string, bool>("Test error"));
         // When
-        var shaped = await valueTaskResult.ShapeErrorAsync<int, string, bool>(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await valuetaskResult.ShapeErrorAsync<int, string, bool>(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.False(shaped.IsSuccess);
         Assert.Contains(shaped.Errors, e => e.Message.Contains("Shaped"));
@@ -183,7 +181,7 @@ public class ResultShapeErrorValueTaskTestsArity0
         var value4 = 3.14;
         var result = Result.Success(value1, value2, value3, value4);
         // When
-        var shaped = await result.ShapeErrorAsync<int, string, bool, double>(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await result.ShapeErrorAsync<int, string, bool, double>(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.True(shaped.IsSuccess);
     }
@@ -193,7 +191,7 @@ public class ResultShapeErrorValueTaskTestsArity0
         // Given
         var result = Result.Failure<int, string, bool, double>("Test error");
         // When
-        var shaped = await result.ShapeErrorAsync<int, string, bool, double>(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await result.ShapeErrorAsync<int, string, bool, double>(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.False(shaped.IsSuccess);
         Assert.Contains(shaped.Errors, e => e.Message.Contains("Shaped"));
@@ -202,9 +200,9 @@ public class ResultShapeErrorValueTaskTestsArity0
     [Fact]
     public async Task ShapeErrorValueTaskAwaitable_Arity4_Failure_ShouldShapeErrors() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
+        var valuetaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double>("Test error"));
         // When
-        var shaped = await valueTaskResult.ShapeErrorAsync<int, string, bool, double>(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await valuetaskResult.ShapeErrorAsync<int, string, bool, double>(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.False(shaped.IsSuccess);
         Assert.Contains(shaped.Errors, e => e.Message.Contains("Shaped"));
@@ -224,7 +222,7 @@ public class ResultShapeErrorValueTaskTestsArity0
         var value5 = 123L;
         var result = Result.Success(value1, value2, value3, value4, value5);
         // When
-        var shaped = await result.ShapeErrorAsync<int, string, bool, double, long>(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await result.ShapeErrorAsync<int, string, bool, double, long>(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.True(shaped.IsSuccess);
     }
@@ -234,7 +232,7 @@ public class ResultShapeErrorValueTaskTestsArity0
         // Given
         var result = Result.Failure<int, string, bool, double, long>("Test error");
         // When
-        var shaped = await result.ShapeErrorAsync<int, string, bool, double, long>(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await result.ShapeErrorAsync<int, string, bool, double, long>(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.False(shaped.IsSuccess);
         Assert.Contains(shaped.Errors, e => e.Message.Contains("Shaped"));
@@ -243,9 +241,9 @@ public class ResultShapeErrorValueTaskTestsArity0
     [Fact]
     public async Task ShapeErrorValueTaskAwaitable_Arity5_Failure_ShouldShapeErrors() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
+        var valuetaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long>("Test error"));
         // When
-        var shaped = await valueTaskResult.ShapeErrorAsync<int, string, bool, double, long>(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await valuetaskResult.ShapeErrorAsync<int, string, bool, double, long>(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.False(shaped.IsSuccess);
         Assert.Contains(shaped.Errors, e => e.Message.Contains("Shaped"));
@@ -263,10 +261,10 @@ public class ResultShapeErrorValueTaskTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
+        var value6 = DateTime.UtcNow;
         var result = Result.Success(value1, value2, value3, value4, value5, value6);
         // When
-        var shaped = await result.ShapeErrorAsync<int, string, bool, double, long, string>(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await result.ShapeErrorAsync<int, string, bool, double, long, DateTime>(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.True(shaped.IsSuccess);
     }
@@ -274,9 +272,9 @@ public class ResultShapeErrorValueTaskTestsArity0
     [Fact]
     public async Task ShapeErrorValueTask_Arity6_Failure_ShouldShapeErrors() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
         // When
-        var shaped = await result.ShapeErrorAsync<int, string, bool, double, long, string>(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await result.ShapeErrorAsync<int, string, bool, double, long, DateTime>(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.False(shaped.IsSuccess);
         Assert.Contains(shaped.Errors, e => e.Message.Contains("Shaped"));
@@ -285,9 +283,9 @@ public class ResultShapeErrorValueTaskTestsArity0
     [Fact]
     public async Task ShapeErrorValueTaskAwaitable_Arity6_Failure_ShouldShapeErrors() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
+        var valuetaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
         // When
-        var shaped = await valueTaskResult.ShapeErrorAsync<int, string, bool, double, long, string>(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await valuetaskResult.ShapeErrorAsync<int, string, bool, double, long, DateTime>(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.False(shaped.IsSuccess);
         Assert.Contains(shaped.Errors, e => e.Message.Contains("Shaped"));
@@ -305,11 +303,11 @@ public class ResultShapeErrorValueTaskTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
         // When
-        var shaped = await result.ShapeErrorAsync<int, string, bool, double, long, string, string>(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await result.ShapeErrorAsync<int, string, bool, double, long, DateTime, Guid>(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.True(shaped.IsSuccess);
     }
@@ -317,9 +315,9 @@ public class ResultShapeErrorValueTaskTestsArity0
     [Fact]
     public async Task ShapeErrorValueTask_Arity7_Failure_ShouldShapeErrors() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
         // When
-        var shaped = await result.ShapeErrorAsync<int, string, bool, double, long, string, string>(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await result.ShapeErrorAsync<int, string, bool, double, long, DateTime, Guid>(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.False(shaped.IsSuccess);
         Assert.Contains(shaped.Errors, e => e.Message.Contains("Shaped"));
@@ -328,9 +326,9 @@ public class ResultShapeErrorValueTaskTestsArity0
     [Fact]
     public async Task ShapeErrorValueTaskAwaitable_Arity7_Failure_ShouldShapeErrors() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
+        var valuetaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
         // When
-        var shaped = await valueTaskResult.ShapeErrorAsync<int, string, bool, double, long, string, string>(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await valuetaskResult.ShapeErrorAsync<int, string, bool, double, long, DateTime, Guid>(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.False(shaped.IsSuccess);
         Assert.Contains(shaped.Errors, e => e.Message.Contains("Shaped"));
@@ -348,12 +346,12 @@ public class ResultShapeErrorValueTaskTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
         // When
-        var shaped = await result.ShapeErrorAsync<int, string, bool, double, long, string, string, string>(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await result.ShapeErrorAsync<int, string, bool, double, long, DateTime, Guid, TimeSpan>(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.True(shaped.IsSuccess);
     }
@@ -361,9 +359,9 @@ public class ResultShapeErrorValueTaskTestsArity0
     [Fact]
     public async Task ShapeErrorValueTask_Arity8_Failure_ShouldShapeErrors() {
         // Given
-        var result = Result.Failure<int, string, bool, double, long, string, string, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
         // When
-        var shaped = await result.ShapeErrorAsync<int, string, bool, double, long, string, string, string>(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await result.ShapeErrorAsync<int, string, bool, double, long, DateTime, Guid, TimeSpan>(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.False(shaped.IsSuccess);
         Assert.Contains(shaped.Errors, e => e.Message.Contains("Shaped"));
@@ -372,9 +370,9 @@ public class ResultShapeErrorValueTaskTestsArity0
     [Fact]
     public async Task ShapeErrorValueTaskAwaitable_Arity8_Failure_ShouldShapeErrors() {
         // Given
-        var valueTaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
+        var valuetaskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
         // When
-        var shaped = await valueTaskResult.ShapeErrorAsync<int, string, bool, double, long, string, string, string>(errors => ValueTask.FromResult(errors.Concat([new Error("Shaped")])));
+        var shaped = await valuetaskResult.ShapeErrorAsync<int, string, bool, double, long, DateTime, Guid, TimeSpan>(errors => ValueTask.FromResult<IEnumerable<IError>>(errors.Select(e => new Error(e.Message + " Shaped"))));
         // Then
         Assert.False(shaped.IsSuccess);
         Assert.Contains(shaped.Errors, e => e.Message.Contains("Shaped"));

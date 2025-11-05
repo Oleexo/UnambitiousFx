@@ -3,7 +3,7 @@ using UnambitiousFx.Mediator.Abstractions;
 
 namespace UnambitiousFx.Mediator;
 
-internal sealed class Context : IContext {
+internal readonly struct Context : IContext {
     private readonly IPublisher _publisher;
 
     public Context(IPublisher publisher) {

@@ -202,7 +202,7 @@ public abstract class ResultIfFailureTests
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
+        var value6 = DateTime.UtcNow;
         var result = Result.Success(value1, value2, value3, value4, value5, value6);
         // When
         // When: Calling IfFailure
@@ -217,7 +217,7 @@ public abstract class ResultIfFailureTests
     public void IfFailure_Arity6_Failure_ShouldExecute() {
         // Given
         // Given: A failed Result
-        var result = Result.Failure<int, string, bool, double, long, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime>("Test error");
         // When
         // When: Calling IfFailure
         var executed = false;
@@ -240,8 +240,8 @@ public abstract class ResultIfFailureTests
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7);
         // When
         // When: Calling IfFailure
@@ -256,7 +256,7 @@ public abstract class ResultIfFailureTests
     public void IfFailure_Arity7_Failure_ShouldExecute() {
         // Given
         // Given: A failed Result
-        var result = Result.Failure<int, string, bool, double, long, string, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error");
         // When
         // When: Calling IfFailure
         var executed = false;
@@ -279,9 +279,9 @@ public abstract class ResultIfFailureTests
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
         var result = Result.Success(value1, value2, value3, value4, value5, value6, value7, value8);
         // When
         // When: Calling IfFailure
@@ -296,7 +296,7 @@ public abstract class ResultIfFailureTests
     public void IfFailure_Arity8_Failure_ShouldExecute() {
         // Given
         // Given: A failed Result
-        var result = Result.Failure<int, string, bool, double, long, string, string, string>("Test error");
+        var result = Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error");
         // When
         // When: Calling IfFailure
         var executed = false;

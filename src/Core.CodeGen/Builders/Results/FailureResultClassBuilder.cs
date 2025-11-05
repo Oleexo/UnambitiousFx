@@ -22,14 +22,12 @@ internal static class FailureResultClassBuilder {
         classWriter.AddProperty(new PropertyWriter(
                                     "IsFaulted",
                                     "bool",
-                                    Visibility.Public,
                                     getterBody: "true",
                                     style: PropertyStyle.Override
                                 ));
         classWriter.AddProperty(new PropertyWriter(
                                     "IsSuccess",
                                     "bool",
-                                    Visibility.Public,
                                     getterBody: "false",
                                     style: PropertyStyle.Override
                                 ));
@@ -67,18 +65,23 @@ internal static class FailureResultClassBuilder {
 
     private static void AddDeconstructMethod(ushort      arity,
                                              ClassWriter classWriter) {
-        var deconstructParams = new List<MethodParameter> { new("out bool", "isSuccess") };
+        var deconstructParams = new List<MethodParameter>();
         if (arity == 1) {
             deconstructParams.Add(new MethodParameter("out TValue1?", "value"));
         }
         else {
-            deconstructParams.Add(new MethodParameter($"out ({ResultArityHelpers.JoinValueTypes(arity)})?", "value"));
+            deconstructParams.AddRange(Enumerable.Range(1, arity)
+                                                 .Select(x => new MethodParameter($"out TValue{x}?", $"value{x}")));
         }
 
         deconstructParams.Add(new MethodParameter("out IEnumerable<IError>?", "error"));
 
-        const string deconstructBody = "isSuccess = false;\nvalue = default;\nerror = Errors;";
+        var deconstructBody = arity == 1
+                                  ? "value = default;"
+                                  : string.Join('\n', Enumerable.Range(1, arity)
+                                                                .Select(i => $"value{i} = default;"));
 
+        deconstructBody += "\nerror = null;";
         classWriter.AddMethod(new MethodWriter(
                                   "Deconstruct",
                                   "void",

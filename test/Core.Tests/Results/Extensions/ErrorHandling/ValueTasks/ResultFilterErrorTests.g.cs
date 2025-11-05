@@ -12,8 +12,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnambitiousFx.Core;
 using UnambitiousFx.Core.Results;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling;
-using UnambitiousFx.Core.Results.Extensions.ErrorHandling.Tasks;
 using UnambitiousFx.Core.Results.Extensions.ErrorHandling.ValueTasks;
 using UnambitiousFx.Core.Results.Reasons;
 using Xunit;
@@ -203,10 +201,10 @@ public class ResultFilterErrorValueTaskTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
+        var value6 = DateTime.UtcNow;
         var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6));
         // When
-        var filteredResult = await taskResult.FilterErrorAsync<int, string, bool, double, long, string>(error => error.Message.Contains("Test"));
+        var filteredResult = await taskResult.FilterErrorAsync<int, string, bool, double, long, DateTime>(error => error.Message.Contains("Test"));
         // Then
         Assert.True(filteredResult.IsSuccess);
     }
@@ -214,9 +212,9 @@ public class ResultFilterErrorValueTaskTestsArity0
     [Fact]
     public async Task FilterErrorValueTask_Arity6_Failure_ShouldFilterError() {
         // Given
-        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime>("Test error"));
         // When
-        var filteredResult = await taskResult.FilterErrorAsync<int, string, bool, double, long, string>(error => error.Message.Contains("Test"));
+        var filteredResult = await taskResult.FilterErrorAsync<int, string, bool, double, long, DateTime>(error => error.Message.Contains("Test"));
         // Then
         Assert.False(filteredResult.IsSuccess);
         Assert.Single(filteredResult.Errors);
@@ -235,11 +233,11 @@ public class ResultFilterErrorValueTaskTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
         var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7));
         // When
-        var filteredResult = await taskResult.FilterErrorAsync<int, string, bool, double, long, string, string>(error => error.Message.Contains("Test"));
+        var filteredResult = await taskResult.FilterErrorAsync<int, string, bool, double, long, DateTime, Guid>(error => error.Message.Contains("Test"));
         // Then
         Assert.True(filteredResult.IsSuccess);
     }
@@ -247,9 +245,9 @@ public class ResultFilterErrorValueTaskTestsArity0
     [Fact]
     public async Task FilterErrorValueTask_Arity7_Failure_ShouldFilterError() {
         // Given
-        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid>("Test error"));
         // When
-        var filteredResult = await taskResult.FilterErrorAsync<int, string, bool, double, long, string, string>(error => error.Message.Contains("Test"));
+        var filteredResult = await taskResult.FilterErrorAsync<int, string, bool, double, long, DateTime, Guid>(error => error.Message.Contains("Test"));
         // Then
         Assert.False(filteredResult.IsSuccess);
         Assert.Single(filteredResult.Errors);
@@ -268,12 +266,12 @@ public class ResultFilterErrorValueTaskTestsArity0
         var value3 = true;
         var value4 = 3.14;
         var value5 = 123L;
-        var value6 = "value6";
-        var value7 = "value7";
-        var value8 = "value8";
+        var value6 = DateTime.UtcNow;
+        var value7 = Guid.NewGuid();
+        var value8 = TimeSpan.FromMinutes(5);
         var taskResult = ValueTask.FromResult(Result.Success(value1, value2, value3, value4, value5, value6, value7, value8));
         // When
-        var filteredResult = await taskResult.FilterErrorAsync<int, string, bool, double, long, string, string, string>(error => error.Message.Contains("Test"));
+        var filteredResult = await taskResult.FilterErrorAsync<int, string, bool, double, long, DateTime, Guid, TimeSpan>(error => error.Message.Contains("Test"));
         // Then
         Assert.True(filteredResult.IsSuccess);
     }
@@ -281,9 +279,9 @@ public class ResultFilterErrorValueTaskTestsArity0
     [Fact]
     public async Task FilterErrorValueTask_Arity8_Failure_ShouldFilterError() {
         // Given
-        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, string, string, string>("Test error"));
+        var taskResult = ValueTask.FromResult(Result.Failure<int, string, bool, double, long, DateTime, Guid, TimeSpan>("Test error"));
         // When
-        var filteredResult = await taskResult.FilterErrorAsync<int, string, bool, double, long, string, string, string>(error => error.Message.Contains("Test"));
+        var filteredResult = await taskResult.FilterErrorAsync<int, string, bool, double, long, DateTime, Guid, TimeSpan>(error => error.Message.Contains("Test"));
         // Then
         Assert.False(filteredResult.IsSuccess);
         Assert.Single(filteredResult.Errors);

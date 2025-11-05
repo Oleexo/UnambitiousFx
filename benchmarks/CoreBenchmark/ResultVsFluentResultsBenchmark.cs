@@ -1,6 +1,6 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Order;
-using UnambitiousFx.Core.Results;
+using FluentResults;
 using FluentResult = FluentResults.Result;
 
 namespace CoreBenchmark;
@@ -11,37 +11,47 @@ namespace CoreBenchmark;
 public class ResultVsFluentResultsBenchmark {
     private const int A = 42;
 
-    private readonly Result<int>               _ourSuccess    = Result.Success(A);
-    private readonly FluentResults.Result<int> _fluentSuccess = FluentResult.Ok(A);
+    private const    string      ErrorMessage = "boom";
+    private readonly Result<int> _fluentFailure;
+    private readonly Result<int> _fluentSuccess = FluentResult.Ok(A);
 
-    private readonly Result<int>               _ourFailure;
-    private readonly FluentResults.Result<int> _fluentFailure;
+    private readonly UnambitiousFx.Core.Results.Result<int> _ourFailure;
 
-    private const string ErrorMessage = "boom";
+    private readonly UnambitiousFx.Core.Results.Result<int> _ourSuccess = UnambitiousFx.Core.Results.Result.Success(A);
 
     public ResultVsFluentResultsBenchmark() {
         // Use string-based failure to keep both libraries comparable
-        _ourFailure    = Result.Failure<int>(ErrorMessage);
+        _ourFailure    = UnambitiousFx.Core.Results.Result.Failure<int>(ErrorMessage);
         _fluentFailure = FluentResult.Fail<int>(ErrorMessage);
     }
 
     // Creation (Success)
     [Benchmark(Description = "Create Success (Our)")]
-    public Result<int> Create_Success_Our() => Result.Success(A);
+    public UnambitiousFx.Core.Results.Result<int> Create_Success_Our() {
+        return UnambitiousFx.Core.Results.Result.Success(A);
+    }
 
     [Benchmark(Description = "Create Success (FluentResults)")]
-    public FluentResults.Result<int> Create_Success_Fluent() => FluentResult.Ok(A);
+    public Result<int> Create_Success_Fluent() {
+        return FluentResult.Ok(A);
+    }
 
     // Creation (Failure)
     [Benchmark(Description = "Create Failure (Our)")]
-    public Result<int> Create_Failure_Our() => Result.Failure<int>(ErrorMessage);
+    public UnambitiousFx.Core.Results.Result<int> Create_Failure_Our() {
+        return UnambitiousFx.Core.Results.Result.Failure<int>(ErrorMessage);
+    }
 
     [Benchmark(Description = "Create Failure (FluentResults)")]
-    public FluentResults.Result<int> Create_Failure_Fluent() => FluentResult.Fail<int>(ErrorMessage);
+    public Result<int> Create_Failure_Fluent() {
+        return FluentResult.Fail<int>(ErrorMessage);
+    }
 
     // Match/Access on Success
     [Benchmark(Description = "Access Success (Our: Match)")]
-    public int Access_Success_Our() => _ourSuccess.Match(v => v + 1, _ => 0);
+    public int Access_Success_Our() {
+        return _ourSuccess.Match(v => v + 1, _ => 0);
+    }
 
     [Benchmark(Description = "Access Success (FluentResults: IsSuccess/Value)")]
     public int Access_Success_Fluent() {
@@ -52,7 +62,9 @@ public class ResultVsFluentResultsBenchmark {
 
     // Match/Access on Failure
     [Benchmark(Description = "Access Failure (Our: Match)")]
-    public int Access_Failure_Our() => _ourFailure.Match(v => v + 1, _ => -1);
+    public int Access_Failure_Our() {
+        return _ourFailure.Match(v => v + 1, _ => -1);
+    }
 
     [Benchmark(Description = "Access Failure (FluentResults: IsSuccess/Value)")]
     public int Access_Failure_Fluent() {
@@ -87,10 +99,5 @@ public class ResultVsFluentResultsBenchmark {
     [Benchmark(Description = "Ok Failure (FluentResults: IsSuccess)")]
     public bool Ok_Failure_Fluent() {
         return _fluentFailure.IsSuccess;
-    }
-
-    public void Test() {
-        var (result, errors)   = FluentResult.Ok(1);
-        var (result2, errors2) = Result.Success(1);
     }
 }
