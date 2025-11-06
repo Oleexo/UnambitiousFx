@@ -2,7 +2,6 @@
 using Application.Domain.Repositories;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
-using UnambitiousFx.Mediator;
 
 namespace Application.Application.Todos;
 
@@ -14,8 +13,7 @@ public sealed class ListTodoQueryHandler : IRequestHandler<ListTodoQuery, IEnume
         _todoRepository = todoRepository;
     }
 
-    public async ValueTask<Result<IEnumerable<Todo>>> HandleAsync(IContext          context,
-                                                                  ListTodoQuery     request,
+    public async ValueTask<Result<IEnumerable<Todo>>> HandleAsync(ListTodoQuery     request,
                                                                   CancellationToken cancellationToken = default) {
         var todos = await _todoRepository.GetAllAsync(cancellationToken);
 

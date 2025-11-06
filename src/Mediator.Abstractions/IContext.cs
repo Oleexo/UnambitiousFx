@@ -10,12 +10,49 @@ public interface IContext {
     ///     Gets the unique identifier that represents a correlation ID for tracing or tracking purposes within the context.
     ///     This property is immutable and ensures consistent identification of a specific operation or event flow.
     /// </summary>
-    Guid CorrelationId { get; }
+    string CorrelationId { get; }
 
     /// Gets the exact date and time at which the operation or context occurred.
     /// This property provides a timestamp that can be used for logging,
     /// debugging, or tracking purposes.
     DateTimeOffset OccuredAt { get; }
+
+    /// <summary>
+    ///     Gets a read-only dictionary containing metadata key-value pairs associated with the context.
+    /// </summary>
+    IReadOnlyDictionary<string, object> Metadata { get; }
+
+    /// <summary>
+    ///     Sets a metadata value for the specified key in the context.
+    /// </summary>
+    /// <param name="key">The metadata key.</param>
+    /// <param name="value">The metadata value to set.</param>
+    void SetMetadata(string key,
+                     object value);
+
+    /// <summary>
+    ///     Removes a metadata entry for the specified key from the context.
+    /// </summary>
+    /// <param name="key">The metadata key.</param>
+    bool RemoveMetadata(string key);
+
+    /// <summary>
+    ///     Tries to get a metadata value for the specified key.
+    /// </summary>
+    /// <typeparam name="T">The type of the metadata value.</typeparam>
+    /// <param name="key">The metadata key.</param>
+    /// <param name="value">When this method returns, contains the metadata value if found; otherwise, the default value.</param>
+    /// <returns>True if the metadata value was found; otherwise, false.</returns>
+    bool TryGetMetadata<T>(string key,
+                           out T? value);
+
+    /// <summary>
+    ///     Gets a metadata value for the specified key.
+    /// </summary>
+    /// <typeparam name="T">The type of the metadata value.</typeparam>
+    /// <param name="key">The metadata key.</param>
+    /// <returns>The metadata value if found; otherwise, the default value for the type.</returns>
+    T? GetMetadata<T>(string key);
 
     /// <summary>
     ///     Publishes an event asynchronously.

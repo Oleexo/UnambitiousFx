@@ -10,14 +10,13 @@ namespace UnambitiousFx.Mediator.Orchestrators;
 /// specified order, and their individual results are aggregated into a single final result.
 public sealed class SequentialEventOrchestrator : IEventOrchestrator {
     /// <inheritdoc />
-    public async ValueTask<Result> RunAsync<TEvent>(IContext                           context,
-                                                    IEnumerable<IEventHandler<TEvent>> handlers,
+    public async ValueTask<Result> RunAsync<TEvent>(IEnumerable<IEventHandler<TEvent>> handlers,
                                                     TEvent                             @event,
                                                     CancellationToken                  cancellationToken = default)
         where TEvent : class, IEvent {
         var results = new List<Result>();
         foreach (var eventHandler in handlers) {
-            var result = await eventHandler.HandleAsync(context, @event, cancellationToken);
+            var result = await eventHandler.HandleAsync(@event, cancellationToken);
             results.Add(result);
         }
 

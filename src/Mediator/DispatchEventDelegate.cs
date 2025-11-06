@@ -3,7 +3,6 @@ using UnambitiousFx.Mediator.Abstractions;
 
 namespace UnambitiousFx.Mediator;
 
-internal delegate ValueTask<Result> DispatchEventDelegate(IContext          context,
-                                                          IEvent            @event,
+internal delegate ValueTask<Result> DispatchEventDelegate(IEvent            @event,
                                                           IEventDispatcher  dispatcher,
                                                           CancellationToken cancellationToken);

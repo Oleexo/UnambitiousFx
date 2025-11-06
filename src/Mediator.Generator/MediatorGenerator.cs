@@ -16,13 +16,13 @@ namespace UnambitiousFx.Mediator.Generator;
 [Generator]
 public class MediatorGenerator : IIncrementalGenerator {
     private const string BaseNamespace                    = "UnambitiousFx.Mediator";
-    private const string AbstractionsNamespace            = "UnambitiousFx.Mediator.Abstractions";
+    private const string AbstractionsNamespace            = $"{BaseNamespace}.Abstractions";
     private const string ShortRequestHandlerAttributeName = "RequestHandler";
     private const string ShortEventHandlerAttributeName   = "EventHandler";
     private const string LongRequestHandlerAttributeName  = $"{ShortRequestHandlerAttributeName}Attribute";
     private const string LongEventHandlerAttributeName    = $"{ShortEventHandlerAttributeName}Attribute";
-    private const string FullRequestHandlerAttributeName  = $"{BaseNamespace}.{LongRequestHandlerAttributeName}";
-    private const string FullEventHandlerAttributeName    = $"{BaseNamespace}.{LongEventHandlerAttributeName}";
+    private const string FullRequestHandlerAttributeName  = $"{AbstractionsNamespace}.{LongRequestHandlerAttributeName}";
+    private const string FullEventHandlerAttributeName    = $"{AbstractionsNamespace}.{LongEventHandlerAttributeName}";
 
     /// <summary>
     ///     Initializes the MediatorGenerator by registering post-initialization output with the provided

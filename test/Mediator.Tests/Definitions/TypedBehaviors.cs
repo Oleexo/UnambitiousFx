@@ -3,7 +3,7 @@ using UnambitiousFx.Mediator.Abstractions;
 
 namespace UnambitiousFx.Mediator.Tests.Definitions;
 
-public sealed record TypedSampleRequest() : IRequest;
+public sealed record TypedSampleRequest : IRequest;
 
 public sealed record TypedSampleRequestWithResponse(int Value) : IRequest<int>;
 
@@ -16,8 +16,7 @@ public sealed record TypedSampleInheritanceRequest : BaseRequest, IRequest;
 public sealed class OnlyTypedSampleRequestBehavior : IRequestPipelineBehavior<TypedSampleRequest> {
     public int ExecutionCount { get; private set; }
 
-    public ValueTask<Result> HandleAsync(IContext               context,
-                                         TypedSampleRequest     request,
+    public ValueTask<Result> HandleAsync(TypedSampleRequest     request,
                                          RequestHandlerDelegate next,
                                          CancellationToken      cancellationToken = default) {
         ExecutionCount++;
@@ -28,8 +27,7 @@ public sealed class OnlyTypedSampleRequestBehavior : IRequestPipelineBehavior<Ty
 public sealed class OnlyTypedSampleRequestWithResponseBehavior : IRequestPipelineBehavior<TypedSampleRequestWithResponse, int> {
     public int ExecutionCount { get; private set; }
 
-    public ValueTask<Result<int>> HandleAsync(IContext                       context,
-                                              TypedSampleRequestWithResponse request,
+    public ValueTask<Result<int>> HandleAsync(TypedSampleRequestWithResponse request,
                                               RequestHandlerDelegate<int>    next,
                                               CancellationToken              cancellationToken = default) {
         ExecutionCount++;
@@ -41,8 +39,7 @@ public sealed class OnlyTypedSampleRequestWithResponseBehavior : IRequestPipelin
 public sealed class ConditionalTypedRequestBehavior : IRequestPipelineBehavior<TypedSampleRequest> {
     public int ExecutionCount { get; private set; }
 
-    public ValueTask<Result> HandleAsync(IContext               context,
-                                         TypedSampleRequest     request,
+    public ValueTask<Result> HandleAsync(TypedSampleRequest     request,
                                          RequestHandlerDelegate next,
                                          CancellationToken      cancellationToken = default) {
         ExecutionCount++;
@@ -53,8 +50,7 @@ public sealed class ConditionalTypedRequestBehavior : IRequestPipelineBehavior<T
 public sealed class InterfaceTypedRequestBehavior : IRequestPipelineBehavior<IBaseRequest> {
     public int ExecutionCount { get; private set; }
 
-    public ValueTask<Result> HandleAsync(IContext               context,
-                                         IBaseRequest           request,
+    public ValueTask<Result> HandleAsync(IBaseRequest           request,
                                          RequestHandlerDelegate next,
                                          CancellationToken      cancellationToken = default) {
         ExecutionCount++;
@@ -64,11 +60,11 @@ public sealed class InterfaceTypedRequestBehavior : IRequestPipelineBehavior<IBa
 
 public sealed class AbstractTypedRequestBehavior : IRequestPipelineBehavior<BaseRequest> {
     public int ExecutionCount { get; private set; }
-    public ValueTask<Result> HandleAsync(IContext               context,
-                                         BaseRequest            request,
+
+    public ValueTask<Result> HandleAsync(BaseRequest            request,
                                          RequestHandlerDelegate next,
                                          CancellationToken      cancellationToken = default) {
-           ExecutionCount++;
-                return next();
+        ExecutionCount++;
+        return next();
     }
 }

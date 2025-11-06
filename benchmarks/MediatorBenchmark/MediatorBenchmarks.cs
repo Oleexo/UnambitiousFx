@@ -4,7 +4,6 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using UnambitiousFx.Core.Maybe;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator;
 using UnambitiousFx.Mediator.Abstractions;
@@ -36,7 +35,6 @@ public class MediatorVsMediatRBenchmarks {
     private IServiceProvider _our1BehSp      = default!;
     private IServiceProvider _our3BehSp      = default!;
     private IServiceProvider _ourBaseSp      = default!;
-    private IContext         _ourContextBase = default!;
 
     private OurPublisher _ourPublisherBase = default!;
     private OurSender    _ourSender1Beh    = default!;
@@ -55,8 +53,6 @@ public class MediatorVsMediatRBenchmarks {
         _ourSender3Beh = _our3BehSp.GetRequiredService<OurSender>();
 
         _ourPublisherBase = _ourBaseSp.GetRequiredService<OurPublisher>();
-        _ourContextBase = _ourBaseSp.GetRequiredService<IContextFactory>()
-                                    .Create();
 
         _mrBaseSp = BuildMediatRSp(0, 5);
         _mr1BehSp = BuildMediatRSp(1, 5);
@@ -148,10 +144,8 @@ public class MediatorVsMediatRBenchmarks {
 
     [Benchmark(Description = "Our Mediator - Direct Send (response)")]
     public async Task<int> Our_Direct_Send_Response() {
-        var handler        = _ourBaseSp.GetRequiredService<RequestWithResponseHandler>();
-        var contextFactory = _ourBaseSp.GetRequiredService<IContextFactory>();
-        var ctx            = contextFactory.Create();
-        var res            = await handler.HandleAsync(ctx, RrRequest, CancellationToken.None);
+        var handler = _ourBaseSp.GetRequiredService<RequestWithResponseHandler>();
+        var res     = await handler.HandleAsync(RrRequest, CancellationToken.None);
         return res.TryGet(out var v)
                    ? v!
                    : -1;
@@ -159,10 +153,8 @@ public class MediatorVsMediatRBenchmarks {
 
     [Benchmark(Description = "Our Mediator - Direct Send (void)")]
     public async Task Our_Direct_Send_Void() {
-        var handler        = _ourBaseSp.GetRequiredService<RequestWithoutResponseHandler>();
-        var contextFactory = _ourBaseSp.GetRequiredService<IContextFactory>();
-        var ctx            = contextFactory.Create();
-        await handler.HandleAsync(ctx, RqRequest, CancellationToken.None);
+        var handler = _ourBaseSp.GetRequiredService<RequestWithoutResponseHandler>();
+        await handler.HandleAsync(RqRequest, CancellationToken.None);
     }
 
     [Benchmark(Description = "MediatR - Send (response)")]
@@ -186,7 +178,7 @@ public class MediatorVsMediatRBenchmarks {
     // 3) Publish notification with multiple handlers
     [Benchmark(Description = "Our Mediator - Publish (5 handlers)")]
     public async Task<bool> Our_Publish_5Handlers() {
-        var res = await _ourPublisherBase.PublishAsync(_ourContextBase, OurEvt);
+        var res = await _ourPublisherBase.PublishAsync(OurEvt);
         return res.IsSuccess;
     }
 
@@ -224,7 +216,7 @@ public class MediatorVsMediatRBenchmarks {
     public async Task<int> MediatR_Send_Response_3Behaviors() {
         return await _mrMediator3Beh.Send(MrRrRequest);
     }
-    
+
     // ===== Types for Our Mediator =====
     public sealed record RequestWithResponse(int A,
                                              int B) : UnambitiousFx.Mediator.Abstractions.IRequest<int>;
@@ -232,32 +224,28 @@ public class MediatorVsMediatRBenchmarks {
     public sealed record RequestWithoutResponse : UnambitiousFx.Mediator.Abstractions.IRequest;
 
     public sealed class RequestWithResponseHandler : UnambitiousFx.Mediator.Abstractions.IRequestHandler<RequestWithResponse, int> {
-        public ValueTask<Result<int>> HandleAsync(IContext            context,
-                                                  RequestWithResponse request,
+        public ValueTask<Result<int>> HandleAsync(RequestWithResponse request,
                                                   CancellationToken   cancellationToken = default) {
             return ValueTask.FromResult(Result.Success(request.A + request.B));
         }
     }
 
     public sealed class RequestWithoutResponseHandler : UnambitiousFx.Mediator.Abstractions.IRequestHandler<RequestWithoutResponse> {
-        public ValueTask<Result> HandleAsync(IContext               context,
-                                             RequestWithoutResponse request,
+        public ValueTask<Result> HandleAsync(RequestWithoutResponse request,
                                              CancellationToken      cancellationToken = default) {
             return ValueTask.FromResult(Result.Success());
         }
     }
 
     public sealed class OurNoOpBehavior1 : IRequestPipelineBehavior {
-        public ValueTask<Result> HandleAsync<TRequest>(IContext               context,
-                                                       TRequest               request,
+        public ValueTask<Result> HandleAsync<TRequest>(TRequest               request,
                                                        RequestHandlerDelegate next,
                                                        CancellationToken      cancellationToken = default)
             where TRequest : UnambitiousFx.Mediator.Abstractions.IRequest {
             return next();
         }
 
-        public ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(IContext                                                              context,
-                                                                             TRequest                                                              request,
+        public ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest                                                              request,
                                                                              UnambitiousFx.Mediator.Abstractions.RequestHandlerDelegate<TResponse> next,
                                                                              CancellationToken                                                     cancellationToken = default)
             where TResponse : notnull
@@ -267,16 +255,14 @@ public class MediatorVsMediatRBenchmarks {
     }
 
     public sealed class OurNoOpBehavior2 : IRequestPipelineBehavior {
-        public ValueTask<Result> HandleAsync<TRequest>(IContext               context,
-                                                       TRequest               request,
+        public ValueTask<Result> HandleAsync<TRequest>(TRequest               request,
                                                        RequestHandlerDelegate next,
                                                        CancellationToken      cancellationToken = default)
             where TRequest : UnambitiousFx.Mediator.Abstractions.IRequest {
             return next();
         }
 
-        public ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(IContext                                                              context,
-                                                                             TRequest                                                              request,
+        public ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest                                                              request,
                                                                              UnambitiousFx.Mediator.Abstractions.RequestHandlerDelegate<TResponse> next,
                                                                              CancellationToken                                                     cancellationToken = default)
             where TResponse : notnull
@@ -286,16 +272,14 @@ public class MediatorVsMediatRBenchmarks {
     }
 
     public sealed class OurNoOpBehavior3 : IRequestPipelineBehavior {
-        public ValueTask<Result> HandleAsync<TRequest>(IContext               context,
-                                                       TRequest               request,
+        public ValueTask<Result> HandleAsync<TRequest>(TRequest               request,
                                                        RequestHandlerDelegate next,
                                                        CancellationToken      cancellationToken = default)
             where TRequest : UnambitiousFx.Mediator.Abstractions.IRequest {
             return next();
         }
 
-        public ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(IContext                                                              context,
-                                                                             TRequest                                                              request,
+        public ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest                                                              request,
                                                                              UnambitiousFx.Mediator.Abstractions.RequestHandlerDelegate<TResponse> next,
                                                                              CancellationToken                                                     cancellationToken = default)
             where TResponse : notnull
@@ -308,40 +292,35 @@ public class MediatorVsMediatRBenchmarks {
     }
 
     public sealed class OurEventHandler1 : IEventHandler<OurEvent> {
-        public ValueTask<Result> HandleAsync(IContext          context,
-                                             OurEvent          @event,
+        public ValueTask<Result> HandleAsync(OurEvent          @event,
                                              CancellationToken cancellationToken = default) {
             return ValueTask.FromResult(Result.Success());
         }
     }
 
     public sealed class OurEventHandler2 : IEventHandler<OurEvent> {
-        public ValueTask<Result> HandleAsync(IContext          context,
-                                             OurEvent          @event,
+        public ValueTask<Result> HandleAsync(OurEvent          @event,
                                              CancellationToken cancellationToken = default) {
             return ValueTask.FromResult(Result.Success());
         }
     }
 
     public sealed class OurEventHandler3 : IEventHandler<OurEvent> {
-        public ValueTask<Result> HandleAsync(IContext          context,
-                                             OurEvent          @event,
+        public ValueTask<Result> HandleAsync(OurEvent          @event,
                                              CancellationToken cancellationToken = default) {
             return ValueTask.FromResult(Result.Success());
         }
     }
 
     public sealed class OurEventHandler4 : IEventHandler<OurEvent> {
-        public ValueTask<Result> HandleAsync(IContext          context,
-                                             OurEvent          @event,
+        public ValueTask<Result> HandleAsync(OurEvent          @event,
                                              CancellationToken cancellationToken = default) {
             return ValueTask.FromResult(Result.Success());
         }
     }
 
     public sealed class OurEventHandler5 : IEventHandler<OurEvent> {
-        public ValueTask<Result> HandleAsync(IContext          context,
-                                             OurEvent          @event,
+        public ValueTask<Result> HandleAsync(OurEvent          @event,
                                              CancellationToken cancellationToken = default) {
             return ValueTask.FromResult(Result.Success());
         }

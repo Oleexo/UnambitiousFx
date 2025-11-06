@@ -12,8 +12,7 @@ public sealed class TodoQueryHandler : IRequestHandler<TodoQuery, Todo> {
         _todoRepository = todoRepository;
     }
 
-    public async ValueTask<Result<Todo>> HandleAsync(IContext          context,
-                                                     TodoQuery         request,
+    public async ValueTask<Result<Todo>> HandleAsync(TodoQuery         request,
                                                      CancellationToken cancellationToken = default) {
         var todoOpt = await _todoRepository.GetAsync(request.Id, cancellationToken);
 

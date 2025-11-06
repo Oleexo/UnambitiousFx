@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.Extensions.DependencyInjection;
 using UnambitiousFx.Mediator.Abstractions;
 using UnambitiousFx.Mediator.Orchestrators;
+using UnambitiousFx.Mediator.Pipelines;
 
 namespace UnambitiousFx.Mediator;
 
@@ -12,7 +13,6 @@ internal sealed class MediatorConfig : IMediatorConfig {
     private readonly IServiceCollection                                _services;
     private          DefaultDependencyInjectionBuilder                 _builder;
     private          PublishMode                                       _defaultPublisherMode;
-    private          Action<OutboxOptions>                             _outboxConfigure = _ => { };
 
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
     private Type _eventOrchestrator;
@@ -20,7 +20,8 @@ internal sealed class MediatorConfig : IMediatorConfig {
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
     private Type _eventOutBoxStorage;
 
-    private ServiceLifetime _lifetime;
+    private ServiceLifetime       _lifetime;
+    private Action<OutboxOptions> _outboxConfigure = _ => { };
 
     public MediatorConfig(IServiceCollection services) {
         _services             = services;
@@ -61,7 +62,7 @@ internal sealed class MediatorConfig : IMediatorConfig {
     }
 
     public IMediatorConfig RegisterConditionalRequestPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TBehavior>(
-        Func<IContext, object, bool> predicate)
+        Func<object, bool> predicate)
         where TBehavior : class, IRequestPipelineBehavior {
         _actions.Add((services,
                       lifetime) => services.RegisterConditionalRequestPipelineBehavior<TBehavior>(predicate, lifetime));
@@ -69,7 +70,7 @@ internal sealed class MediatorConfig : IMediatorConfig {
     }
 
     public IMediatorConfig RegisterConditionalRequestPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TBehavior, TRequest>(
-        Func<IContext, TRequest, bool> predicate)
+        Func<TRequest, bool> predicate)
         where TBehavior : class, IRequestPipelineBehavior<TRequest>
         where TRequest : IRequest {
         _actions.Add((services,
@@ -78,7 +79,7 @@ internal sealed class MediatorConfig : IMediatorConfig {
     }
 
     public IMediatorConfig RegisterConditionalRequestPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TBehavior, TRequest,
-                                                                      TResponse>(Func<IContext, TRequest, bool> predicate)
+                                                                      TResponse>(Func<TRequest, bool> predicate)
         where TBehavior : class, IRequestPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
         where TResponse : notnull {
@@ -129,10 +130,9 @@ internal sealed class MediatorConfig : IMediatorConfig {
         _actions.Add((services,
                       lifetime) => services.RegisterEventHandler<THandler, TEvent>(lifetime));
         // Ensure only one dispatcher per event type; multiple handler registrations should not create duplicate dictionary entries
-        _eventDispatchers.TryAdd(typeof(TEvent), (context,
-                                                  @event,
+        _eventDispatchers.TryAdd(typeof(TEvent), (@event,
                                                   dispatcher,
-                                                  cancellationToken) => dispatcher.DispatchAsync(context, Unsafe.As<TEvent>(@event), cancellationToken));
+                                                  cancellationToken) => dispatcher.DispatchAsync(Unsafe.As<TEvent>(@event), cancellationToken));
         return this;
     }
 
@@ -150,6 +150,14 @@ internal sealed class MediatorConfig : IMediatorConfig {
     public IMediatorConfig ConfigureOutbox(Action<OutboxOptions> configure) {
         _outboxConfigure = configure; // delegate expected non-null by contract
         return this;
+    }
+
+    public IMediatorConfig EnableCqrsBoundaryEnforcement(bool enable = true) {
+        if (!enable) {
+            return this;
+        }
+
+        return RegisterRequestPipelineBehavior<CqrsBoundaryEnforcementBehavior>();
     }
 
     public void Apply() {

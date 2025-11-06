@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
-using UnambitiousFx.Mediator;
 
 namespace Application.Application.Todos;
 
@@ -14,8 +13,7 @@ public sealed class TodoUpdatedHandler : IEventHandler<TodoUpdated> {
         _logger = logger;
     }
 
-    public ValueTask<Result> HandleAsync(IContext          context,
-                                         TodoUpdated       @event,
+    public ValueTask<Result> HandleAsync(TodoUpdated       @event,
                                          CancellationToken cancellationToken = default) {
         _logger.LogInformation("Todo updated {TodoId}", @event.Todo.Id);
 

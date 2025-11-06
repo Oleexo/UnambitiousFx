@@ -43,8 +43,7 @@ todoEndpoints.MapGet("/", async ([FromServices] IRequestHandler<ListTodoQuery, I
                                  CancellationToken                                                cancellationToken) => {
     var query = new ListTodoQuery();
 
-    var ctx    = contextFactory.Create();
-    var result = await handler.HandleAsync(ctx, query, cancellationToken);
+    var result = await handler.HandleAsync(query, cancellationToken);
 
     return result.Match(Results.Ok,
                         error => Results.BadRequest(error.ToDisplayString()));
@@ -71,8 +70,7 @@ todoEndpoints.MapPut("/{id:guid}", async ([FromServices] IRequestHandler<UpdateT
         Name = input.Name
     };
 
-    var ctx    = contextFactory.Create();
-    var result = await handler.HandleAsync(ctx, command, cancellationToken);
+    var result = await handler.HandleAsync(command, cancellationToken);
 
     return result.Match(() => Results.Ok(),
                         error => Results.BadRequest(error.ToDisplayString()));

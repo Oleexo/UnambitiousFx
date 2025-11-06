@@ -6,30 +6,6 @@ using UnambitiousFx.Mediator.Tests.Definitions;
 namespace UnambitiousFx.Mediator.Tests;
 
 public sealed class TypedRequestPipelineBehaviorTests {
-    private sealed class TypedSampleRequestHandler : IRequestHandler<TypedSampleRequest> {
-        public ValueTask<Result> HandleAsync(IContext           context,
-                                             TypedSampleRequest request,
-                                             CancellationToken  cancellationToken = default) {
-            return new ValueTask<Result>(Result.Success());
-        }
-    }
-
-    private sealed class TypedSampleRequestWithResponseHandler : IRequestHandler<TypedSampleRequestWithResponse, int> {
-        public ValueTask<Result<int>> HandleAsync(IContext                       context,
-                                                  TypedSampleRequestWithResponse request,
-                                                  CancellationToken              cancellationToken = default) {
-            return new ValueTask<Result<int>>(Result.Success(request.Value));
-        }
-    }
-
-    private sealed class TypedSampleInheritanceRequestHandler : IRequestHandler<TypedSampleInheritanceRequest> {
-        public ValueTask<Result> HandleAsync(IContext                      context,
-                                             TypedSampleInheritanceRequest request,
-                                             CancellationToken             cancellationToken = default) {
-            return new(Result.Success());
-        }
-    }
-
     [Fact]
     public async Task Typed_behavior_without_response_executes_only_for_matching_request() {
         var services = new ServiceCollection();
@@ -112,8 +88,7 @@ public sealed class TypedRequestPipelineBehaviorTests {
         var services = new ServiceCollection();
         services.AddMediator(cfg => {
             cfg.RegisterRequestHandler<TypedSampleRequestHandler, TypedSampleRequest>();
-            cfg.RegisterConditionalRequestPipelineBehavior<ConditionalTypedRequestBehavior, TypedSampleRequest>((_,
-                                                                                                                 _) => true);
+            cfg.RegisterConditionalRequestPipelineBehavior<ConditionalTypedRequestBehavior, TypedSampleRequest>(_ => true);
         });
         var provider = services.BuildServiceProvider();
         var sender   = provider.GetRequiredService<ISender>();
@@ -128,8 +103,7 @@ public sealed class TypedRequestPipelineBehaviorTests {
         var services = new ServiceCollection();
         services.AddMediator(cfg => {
             cfg.RegisterRequestHandler<TypedSampleRequestHandler, TypedSampleRequest>();
-            cfg.RegisterConditionalRequestPipelineBehavior<ConditionalTypedRequestBehavior, TypedSampleRequest>((_,
-                                                                                                                 _) => false);
+            cfg.RegisterConditionalRequestPipelineBehavior<ConditionalTypedRequestBehavior, TypedSampleRequest>(_ => false);
         });
         var provider = services.BuildServiceProvider();
         var sender   = provider.GetRequiredService<ISender>();
@@ -137,5 +111,26 @@ public sealed class TypedRequestPipelineBehaviorTests {
         await sender.SendAsync(new TypedSampleRequest());
         var behavior = provider.GetRequiredService<ConditionalTypedRequestBehavior>();
         Assert.Equal(0, behavior.ExecutionCount);
+    }
+
+    private sealed class TypedSampleRequestHandler : IRequestHandler<TypedSampleRequest> {
+        public ValueTask<Result> HandleAsync(TypedSampleRequest request,
+                                             CancellationToken  cancellationToken = default) {
+            return new ValueTask<Result>(Result.Success());
+        }
+    }
+
+    private sealed class TypedSampleRequestWithResponseHandler : IRequestHandler<TypedSampleRequestWithResponse, int> {
+        public ValueTask<Result<int>> HandleAsync(TypedSampleRequestWithResponse request,
+                                                  CancellationToken              cancellationToken = default) {
+            return new ValueTask<Result<int>>(Result.Success(request.Value));
+        }
+    }
+
+    private sealed class TypedSampleInheritanceRequestHandler : IRequestHandler<TypedSampleInheritanceRequest> {
+        public ValueTask<Result> HandleAsync(TypedSampleInheritanceRequest request,
+                                             CancellationToken             cancellationToken = default) {
+            return new ValueTask<Result>(Result.Success());
+        }
     }
 }

@@ -19,44 +19,41 @@ internal sealed class EventDispatcher : IEventDispatcher {
         _dispatchers        = options.Value.Dispatchers;
     }
 
-    public ValueTask<Result> DispatchAsync(IContext          context,
-                                           IEvent            @event,
+    public ValueTask<Result> DispatchAsync(IEvent            @event,
                                            CancellationToken cancellationToken) {
         var eventType = @event.GetType();
 
         if (_dispatchers.TryGetValue(eventType, out var dispatcher)) {
-            return dispatcher(context, @event, this, cancellationToken);
+            return dispatcher(@event, this, cancellationToken);
         }
 
         return ValueTask.FromResult(Result.Failure($"No dispatcher registered for event type {eventType.Name}"));
     }
 
-    public ValueTask<Result> DispatchAsync<TEvent>(IContext          context,
-                                                   TEvent            @event,
+    public ValueTask<Result> DispatchAsync<TEvent>(TEvent            @event,
                                                    CancellationToken cancellationToken)
         where TEvent : class, IEvent {
         var handlers  = _dependencyResolver.GetServices<IEventHandler<TEvent>>();
         var behaviors = _dependencyResolver.GetServices<IEventPipelineBehavior>();
 
-        return ExecutePipelineAsync(context, @event, handlers.ToArray(), behaviors.ToArray(), 0, cancellationToken);
+        return ExecutePipelineAsync(@event, handlers.ToArray(), behaviors.ToArray(), 0, cancellationToken);
     }
 
-    private ValueTask<Result> ExecutePipelineAsync<TEvent>(IContext                 context,
-                                                           TEvent                   @event,
+    private ValueTask<Result> ExecutePipelineAsync<TEvent>(TEvent                   @event,
                                                            IEventHandler<TEvent>[]  handlers,
                                                            IEventPipelineBehavior[] behaviors,
                                                            int                      index,
                                                            CancellationToken        cancellationToken)
         where TEvent : class, IEvent {
         if (index >= behaviors.Length) {
-            return _eventOrchestrator.RunAsync(context, handlers, @event, cancellationToken);
+            return _eventOrchestrator.RunAsync(handlers, @event, cancellationToken);
         }
 
         return behaviors[index]
-           .HandleAsync(context, @event, Next, cancellationToken);
+           .HandleAsync(@event, Next, cancellationToken);
 
         ValueTask<Result> Next() {
-            return ExecutePipelineAsync(context, @event, handlers, behaviors, index + 1, cancellationToken);
+            return ExecutePipelineAsync(@event, handlers, behaviors, index + 1, cancellationToken);
         }
     }
 }

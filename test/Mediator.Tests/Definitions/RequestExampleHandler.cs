@@ -9,8 +9,7 @@ public sealed class RequestExampleHandler : IRequestHandler<RequestExample> {
     public int             ExecutionCount  { get; private set; }
     public Action?         OnExecuted      { get; set; }
 
-    public ValueTask<Result> HandleAsync(IContext          context,
-                                         RequestExample    request,
+    public ValueTask<Result> HandleAsync(RequestExample    request,
                                          CancellationToken cancellationToken = default) {
         Executed        = true;
         RequestExecuted = request;

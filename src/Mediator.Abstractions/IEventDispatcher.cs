@@ -7,9 +7,6 @@ namespace UnambitiousFx.Mediator.Abstractions;
 /// </summary>
 public interface IEventDispatcher {
     /// Dispatches an event asynchronously, handling the specified context and cancellation token.
-    /// <param name="context">
-    ///     The execution context in which the event is to be dispatched.
-    /// </param>
     /// <param name="event">
     ///     The event to be handled asynchronously.
     /// </param>
@@ -19,23 +16,20 @@ public interface IEventDispatcher {
     /// <returns>
     ///     A ValueTask containing the result of the dispatch operation, which may indicate success or a failure.
     /// </returns>
-    ValueTask<Result> DispatchAsync(IContext          context,
-                                    IEvent            @event,
+    ValueTask<Result> DispatchAsync(IEvent            @event,
                                     CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     Dispatches an event asynchronously within the specified context.
     /// </summary>
     /// <typeparam name="TEvent">The type of the event to dispatch, which must implement <see cref="IEvent" />.</typeparam>
-    /// <param name="context">The context in which the event is dispatched.</param>
     /// <param name="event">The event to be dispatched.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to request cancellation of the operation.</param>
     /// <returns>
     ///     A task that represents the asynchronous operation. The task's result contains a <see cref="Result" />
     ///     indicating the outcome of the operation.
     /// </returns>
-    ValueTask<Result> DispatchAsync<TEvent>(IContext          context,
-                                            TEvent            @event,
+    ValueTask<Result> DispatchAsync<TEvent>(TEvent            @event,
                                             CancellationToken cancellationToken = default)
         where TEvent : class, IEvent;
 }

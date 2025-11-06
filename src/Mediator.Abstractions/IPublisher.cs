@@ -13,15 +13,10 @@ public interface IPublisher {
     ///     The type of the event to be published. This must implement the <see cref="IEvent" />
     ///     interface.
     /// </typeparam>
-    /// <param name="context">
-    ///     The context providing additional metadata or state information relevant to the publishing
-    ///     process.
-    /// </param>
     /// <param name="event">The event instance to be published.</param>
     /// <param name="cancellationToken">An optional cancellation token to cancel the operation.</param>
     /// <returns>A <see cref="ValueTask{TResult}" /> containing the result of the publish operation.</returns>
-    ValueTask<Result> PublishAsync<TEvent>(IContext          context,
-                                           TEvent            @event,
+    ValueTask<Result> PublishAsync<TEvent>(TEvent            @event,
                                            CancellationToken cancellationToken = default)
         where TEvent : class, IEvent;
 
@@ -33,10 +28,6 @@ public interface IPublisher {
     ///     The type of the event to be published. This must implement the <see cref="IEvent" />
     ///     interface.
     /// </typeparam>
-    /// <param name="context">
-    ///     The context providing additional metadata or state information relevant
-    ///     to the publishing process.
-    /// </param>
     /// <param name="event">The event instance to be published.</param>
     /// <param name="mode">
     ///     Specifies the mode in which the event should be published, such as immediately (Now),
@@ -46,8 +37,7 @@ public interface IPublisher {
     ///     An optional cancellation token to cancel the operation.
     /// </param>
     /// <returns>A <see cref="ValueTask{TResult}" /> containing the result of the publish operation.</returns>
-    ValueTask<Result> PublishAsync<TEvent>(IContext          context,
-                                           TEvent            @event,
+    ValueTask<Result> PublishAsync<TEvent>(TEvent            @event,
                                            PublishMode       mode,
                                            CancellationToken cancellationToken = default)
         where TEvent : class, IEvent;
@@ -55,15 +45,11 @@ public interface IPublisher {
     /// <summary>
     ///     Commits the current operation within the given context and ensures its completion.
     /// </summary>
-    /// <param name="context">
-    ///     The context providing metadata or state information relevant to the commit process.
-    /// </param>
     /// <param name="cancellationToken">
     ///     An optional cancellation token to cancel the operation before completion if needed.
     /// </param>
     /// <returns>
     ///     A <see cref="ValueTask{TResult}" /> containing the result of the commit operation.
     /// </returns>
-    ValueTask<Result> CommitAsync(IContext          context,
-                                  CancellationToken cancellationToken = default);
+    ValueTask<Result> CommitAsync(CancellationToken cancellationToken = default);
 }

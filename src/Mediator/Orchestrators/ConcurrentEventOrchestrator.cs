@@ -13,12 +13,11 @@ namespace UnambitiousFx.Mediator.Orchestrators;
 /// </remarks>
 public sealed class ConcurrentEventOrchestrator : IEventOrchestrator {
     /// <inheritdoc />
-    public async ValueTask<Result> RunAsync<TEvent>(IContext                           context,
-                                                    IEnumerable<IEventHandler<TEvent>> handlers,
+    public async ValueTask<Result> RunAsync<TEvent>(IEnumerable<IEventHandler<TEvent>> handlers,
                                                     TEvent                             @event,
                                                     CancellationToken                  cancellationToken = default)
         where TEvent : class, IEvent {
-        var tasks = handlers.Select(eventHandler => eventHandler.HandleAsync(context, @event, cancellationToken)
+        var tasks = handlers.Select(eventHandler => eventHandler.HandleAsync(@event, cancellationToken)
                                                                 .AsTask())
                             .ToList();
 

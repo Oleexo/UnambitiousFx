@@ -17,7 +17,7 @@ public sealed class DependencyInjectionExtensionsTests {
         var ctx = services.GetRequiredService<IContextFactory>()
                           .Create();
 
-        var result = await handler.HandleAsync(ctx, new RequestWithResponseExample(), CancellationToken.None);
+        var result = await handler.HandleAsync(new RequestWithResponseExample(), CancellationToken.None);
 
         Assert.True(result.IsSuccess);
     }
@@ -35,7 +35,7 @@ public sealed class DependencyInjectionExtensionsTests {
         var ctx = services.GetRequiredService<IContextFactory>()
                           .Create();
 
-        var result = await handler.HandleAsync(ctx, new RequestWithResponseExample(), CancellationToken.None);
+        var result = await handler.HandleAsync(new RequestWithResponseExample(), CancellationToken.None);
 
         Assert.True(result.IsSuccess);
     }

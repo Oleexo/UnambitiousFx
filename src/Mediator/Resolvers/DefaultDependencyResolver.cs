@@ -16,8 +16,7 @@ internal sealed class DefaultDependencyResolver : IDependencyResolver {
 
     public TService GetRequiredService<TService>()
         where TService : class {
-        // maybe improve error message here later
-        return _serviceProvider.GetRequiredService<TService>();
+        return _serviceProvider.GetService<TService>() ?? throw new MissingHandlerException(typeof(TService));
     }
 
     public IEnumerable<TService> GetServices<TService>()

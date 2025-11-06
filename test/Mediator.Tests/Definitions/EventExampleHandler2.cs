@@ -9,8 +9,7 @@ public sealed class EventExampleHandler2 : IEventHandler<EventExample> {
     public int           ExecutionCount { get; private set; }
     public Action?       OnExecuted     { get; set; }
 
-    public ValueTask<Result> HandleAsync(IContext          context,
-                                         EventExample      @event,
+    public ValueTask<Result> HandleAsync(EventExample      @event,
                                          CancellationToken cancellationToken = default) {
         Executed      = true;
         EventExecuted = @event;

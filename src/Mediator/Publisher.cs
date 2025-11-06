@@ -8,8 +8,8 @@ namespace UnambitiousFx.Mediator;
 internal sealed class Publisher : IPublisher {
     private readonly PublishMode         _defaultMode;
     private readonly IEventDispatcher    _eventDispatcher;
-    private readonly IEventOutboxStorage _outboxStorage;
     private readonly OutboxOptions       _outboxOptions;
+    private readonly IEventOutboxStorage _outboxStorage;
 
     public Publisher(IEventDispatcher           eventDispatcher,
                      IEventOutboxStorage        outboxStorage,
@@ -21,28 +21,25 @@ internal sealed class Publisher : IPublisher {
         _outboxOptions   = outboxOptions?.Value ?? new OutboxOptions();
     }
 
-    public ValueTask<Result> PublishAsync<TEvent>(IContext          context,
-                                                  TEvent            @event,
+    public ValueTask<Result> PublishAsync<TEvent>(TEvent            @event,
                                                   CancellationToken cancellationToken = default)
         where TEvent : class, IEvent {
-        return PublishAsync(context, @event, _defaultMode, cancellationToken);
+        return PublishAsync(@event, _defaultMode, cancellationToken);
     }
 
-    public ValueTask<Result> PublishAsync<TEvent>(IContext          context,
-                                                  TEvent            @event,
+    public ValueTask<Result> PublishAsync<TEvent>(TEvent            @event,
                                                   PublishMode       mode,
                                                   CancellationToken cancellationToken = default)
         where TEvent : class, IEvent {
         return mode switch {
-            PublishMode.Now     => _eventDispatcher.DispatchAsync(context, @event, cancellationToken),
+            PublishMode.Now     => _eventDispatcher.DispatchAsync(@event, cancellationToken),
             PublishMode.Outbox  => _outboxStorage.AddAsync(@event, cancellationToken),
-            PublishMode.Default => PublishAsync(context, @event, _defaultMode, cancellationToken),
+            PublishMode.Default => PublishAsync(@event, _defaultMode, cancellationToken),
             _                   => throw new ArgumentOutOfRangeException(nameof(mode), mode, null)
         };
     }
 
-    public async ValueTask<Result> CommitAsync(IContext          context,
-                                               CancellationToken cancellationToken = default) {
+    public async ValueTask<Result> CommitAsync(CancellationToken cancellationToken = default) {
         var          pendingEvents = await _outboxStorage.GetPendingEventsAsync(cancellationToken);
         List<IEvent> events;
         if (_outboxOptions.BatchSize.HasValue &&
@@ -57,7 +54,7 @@ internal sealed class Publisher : IPublisher {
         var results = new List<Result>();
 
         foreach (var @event in events) {
-            var result = await _eventDispatcher.DispatchAsync(context, @event, cancellationToken);
+            var result = await _eventDispatcher.DispatchAsync(@event, cancellationToken);
             if (result.IsSuccess) {
                 var processed = await _outboxStorage.MarkAsProcessedAsync(@event, cancellationToken);
                 results.Add(processed.IsSuccess

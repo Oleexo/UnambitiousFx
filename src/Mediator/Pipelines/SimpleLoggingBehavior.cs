@@ -22,8 +22,7 @@ public sealed class SimpleLoggingBehavior : IRequestPipelineBehavior, IEventPipe
     }
 
     /// <inheritdoc />
-    public async ValueTask<Result> HandleAsync<TEvent>(IContext             context,
-                                                       TEvent               @event,
+    public async ValueTask<Result> HandleAsync<TEvent>(TEvent               @event,
                                                        EventHandlerDelegate next,
                                                        CancellationToken    cancellationToken = default)
         where TEvent : IEvent {
@@ -45,8 +44,7 @@ public sealed class SimpleLoggingBehavior : IRequestPipelineBehavior, IEventPipe
     }
 
     /// <inheritdoc />
-    public async ValueTask<Result> HandleAsync<TRequest>(IContext               context,
-                                                         TRequest               request,
+    public async ValueTask<Result> HandleAsync<TRequest>(TRequest               request,
                                                          RequestHandlerDelegate next,
                                                          CancellationToken      cancellationToken = default)
         where TRequest : IRequest {
@@ -69,8 +67,7 @@ public sealed class SimpleLoggingBehavior : IRequestPipelineBehavior, IEventPipe
     }
 
     /// <inheritdoc />
-    public async ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(IContext                          context,
-                                                                               TRequest                          request,
+    public async ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest                          request,
                                                                                RequestHandlerDelegate<TResponse> next,
                                                                                CancellationToken                 cancellationToken = default)
         where TRequest : IRequest<TResponse>

@@ -5,6 +5,7 @@
   </Folder>
   <Folder Name="/examples/" />
   <Folder Name="/examples/mediator/">
+    <Project Path="examples\ConsoleApp\ConsoleApp.csproj" Type="Classic C#" />
     <Project Path="examples\mediator\Application\Application.csproj" Type="Classic C#" />
     <Project Path="examples\mediator\WebApi.Tests\WebApi.Tests.csproj" Type="Classic C#" />
     <Project Path="examples\mediator\WebApiAot\WebApiAot.csproj" Type="Classic C#" />

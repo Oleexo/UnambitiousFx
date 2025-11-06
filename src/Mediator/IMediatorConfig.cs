@@ -89,7 +89,7 @@ public interface IMediatorConfig {
     ///     The current instance of <see cref="IMediatorConfig" />, enabling further configuration chaining.
     /// </returns>
     IMediatorConfig RegisterConditionalRequestPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TBehavior>(
-        Func<IContext, object, bool> predicate)
+        Func<object, bool> predicate)
         where TBehavior : class, IRequestPipelineBehavior;
 
     /// <summary>
@@ -110,7 +110,7 @@ public interface IMediatorConfig {
     ///     The current instance of <see cref="IMediatorConfig" />, enabling further configuration chaining.
     /// </returns>
     IMediatorConfig RegisterConditionalRequestPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TBehavior, TRequest>(
-        Func<IContext, TRequest, bool> predicate)
+        Func<TRequest, bool> predicate)
         where TBehavior : class, IRequestPipelineBehavior<TRequest>
         where TRequest : IRequest;
 
@@ -135,7 +135,7 @@ public interface IMediatorConfig {
     ///     The current instance of <see cref="IMediatorConfig" />, enabling further configuration chaining.
     /// </returns>
     IMediatorConfig RegisterConditionalRequestPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TBehavior, TRequest, TResponse>(
-        Func<IContext, TRequest, bool> predicate)
+        Func<TRequest, bool> predicate)
         where TBehavior : class, IRequestPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
         where TResponse : notnull;
@@ -256,9 +256,19 @@ public interface IMediatorConfig {
     /// <summary>
     ///     Configures options for the outbox retry, dead-letter and batch processing features.
     /// </summary>
-    /// <param name="configure">Delegate to mutate the <see cref="OutboxOptions"/> instance.</param>
+    /// <param name="configure">Delegate to mutate the <see cref="OutboxOptions" /> instance.</param>
     /// <returns>The current config instance.</returns>
     IMediatorConfig ConfigureOutbox(Action<OutboxOptions> configure);
+
+    /// <summary>
+    ///     Enables CQRS boundary enforcement to prevent violations such as:
+    ///     - Commands being sent within command handlers
+    ///     - Queries being sent within query handlers
+    ///     - Commands being sent within query handlers
+    /// </summary>
+    /// <param name="enable">True to enable CQRS boundary enforcement, false to disable it. Default is true.</param>
+    /// <returns>The current config instance.</returns>
+    IMediatorConfig EnableCqrsBoundaryEnforcement(bool enable = true);
 
     /// <summary>
     ///     Applies the current configuration to set up the mediator with the provided services and options.

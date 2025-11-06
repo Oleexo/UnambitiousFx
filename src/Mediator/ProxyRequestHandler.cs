@@ -16,25 +16,23 @@ internal sealed class ProxyRequestHandler<TRequestHandler, TRequest> : IRequestH
         _behaviors = [..behaviors];
     }
 
-    public ValueTask<Result> HandleAsync(IContext          context,
-                                         TRequest          request,
+    public ValueTask<Result> HandleAsync(TRequest          request,
                                          CancellationToken cancellationToken = default) {
-        return ExecutePipelineAsync(context, request, 0, cancellationToken);
+        return ExecutePipelineAsync(request, 0, cancellationToken);
     }
 
-    private ValueTask<Result> ExecutePipelineAsync(IContext          context,
-                                                   TRequest          request,
+    private ValueTask<Result> ExecutePipelineAsync(TRequest          request,
                                                    int               index,
                                                    CancellationToken cancellationToken) {
         if (index >= _behaviors.Length) {
-            return _handler.HandleAsync(context, request, cancellationToken);
+            return _handler.HandleAsync(request, cancellationToken);
         }
 
         return _behaviors[index]
-           .HandleAsync(context, request, Next, cancellationToken);
+           .HandleAsync(request, Next, cancellationToken);
 
         ValueTask<Result> Next() {
-            return ExecutePipelineAsync(context, request, index + 1, cancellationToken);
+            return ExecutePipelineAsync(request, index + 1, cancellationToken);
         }
     }
 }
@@ -52,25 +50,23 @@ internal class ProxyRequestHandler<TRequestHandler, TRequest, TResponse> : IRequ
         _behaviors = [..behaviors];
     }
 
-    public virtual ValueTask<Result<TResponse>> HandleAsync(IContext          context,
-                                                            TRequest          request,
+    public virtual ValueTask<Result<TResponse>> HandleAsync(TRequest          request,
                                                             CancellationToken cancellationToken = default) {
-        return ExecutePipelineAsync(context, request, 0, cancellationToken);
+        return ExecutePipelineAsync(request, 0, cancellationToken);
     }
 
-    private ValueTask<Result<TResponse>> ExecutePipelineAsync(IContext          context,
-                                                              TRequest          request,
+    private ValueTask<Result<TResponse>> ExecutePipelineAsync(TRequest          request,
                                                               int               index,
                                                               CancellationToken cancellationToken) {
         if (index >= _behaviors.Length) {
-            return _handler.HandleAsync(context, request, cancellationToken);
+            return _handler.HandleAsync(request, cancellationToken);
         }
 
         return _behaviors[index]
-           .HandleAsync(context, request, Next, cancellationToken);
+           .HandleAsync(request, Next, cancellationToken);
 
         ValueTask<Result<TResponse>> Next() {
-            return ExecutePipelineAsync(context, request, index + 1, cancellationToken);
+            return ExecutePipelineAsync(request, index + 1, cancellationToken);
         }
     }
 }

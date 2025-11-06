@@ -9,8 +9,7 @@ public sealed class TestEventPipelineBehavior : IEventPipelineBehavior {
     public int     ExecutionCount { get; private set; }
     public Action? OnExecuted     { get; set; }
 
-    public ValueTask<Result> HandleAsync<TEvent>(IContext             context,
-                                                 TEvent               @event,
+    public ValueTask<Result> HandleAsync<TEvent>(TEvent               @event,
                                                  EventHandlerDelegate next,
                                                  CancellationToken    cancellationToken = default)
         where TEvent : IEvent {

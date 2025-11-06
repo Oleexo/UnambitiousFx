@@ -15,9 +15,6 @@ public abstract class RequestHandler<TRequest, TResponse> : IRequestHandler<TReq
     where TRequest : IRequest<TResponse>
     where TResponse : notnull {
     /// Handles the given request asynchronously.
-    /// <param name="context">
-    ///     The context in which the request is being executed.
-    /// </param>
     /// <param name="request">
     ///     The request instance to be handled.
     /// </param>
@@ -28,8 +25,7 @@ public abstract class RequestHandler<TRequest, TResponse> : IRequestHandler<TReq
     ///     A ValueTask representing the result of the asynchronous operation,
     ///     containing the result of type <typeparamref name="TResponse" />.
     /// </return>
-    public ValueTask<Result<TResponse>> HandleAsync(IContext          context,
-                                                    TRequest          request,
+    public ValueTask<Result<TResponse>> HandleAsync(TRequest          request,
                                                     CancellationToken cancellationToken = default) {
         var result = Handle(request);
 
@@ -52,10 +48,6 @@ public abstract class RequestHandler<TRequest, TResponse> : IRequestHandler<TReq
 public abstract class RequestHandler<TRequest> : IRequestHandler<TRequest>
     where TRequest : IRequest {
     /// Handles an asynchronous request operation.
-    /// <param name="context">
-    ///     The context for the current request. This parameter provides the operational context in which the request is
-    ///     executed.
-    /// </param>
     /// <param name="request">
     ///     The request instance to be handled. This parameter contains the data and information required to process the
     ///     request.
@@ -68,8 +60,7 @@ public abstract class RequestHandler<TRequest> : IRequestHandler<TRequest>
     ///     A ValueTask of type Result, representing the outcome of processing the specified request. The result indicates
     ///     success or failure.
     /// </returns>
-    public ValueTask<Result> HandleAsync(IContext          context,
-                                         TRequest          request,
+    public ValueTask<Result> HandleAsync(TRequest          request,
                                          CancellationToken cancellationToken = default) {
         var result = Handle(request);
         return new ValueTask<Result>(result);

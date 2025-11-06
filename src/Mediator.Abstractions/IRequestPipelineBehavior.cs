@@ -17,7 +17,6 @@ namespace UnambitiousFx.Mediator.Abstractions;
 public interface IRequestPipelineBehavior {
     /// Handles the processing of a request asynchronously within the context of a pipeline behavior.
     /// <typeparam name="TRequest">The type of the request object being processed.</typeparam>
-    /// <param name="context">The execution context for the request.</param>
     /// <param name="request">The request object to be processed.</param>
     /// <param name="next">The delegate to invoke the next step in the processing pipeline.</param>
     /// <param name="cancellationToken">
@@ -28,8 +27,7 @@ public interface IRequestPipelineBehavior {
     ///     A task representing the asynchronous operation, containing a result object indicating the success or failure
     ///     of the process.
     /// </returns>
-    ValueTask<Result> HandleAsync<TRequest>(IContext               context,
-                                            TRequest               request,
+    ValueTask<Result> HandleAsync<TRequest>(TRequest               request,
                                             RequestHandlerDelegate next,
                                             CancellationToken      cancellationToken = default)
         where TRequest : IRequest;
@@ -37,7 +35,6 @@ public interface IRequestPipelineBehavior {
     /// Handles the execution of a request pipeline behavior.
     /// <typeparam name="TRequest">The type of the request being handled. Must implement <see cref="IRequest{TResponse}" />.</typeparam>
     /// <typeparam name="TResponse">The type of the response expected from handling the request. Must be a non-nullable value.</typeparam>
-    /// <param name="context">The context in which the request is being processed.</param>
     /// <param name="request">The request object to handle within the behavior.</param>
     /// <param name="next">The delegate representing the next step in the request pipeline.</param>
     /// <param name="cancellationToken">The optional token to propagate the notification that the operation should be canceled.</param>
@@ -45,8 +42,7 @@ public interface IRequestPipelineBehavior {
     ///     A <see cref="ValueTask{TResult}" /> containing a <see cref="Result{TResponse}" /> which indicates the outcome
     ///     of the request handling process.
     /// </returns>
-    ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(IContext                          context,
-                                                                  TRequest                          request,
+    ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest                          request,
                                                                   RequestHandlerDelegate<TResponse> next,
                                                                   CancellationToken                 cancellationToken = default)
         where TResponse : notnull

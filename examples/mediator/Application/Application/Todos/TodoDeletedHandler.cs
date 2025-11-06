@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
-using UnambitiousFx.Mediator;
 
 namespace Application.Application.Todos;
 
@@ -14,8 +13,7 @@ public sealed class TodoDeletedHandler : IEventHandler<TodoDeleted> {
         _logger = logger;
     }
 
-    public ValueTask<Result> HandleAsync(IContext          context,
-                                         TodoDeleted       @event,
+    public ValueTask<Result> HandleAsync(TodoDeleted       @event,
                                          CancellationToken cancellationToken = default) {
         _logger.LogInformation("Todo deleted {TodoId}", @event.Todo.Id);
 
