@@ -243,7 +243,7 @@ cfg.AddRegisterGroup(new MyFeatureRegistrations());
 - `SetEventOutboxStorage<T>()` — plug a custom outbox storage implementation.
 - `SetDefaultPublishingMode(PublishMode)` — e.g., `PublishMode.Now` vs `PublishMode.Outbox`.
 - `ConfigureOutbox(Action<OutboxOptions>)` — retry/dead‑letter/batching.
-- `EnableCqrsBoundaryEnforcement(bool enable = true)` — enables a guard behavior that prevents sending commands from command handlers, etc.
+- `EnableCqrsBoundaryEnforcement(bool enable = true)` — enables a guard behavior that prevents nested mediator requests inside request handlers. See: ./cqrs-boundary-enforcement.html
 - `AddValidator<TValidator, TRequest>()` — add request validators; pairs well with the built‑in `RequestValidationBehavior`.
 
 ## End‑to‑end example
