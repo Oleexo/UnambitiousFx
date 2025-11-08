@@ -270,6 +270,18 @@ public interface IMediatorConfig {
     /// <returns>The current config instance.</returns>
     IMediatorConfig EnableCqrsBoundaryEnforcement(bool enable = true);
 
+    /// <summary>
+    /// Adds a request validator to the mediator configuration.
+    /// </summary>
+    /// <typeparam name="TValidator">
+    /// The type of the validator, implementing <see cref="IRequestValidator{TRequest}" />.
+    /// </typeparam>
+    /// <typeparam name="TRequest">
+    /// The type of the request that the validator applies to, implementing <see cref="IRequest" />.
+    /// </typeparam>
+    /// <returns>
+    /// The current instance of <see cref="IMediatorConfig" />, allowing for fluent configuration.
+    /// </returns>
     IMediatorConfig AddValidator<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TValidator, TRequest>()
         where TValidator : class, IRequestValidator<TRequest>
         where TRequest : IRequest;
