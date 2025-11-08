@@ -266,17 +266,6 @@ internal sealed class ResultAssertionGenerator
         return sb.ToString();
     }
 
-    private void GenerateValueAssertions(StringBuilder sb,
-                                         ushort arity,
-                                         string resultVariable)
-    {
-        for (var i = 1; i <= arity; i++)
-        {
-            var expectedValue = TestTypeHelper.GetTestValue(i);
-            sb.AppendLine($"Assert.Equal({expectedValue}, {resultVariable}.Value{i});");
-        }
-    }
-
     private void GenerateMultiArityValueAssertions(StringBuilder sb,
                                                    ushort arity)
     {

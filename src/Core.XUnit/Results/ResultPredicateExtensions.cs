@@ -70,7 +70,7 @@ public static class ResultPredicateExtensions
         where T1 : notnull
     {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (result.TryGet(out var _, out var err))
+        if (result.TryGet(out _, out var err))
         {
             Assert.Fail(because ?? "Expected failure but was success.");
         }

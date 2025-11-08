@@ -47,8 +47,8 @@ internal sealed class ResultPrependErrorTestsGenerator : ResultTestGeneratorBase
                                                     string asyncType)
     {
         var cw = new ClassWriter($"ResultPrependError{asyncType}TestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - {asyncType} PrependError" };
-        cw.AddMethod(GenerateAsyncSuccessTest(arity, asyncType));
-        cw.AddMethod(GenerateAsyncFailureTest(arity, asyncType));
+        cw.AddMethod(GenerateAsyncSuccessTest(arity));
+        cw.AddMethod(GenerateAsyncFailureTest(arity));
         cw.AddMethod(GenerateAwaitableAsyncSuccessTest(arity, asyncType));
         cw.AddMethod(GenerateAwaitableAsyncFailureTest(arity, asyncType));
         cw.AddUsing($"UnambitiousFx.Core.Results.Extensions.ErrorHandling.{asyncType}s");
@@ -84,17 +84,15 @@ internal sealed class ResultPrependErrorTestsGenerator : ResultTestGeneratorBase
                                 usings: GetUsings());
     }
 
-    private MethodWriter GenerateAsyncSuccessTest(ushort arity,
-                                                  string asyncType)
+    private MethodWriter GenerateAsyncSuccessTest(ushort arity)
     {
         return new MethodWriter($"PrependErrorAsync_Arity{arity}_Success_ShouldNotPrependError", "async Task",
-                                GenerateAsyncSuccessBody(arity, asyncType), attributes: [new FactAttributeReference()], usings: GetUsings());
+                                GenerateAsyncSuccessBody(arity), attributes: [new FactAttributeReference()], usings: GetUsings());
     }
 
-    private MethodWriter GenerateAsyncFailureTest(ushort arity,
-                                                  string asyncType)
+    private MethodWriter GenerateAsyncFailureTest(ushort arity)
     {
-        return new MethodWriter($"PrependErrorAsync_Arity{arity}_Failure_ShouldPrependError", "async Task", GenerateAsyncFailureBody(arity, asyncType),
+        return new MethodWriter($"PrependErrorAsync_Arity{arity}_Failure_ShouldPrependError", "async Task", GenerateAsyncFailureBody(arity),
                                 attributes: [new FactAttributeReference()], usings: GetUsings());
     }
 
@@ -166,8 +164,7 @@ internal sealed class ResultPrependErrorTestsGenerator : ResultTestGeneratorBase
         return $"var prependedResult = await {asyncType}.FromResult(result).PrependErrorAsync<{typeParams}>(\"Prepended error\");";
     }
 
-    private string GenerateAsyncSuccessBody(ushort arity,
-                                            string asyncType)
+    private string GenerateAsyncSuccessBody(ushort arity)
     {
         var testValues = arity > 0
                              ? GenerateTestValues(arity)
@@ -180,8 +177,7 @@ internal sealed class ResultPrependErrorTestsGenerator : ResultTestGeneratorBase
         return BuildTestBody(given, [call], ["Assert.True(prependedResult.IsSuccess);"]);
     }
 
-    private string GenerateAsyncFailureBody(ushort arity,
-                                            string asyncType)
+    private string GenerateAsyncFailureBody(ushort arity)
     {
         var creation = GenerateFailureResultCreation(arity);
         var call = GeneratePrependErrorDirectAsyncCall(arity);

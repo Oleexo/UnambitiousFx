@@ -199,17 +199,6 @@ internal sealed class ResultMapErrorTestsGenerator : ResultTestGeneratorBase
         return BuildTestBody(givenLines, [call], ["Assert.True(mappedResult.IsSuccess);"]);
     }
 
-    private string GenerateSyncFailureWithPolicyBody(ushort arity,
-                                                     string policy)
-    {
-        var creation = GenerateFailureResultCreation(arity);
-        var call = arity == 0
-            ? $"var mappedResult = result.MapError(errors => errors.Select(e => e.WithMessage(e.Message + \" MAPPED\")), MapErrorChainPolicy.{policy});"
-            : $"var mappedResult = result.MapError<{GenerateTypeParams(arity)}>(errors => errors.Select(e => e.WithMessage(e.Message + \" MAPPED\")), MapErrorChainPolicy.{policy});";
-
-        return BuildTestBody([creation], [call], ["Assert.False(mappedResult.IsSuccess);", "Assert.Contains(\"MAPPED\", mappedResult.Errors.First().Message);"]);
-    }
-
     private string GenerateAccumulateSingleErrorBody(ushort arity)
     {
         var givenLines = new List<string>

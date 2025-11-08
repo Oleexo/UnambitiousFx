@@ -162,23 +162,6 @@ internal sealed class ResultMapErrorsExtensionsCodeGenerator : BaseCodeGenerator
                  """;
     }
 
-    private string GetFailureResultType(ushort arity)
-    {
-        if (arity == 0)
-        {
-            return "FailureResult";
-        }
-
-        if (arity == 1)
-        {
-            return "FailureResult<TValue1>";
-        }
-
-        var genericParams = string.Join(", ", Enumerable.Range(1, arity)
-                                                        .Select(i => $"TValue{i}"));
-        return $"FailureResult<{genericParams}>";
-    }
-
     private MethodWriter GenerateMapErrorsAsyncMethod(ushort arity,
                                                       bool isValueTask)
     {
