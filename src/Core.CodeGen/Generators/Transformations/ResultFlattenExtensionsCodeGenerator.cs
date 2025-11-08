@@ -24,7 +24,7 @@ internal sealed class ResultFlattenExtensionsCodeGenerator : BaseCodeGenerator
                    "ResultFlattenExtensions",
                    FileOrganizationMode.SingleFile))
     {
-        _flattenBuilder = new FlattenMethodBuilder(baseNamespace);
+        _flattenBuilder = new FlattenMethodBuilder();
     }
 
     protected override string PrepareOutputDirectory(string outputPath)

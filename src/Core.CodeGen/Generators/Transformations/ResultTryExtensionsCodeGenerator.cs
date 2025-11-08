@@ -24,7 +24,7 @@ internal sealed class ResultTryExtensionsCodeGenerator : BaseCodeGenerator
                    "ResultTryExtensions",
                    FileOrganizationMode.SingleFile))
     {
-        _tryBuilder = new TryMethodBuilder(baseNamespace);
+        _tryBuilder = new TryMethodBuilder();
     }
 
     protected override string PrepareOutputDirectory(string outputPath)

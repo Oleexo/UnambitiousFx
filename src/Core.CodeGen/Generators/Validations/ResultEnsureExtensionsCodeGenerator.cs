@@ -23,8 +23,8 @@ internal sealed class ResultEnsureExtensionsCodeGenerator : BaseCodeGenerator
                    "ResultEnsureExtensions",
                    FileOrganizationMode.SingleFile))
     {
-        _ensureBuilder = new EnsureMethodBuilder(baseNamespace);
-        _asyncBuilder = new ValidationAsyncMethodBuilder(baseNamespace);
+        _ensureBuilder = new EnsureMethodBuilder();
+        _asyncBuilder = new ValidationAsyncMethodBuilder();
     }
 
     protected override string PrepareOutputDirectory(string outputPath)

@@ -24,7 +24,7 @@ internal sealed class ResultMapExtensionsCodeGenerator : BaseCodeGenerator
                    "ResultMapExtensions",
                    FileOrganizationMode.SingleFile))
     {
-        _mapBuilder = new MapMethodBuilder(baseNamespace);
+        _mapBuilder = new MapMethodBuilder();
     }
 
     protected override string PrepareOutputDirectory(string outputPath)

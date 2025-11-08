@@ -25,7 +25,7 @@ internal sealed class ResultToNullableExtensionsCodeGenerator : BaseCodeGenerato
                    "ResultToNullableExtensions",
                    FileOrganizationMode.SingleFile))
     {
-        _toNullableBuilder = new ToNullableMethodBuilder(baseNamespace);
+        _toNullableBuilder = new ToNullableMethodBuilder();
         _asyncBuilder = new AsyncMethodBuilder(baseNamespace);
     }
 

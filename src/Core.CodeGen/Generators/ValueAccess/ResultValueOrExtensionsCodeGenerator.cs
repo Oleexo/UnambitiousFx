@@ -25,7 +25,7 @@ internal sealed class ResultValueOrExtensionsCodeGenerator : BaseCodeGenerator
                    "ResultValueOrExtensions",
                    FileOrganizationMode.SingleFile))
     {
-        _valueOrBuilder = new ValueOrMethodBuilder(baseNamespace);
+        _valueOrBuilder = new ValueOrMethodBuilder();
         _asyncBuilder = new AsyncMethodBuilder(baseNamespace);
     }
 

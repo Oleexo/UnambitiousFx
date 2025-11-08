@@ -24,7 +24,7 @@ internal sealed class ResultThenExtensionsCodeGenerator : BaseCodeGenerator
                    "ResultThenExtensions",
                    FileOrganizationMode.SingleFile))
     {
-        _thenBuilder = new ThenMethodBuilder(baseNamespace);
+        _thenBuilder = new ThenMethodBuilder();
     }
 
     protected override string PrepareOutputDirectory(string outputPath)
