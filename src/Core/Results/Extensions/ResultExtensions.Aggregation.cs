@@ -144,7 +144,7 @@ public static partial class ResultExtensions
                 }
             }
 
-            if (!r.TryGet(out var errors))
+            if (!r.TryGet(out _))
             {
                 hasAnyFailure = true;
             }

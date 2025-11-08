@@ -173,7 +173,7 @@ internal sealed class ResultPrependErrorTestsGenerator : ResultTestGeneratorBase
                              ? GenerateTestValues(arity)
                              : string.Empty;
         var creation = GenerateResultCreation(arity);
-        var call = GeneratePrependErrorDirectAsyncCall(arity, asyncType);
+        var call = GeneratePrependErrorDirectAsyncCall(arity);
         var given = arity == 0
                         ? new[] { creation }
                         : new[] { testValues, creation };
@@ -184,7 +184,7 @@ internal sealed class ResultPrependErrorTestsGenerator : ResultTestGeneratorBase
                                             string asyncType)
     {
         var creation = GenerateFailureResultCreation(arity);
-        var call = GeneratePrependErrorDirectAsyncCall(arity, asyncType);
+        var call = GeneratePrependErrorDirectAsyncCall(arity);
         return BuildTestBody([creation],
                              [call],
                              [
@@ -202,8 +202,7 @@ internal sealed class ResultPrependErrorTestsGenerator : ResultTestGeneratorBase
                    : $"var prependedResult = result.PrependError<{GenerateTypeParams(arity)}>(\"Prepended error\");";
     }
 
-    private string GeneratePrependErrorDirectAsyncCall(ushort arity,
-                                                       string asyncType)
+    private string GeneratePrependErrorDirectAsyncCall(ushort arity)
     {
         return arity == 0
                    ? "var prependedResult = await result.PrependErrorAsync(\"Prepended error\");"

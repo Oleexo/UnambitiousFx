@@ -129,7 +129,7 @@ internal sealed class ResultMapErrorExtensionsCodeGenerator : BaseCodeGenerator
                                                .WithReturns("A new result with mapped errors if the original result failed, otherwise the original successful result.")
                                                .Build();
 
-        var body = GeneratePolicyMapErrorBody(arity);
+        var body = GeneratePolicyMapErrorBody();
 
         var builder = MethodWriter.Create(methodName, resultType, body)
                                   .WithModifier(MethodModifier.Static)
@@ -199,7 +199,7 @@ internal sealed class ResultMapErrorExtensionsCodeGenerator : BaseCodeGenerator
                 """;
     }
 
-    private string GeneratePolicyMapErrorBody(ushort arity)
+    private string GeneratePolicyMapErrorBody()
     {
         return """
                if (result.IsSuccess) {
@@ -296,12 +296,6 @@ internal sealed class ResultMapErrorExtensionsCodeGenerator : BaseCodeGenerator
                                              bool isValueTask,
                                              bool isAwaitable)
     {
-        var (resultType, _, _) = GetResultTypeInfo(arity);
-        var taskType = isValueTask
-                           ? "ValueTask"
-                           : "Task";
-        var returnType = $"{taskType}<{resultType}>";
-
         if (isAwaitable)
         {
             // For awaitable results, use MatchAsync
@@ -344,39 +338,6 @@ internal sealed class ResultMapErrorExtensionsCodeGenerator : BaseCodeGenerator
                               : $"({string.Join(",\n             ", valueParams)})";
 
         return $@"return result.Match<{returnType}>(
-                    {matchParams} => {successCall},
-                    async ex => {failureCall}
-                );";
-    }
-
-    private string GenerateAwaitableMapErrorBody(ushort arity,
-                                                 bool isValueTask)
-    {
-        var (resultType, _, _) = GetResultTypeInfo(arity);
-        var taskType = isValueTask
-                           ? "ValueTask"
-                           : "Task";
-
-        var successCall = GenerateSuccessCall(arity, isValueTask);
-        var failureCall = GenerateFailureCall(arity, "await mapError(ex)");
-
-        if (arity == 0)
-        {
-            return $@"return awaitableResult.MatchAsync<{resultType}>(
-                        () => {successCall},
-                        async ex => {failureCall}
-                    );";
-        }
-
-        var valueParams = Enumerable.Range(1, arity)
-                                    .Select(i => $"value{i}")
-                                    .ToArray();
-
-        var matchParams = arity == 1
-                              ? "value1"
-                              : $"({string.Join(",\n             ", valueParams)})";
-
-        return $@"return awaitableResult.MatchAsync(
                     {matchParams} => {successCall},
                     async ex => {failureCall}
                 );";

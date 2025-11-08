@@ -185,7 +185,7 @@ internal sealed class ResultTryPickErrorExtensionsCodeGenerator : BaseCodeGenera
 
         var documentation = documentationBuilder.Build();
 
-        var body = GenerateTryPickErrorAsyncBody(arity, isValueTask, isAwaitable);
+        var body = GenerateTryPickErrorAsyncBody(isAwaitable);
 
         var modifiers = MethodModifier.Static | MethodModifier.Async;
 
@@ -222,9 +222,7 @@ internal sealed class ResultTryPickErrorExtensionsCodeGenerator : BaseCodeGenera
         return builder.Build();
     }
 
-    private string GenerateTryPickErrorAsyncBody(ushort arity,
-                                                 bool isValueTask,
-                                                 bool isAwaitable)
+    private string GenerateTryPickErrorAsyncBody(bool isAwaitable)
     {
         if (isAwaitable)
         {

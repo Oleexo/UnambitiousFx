@@ -115,8 +115,8 @@ internal sealed class ResultEnsureTestsGenerator : ResultTestGeneratorBase
         var creation = GenerateResultCreation(arity);
         var predicate = GeneratePredicate(arity, true, null);
         var errorFactory = GenerateErrorFactory(arity, null);
-        var call = GenerateEnsureSyncCall(arity);
-        var assertions = GenerateEnsureSuccessAssertions(arity);
+        var call = GenerateEnsureSyncCall();
+        var assertions = GenerateEnsureSuccessAssertions();
         return BuildTestBody([testValues, creation, predicate, errorFactory], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
     }
 
@@ -125,7 +125,7 @@ internal sealed class ResultEnsureTestsGenerator : ResultTestGeneratorBase
         var creation = GenerateFailureResultCreation(arity);
         var predicate = GeneratePredicate(arity, true, null);
         var errorFactory = GenerateErrorFactory(arity, null);
-        var call = GenerateEnsureSyncCall(arity);
+        var call = GenerateEnsureSyncCall();
         return BuildTestBody([creation, predicate, errorFactory], [call], ["Assert.False(ensuredResult.IsSuccess);"]);
     }
 
@@ -135,7 +135,7 @@ internal sealed class ResultEnsureTestsGenerator : ResultTestGeneratorBase
         var creation = GenerateResultCreation(arity);
         var predicate = GeneratePredicate(arity, false, null);
         var errorFactory = GenerateErrorFactory(arity, null);
-        var call = GenerateEnsureSyncCall(arity);
+        var call = GenerateEnsureSyncCall();
         var assertions = GenerateValidationFailureAssertions()
            .Split('\n', StringSplitOptions.RemoveEmptyEntries);
         return BuildTestBody([testValues, creation, predicate, errorFactory], [call], assertions);
@@ -149,7 +149,7 @@ internal sealed class ResultEnsureTestsGenerator : ResultTestGeneratorBase
         var predicate = GeneratePredicate(arity, true, asyncType);
         var errorFactory = GenerateErrorFactory(arity, asyncType);
         var call = GenerateEnsureAsyncCall();
-        var assertions = GenerateEnsureSuccessAssertions(arity);
+        var assertions = GenerateEnsureSuccessAssertions();
         return BuildTestBody([testValues, creation, predicate, errorFactory], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
     }
 
@@ -214,12 +214,12 @@ internal sealed class ResultEnsureTestsGenerator : ResultTestGeneratorBase
         return $"Func<{GenerateTypeParams(arity)}, IError> errorFactory = ({GenerateValueParams(arity)}) => new Error(\"Validation failed\");";
     }
 
-    private string GenerateEnsureSyncCall(ushort arity)
+    private string GenerateEnsureSyncCall()
     {
         return "var ensuredResult = result.Ensure(predicate, errorFactory);";
     }
 
-    private string GenerateEnsureSuccessAssertions(ushort arity)
+    private string GenerateEnsureSuccessAssertions()
     {
         return "Assert.True(ensuredResult.IsSuccess);";
     }

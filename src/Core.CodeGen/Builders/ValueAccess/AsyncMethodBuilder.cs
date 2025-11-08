@@ -89,9 +89,9 @@ internal sealed class AsyncMethodBuilder
         var returnType = GenericTypeHelper.BuildTupleTypeString(arity, "TValue");
         var factoryReturn = GenericTypeHelper.BuildTupleTypeString(arity, "TValue");
 
-        var valueParams = string.Join(", ",
-                                      Enumerable.Range(1, arity)
-                                                .Select(n => $"value{n}"));
+        string.Join(", ",
+            Enumerable.Range(1, arity)
+                .Select(n => $"value{n}"));
 
         var body = """
                    var result = await awaitableResult.ConfigureAwait(false);

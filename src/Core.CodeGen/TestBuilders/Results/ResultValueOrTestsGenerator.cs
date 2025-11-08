@@ -132,7 +132,7 @@ internal sealed class ResultValueOrTestsGenerator : ResultTestGeneratorBase
         var testValues = GenerateTestValues(arity);
         var creation = GenerateResultCreation(arity);
         var factoryDefinition = GenerateFactoryDefinition(arity);
-        var call = GenerateValueOrSyncWithFactoryCall(arity);
+        var call = GenerateValueOrSyncWithFactoryCall();
         var assertions = GenerateValueOrSuccessAssertions(arity);
         return BuildTestBody([testValues, creation, factoryDefinition], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
     }
@@ -141,7 +141,7 @@ internal sealed class ResultValueOrTestsGenerator : ResultTestGeneratorBase
     {
         var failureCreation = GenerateFailureResultCreation(arity);
         var factoryDefinition = GenerateFactoryDefinition(arity);
-        var call = GenerateValueOrSyncWithFactoryCall(arity);
+        var call = GenerateValueOrSyncWithFactoryCall();
         var assertions = GenerateValueOrFactoryFailureAssertions(arity);
         return BuildTestBody([failureCreation, factoryDefinition], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
     }
@@ -173,7 +173,7 @@ internal sealed class ResultValueOrTestsGenerator : ResultTestGeneratorBase
         var testValues = GenerateTestValues(arity);
         var creation = GenerateAsyncSuccessResultCreation(arity, asyncType);
         var factoryDefinition = GenerateFactoryDefinition(arity);
-        var call = GenerateValueOrAsyncWithFactoryCall(arity);
+        var call = GenerateValueOrAsyncWithFactoryCall();
         var assertions = GenerateValueOrSuccessAssertions(arity);
         return BuildTestBody([testValues, creation, factoryDefinition], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
     }
@@ -183,7 +183,7 @@ internal sealed class ResultValueOrTestsGenerator : ResultTestGeneratorBase
     {
         var creation = GenerateAsyncFailureResultCreation(arity, asyncType);
         var factoryDefinition = GenerateFactoryDefinition(arity);
-        var call = GenerateValueOrAsyncWithFactoryCall(arity);
+        var call = GenerateValueOrAsyncWithFactoryCall();
         var assertions = GenerateValueOrFactoryFailureAssertions(arity);
         return BuildTestBody([creation, factoryDefinition], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
     }
@@ -195,7 +195,7 @@ internal sealed class ResultValueOrTestsGenerator : ResultTestGeneratorBase
                    : $"var actualValue = result.ValueOr({string.Join(", ", Enumerable.Range(1, arity).Select(i => $"fallback{i}"))});";
     }
 
-    private string GenerateValueOrSyncWithFactoryCall(ushort arity)
+    private string GenerateValueOrSyncWithFactoryCall()
     {
         return "var actualValue = result.ValueOr(factory);";
     }
@@ -225,7 +225,7 @@ internal sealed class ResultValueOrTestsGenerator : ResultTestGeneratorBase
                    : $"var actualValue = await taskResult.ValueOrAsync({string.Join(", ", Enumerable.Range(1, arity).Select(i => $"fallback{i}"))});";
     }
 
-    private string GenerateValueOrAsyncWithFactoryCall(ushort arity)
+    private string GenerateValueOrAsyncWithFactoryCall()
     {
         return "var actualValue = await taskResult.ValueOrAsync(factory);";
     }

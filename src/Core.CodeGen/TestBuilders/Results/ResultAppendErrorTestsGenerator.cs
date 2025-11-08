@@ -218,7 +218,7 @@ internal sealed class ResultAppendErrorTestsGenerator : ResultTestGeneratorBase
                              ? GenerateTestValues(arity)
                              : string.Empty;
         var creation = GenerateResultCreation(arity);
-        var call = GenerateAppendErrorDirectAsyncCall(arity, asyncType);
+        var call = GenerateAppendErrorDirectAsyncCall(arity);
         if (arity == 0)
         {
             return $"""
@@ -246,7 +246,7 @@ internal sealed class ResultAppendErrorTestsGenerator : ResultTestGeneratorBase
                                             string asyncType)
     {
         var creation = GenerateFailureResultCreation(arity);
-        var call = GenerateAppendErrorDirectAsyncCall(arity, asyncType);
+        var call = GenerateAppendErrorDirectAsyncCall(arity);
         return $"""
                 // Given
                 {creation}
@@ -282,8 +282,7 @@ internal sealed class ResultAppendErrorTestsGenerator : ResultTestGeneratorBase
         return $"var appendedResult = await taskResult.AppendErrorAsync<{typeParams}>(\"Appended error\");";
     }
 
-    private string GenerateAppendErrorDirectAsyncCall(ushort arity,
-                                                      string asyncType)
+    private string GenerateAppendErrorDirectAsyncCall(ushort arity)
     {
         if (arity == 0)
         {

@@ -211,7 +211,7 @@ internal sealed class ZipMethodBuilder
     public MethodWriter BuildProjectorAsyncMethod(ushort arity,
                                                   bool isValueTask)
     {
-        var inputTypes = GenericTypeHelper.BuildGenericTypeString(arity);
+        GenericTypeHelper.BuildGenericTypeString(arity);
         var genericParams = new List<GenericParameter>();
         genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "T", "notnull"));
         genericParams.Add(new GenericParameter("TR", "notnull"));

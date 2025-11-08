@@ -153,9 +153,6 @@ internal sealed class BindMethodBuilder
         var asyncType = isValueTask
                             ? "ValueTask"
                             : "Task";
-        var taskCompletedMethod = isValueTask
-                                      ? "new ValueTask<{0}>({1})"
-                                      : "Task.FromResult({1})";
 
         // Build input and output types
         var inputResultType = inputArity == 0

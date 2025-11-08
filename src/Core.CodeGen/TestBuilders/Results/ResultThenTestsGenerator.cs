@@ -94,7 +94,7 @@ internal sealed class ResultThenTestsGenerator : ResultTestGeneratorBase
         var testValues = GenerateTestValues(arity);
         var transformedValues = GenerateTransformedValues(arity);
         var creation = GenerateAsyncSuccessResultCreation(arity, asyncType);
-        var call = GenerateThenAsyncCallSuccess(arity, asyncType);
+        var call = GenerateThenAsyncCallSuccess(arity);
         var assertions = GenerateSuccessAssertions(arity)
            .Split('\n', StringSplitOptions.RemoveEmptyEntries);
         return BuildTestBody([testValues, transformedValues, creation], [call], assertions);
@@ -104,7 +104,7 @@ internal sealed class ResultThenTestsGenerator : ResultTestGeneratorBase
                                                 string asyncType)
     {
         var creation = GenerateAsyncFailureResultCreation(arity, asyncType);
-        var call = GenerateThenAsyncCallFailure(arity, asyncType);
+        var call = GenerateThenAsyncCallFailure(arity);
         var assertions = new[] { "Assert.False(actualResult.IsSuccess);" };
         return BuildTestBody([creation], [call], assertions);
     }
@@ -166,8 +166,7 @@ internal sealed class ResultThenTestsGenerator : ResultTestGeneratorBase
         return string.Join('\n', lines);
     }
 
-    private string GenerateThenAsyncCallSuccess(ushort arity,
-                                                string asyncType)
+    private string GenerateThenAsyncCallSuccess(ushort arity)
     {
         if (arity == 1)
         {
@@ -181,8 +180,7 @@ internal sealed class ResultThenTestsGenerator : ResultTestGeneratorBase
         return $"var actualResult = await taskResult.ThenAsync(({parameters}) => Result.Success({transformedArgs}));";
     }
 
-    private string GenerateThenAsyncCallFailure(ushort arity,
-                                                string asyncType)
+    private string GenerateThenAsyncCallFailure(ushort arity)
     {
         if (arity == 1)
         {

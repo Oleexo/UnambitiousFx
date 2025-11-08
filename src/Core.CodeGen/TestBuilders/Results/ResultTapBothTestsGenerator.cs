@@ -182,7 +182,7 @@ internal sealed class ResultTapBothTestsGenerator : ResultTestGeneratorBase
     {
         var values = GenerateTestValues(arity);
         var creation = GenerateAsyncSuccessResultCreation(arity, asyncType);
-        var call = GenerateAsyncTapBothWithSyncActionsCall(arity, asyncType, "successExecuted = true", "failureExecuted = true");
+        var call = GenerateAsyncTapBothWithSyncActionsCall(arity, "successExecuted = true", "failureExecuted = true");
         return BuildTestBody(["var successExecuted = false;", "var failureExecuted = false;", values, creation], [call], [
             "Assert.True(successExecuted);", "Assert.False(failureExecuted);", "Assert.True(tappedResult.IsSuccess);"
         ]);
@@ -192,14 +192,13 @@ internal sealed class ResultTapBothTestsGenerator : ResultTestGeneratorBase
                                                            string asyncType)
     {
         var creation = GenerateAsyncFailureResultCreation(arity, asyncType);
-        var call = GenerateAsyncTapBothWithSyncActionsCall(arity, asyncType, "successExecuted = true", "failureExecuted = true");
+        var call = GenerateAsyncTapBothWithSyncActionsCall(arity, "successExecuted = true", "failureExecuted = true");
         return BuildTestBody(["var successExecuted = false;", "var failureExecuted = false;", creation], [call], [
             "Assert.False(successExecuted);", "Assert.True(failureExecuted);", "Assert.False(tappedResult.IsSuccess);"
         ]);
     }
 
     private string GenerateAsyncTapBothWithSyncActionsCall(ushort arity,
-                                                           string asyncType,
                                                            string successSideEffectCode,
                                                            string failureSideEffectCode)
     {

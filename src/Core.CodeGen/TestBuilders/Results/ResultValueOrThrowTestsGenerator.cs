@@ -150,7 +150,7 @@ internal sealed class ResultValueOrThrowTestsGenerator : ResultTestGeneratorBase
     {
         var testValues = GenerateTestValues(arity);
         var creation = GenerateAsyncSuccessResultCreation(arity, asyncType);
-        var call = GenerateValueOrThrowAsyncCall(arity);
+        var call = GenerateValueOrThrowAsyncCall();
         var assertions = GenerateValueOrThrowSuccessAssertions(arity);
         return BuildTestBody([testValues, creation], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
     }
@@ -159,7 +159,7 @@ internal sealed class ResultValueOrThrowTestsGenerator : ResultTestGeneratorBase
                                             string asyncType)
     {
         var creation = GenerateAsyncFailureResultCreation(arity, asyncType);
-        var call = GenerateValueOrThrowAsyncCall(arity);
+        var call = GenerateValueOrThrowAsyncCall();
         var expr = call.Replace("var actualValue = ", string.Empty)
                        .Replace("await ", string.Empty)
                        .TrimEnd(';');
@@ -172,7 +172,7 @@ internal sealed class ResultValueOrThrowTestsGenerator : ResultTestGeneratorBase
         var testValues = GenerateTestValues(arity);
         var creation = GenerateAsyncSuccessResultCreation(arity, asyncType);
         var factoryDefinition = GenerateExceptionFactoryDefinition();
-        var call = GenerateValueOrThrowAsyncWithFactoryCall(arity);
+        var call = GenerateValueOrThrowAsyncWithFactoryCall();
         var assertions = GenerateValueOrThrowSuccessAssertions(arity);
         return BuildTestBody([testValues, creation, factoryDefinition], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
     }
@@ -182,7 +182,7 @@ internal sealed class ResultValueOrThrowTestsGenerator : ResultTestGeneratorBase
     {
         var creation = GenerateAsyncFailureResultCreation(arity, asyncType);
         var factoryDefinition = GenerateExceptionFactoryDefinition();
-        var call = GenerateValueOrThrowAsyncWithFactoryCall(arity);
+        var call = GenerateValueOrThrowAsyncWithFactoryCall();
         var expr = call.Replace("var actualValue = ", string.Empty)
                        .Replace("await ", string.Empty)
                        .TrimEnd(';');
@@ -217,12 +217,12 @@ internal sealed class ResultValueOrThrowTestsGenerator : ResultTestGeneratorBase
         return $"var taskResult = {asyncType}.FromResult({core});";
     }
 
-    private string GenerateValueOrThrowAsyncCall(ushort arity)
+    private string GenerateValueOrThrowAsyncCall()
     {
         return "var actualValue = await taskResult.ValueOrThrowAsync();";
     }
 
-    private string GenerateValueOrThrowAsyncWithFactoryCall(ushort arity)
+    private string GenerateValueOrThrowAsyncWithFactoryCall()
     {
         return "var actualValue = await taskResult.ValueOrThrowAsync(factory);";
     }

@@ -66,7 +66,7 @@ internal sealed class ResultAppendErrorExtensionsCodeGenerator : BaseCodeGenerat
                                                .WithReturns("A new result with the appended error message if the original result failed, otherwise the original successful result.")
                                                .Build();
 
-        var body = GenerateAppendErrorBody(arity);
+        var body = GenerateAppendErrorBody();
 
         var builder = MethodWriter.Create(methodName, resultType, body)
                                   .WithModifier(MethodModifier.Static)
@@ -110,7 +110,7 @@ internal sealed class ResultAppendErrorExtensionsCodeGenerator : BaseCodeGenerat
         return (resultType, genericParams, constraints);
     }
 
-    private string GenerateAppendErrorBody(ushort arity)
+    private string GenerateAppendErrorBody()
     {
         return """
                if (string.IsNullOrEmpty(suffix) || result.IsSuccess) return result; // no-op
@@ -178,7 +178,7 @@ internal sealed class ResultAppendErrorExtensionsCodeGenerator : BaseCodeGenerat
 
         var documentation = documentationBuilder.Build();
 
-        var body = GenerateAppendErrorAsyncBody(arity, isValueTask, isAwaitable);
+        var body = GenerateAppendErrorAsyncBody(isValueTask, isAwaitable);
 
         var modifiers = MethodModifier.Static;
         if (isAwaitable)
@@ -218,8 +218,7 @@ internal sealed class ResultAppendErrorExtensionsCodeGenerator : BaseCodeGenerat
         return builder.Build();
     }
 
-    private string GenerateAppendErrorAsyncBody(ushort arity,
-                                                bool isValueTask,
+    private string GenerateAppendErrorAsyncBody(bool isValueTask,
                                                 bool isAwaitable)
     {
         if (isAwaitable)

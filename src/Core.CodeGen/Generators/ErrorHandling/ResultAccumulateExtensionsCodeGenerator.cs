@@ -283,7 +283,7 @@ internal sealed class ResultAccumulateExtensionsCodeGenerator : BaseCodeGenerato
         var taskType = isValueTask
                            ? "ValueTask"
                            : "Task";
-        var returnType = $"{taskType}<{GetResultTypeInfo(arity).resultType}>";
+        _ = $"{taskType}<{GetResultTypeInfo(arity).resultType}>";
 
         return $$"""
                  {{tryGetCall}}

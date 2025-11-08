@@ -183,7 +183,7 @@ internal sealed class ResultFindErrorExtensionsCodeGenerator : BaseCodeGenerator
 
         var documentation = documentationBuilder.Build();
 
-        var body = GenerateFindErrorAsyncBody(arity, isValueTask, isAwaitable);
+        var body = GenerateFindErrorAsyncBody(isAwaitable);
 
         var modifiers = MethodModifier.Static | MethodModifier.Async;
 
@@ -220,9 +220,7 @@ internal sealed class ResultFindErrorExtensionsCodeGenerator : BaseCodeGenerator
         return builder.Build();
     }
 
-    private string GenerateFindErrorAsyncBody(ushort arity,
-                                              bool isValueTask,
-                                              bool isAwaitable)
+    private string GenerateFindErrorAsyncBody(bool isAwaitable)
     {
         if (isAwaitable)
         {

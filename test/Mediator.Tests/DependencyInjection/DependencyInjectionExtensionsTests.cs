@@ -16,8 +16,8 @@ public sealed class DependencyInjectionExtensionsTests
                       .BuildServiceProvider();
 
         var handler = services.GetRequiredService<IRequestHandler<RequestWithResponseExample, int>>();
-        var ctx = services.GetRequiredService<IContextFactory>()
-                          .Create();
+        services.GetRequiredService<IContextFactory>()
+            .Create();
 
         var result = await handler.HandleAsync(new RequestWithResponseExample(), CancellationToken.None);
 
@@ -36,8 +36,8 @@ public sealed class DependencyInjectionExtensionsTests
                       .BuildServiceProvider();
 
         var handler = services.GetRequiredService<IRequestHandler<RequestWithResponseExample, int>>();
-        var ctx = services.GetRequiredService<IContextFactory>()
-                          .Create();
+        services.GetRequiredService<IContextFactory>()
+            .Create();
 
         var result = await handler.HandleAsync(new RequestWithResponseExample(), CancellationToken.None);
 

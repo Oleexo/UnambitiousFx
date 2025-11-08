@@ -112,7 +112,7 @@ public sealed class ResultExtensionsTests
 
         var merged = new[] { first, failing, after }.Merge(MergeFailureStrategy.FirstFailure);
 
-        Assert.False(merged.TryGet(out var primary));
+        Assert.False(merged.TryGet(out _));
         Assert.IsType<ValidationError>(merged.Errors()
                                              .First());
         Assert.True(merged.Metadata.ContainsKey("a"));

@@ -28,7 +28,7 @@ internal static class OneOfImplementationBuilder
         AddField(classWriter, ordinalName);
         AddConstructor(classWriter, className, ordinalName);
         AddIsProperties(classWriter, arity, position);
-        AddMatchMethods(classWriter, arity, position, ordinalName);
+        AddMatchMethods(classWriter, arity, ordinalName);
         AddExtractionMethods(classWriter, arity, position, ordinalName);
 
         return classWriter;
@@ -75,7 +75,6 @@ internal static class OneOfImplementationBuilder
 
     private static void AddMatchMethods(ClassWriter classWriter,
                                         ushort arity,
-                                        ushort position,
                                         string ordinalName)
     {
         // Match with return

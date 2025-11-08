@@ -110,7 +110,7 @@ internal sealed class ResultTestDataGenerator
                                              bool useReferenceTypes = false)
     {
         var typeValuePairs = GenerateTypeCoverageTypeValuePairs(arity, useNullableTypes, useReferenceTypes);
-        var setupCode = GenerateTypeCoverageSetupCode(arity, useNullableTypes, useReferenceTypes);
+        var setupCode = GenerateTypeCoverageSetupCode(useNullableTypes, useReferenceTypes);
 
         return new TestData(
             arity,
@@ -411,8 +411,7 @@ internal sealed class ResultTestDataGenerator
         return setupCode;
     }
 
-    private string GenerateTypeCoverageSetupCode(ushort arity,
-                                                 bool useNullableTypes,
+    private string GenerateTypeCoverageSetupCode(bool useNullableTypes,
                                                  bool useReferenceTypes)
     {
         var setupLines = new List<string> { "// Setup for type coverage scenario" };
@@ -519,7 +518,7 @@ internal sealed class ResultTestDataGenerator
         {
             "Map" => GenerateMapSetupCode(arity),
             "Bind" => GenerateBindSetupCode(arity),
-            "Flatten" => GenerateFlattenSetupCode(arity),
+            "Flatten" => GenerateFlattenSetupCode(),
             "Zip" => GenerateZipSetupCode(arity),
             "Try" => GenerateTrySetupCode(arity, values),
             _ => "// Transformation setup"
@@ -578,7 +577,7 @@ internal sealed class ResultTestDataGenerator
         return $"// When: Binding to another Result\nFunc<({typeString}), Result<{typeString}>> binder = x => Result.Success(x.Item1, x.Item2);";
     }
 
-    private string GenerateFlattenSetupCode(ushort arity)
+    private string GenerateFlattenSetupCode()
     {
         return "// When: Flattening nested Result";
     }
@@ -616,7 +615,7 @@ internal sealed class ResultTestDataGenerator
         {
             "Tap" => GenerateTapSetupCode(arity),
             "TapBoth" => GenerateTapBothSetupCode(arity),
-            "TapError" => GenerateTapErrorSetupCode(arity),
+            "TapError" => GenerateTapErrorSetupCode(),
             _ => "// Side effect setup"
         };
 
@@ -685,7 +684,7 @@ internal sealed class ResultTestDataGenerator
             $"// When: Tapping into both success and failure\nvar successTapped = false;\nvar errorTapped = false;\nAction<({typeString})> successAction = x => {{ successTapped = true; }};\nAction<Exception> errorAction = ex => {{ errorTapped = true; }};";
     }
 
-    private string GenerateTapErrorSetupCode(ushort arity)
+    private string GenerateTapErrorSetupCode()
     {
         return "// When: Tapping into error\nvar errorTapped = false;\nAction<Exception> errorAction = ex => { errorTapped = true; };";
     }
@@ -746,8 +745,8 @@ internal sealed class ResultTestDataGenerator
         {
             "Match" => GenerateMatchSetupCode(arity, isAsync),
             "IfSuccess" => GenerateIfSuccessSetupCode(arity, isAsync),
-            "IfFailure" => GenerateIfFailureSetupCode(arity, isAsync),
-            "TryGet" => GenerateTryGetSetupCode(arity, isAsync),
+            "IfFailure" => GenerateIfFailureSetupCode(isAsync),
+            "TryGet" => GenerateTryGetSetupCode(arity),
             _ => "// Direct method setup"
         };
 
@@ -802,8 +801,7 @@ internal sealed class ResultTestDataGenerator
             $"// When: Executing action on success\nvar executed = false;\nFunc<({typeString}), {taskType}> action = {asyncModifier}x => {{ executed = true; {awaitKeyword}Task.CompletedTask; }};";
     }
 
-    private string GenerateIfFailureSetupCode(ushort arity,
-                                              bool isAsync)
+    private string GenerateIfFailureSetupCode(bool isAsync)
     {
         var asyncModifier = isAsync
                                 ? "async "
@@ -819,8 +817,7 @@ internal sealed class ResultTestDataGenerator
             $"// When: Executing action on failure\nvar executed = false;\nFunc<Exception, {taskType}> action = {asyncModifier}ex => {{ executed = true; {awaitKeyword}Task.CompletedTask; }};";
     }
 
-    private string GenerateTryGetSetupCode(ushort arity,
-                                           bool isAsync)
+    private string GenerateTryGetSetupCode(ushort arity)
     {
         if (arity == 1)
         {

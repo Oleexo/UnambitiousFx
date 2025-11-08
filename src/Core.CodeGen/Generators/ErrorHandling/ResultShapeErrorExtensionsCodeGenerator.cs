@@ -191,7 +191,7 @@ internal sealed class ResultShapeErrorExtensionsCodeGenerator : BaseCodeGenerato
 
         var documentation = documentationBuilder.Build();
 
-        var body = GenerateShapeErrorAsyncBody(arity, isValueTask, isAwaitable);
+        var body = GenerateShapeErrorAsyncBody(isAwaitable);
 
         var modifiers = MethodModifier.Static | MethodModifier.Async;
 
@@ -228,9 +228,7 @@ internal sealed class ResultShapeErrorExtensionsCodeGenerator : BaseCodeGenerato
         return builder.Build();
     }
 
-    private string GenerateShapeErrorAsyncBody(ushort arity,
-                                               bool isValueTask,
-                                               bool isAwaitable)
+    private string GenerateShapeErrorAsyncBody(bool isAwaitable)
     {
         if (isAwaitable)
         {
@@ -239,16 +237,6 @@ internal sealed class ResultShapeErrorExtensionsCodeGenerator : BaseCodeGenerato
                    return await result.ShapeErrorAsync(shape);
                    """;
         }
-
-        var taskType = isValueTask
-                           ? "ValueTask"
-                           : "Task";
-        var returnCall = isValueTask
-                             ? "new ValueTask<"
-                             : "Task.FromResult(";
-        var returnSuffix = isValueTask
-                               ? ">"
-                               : ")";
 
         return """
                if (result.IsSuccess) {

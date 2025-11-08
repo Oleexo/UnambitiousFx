@@ -61,7 +61,7 @@ internal sealed class ResultZipTestsGenerator : ResultTestGeneratorBase
         var testValues = GenerateTestValues(arity);
         var creation = GenerateResultCreations(arity);
         var call = GenerateZipSyncCall(arity);
-        var assertions = GenerateZipSuccessAssertions(arity);
+        var assertions = GenerateZipSuccessAssertions();
         return BuildTestBody([testValues, creation], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
     }
 
@@ -78,7 +78,7 @@ internal sealed class ResultZipTestsGenerator : ResultTestGeneratorBase
         var testValues = GenerateTestValues(arity);
         var creation = GenerateAsyncResultCreations(arity, asyncType);
         var call = GenerateZipAsyncCall(arity, asyncType);
-        var assertions = GenerateZipSuccessAssertions(arity);
+        var assertions = GenerateZipSuccessAssertions();
         return BuildTestBody([testValues, creation], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
     }
 
@@ -122,8 +122,6 @@ internal sealed class ResultZipTestsGenerator : ResultTestGeneratorBase
                                                             ? "var zippedResult = result1.Zip(result2);"
                                                             : $"var zippedResult = result1.Zip({string.Join(", ", Enumerable.Range(2, arity - 1).Select(i => $"result{i}"))});";
 
-    private string GenerateFailureTestValues(ushort arity) => GenerateTestValues(arity); // reuse
-
     private string GenerateResultCreations(ushort arity) => string.Join('\n', Enumerable.Range(1, arity)
                                                                                         .Select(i => $"var result{i} = Result.Success(value{i});"));
 
@@ -131,5 +129,5 @@ internal sealed class ResultZipTestsGenerator : ResultTestGeneratorBase
                                                                                                .Select(i => $"var result{i} = Result.Failure<{GetTestType(i)}>(\"Test error\");"));
 
 
-    private string GenerateZipSuccessAssertions(ushort arity) => "Assert.True(zippedResult.IsSuccess);";
+    private string GenerateZipSuccessAssertions() => "Assert.True(zippedResult.IsSuccess);";
 }

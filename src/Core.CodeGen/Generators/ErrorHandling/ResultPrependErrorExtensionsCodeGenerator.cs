@@ -179,7 +179,7 @@ internal sealed class ResultPrependErrorExtensionsCodeGenerator : BaseCodeGenera
 
         var documentation = documentationBuilder.Build();
 
-        var body = GeneratePrependErrorAsyncBody(arity, isValueTask, isAwaitable);
+        var body = GeneratePrependErrorAsyncBody(isValueTask, isAwaitable);
 
         var modifiers = MethodModifier.Static;
         if (isAwaitable)
@@ -219,8 +219,7 @@ internal sealed class ResultPrependErrorExtensionsCodeGenerator : BaseCodeGenera
         return builder.Build();
     }
 
-    private string GeneratePrependErrorAsyncBody(ushort arity,
-                                                 bool isValueTask,
+    private string GeneratePrependErrorAsyncBody(bool isValueTask,
                                                  bool isAwaitable)
     {
         if (isAwaitable)

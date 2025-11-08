@@ -76,7 +76,7 @@ internal sealed class ResultMatchErrorExtensionsCodeGenerator : BaseCodeGenerato
 
         var documentation = documentationBuilder.Build();
 
-        var body = GenerateMatchErrorBody(arity);
+        var body = GenerateMatchErrorBody();
 
         var builder = MethodWriter.Create(methodName, "TOut", body)
                                   .WithModifier(MethodModifier.Static)
@@ -131,7 +131,7 @@ internal sealed class ResultMatchErrorExtensionsCodeGenerator : BaseCodeGenerato
         return (resultType, genericParams, constraints);
     }
 
-    private string GenerateMatchErrorBody(ushort arity)
+    private string GenerateMatchErrorBody()
     {
         return """
                var match = result.Reasons.OfType<TError>()
@@ -221,7 +221,7 @@ internal sealed class ResultMatchErrorExtensionsCodeGenerator : BaseCodeGenerato
 
         var documentation = documentationBuilder.Build();
 
-        var body = GenerateMatchErrorAsyncBody(arity, isValueTask, isAwaitable);
+        var body = GenerateMatchErrorAsyncBody(isAwaitable);
 
         var modifiers = MethodModifier.Static | MethodModifier.Async;
 
@@ -268,9 +268,7 @@ internal sealed class ResultMatchErrorExtensionsCodeGenerator : BaseCodeGenerato
         return builder.Build();
     }
 
-    private string GenerateMatchErrorAsyncBody(ushort arity,
-                                               bool isValueTask,
-                                               bool isAwaitable)
+    private string GenerateMatchErrorAsyncBody(bool isAwaitable)
     {
         if (isAwaitable)
         {

@@ -20,9 +20,9 @@ internal sealed class ValueOrMethodBuilder
         var resultType = $"Result<{genericTypes}>";
         var returnType = GenericTypeHelper.BuildTupleTypeString(arity, "TValue");
 
-        var fallbackParameters = string.Join(", ",
-                                             Enumerable.Range(1, arity)
-                                                       .Select(n => $"TValue{n} fallback{n}"));
+        string.Join(", ",
+            Enumerable.Range(1, arity)
+                .Select(n => $"TValue{n} fallback{n}"));
         var fallbackArgs = string.Join(", ",
                                        Enumerable.Range(1, arity)
                                                  .Select(n => $"fallback{n}"));

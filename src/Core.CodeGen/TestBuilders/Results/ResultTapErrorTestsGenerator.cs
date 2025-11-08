@@ -172,7 +172,7 @@ internal sealed class ResultTapErrorTestsGenerator : ResultTestGeneratorBase
     {
         var values = GenerateTestValues(arity);
         var creation = GenerateAsyncSuccessResultCreation(arity, asyncType);
-        var call = GenerateAsyncTapErrorWithSyncActionCall(arity, asyncType, "sideEffectExecuted = true");
+        var call = GenerateAsyncTapErrorWithSyncActionCall(arity, "sideEffectExecuted = true");
         return BuildTestBody(["var sideEffectExecuted = false;", values, creation], [call], ["Assert.False(sideEffectExecuted);", "Assert.True(tappedResult.IsSuccess);"]);
     }
 
@@ -180,12 +180,11 @@ internal sealed class ResultTapErrorTestsGenerator : ResultTestGeneratorBase
                                                           string asyncType)
     {
         var creation = GenerateAsyncFailureResultCreation(arity, asyncType);
-        var call = GenerateAsyncTapErrorWithSyncActionCall(arity, asyncType, "sideEffectExecuted = true");
+        var call = GenerateAsyncTapErrorWithSyncActionCall(arity, "sideEffectExecuted = true");
         return BuildTestBody(["var sideEffectExecuted = false;", creation], [call], ["Assert.True(sideEffectExecuted);", "Assert.False(tappedResult.IsSuccess);"]);
     }
 
     private string GenerateAsyncTapErrorWithSyncActionCall(ushort arity,
-                                                           string asyncType,
                                                            string sideEffectCode)
     {
         if (arity == 0)
