@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Publish an Event
-parent: Mediator
+parent: Basics
 nav_order: 2
 ---
 

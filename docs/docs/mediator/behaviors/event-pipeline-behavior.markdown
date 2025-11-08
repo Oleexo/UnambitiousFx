@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Event Pipeline Behavior
-parent: Mediator
+parent: Behaviors
 nav_order: 4
 ---
 

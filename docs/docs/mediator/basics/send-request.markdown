@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Send a Request
-parent: Mediator
+parent: Basics
 nav_order: 1
 ---
 

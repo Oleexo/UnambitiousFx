@@ -1,8 +1,8 @@
 ---
 layout: default
 title: Mediator Generator
-parent: Mediator
-nav_order: 6
+parent: Advanced
+nav_order: 1
 ---
 
 # Using Mediator.Generator for Dependency Injection

@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Register Mediator
-parent: Mediator
+parent: Basics
 nav_order: 5
 ---
 

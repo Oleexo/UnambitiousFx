@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Request Pipeline Behavior
-parent: Mediator
+parent: Behaviors
 nav_order: 3
 ---
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Request Validation
-parent: Mediator
+parent: Behaviors
 nav_order: 6
 ---
 
