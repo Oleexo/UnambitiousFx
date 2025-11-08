@@ -2,7 +2,7 @@
 layout: default
 title: Register Mediator
 parent: Basics
-nav_order: 5
+nav_order: 3
 ---
 
 # Registering Mediator into Dependency Injection

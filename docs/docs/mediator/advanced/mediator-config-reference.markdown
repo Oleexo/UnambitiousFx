@@ -2,7 +2,7 @@
 layout: default
 title: Mediator configuration reference (Advanced)
 parent: Advanced
-nav_order: 1
+nav_order: 3
 ---
 
 # Mediator configuration reference (Advanced)

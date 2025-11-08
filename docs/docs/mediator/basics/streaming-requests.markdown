@@ -2,7 +2,7 @@
 layout: default
 title: Streaming requests
 parent: Basics
-nav_order: 3
+nav_order: 5
 ---
 
 # Streaming requests

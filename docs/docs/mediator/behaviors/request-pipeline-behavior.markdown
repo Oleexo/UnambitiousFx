@@ -2,7 +2,7 @@
 layout: default
 title: Request Pipeline Behavior
 parent: Behaviors
-nav_order: 3
+nav_order: 1
 ---
 
 # Creating a RequestPipelineBehavior

@@ -2,7 +2,7 @@
 layout: default
 title: Behaviors
 parent: Mediator
-nav_order: 44
+nav_order: 40
 has_children: true
 ---
 
