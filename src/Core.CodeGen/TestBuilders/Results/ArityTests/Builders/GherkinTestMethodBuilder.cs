@@ -33,7 +33,7 @@ internal sealed class GherkinTestMethodBuilder : IGherkinTestBuilder
     {
         var testName = GenerateTestName(methodName, arity, scenario);
         var givenSection = BuildGivenSection(scenario.InputData);
-        var whenSection = BuildWhenSection(GenerateMethodCall(methodName, arity, scenario));
+        var whenSection = BuildWhenSection(GenerateMethodCall(methodName, arity));
 
         // Generate assertion code using the ResultAssertionGenerator
         var assertionCode = GenerateAssertionCode(scenario);
@@ -45,9 +45,7 @@ internal sealed class GherkinTestMethodBuilder : IGherkinTestBuilder
         return new TestMethod(
             testName,
             body,
-            attributes,
-            "void",
-            "public"
+            attributes
         );
     }
 
@@ -172,8 +170,7 @@ internal sealed class GherkinTestMethodBuilder : IGherkinTestBuilder
     }
 
     private string GenerateMethodCall(string methodName,
-                                      ushort arity,
-                                      TestScenario scenario)
+                                      ushort arity)
     {
         return methodName switch
         {

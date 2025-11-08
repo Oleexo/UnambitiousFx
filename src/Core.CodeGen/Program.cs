@@ -1,5 +1,3 @@
-using UnambitiousFx.Core.CodeGen.Configuration;
-
 namespace UnambitiousFx.Core.CodeGen;
 
 /// <summary>

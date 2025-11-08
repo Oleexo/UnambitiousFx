@@ -50,7 +50,6 @@ internal static class OneOfTestClassBuilder
                                       $"From{ordinalName}_ShouldSetIs{ordinalName}",
                                       "void",
                                       body.TrimEnd(),
-                                      Visibility.Public,
                                       attributes: [new FactAttributeReference()],
                                       usings: ["UnambitiousFx.Core.OneOf"]
                                   ));
@@ -89,7 +88,6 @@ internal static class OneOfTestClassBuilder
                                           $"From{ordinalName}_ShouldStoreValue",
                                           "void",
                                           body.TrimEnd(),
-                                          Visibility.Public,
                                           attributes: GenerateInlineData(i)
                                              .Concat([new AttributeReference("Theory")]),
                                           parameters: [new MethodParameter(testType, "value")],
@@ -103,7 +101,6 @@ internal static class OneOfTestClassBuilder
                                           "void",
                                           body.Replace("value", testValue)
                                               .TrimEnd(),
-                                          Visibility.Public,
                                           attributes: [new FactAttributeReference()],
                                           usings: ["UnambitiousFx.Core.OneOf"]
                                       ));
@@ -152,7 +149,6 @@ internal static class OneOfTestClassBuilder
                                       $"From{ordinalName}_WhenMatchWithResponse_ShouldReturn{ordinalName}Value",
                                       "void",
                                       body,
-                                      Visibility.Public,
                                       attributes: [new FactAttributeReference()],
                                       usings: ["UnambitiousFx.Core.OneOf"]
                                   ));
@@ -199,7 +195,6 @@ internal static class OneOfTestClassBuilder
                                       $"From{ordinalName}_WhenMatch_ShouldCall{ordinalName}Handler",
                                       "void",
                                       body,
-                                      Visibility.Public,
                                       attributes: [new FactAttributeReference()],
                                       usings: ["UnambitiousFx.Core.OneOf"]
                                   ));
@@ -230,7 +225,6 @@ internal static class OneOfTestClassBuilder
                                       $"ImplicitConversion_From{ordinalName}_ShouldWork",
                                       "void",
                                       body,
-                                      Visibility.Public,
                                       attributes: [new FactAttributeReference()],
                                       usings: ["UnambitiousFx.Core.OneOf"]
                                   ));

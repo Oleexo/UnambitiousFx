@@ -39,6 +39,7 @@ public sealed class ResultPolicyTests
         var r = await policy.ExecuteAsync(() => { attempts++; return Result.Failure(new Exception("fail")); });
         Assert.True(r.IsFaulted);
         Assert.Equal(1, r.Metadata["attempts"]);
+        Assert.Equal(1, attempts);
     }
 
     [Fact]
@@ -69,6 +70,7 @@ public sealed class ResultPolicyTests
         });
         Assert.True(r.IsFaulted);
         Assert.Equal(1, r.Metadata["attempts"]);
+        Assert.Equal(1, attempts);
     }
 
     [Fact]

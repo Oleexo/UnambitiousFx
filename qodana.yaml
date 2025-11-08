@@ -8,3 +8,11 @@ profile:
   name: qodana.recommended
 include:
   - name: CheckDependencyLicenses
+exclude:
+  - name: All
+    paths:
+      - test/
+      - docs/
+      - examples/
+      - benchmarks/
+      - assets/
