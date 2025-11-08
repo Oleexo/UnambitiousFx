@@ -534,15 +534,10 @@ internal sealed class BindMethodBuilder
         }
 
         // Build method body - simply compose the two async operations
-        var body = isValueTask
-                       ? """
-                         var result = await awaitable;
-                         return await result.BindAsync(bind, copyReasonsAndMetadata);
-                         """
-                       : """
-                         var result = await awaitable;
-                         return await result.BindAsync(bind, copyReasonsAndMetadata);
-                         """;
+        const string body = """
+                            var result = await awaitable;
+                            return await result.BindAsync(bind, copyReasonsAndMetadata);
+                            """;
 
         var asyncReturn = $"{asyncType}<{outputResultType}>";
 

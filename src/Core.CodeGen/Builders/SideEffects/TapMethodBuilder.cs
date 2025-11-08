@@ -29,15 +29,10 @@ internal sealed class TapMethodBuilder
                              : $"Action<{GenericTypeHelper.BuildGenericTypeString(arity, "TValue")}>";
         parameters.Add(new MethodParameter(actionType, "tap"));
 
-        var body = arity == 0
-                       ? """
-                         result.IfSuccess(tap);
-                         return result;
-                         """
-                       : """
-                         result.IfSuccess(tap);
-                         return result;
-                         """;
+        const string body = """
+                            result.IfSuccess(tap);
+                            return result;
+                            """;
 
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary("Executes a side effect if the result is successful, then returns the original result.")

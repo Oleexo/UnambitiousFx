@@ -24,11 +24,12 @@ internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase
         // Generate tests for all output arities (0 to MaxOutputArity) for this input arity
         for (ushort outputArity = 0; outputArity <= MaxOutputArity; outputArity++)
         {
+            var scopedOutputArity = outputArity;
             results.AddRange(
                 GenerateVariants(inputArity, ClassName,
-                                 (ia => GenerateSyncTests(ia, outputArity), false),
-                                 (ia => GenerateAsyncTests(ia, outputArity, "Task"), true),
-                                 (ia => GenerateAsyncTests(ia, outputArity, "ValueTask"), true)));
+                                 (ia => GenerateSyncTests(ia, scopedOutputArity), false),
+                                 (ia => GenerateAsyncTests(ia, scopedOutputArity, "Task"), true),
+                                 (ia => GenerateAsyncTests(ia, scopedOutputArity, "ValueTask"), true)));
         }
 
         return results;
@@ -295,7 +296,7 @@ internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase
             givenLines.Add(GenerateTestValues(inputArity));
         }
 
-        givenLines.Add(GenerateAsyncSuccessResultCreation(inputArity, asyncType, "taskResult"));
+        givenLines.Add(GenerateAsyncSuccessResultCreation(inputArity, asyncType));
 
         var call = GenerateAsyncResultSyncBindCall(inputArity, outputArity);
         var assertions = new[] { "Assert.True(transformedResult.IsSuccess);" };
@@ -307,7 +308,7 @@ internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase
                                                           ushort outputArity,
                                                           string asyncType)
     {
-        var creation = GenerateAsyncFailureResultCreation(inputArity, asyncType, "taskResult");
+        var creation = GenerateAsyncFailureResultCreation(inputArity, asyncType);
         var call = GenerateAsyncResultSyncBindCall(inputArity, outputArity);
         return BuildTestBody([creation], [call], ["Assert.False(transformedResult.IsSuccess);"]);
     }
@@ -366,7 +367,7 @@ internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase
             givenLines.Add(GenerateTestValues(inputArity));
         }
 
-        givenLines.Add(GenerateAsyncSuccessResultCreation(inputArity, asyncType, "taskResult"));
+        givenLines.Add(GenerateAsyncSuccessResultCreation(inputArity, asyncType));
 
         var call = GenerateAsyncResultAsyncBindCall(inputArity, outputArity, asyncType);
         var assertions = new[] { "Assert.True(transformedResult.IsSuccess);" };
@@ -378,7 +379,7 @@ internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase
                                                            ushort outputArity,
                                                            string asyncType)
     {
-        var creation = GenerateAsyncFailureResultCreation(inputArity, asyncType, "taskResult");
+        var creation = GenerateAsyncFailureResultCreation(inputArity, asyncType);
         var call = GenerateAsyncResultAsyncBindCall(inputArity, outputArity, asyncType);
         return BuildTestBody([creation], [call], ["Assert.False(transformedResult.IsSuccess);"]);
     }

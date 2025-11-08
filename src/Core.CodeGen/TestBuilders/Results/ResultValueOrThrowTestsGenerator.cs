@@ -111,7 +111,7 @@ internal sealed class ResultValueOrThrowTestsGenerator : ResultTestGeneratorBase
     {
         var testValues = GenerateTestValues(arity);
         var creation = GenerateResultCreation(arity);
-        var call = GenerateValueOrThrowSyncCall(arity);
+        var call = GenerateValueOrThrowSyncCall();
         var assertions = GenerateValueOrThrowSuccessAssertions(arity);
         return BuildTestBody([testValues, creation], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
     }
@@ -119,7 +119,7 @@ internal sealed class ResultValueOrThrowTestsGenerator : ResultTestGeneratorBase
     private string GenerateSyncFailureBody(ushort arity)
     {
         var failureCreation = GenerateFailureResultCreation(arity);
-        var call = GenerateValueOrThrowSyncCall(arity);
+        var call = GenerateValueOrThrowSyncCall();
         var expr = call.Replace("var actualValue = ", string.Empty)
                        .TrimEnd(';');
         return BuildTestBody([failureCreation], ["// When & Then", $"Assert.Throws<Exception>(() => {expr});"], []);
@@ -130,7 +130,7 @@ internal sealed class ResultValueOrThrowTestsGenerator : ResultTestGeneratorBase
         var testValues = GenerateTestValues(arity);
         var creation = GenerateResultCreation(arity);
         var factoryDefinition = GenerateExceptionFactoryDefinition();
-        var call = GenerateValueOrThrowSyncWithFactoryCall(arity);
+        var call = GenerateValueOrThrowSyncWithFactoryCall();
         var assertions = GenerateValueOrThrowSuccessAssertions(arity);
         return BuildTestBody([testValues, creation, factoryDefinition], [call], assertions.Split('\n', StringSplitOptions.RemoveEmptyEntries));
     }
@@ -139,7 +139,7 @@ internal sealed class ResultValueOrThrowTestsGenerator : ResultTestGeneratorBase
     {
         var failureCreation = GenerateFailureResultCreation(arity);
         var factoryDefinition = GenerateExceptionFactoryDefinition();
-        var call = GenerateValueOrThrowSyncWithFactoryCall(arity);
+        var call = GenerateValueOrThrowSyncWithFactoryCall();
         var expr = call.Replace("var actualValue = ", string.Empty)
                        .TrimEnd(';');
         return BuildTestBody([failureCreation, factoryDefinition], [$"Assert.Throws<Exception>(() => {expr});"], []);
@@ -189,19 +189,14 @@ internal sealed class ResultValueOrThrowTestsGenerator : ResultTestGeneratorBase
         return BuildTestBody([creation, factoryDefinition], ["await Assert.ThrowsAsync<Exception>(async () => {", $"    await {expr};", "});"], []);
     }
 
-    private string GenerateValueOrThrowSyncCall(ushort arity)
+    private string GenerateValueOrThrowSyncCall()
     {
-        return arity == 1
-                   ? "var actualValue = result.ValueOrThrow();"
-                   : "var actualValue = result.ValueOrThrow();";
-        // multi-arity returns tuple implicitly
+        return "var actualValue = result.ValueOrThrow();";
     }
 
-    private string GenerateValueOrThrowSyncWithFactoryCall(ushort arity)
+    private string GenerateValueOrThrowSyncWithFactoryCall()
     {
-        return arity == 1
-                   ? "var actualValue = result.ValueOrThrow(factory);"
-                   : "var actualValue = result.ValueOrThrow(factory);";
+        return "var actualValue = result.ValueOrThrow(factory);";
     }
 
     private string GenerateAsyncFailureResultCreation(ushort arity,
