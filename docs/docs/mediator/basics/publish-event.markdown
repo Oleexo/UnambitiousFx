@@ -34,26 +34,23 @@ public sealed record TodoDeleted : IEvent {
 For each event, you can create one or more handlers that implement the `IEventHandler<TEvent>` interface:
 
 ```csharp
-using UnambitiousFx.Core;
+using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 using Microsoft.Extensions.Logging;
 
-public sealed class TodoCreatedHandler : IEventHandler<TodoCreated> {
+public sealed class TodoCreatedHandler : IEventHandler<TodoCreated>
+{
     private readonly ILogger<TodoCreatedHandler> _logger;
-
-    public TodoCreatedHandler(ILogger<TodoCreatedHandler> logger) {
-        _logger = logger;
-    }
+    public TodoCreatedHandler(ILogger<TodoCreatedHandler> logger) => _logger = logger;
 
     public ValueTask<Result> HandleAsync(
-        IContext context,
         TodoCreated @event,
-        CancellationToken cancellationToken = default) {
-        
+        CancellationToken cancellationToken = default)
+    {
         _logger.LogInformation("Todo created: {TodoId}", @event.Todo.Id);
-        
+
         // Perform additional actions when a todo is created
-        
+
         return ValueTask.FromResult(Result.Success());
     }
 }
@@ -62,23 +59,20 @@ public sealed class TodoCreatedHandler : IEventHandler<TodoCreated> {
 You can have multiple handlers for the same event, and they will all be executed when the event is published:
 
 ```csharp
-public sealed class TodoCreatedNotificationHandler : IEventHandler<TodoCreated> {
+public sealed class TodoCreatedNotificationHandler : IEventHandler<TodoCreated>
+{
     private readonly INotificationService _notificationService;
-
-    public TodoCreatedNotificationHandler(INotificationService notificationService) {
-        _notificationService = notificationService;
-    }
+    public TodoCreatedNotificationHandler(INotificationService notificationService) => _notificationService = notificationService;
 
     public async ValueTask<Result> HandleAsync(
-        IContext context,
         TodoCreated @event,
-        CancellationToken cancellationToken = default) {
-        
+        CancellationToken cancellationToken = default)
+    {
         await _notificationService.SendNotificationAsync(
-            "New Todo Created", 
+            "New Todo Created",
             $"A new todo '{@event.Todo.Name}' was created.",
             cancellationToken);
-        
+
         return Result.Success();
     }
 }
@@ -93,24 +87,28 @@ There are two ways to publish events in UnambitiousFx.Mediator:
 The most common way to publish events is from within a request handler, using the `IContext` provided to the handler:
 
 ```csharp
-using UnambitiousFx.Core;
+using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator;
 using UnambitiousFx.Mediator.Abstractions;
 
 [RequestHandler<CreateTodoCommand, Guid>]
-public sealed class CreateTodoCommandHandler : IRequestHandler<CreateTodoCommand, Guid> {
+public sealed class CreateTodoCommandHandler : IRequestHandler<CreateTodoCommand, Guid>
+{
     private readonly ITodoRepository _todoRepository;
+    private readonly IContext _context;
 
-    public CreateTodoCommandHandler(ITodoRepository todoRepository) {
+    public CreateTodoCommandHandler(ITodoRepository todoRepository, IContext context)
+    {
         _todoRepository = todoRepository;
+        _context = context;
     }
 
     public async ValueTask<Result<Guid>> HandleAsync(
-        IContext context,
         CreateTodoCommand request,
-        CancellationToken cancellationToken = default) {
-        
-        var todo = new Todo {
+        CancellationToken cancellationToken = default)
+    {
+        var todo = new Todo
+        {
             Id = Guid.NewGuid(),
             Name = request.Name
         };
@@ -118,11 +116,12 @@ public sealed class CreateTodoCommandHandler : IRequestHandler<CreateTodoCommand
         await _todoRepository.CreateAsync(todo, cancellationToken);
 
         // Publish an event to notify other components
-        await context.PublishAsync(new TodoCreated {
+        await _context.PublishEventAsync(new TodoCreated
+        {
             Todo = todo
         }, cancellationToken);
 
-        return Result<Guid>.Success(todo.Id);
+        return Result.Success(todo.Id);
     }
 }
 ```
@@ -134,28 +133,17 @@ You can also publish events directly by injecting `IPublisher` into your class:
 ```csharp
 using UnambitiousFx.Mediator.Abstractions;
 
-public class TodoService {
+public class TodoService
+{
     private readonly IPublisher _publisher;
-    private readonly IContextFactory _contextFactory;
+    public TodoService(IPublisher publisher) => _publisher = publisher;
 
-    public TodoService(
-        IPublisher publisher,
-        IContextFactory contextFactory) {
-        _publisher = publisher;
-        _contextFactory = contextFactory;
-    }
-
-    public async Task UpdateTodoAsync(Todo todo, CancellationToken cancellationToken = default) {
+    public async Task UpdateTodoAsync(Todo todo, CancellationToken cancellationToken = default)
+    {
         // Update the todo in the database
-        
-        // Create a context for publishing the event
-        var context = _contextFactory.Create();
-        
+
         // Publish an event to notify other components
-        await _publisher.PublishAsync(
-            context,
-            new TodoUpdated { Todo = todo },
-            cancellationToken);
+        await _publisher.PublishAsync(new TodoUpdated { Todo = todo }, cancellationToken);
     }
 }
 ```

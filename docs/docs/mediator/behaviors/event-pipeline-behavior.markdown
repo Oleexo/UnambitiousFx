@@ -25,35 +25,35 @@ This provides a powerful way to implement cross-cutting concerns for event proce
 To create an event pipeline behavior, implement the `IEventPipelineBehavior` interface:
 
 ```csharp
-using UnambitiousFx.Core;
+using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 using Microsoft.Extensions.Logging;
 
-public sealed class EventLoggingBehavior : IEventPipelineBehavior {
+public sealed class EventLoggingBehavior : IEventPipelineBehavior
+{
     private readonly ILogger<EventLoggingBehavior> _logger;
-
-    public EventLoggingBehavior(ILogger<EventLoggingBehavior> logger) {
-        _logger = logger;
-    }
+    public EventLoggingBehavior(ILogger<EventLoggingBehavior> logger) => _logger = logger;
 
     public async ValueTask<Result> HandleAsync<TEvent>(
-        IContext context,
         TEvent @event,
         EventHandlerDelegate next,
         CancellationToken cancellationToken = default)
-        where TEvent : IEvent {
-        
+        where TEvent : IEvent
+    {
         var eventName = typeof(TEvent).Name;
         _logger.LogInformation("Handling event: {EventName}", eventName);
-        
+
         var result = await next();
-        
-        if (!result.Ok(out var error)) {
-            _logger.LogWarning("Event {EventName} handling failed: {ErrorMessage}", eventName, error.Message);
-        } else {
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogWarning("Event {EventName} handling failed", eventName);
+        }
+        else
+        {
             _logger.LogInformation("Event {EventName} handled successfully", eventName);
         }
-        
+
         return result;
     }
 }
@@ -67,37 +67,31 @@ A validation behavior can check if an event is valid before it reaches the handl
 
 ```csharp
 using FluentValidation;
-using UnambitiousFx.Core;
+using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 
-public sealed class EventValidationBehavior : IEventPipelineBehavior {
+public sealed class EventValidationBehavior : IEventPipelineBehavior
+{
     private readonly IServiceProvider _serviceProvider;
-
-    public EventValidationBehavior(IServiceProvider serviceProvider) {
-        _serviceProvider = serviceProvider;
-    }
+    public EventValidationBehavior(IServiceProvider serviceProvider) => _serviceProvider = serviceProvider;
 
     public async ValueTask<Result> HandleAsync<TEvent>(
-        IContext context,
         TEvent @event,
         EventHandlerDelegate next,
         CancellationToken cancellationToken = default)
-        where TEvent : IEvent {
-        
-        // Try to resolve a validator for this event type
+        where TEvent : IEvent
+    {
         var validator = _serviceProvider.GetService<IValidator<TEvent>>();
-        
-        if (validator != null) {
+        if (validator != null)
+        {
             var validationResult = await validator.ValidateAsync(@event, cancellationToken);
-            
-            if (!validationResult.IsValid) {
-                // Return a failure result if validation fails
+            if (!validationResult.IsValid)
+            {
                 var errors = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage));
                 return Result.Failure($"Event validation failed: {errors}");
             }
         }
-        
-        // Continue with the pipeline if validation passes or no validator exists
+
         return await next();
     }
 }
@@ -108,40 +102,43 @@ public sealed class EventValidationBehavior : IEventPipelineBehavior {
 An enrichment behavior can add additional information to events before they are handled:
 
 ```csharp
-using UnambitiousFx.Core;
+using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 
-public sealed class EventEnrichmentBehavior : IEventPipelineBehavior {
+public sealed class EventEnrichmentBehavior : IEventPipelineBehavior
+{
     private readonly ICurrentUserService _currentUserService;
     private readonly IDateTime _dateTime;
 
     public EventEnrichmentBehavior(
         ICurrentUserService currentUserService,
-        IDateTime dateTime) {
+        IDateTime dateTime)
+    {
         _currentUserService = currentUserService;
         _dateTime = dateTime;
     }
 
     public ValueTask<Result> HandleAsync<TEvent>(
-        IContext context,
         TEvent @event,
         EventHandlerDelegate next,
         CancellationToken cancellationToken = default)
-        where TEvent : IEvent {
-        
+        where TEvent : IEvent
+    {
         // Enrich the event with additional information if it implements IEnrichableEvent
-        if (@event is IEnrichableEvent enrichableEvent) {
+        if (@event is IEnrichableEvent enrichableEvent)
+        {
             enrichableEvent.UserId = _currentUserService.UserId;
             enrichableEvent.Timestamp = _dateTime.Now;
         }
-        
+
         // Continue with the pipeline
         return next();
     }
 }
 
 // Interface to mark events that can be enriched
-public interface IEnrichableEvent : IEvent {
+public interface IEnrichableEvent : IEvent
+{
     string UserId { get; set; }
     DateTime Timestamp { get; set; }
 }
@@ -152,33 +149,31 @@ public interface IEnrichableEvent : IEvent {
 A persistence behavior can save events to an event store for event sourcing or auditing:
 
 ```csharp
-using UnambitiousFx.Core;
+using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 
-public sealed class EventPersistenceBehavior : IEventPipelineBehavior {
+public sealed class EventPersistenceBehavior : IEventPipelineBehavior
+{
     private readonly IEventStore _eventStore;
-
-    public EventPersistenceBehavior(IEventStore eventStore) {
-        _eventStore = eventStore;
-    }
+    public EventPersistenceBehavior(IEventStore eventStore) => _eventStore = eventStore;
 
     public async ValueTask<Result> HandleAsync<TEvent>(
-        IContext context,
         TEvent @event,
         EventHandlerDelegate next,
         CancellationToken cancellationToken = default)
-        where TEvent : IEvent {
-        
+        where TEvent : IEvent
+    {
         // Save the event to the event store
         await _eventStore.SaveEventAsync(@event, cancellationToken);
-        
+
         // Continue with the pipeline
         return await next();
     }
 }
 
 // Simple interface for an event store
-public interface IEventStore {
+public interface IEventStore
+{
     Task SaveEventAsync<TEvent>(TEvent @event, CancellationToken cancellationToken = default)
         where TEvent : IEvent;
 }
@@ -233,98 +228,96 @@ In some cases, you might want to apply the same cross-cutting concerns to both r
 ```csharp
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
-using UnambitiousFx.Core;
+using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 
-public sealed class LoggingBehavior : IRequestPipelineBehavior, IEventPipelineBehavior {
+public sealed class LoggingBehavior : IRequestPipelineBehavior, IEventPipelineBehavior
+{
     private readonly ILogger<LoggingBehavior> _logger;
-
-    public LoggingBehavior(ILogger<LoggingBehavior> logger) {
-        _logger = logger;
-    }
+    public LoggingBehavior(ILogger<LoggingBehavior> logger) => _logger = logger;
 
     // Request handling (without response)
     public async ValueTask<Result> HandleAsync<TRequest>(
-        IContext context,
         TRequest request,
         RequestHandlerDelegate next,
         CancellationToken cancellationToken = default)
-        where TRequest : IRequest {
-        
+        where TRequest : IRequest
+    {
         var stopwatch = Stopwatch.StartNew();
         var requestName = typeof(TRequest).Name;
-        
+
         _logger.LogInformation("Handling request: {RequestName}", requestName);
-        
+
         var result = await next();
-        
+
         stopwatch.Stop();
-        
-        if (!result.Ok(out var error)) {
-            _logger.LogWarning("Request {RequestName} failed in {ElapsedMilliseconds}ms: {ErrorMessage}", 
-                requestName, stopwatch.ElapsedMilliseconds, error.Message);
-        } else {
-            _logger.LogInformation("Request {RequestName} completed in {ElapsedMilliseconds}ms", 
-                requestName, stopwatch.ElapsedMilliseconds);
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogWarning("Request {RequestName} failed in {ElapsedMilliseconds}ms", requestName, stopwatch.ElapsedMilliseconds);
         }
-        
+        else
+        {
+            _logger.LogInformation("Request {RequestName} completed in {ElapsedMilliseconds}ms", requestName, stopwatch.ElapsedMilliseconds);
+        }
+
         return result;
     }
 
     // Request handling (with response)
     public async ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(
-        IContext context,
         TRequest request,
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken = default)
         where TRequest : IRequest<TResponse>
-        where TResponse : notnull {
-        
+        where TResponse : notnull
+    {
         var stopwatch = Stopwatch.StartNew();
         var requestName = typeof(TRequest).Name;
-        
+
         _logger.LogInformation("Handling request: {RequestName}", requestName);
-        
+
         var result = await next();
-        
+
         stopwatch.Stop();
-        
-        if (!result.Ok(out _, out var error)) {
-            _logger.LogWarning("Request {RequestName} failed in {ElapsedMilliseconds}ms: {ErrorMessage}", 
-                requestName, stopwatch.ElapsedMilliseconds, error.Message);
-        } else {
-            _logger.LogInformation("Request {RequestName} completed in {ElapsedMilliseconds}ms", 
-                requestName, stopwatch.ElapsedMilliseconds);
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogWarning("Request {RequestName} failed in {ElapsedMilliseconds}ms", requestName, stopwatch.ElapsedMilliseconds);
         }
-        
+        else
+        {
+            _logger.LogInformation("Request {RequestName} completed in {ElapsedMilliseconds}ms", requestName, stopwatch.ElapsedMilliseconds);
+        }
+
         return result;
     }
 
     // Event handling
     public async ValueTask<Result> HandleAsync<TEvent>(
-        IContext context,
         TEvent @event,
         EventHandlerDelegate next,
         CancellationToken cancellationToken = default)
-        where TEvent : IEvent {
-        
+        where TEvent : IEvent
+    {
         var stopwatch = Stopwatch.StartNew();
         var eventName = typeof(TEvent).Name;
-        
+
         _logger.LogInformation("Handling event: {EventName}", eventName);
-        
+
         var result = await next();
-        
+
         stopwatch.Stop();
-        
-        if (!result.Ok(out var error)) {
-            _logger.LogWarning("Event {EventName} failed in {ElapsedMilliseconds}ms: {ErrorMessage}", 
-                eventName, stopwatch.ElapsedMilliseconds, error.Message);
-        } else {
-            _logger.LogInformation("Event {EventName} completed in {ElapsedMilliseconds}ms", 
-                eventName, stopwatch.ElapsedMilliseconds);
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogWarning("Event {EventName} failed in {ElapsedMilliseconds}ms", eventName, stopwatch.ElapsedMilliseconds);
         }
-        
+        else
+        {
+            _logger.LogInformation("Event {EventName} completed in {ElapsedMilliseconds}ms", eventName, stopwatch.ElapsedMilliseconds);
+        }
+
         return result;
     }
 }

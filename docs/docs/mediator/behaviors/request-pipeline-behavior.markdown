@@ -26,58 +26,60 @@ This provides a powerful way to implement cross-cutting concerns in a clean, reu
 To create a request pipeline behavior, implement the `IRequestPipelineBehavior` interface:
 
 ```csharp
-using UnambitiousFx.Core;
+using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 
-public sealed class LoggingBehavior : IRequestPipelineBehavior {
+public sealed class LoggingBehavior : IRequestPipelineBehavior
+{
     private readonly ILogger<LoggingBehavior> _logger;
-
-    public LoggingBehavior(ILogger<LoggingBehavior> logger) {
-        _logger = logger;
-    }
+    public LoggingBehavior(ILogger<LoggingBehavior> logger) => _logger = logger;
 
     // For requests without a response
     public async ValueTask<Result> HandleAsync<TRequest>(
-        IContext context,
         TRequest request,
         RequestHandlerDelegate next,
         CancellationToken cancellationToken = default)
-        where TRequest : IRequest {
-        
+        where TRequest : IRequest
+    {
         var requestName = typeof(TRequest).Name;
         _logger.LogInformation("Handling request: {RequestName}", requestName);
-        
+
         var result = await next();
-        
-        if (!result.Ok(out var error)) {
-            _logger.LogWarning("Request {RequestName} failed: {ErrorMessage}", requestName, error.Message);
-        } else {
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogWarning("Request {RequestName} failed", requestName);
+        }
+        else
+        {
             _logger.LogInformation("Request {RequestName} completed successfully", requestName);
         }
-        
+
         return result;
     }
 
     // For requests with a response
     public async ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(
-        IContext context,
         TRequest request,
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken = default)
         where TRequest : IRequest<TResponse>
-        where TResponse : notnull {
-        
+        where TResponse : notnull
+    {
         var requestName = typeof(TRequest).Name;
         _logger.LogInformation("Handling request: {RequestName}", requestName);
-        
+
         var result = await next();
-        
-        if (!result.Ok(out _, out var error)) {
-            _logger.LogWarning("Request {RequestName} failed: {ErrorMessage}", requestName, error.Message);
-        } else {
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogWarning("Request {RequestName} failed", requestName);
+        }
+        else
+        {
             _logger.LogInformation("Request {RequestName} completed successfully", requestName);
         }
-        
+
         return result;
     }
 }
@@ -91,62 +93,52 @@ A validation behavior can check if a request is valid before it reaches the hand
 
 ```csharp
 using FluentValidation;
-using UnambitiousFx.Core;
+using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 
-public sealed class ValidationBehavior : IRequestPipelineBehavior {
+public sealed class ValidationBehavior : IRequestPipelineBehavior
+{
     private readonly IServiceProvider _serviceProvider;
-
-    public ValidationBehavior(IServiceProvider serviceProvider) {
-        _serviceProvider = serviceProvider;
-    }
+    public ValidationBehavior(IServiceProvider serviceProvider) => _serviceProvider = serviceProvider;
 
     public async ValueTask<Result> HandleAsync<TRequest>(
-        IContext context,
         TRequest request,
         RequestHandlerDelegate next,
         CancellationToken cancellationToken = default)
-        where TRequest : IRequest {
-        
-        // Try to resolve a validator for this request type
+        where TRequest : IRequest
+    {
         var validator = _serviceProvider.GetService<IValidator<TRequest>>();
-        
-        if (validator != null) {
+        if (validator != null)
+        {
             var validationResult = await validator.ValidateAsync(request, cancellationToken);
-            
-            if (!validationResult.IsValid) {
-                // Return a failure result if validation fails
+            if (!validationResult.IsValid)
+            {
                 var errors = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage));
                 return Result.Failure($"Validation failed: {errors}");
             }
         }
-        
-        // Continue with the pipeline if validation passes or no validator exists
+
         return await next();
     }
 
     public async ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(
-        IContext context,
         TRequest request,
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken = default)
         where TRequest : IRequest<TResponse>
-        where TResponse : notnull {
-        
-        // Try to resolve a validator for this request type
+        where TResponse : notnull
+    {
         var validator = _serviceProvider.GetService<IValidator<TRequest>>();
-        
-        if (validator != null) {
+        if (validator != null)
+        {
             var validationResult = await validator.ValidateAsync(request, cancellationToken);
-            
-            if (!validationResult.IsValid) {
-                // Return a failure result if validation fails
+            if (!validationResult.IsValid)
+            {
                 var errors = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage));
-                return Result<TResponse>.Failure($"Validation failed: {errors}");
+                return Result.Failure<TResponse>($"Validation failed: {errors}");
             }
         }
-        
-        // Continue with the pipeline if validation passes or no validator exists
+
         return await next();
     }
 }
@@ -158,62 +150,62 @@ A caching behavior can cache responses to avoid redundant processing:
 
 ```csharp
 using Microsoft.Extensions.Caching.Memory;
-using UnambitiousFx.Core;
+using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 
-public sealed class CachingBehavior : IRequestPipelineBehavior {
+public sealed class CachingBehavior : IRequestPipelineBehavior
+{
     private readonly IMemoryCache _cache;
-
-    public CachingBehavior(IMemoryCache cache) {
-        _cache = cache;
-    }
+    public CachingBehavior(IMemoryCache cache) => _cache = cache;
 
     public ValueTask<Result> HandleAsync<TRequest>(
-        IContext context,
         TRequest request,
         RequestHandlerDelegate next,
         CancellationToken cancellationToken = default)
-        where TRequest : IRequest {
-        
+        where TRequest : IRequest
+    {
         // We typically don't cache commands (requests without responses)
         return next();
     }
 
     public async ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(
-        IContext context,
         TRequest request,
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken = default)
         where TRequest : IRequest<TResponse>
-        where TResponse : notnull {
-        
+        where TResponse : notnull
+    {
         // Only cache if the request implements ICacheableRequest
-        if (request is ICacheableRequest cacheableRequest) {
+        if (request is ICacheableRequest cacheableRequest)
+        {
             var cacheKey = cacheableRequest.CacheKey;
-            
+
             // Try to get from cache
-            if (_cache.TryGetValue(cacheKey, out Result<TResponse> cachedResult)) {
+            if (_cache.TryGetValue(cacheKey, out Result<TResponse> cachedResult))
+            {
                 return cachedResult;
             }
-            
+
             // Execute the request
             var result = await next();
-            
+
             // Cache the result if successful
-            if (result.Ok(out _, out _)) {
+            if (result.IsSuccess)
+            {
                 _cache.Set(cacheKey, result, TimeSpan.FromMinutes(cacheableRequest.CacheTimeInMinutes));
             }
-            
+
             return result;
         }
-        
+
         // If not cacheable, just execute the request
         return await next();
     }
 }
 
 // Interface to mark requests as cacheable
-public interface ICacheableRequest {
+public interface ICacheableRequest
+{
     string CacheKey { get; }
     int CacheTimeInMinutes { get; }
 }

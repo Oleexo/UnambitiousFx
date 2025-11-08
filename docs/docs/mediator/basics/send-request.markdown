@@ -39,55 +39,43 @@ public sealed record DeleteTodoCommand : IRequest {
 For each request, you need to create a corresponding handler that implements either `IRequestHandler<TRequest, TResponse>` or `IRequestHandler<TRequest>`:
 
 ```csharp
-using UnambitiousFx.Core;
+using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator;
 using UnambitiousFx.Mediator.Abstractions;
 
 // Handler for a request with a response
 [RequestHandler<GetTodoByIdQuery, Todo>] // Optional: Used by Mediator.Generator
-public sealed class GetTodoByIdQueryHandler : IRequestHandler<GetTodoByIdQuery, Todo> {
+public sealed class GetTodoByIdQueryHandler : IRequestHandler<GetTodoByIdQuery, Todo>
+{
     private readonly ITodoRepository _todoRepository;
-
-    public GetTodoByIdQueryHandler(ITodoRepository todoRepository) {
-        _todoRepository = todoRepository;
-    }
+    public GetTodoByIdQueryHandler(ITodoRepository todoRepository) => _todoRepository = todoRepository;
 
     public async ValueTask<Result<Todo>> HandleAsync(
-        IContext context,
         GetTodoByIdQuery request,
-        CancellationToken cancellationToken = default) {
-        
+        CancellationToken cancellationToken = default)
+    {
         var todo = await _todoRepository.GetByIdAsync(request.Id, cancellationToken);
-        
-        if (todo == null) {
-            return Result<Todo>.Failure("Todo not found");
-        }
-        
-        return Result<Todo>.Success(todo);
+        return todo is not null
+            ? Result.Success(todo)
+            : Result.Failure<Todo>("Todo not found");
     }
 }
 
 // Handler for a request without a response
 [RequestHandler<DeleteTodoCommand>] // Optional: Used by Mediator.Generator
-public sealed class DeleteTodoCommandHandler : IRequestHandler<DeleteTodoCommand> {
+public sealed class DeleteTodoCommandHandler : IRequestHandler<DeleteTodoCommand>
+{
     private readonly ITodoRepository _todoRepository;
-
-    public DeleteTodoCommandHandler(ITodoRepository todoRepository) {
-        _todoRepository = todoRepository;
-    }
+    public DeleteTodoCommandHandler(ITodoRepository todoRepository) => _todoRepository = todoRepository;
 
     public async ValueTask<Result> HandleAsync(
-        IContext context,
         DeleteTodoCommand request,
-        CancellationToken cancellationToken = default) {
-        
+        CancellationToken cancellationToken = default)
+    {
         var deleted = await _todoRepository.DeleteAsync(request.Id, cancellationToken);
-        
-        if (!deleted) {
-            return Result.Failure("Todo not found");
-        }
-        
-        return Result.Success();
+        return deleted
+            ? Result.Success()
+            : Result.Failure("Todo not found");
     }
 }
 ```
