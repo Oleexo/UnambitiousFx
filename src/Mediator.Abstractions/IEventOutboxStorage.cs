@@ -12,7 +12,8 @@ namespace UnambitiousFx.Mediator.Abstractions;
 ///     Implementations may vary from in-memory storage to fully persistent systems, catering to
 ///     different operational and performance considerations.
 /// </remarks>
-public interface IEventOutboxStorage {
+public interface IEventOutboxStorage
+{
     /// <summary>
     ///     Adds an event to the outbox storage for later processing.
     /// </summary>
@@ -26,7 +27,7 @@ public interface IEventOutboxStorage {
     ///     A task that represents the asynchronous operation. The task result contains a <see cref="Result" /> indicating
     ///     whether the event was successfully added.
     /// </returns>
-    ValueTask<Result> AddAsync<TEvent>(TEvent            @event,
+    ValueTask<Result> AddAsync<TEvent>(TEvent @event,
                                        CancellationToken cancellationToken = default)
         where TEvent : class, IEvent;
 
@@ -52,7 +53,7 @@ public interface IEventOutboxStorage {
     ///     A task that represents the asynchronous operation. The task result contains a <see cref="Result" />
     ///     indicating whether the event was successfully marked as processed.
     /// </returns>
-    ValueTask<Result> MarkAsProcessedAsync(IEvent            @event,
+    ValueTask<Result> MarkAsProcessedAsync(IEvent @event,
                                            CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -76,11 +77,11 @@ public interface IEventOutboxStorage {
     /// <param name="nextAttemptAt">Optional next attempt date. Ignored when <paramref name="deadLetter"/> is true.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A result indicating success or failure.</returns>
-    ValueTask<Result> MarkAsFailedAsync(IEvent               @event,
-                                        string               reason,
-                                        bool                 deadLetter,
-                                        DateTimeOffset?      nextAttemptAt     = null,
-                                        CancellationToken    cancellationToken = default);
+    ValueTask<Result> MarkAsFailedAsync(IEvent @event,
+                                        string reason,
+                                        bool deadLetter,
+                                        DateTimeOffset? nextAttemptAt = null,
+                                        CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     Gets events that have been moved to the dead-letter queue.
@@ -90,6 +91,6 @@ public interface IEventOutboxStorage {
     /// <summary>
     ///     Gets the current attempt count for an event (number of failures already recorded).
     /// </summary>
-    ValueTask<int?> GetAttemptCountAsync(IEvent            @event,
+    ValueTask<int?> GetAttemptCountAsync(IEvent @event,
                                          CancellationToken cancellationToken = default);
 }

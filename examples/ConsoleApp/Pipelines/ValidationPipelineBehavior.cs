@@ -4,17 +4,20 @@ using UnambitiousFx.Mediator.Abstractions;
 
 namespace UnambitiousFx.Examples.ConsoleApp;
 
-public class ValidationPipelineBehavior : IRequestPipelineBehavior {
+public class ValidationPipelineBehavior : IRequestPipelineBehavior
+{
     private readonly ILogger<ValidationPipelineBehavior> _logger;
 
-    public ValidationPipelineBehavior(ILogger<ValidationPipelineBehavior> logger) {
+    public ValidationPipelineBehavior(ILogger<ValidationPipelineBehavior> logger)
+    {
         _logger = logger;
     }
 
-    public async ValueTask<Result> HandleAsync<TRequest>(TRequest               request,
+    public async ValueTask<Result> HandleAsync<TRequest>(TRequest request,
                                                          RequestHandlerDelegate next,
-                                                         CancellationToken      cancellationToken = default)
-        where TRequest : IRequest {
+                                                         CancellationToken cancellationToken = default)
+        where TRequest : IRequest
+    {
         _logger.LogDebug("Validating request: {RequestName}", request.GetType()
                                                                      .Name);
 
@@ -24,11 +27,12 @@ public class ValidationPipelineBehavior : IRequestPipelineBehavior {
         return await next();
     }
 
-    public async ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest                          request,
+    public async ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest request,
                                                                                RequestHandlerDelegate<TResponse> next,
-                                                                               CancellationToken                 cancellationToken = default)
+                                                                               CancellationToken cancellationToken = default)
         where TRequest : IRequest<TResponse>
-        where TResponse : notnull {
+        where TResponse : notnull
+    {
         _logger.LogDebug("Validating request: {RequestName}", request.GetType()
                                                                      .Name);
 

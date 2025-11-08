@@ -8,5 +8,6 @@ namespace WebApiAot.Models;
 [JsonSerializable(typeof(CreateTodoModel))]
 [JsonSerializable(typeof(IEnumerable<Todo>))]
 [SuppressMessage("ReSharper", "PartialTypeWithSinglePart")]
-internal partial class AppJsonSerializerContext : JsonSerializerContext {
+internal partial class AppJsonSerializerContext : JsonSerializerContext
+{
 }

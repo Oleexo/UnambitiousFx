@@ -3,7 +3,8 @@ namespace UnambitiousFx.Core.Results.Types;
 /// <summary>
 ///     Strategy controlling how failures are merged.
 /// </summary>
-public enum MergeFailureStrategy {
+public enum MergeFailureStrategy
+{
     /// <summary>
     ///     Accumulate all results, collecting every failure (default – previous behavior).
     /// </summary>

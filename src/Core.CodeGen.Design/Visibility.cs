@@ -3,7 +3,8 @@ namespace UnambitiousFx.Core.CodeGen.Design;
 /// <summary>
 ///     Represents the accessibility levels that can be applied to types and type members in C#.
 /// </summary>
-public enum Visibility {
+public enum Visibility
+{
     /// <summary>
     ///     The type or member can be accessed by any other code in the same assembly or another assembly that references it.
     /// </summary>

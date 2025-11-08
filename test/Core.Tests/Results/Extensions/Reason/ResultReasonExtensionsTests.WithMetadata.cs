@@ -3,9 +3,11 @@ using UnambitiousFx.Core.Results.Extensions;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Reason;
 
-public sealed partial class ResultReasonExtensionsTests {
+public sealed partial class ResultReasonExtensionsTests
+{
     [Fact]
-    public void WithMetadata_Dictionary_CopiesEntry() {
+    public void WithMetadata_Dictionary_CopiesEntry()
+    {
         var meta = new Dictionary<string, object?> { { "a", 1 } };
         var result = Result.Success()
                            .WithMetadata(meta);
@@ -14,7 +16,8 @@ public sealed partial class ResultReasonExtensionsTests {
     }
 
     [Fact]
-    public void WithMetadata_KeyValue_AddsEntry() {
+    public void WithMetadata_KeyValue_AddsEntry()
+    {
         var result = Result.Success()
                            .WithMetadata("traceId", "abc");
 
@@ -22,7 +25,8 @@ public sealed partial class ResultReasonExtensionsTests {
     }
 
     [Fact]
-    public void WithMetadata_KeyValue_LastWriteWins() {
+    public void WithMetadata_KeyValue_LastWriteWins()
+    {
         var result = Result.Success()
                            .WithMetadata("k", 1)
                            .WithMetadata("k", 2);
@@ -31,7 +35,8 @@ public sealed partial class ResultReasonExtensionsTests {
     }
 
     [Fact]
-    public void WithMetadata_Params_AttachesFirst() {
+    public void WithMetadata_Params_AttachesFirst()
+    {
         var result = Result.Success()
                            .WithMetadata(("a", 1), ("b", "x"));
 
@@ -39,7 +44,8 @@ public sealed partial class ResultReasonExtensionsTests {
     }
 
     [Fact]
-    public void WithMetadata_Params_AttachesSecond() {
+    public void WithMetadata_Params_AttachesSecond()
+    {
         var result = Result.Success()
                            .WithMetadata(("a", 1), ("b", "x"));
 

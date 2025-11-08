@@ -1,4 +1,5 @@
 namespace UnambitiousFx.Core.CodeGen.Design;
 
-internal interface IConcreteTypeWriter : ITypeDefinitionWriter {
+internal interface IConcreteTypeWriter : ITypeDefinitionWriter
+{
 }

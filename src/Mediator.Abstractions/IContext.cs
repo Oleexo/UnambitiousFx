@@ -5,7 +5,8 @@ namespace UnambitiousFx.Mediator.Abstractions;
 /// <summary>
 ///     Represents a context with properties and methods for managing data during a process or operation.
 /// </summary>
-public interface IContext {
+public interface IContext
+{
     /// <summary>
     ///     Gets the unique identifier that represents a correlation ID for tracing or tracking purposes within the context.
     ///     This property is immutable and ensures consistent identification of a specific operation or event flow.
@@ -67,7 +68,7 @@ public interface IContext {
     ///     A <see cref="ValueTask" /> containing a <see cref="Result" /> that indicates the success or failure of the
     ///     operation.
     /// </returns>
-    ValueTask<Result> PublishEventAsync<TEvent>(TEvent            @event,
+    ValueTask<Result> PublishEventAsync<TEvent>(TEvent @event,
                                                 CancellationToken cancellationToken = default)
         where TEvent : class, IEvent;
 
@@ -91,8 +92,8 @@ public interface IContext {
     ///     A <see cref="ValueTask" /> containing a <see cref="Result" /> that indicates the success or failure of the
     ///     operation.
     /// </returns>
-    ValueTask<Result> PublishEventAsync<TEvent>(TEvent            @event,
-                                                PublishMode       mode,
+    ValueTask<Result> PublishEventAsync<TEvent>(TEvent @event,
+                                                PublishMode mode,
                                                 CancellationToken cancellationToken = default)
         where TEvent : class, IEvent;
 

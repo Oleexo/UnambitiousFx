@@ -13,5 +13,6 @@ namespace UnambitiousFx.Mediator.Abstractions;
 /// </remarks>
 [AttributeUsage(AttributeTargets.Class)]
 public sealed class EventHandlerAttribute<TEvent> : Attribute
-    where TEvent : IEvent {
+    where TEvent : IEvent
+{
 }

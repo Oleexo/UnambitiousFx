@@ -7,11 +7,13 @@ namespace UnambitiousFx.Core.CodeGen.Builders.SideEffects;
 ///     Builds Tap extension methods for Result types.
 ///     Tap executes a side effect on success without changing the result.
 /// </summary>
-internal sealed class TapMethodBuilder {
+internal sealed class TapMethodBuilder
+{
     /// <summary>
     ///     Builds a sync Tap method for a specific arity.
     /// </summary>
-    public MethodWriter BuildStandaloneMethod(ushort arity) {
+    public MethodWriter BuildStandaloneMethod(ushort arity)
+    {
         var genericParams = GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull");
         var resultType = arity == 0
                              ? "Result"
@@ -40,10 +42,11 @@ internal sealed class TapMethodBuilder {
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary("Executes a side effect if the result is successful, then returns the original result.")
                                             .WithParameter("result", "The result instance.")
-                                            .WithParameter("tap",    "Action to execute on success.")
+                                            .WithParameter("tap", "Action to execute on success.")
                                             .WithReturns("The original result unchanged.");
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Value type {i}.");
         }
 
@@ -63,7 +66,8 @@ internal sealed class TapMethodBuilder {
     ///     Builds async Tap method: Result + AsyncFunc (TValue -> Task)
     /// </summary>
     public MethodWriter BuildAsyncFuncMethod(ushort arity,
-                                             bool   isValueTask) {
+                                             bool isValueTask)
+    {
         var genericParams = GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull");
         var resultType = arity == 0
                              ? "Result"
@@ -83,7 +87,8 @@ internal sealed class TapMethodBuilder {
         parameters.Add(new MethodParameter(funcType, "tap"));
 
         string body;
-        if (arity == 0) {
+        if (arity == 0)
+        {
             body = """
                    if (result.IsSuccess) {
                        await tap();
@@ -92,7 +97,8 @@ internal sealed class TapMethodBuilder {
                    return result;
                    """;
         }
-        else {
+        else
+        {
             // Build TryGet with all value parameters
             var tryGetParams = string.Join(", ", Enumerable.Range(1, arity)
                                                            .Select(i => $"out var value{i}"));
@@ -115,10 +121,11 @@ internal sealed class TapMethodBuilder {
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary("Async Tap executing a side effect on success with async function.")
                                             .WithParameter("result", "The result instance.")
-                                            .WithParameter("tap",    "Async function to execute on success.")
+                                            .WithParameter("tap", "Async function to execute on success.")
                                             .WithReturns("A task with the original result unchanged.");
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Value type {i}.");
         }
 
@@ -139,7 +146,8 @@ internal sealed class TapMethodBuilder {
     ///     Builds async Tap method: Task + SyncFunc (TValue -> void)
     /// </summary>
     public MethodWriter BuildTaskSyncFuncMethod(ushort arity,
-                                                bool   isValueTask) {
+                                                bool isValueTask)
+    {
         var genericParams = GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull");
         var resultType = arity == 0
                              ? "Result"
@@ -169,10 +177,11 @@ internal sealed class TapMethodBuilder {
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary("Async Tap executing a side effect on an awaitable result with sync action.")
                                             .WithParameter("awaitableResult", "The awaitable result instance.")
-                                            .WithParameter("tap",             "Action to execute on success.")
+                                            .WithParameter("tap", "Action to execute on success.")
                                             .WithReturns("A task with the original result unchanged.");
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Value type {i}.");
         }
 
@@ -193,7 +202,8 @@ internal sealed class TapMethodBuilder {
     ///     Builds async Tap method: Task + AsyncFunc (TValue -> Task)
     /// </summary>
     public MethodWriter BuildTaskAsyncFuncMethod(ushort arity,
-                                                 bool   isValueTask) {
+                                                 bool isValueTask)
+    {
         var genericParams = GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull");
         var resultType = arity == 0
                              ? "Result"
@@ -222,10 +232,11 @@ internal sealed class TapMethodBuilder {
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary("Async Tap executing a side effect on an awaitable result with async function.")
                                             .WithParameter("awaitableResult", "The awaitable result instance.")
-                                            .WithParameter("tap",             "Async function to execute on success.")
+                                            .WithParameter("tap", "Async function to execute on success.")
                                             .WithReturns("A task with the original result unchanged.");
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Value type {i}.");
         }
 

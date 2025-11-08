@@ -6,17 +6,20 @@ namespace UnambitiousFx.Core.CodeGen.Builders.Validations;
 ///     Builds EnsureNotEmpty extension methods for Result types.
 ///     Note: EnsureNotEmpty only applies to Result{string} (arity 1).
 /// </summary>
-internal sealed class EnsureNotEmptyMethodBuilder {
+internal sealed class EnsureNotEmptyMethodBuilder
+{
     private readonly string _baseNamespace;
 
-    public EnsureNotEmptyMethodBuilder(string baseNamespace) {
+    public EnsureNotEmptyMethodBuilder(string baseNamespace)
+    {
         _baseNamespace = baseNamespace ?? throw new ArgumentNullException(nameof(baseNamespace));
     }
 
     /// <summary>
     ///     Builds EnsureNotEmpty for Result{string}.
     /// </summary>
-    public MethodWriter BuildStringMethod() {
+    public MethodWriter BuildStringMethod()
+    {
         var body = """
                    return result.Then(value => {
                        if (string.IsNullOrEmpty(value)) {
@@ -32,9 +35,9 @@ internal sealed class EnsureNotEmptyMethodBuilder {
 
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary("Ensures a successful string result value is neither null nor empty.")
-                                            .WithParameter("result",  "The result instance.")
+                                            .WithParameter("result", "The result instance.")
                                             .WithParameter("message", "Validation error message.")
-                                            .WithParameter("field",   "Optional field name for the error message.")
+                                            .WithParameter("field", "Optional field name for the error message.")
                                             .WithReturns("The original result if the string is not empty; otherwise a failure with ValidationError.");
 
         return new MethodWriter(
@@ -55,7 +58,8 @@ internal sealed class EnsureNotEmptyMethodBuilder {
     /// <summary>
     ///     Builds EnsureNotEmpty for Result{TCollection} where TCollection is IEnumerable{TItem}.
     /// </summary>
-    public MethodWriter BuildCollectionMethod() {
+    public MethodWriter BuildCollectionMethod()
+    {
         var body = """
                    return result.Then(collection => {
                        if (!collection.Any()) {
@@ -71,11 +75,11 @@ internal sealed class EnsureNotEmptyMethodBuilder {
 
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary("Ensures a successful enumerable result is not empty.")
-                                            .WithParameter("result",  "The result instance.")
+                                            .WithParameter("result", "The result instance.")
                                             .WithParameter("message", "Validation error message.")
-                                            .WithParameter("field",   "Optional field name for the error message.")
+                                            .WithParameter("field", "Optional field name for the error message.")
                                             .WithTypeParameter("TCollection", "The collection type implementing IEnumerable<TItem>.")
-                                            .WithTypeParameter("TItem",       "The item type in the collection.")
+                                            .WithTypeParameter("TItem", "The item type in the collection.")
                                             .WithReturns("The original result if the collection is not empty; otherwise a failure with ValidationError.");
 
         return new MethodWriter(

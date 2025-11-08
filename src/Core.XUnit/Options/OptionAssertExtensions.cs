@@ -9,7 +9,8 @@ namespace UnambitiousFx.Core.XUnit.Options;
 ///     in xUnit tests. Includes synchronous, asynchronous, and predicate-based assertions.
 /// </summary>
 [DebuggerStepThrough]
-public static class OptionAssertExtensions {
+public static class OptionAssertExtensions
+{
     /// <summary>
     ///     Represents the error message used by the Option assertion extensions when an expected
     ///     <c>Option</c> is of type None but was expected to be of type Some.
@@ -30,9 +31,11 @@ public static class OptionAssertExtensions {
     /// <returns>The original <see cref="Maybe{TValue}" /> after the assertion.</returns>
     /// <exception cref="Xunit.Sdk.XunitException">Thrown if the <see cref="Maybe{TValue}" /> is None.</exception>
     public static Maybe<T> ShouldBeSome<T>(this Maybe<T> maybe,
-                                           out  T        value)
-        where T : notnull {
-        if (!maybe.Some(out var tmp)) {
+                                           out T value)
+        where T : notnull
+    {
+        if (!maybe.Some(out var tmp))
+        {
             Assert.Fail(SomeExpected);
         }
 
@@ -48,8 +51,9 @@ public static class OptionAssertExtensions {
     /// <param name="assert">The Action to perform on the extracted value for additional assertions.</param>
     /// <returns>The original Option instance after performing the assertion.</returns>
     public static Maybe<T> ShouldBeSome<T>(this Maybe<T> maybe,
-                                           Action<T>     assert)
-        where T : notnull {
+                                           Action<T> assert)
+        where T : notnull
+    {
         maybe.ShouldBeSome(out var v);
         assert(v);
         return maybe;
@@ -61,8 +65,10 @@ public static class OptionAssertExtensions {
     /// <param name="maybe">The Option to verify.</param>
     /// <returns>The same Option if it is in a None state; otherwise, this method will throw.</returns>
     public static Maybe<T> ShouldBeNone<T>(this Maybe<T> maybe)
-        where T : notnull {
-        if (maybe.IsSome) {
+        where T : notnull
+    {
+        if (maybe.IsSome)
+        {
             Assert.Fail(NoneExpected);
         }
 
@@ -76,8 +82,9 @@ public static class OptionAssertExtensions {
     /// <param name="value">The extracted value if the Option is Some.</param>
     /// <returns>The original Task's Option result.</returns>
     public static Task<Maybe<T>> ShouldBeSome<T>(this Task<Maybe<T>> awaitable,
-                                                 out  T              value)
-        where T : notnull {
+                                                 out T value)
+        where T : notnull
+    {
         var opt = awaitable.GetAwaiter()
                            .GetResult();
         opt.ShouldBeSome(out value);
@@ -92,8 +99,9 @@ public static class OptionAssertExtensions {
     /// <typeparam name="T">The type of the value contained in the Option.</typeparam>
     /// <returns>The original Option after the assertion.</returns>
     public static async Task<Maybe<T>> ShouldBeSome<T>(this Task<Maybe<T>> awaitable,
-                                                       Action<T>           assert)
-        where T : notnull {
+                                                       Action<T> assert)
+        where T : notnull
+    {
         var opt = await awaitable.ConfigureAwait(false);
         opt.ShouldBeSome(assert);
         return opt;
@@ -104,7 +112,8 @@ public static class OptionAssertExtensions {
     /// <typeparam name="T">The type of the value contained in the Option.</typeparam>
     /// <returns>The original Option instance if the assertion passes.</returns>
     public static async Task<Maybe<T>> ShouldBeNone<T>(this Task<Maybe<T>> awaitable)
-        where T : notnull {
+        where T : notnull
+    {
         var opt = await awaitable.ConfigureAwait(false);
         opt.ShouldBeNone();
         return opt;
@@ -118,8 +127,9 @@ public static class OptionAssertExtensions {
     /// <param name="value">The extracted value if the assertion succeeds.</param>
     /// <returns>The original Option to allow further chaining or inspection.</returns>
     public static ValueTask<Maybe<T>> ShouldBeSome<T>(this ValueTask<Maybe<T>> awaitable,
-                                                      out  T                   value)
-        where T : notnull {
+                                                      out T value)
+        where T : notnull
+    {
         var opt = awaitable.GetAwaiter()
                            .GetResult();
         opt.ShouldBeSome(out value);
@@ -131,7 +141,8 @@ public static class OptionAssertExtensions {
     /// <param name="awaitable">The ValueTask producing the Option instance to be asserted.</param>
     /// <returns>The original Option instance after the assertion.</returns>
     public static async ValueTask<Maybe<T>> ShouldBeNone<T>(this ValueTask<Maybe<T>> awaitable)
-        where T : notnull {
+        where T : notnull
+    {
         var opt = await awaitable.ConfigureAwait(false);
         opt.ShouldBeNone();
         return opt;
@@ -146,10 +157,12 @@ public static class OptionAssertExtensions {
     /// <param name="because">The reason to include if the assertion fails.</param>
     /// <returns>The original option instance.</returns>
     public static Maybe<T> ShouldBeSome<T>(this Maybe<T> maybe,
-                                           out  T        value,
-                                           string        because)
-        where T : notnull {
-        if (!maybe.Some(out var tmp)) {
+                                           out T value,
+                                           string because)
+        where T : notnull
+    {
+        if (!maybe.Some(out var tmp))
+        {
             Assert.Fail(because);
         }
 
@@ -165,9 +178,11 @@ public static class OptionAssertExtensions {
     /// <param name="because">The reason to include if the assertion fails.</param>
     /// <returns>The original option instance, for potential chaining or further assertions.</returns>
     public static Maybe<T> ShouldBeNone<T>(this Maybe<T> maybe,
-                                           string        because)
-        where T : notnull {
-        if (maybe.IsSome) {
+                                           string because)
+        where T : notnull
+    {
+        if (maybe.IsSome)
+        {
             Assert.Fail(because);
         }
 
@@ -184,14 +199,17 @@ public static class OptionAssertExtensions {
     /// <returns>The same Option, if the assertion is successful.</returns>
     public static Maybe<T> ShouldBeSomeWhere<T>(this Maybe<T> maybe,
                                                 Func<T, bool> predicate,
-                                                string?       because = null)
-        where T : notnull {
+                                                string? because = null)
+        where T : notnull
+    {
         ArgumentNullException.ThrowIfNull(predicate);
-        if (!maybe.Some(out var value)) {
+        if (!maybe.Some(out var value))
+        {
             Assert.Fail(because ?? "Expected Option.Some but was None.");
         }
 
-        if (!predicate(value)) {
+        if (!predicate(value))
+        {
             Assert.Fail(because ?? $"Value '{value}' does not satisfy predicate.");
         }
 
@@ -206,15 +224,18 @@ public static class OptionAssertExtensions {
     /// <param name="because">An optional explanation for the assertion or failure.</param>
     /// <returns>The original Option instance for further chaining.</returns>
     public static Maybe<T> ShouldBeNoneWhere<T>(this Maybe<T> maybe,
-                                                Func<bool>    predicate,
-                                                string?       because = null)
-        where T : notnull {
+                                                Func<bool> predicate,
+                                                string? because = null)
+        where T : notnull
+    {
         // Allows attaching additional condition about None context
-        if (maybe.IsSome) {
+        if (maybe.IsSome)
+        {
             Assert.Fail(because ?? "Expected Option.None but was Some.");
         }
 
-        if (!predicate()) {
+        if (!predicate())
+        {
             Assert.Fail(because ?? "Provided predicate for None state failed.");
         }
 
@@ -229,9 +250,10 @@ public static class OptionAssertExtensions {
     /// <param name="because">An optional explanation for the assertion.</param>
     /// <returns>The original Option if the assertion is met.</returns>
     public static async Task<Maybe<T>> ShouldBeSomeWhereAsync<T>(this Task<Maybe<T>> awaitable,
-                                                                 Func<T, bool>       predicate,
-                                                                 string?             because = null)
-        where T : notnull {
+                                                                 Func<T, bool> predicate,
+                                                                 string? because = null)
+        where T : notnull
+    {
         var opt = await awaitable.ConfigureAwait(false);
         opt.ShouldBeSomeWhere(predicate, because);
         return opt;
@@ -246,9 +268,10 @@ public static class OptionAssertExtensions {
     /// <typeparam name="T">The type of the value contained in the Option.</typeparam>
     /// <returns>The awaited Option after the assertion.</returns>
     public static async Task<Maybe<T>> ShouldBeNoneWhereAsync<T>(this Task<Maybe<T>> awaitable,
-                                                                 Func<bool>          predicate,
-                                                                 string?             because = null)
-        where T : notnull {
+                                                                 Func<bool> predicate,
+                                                                 string? because = null)
+        where T : notnull
+    {
         var opt = await awaitable.ConfigureAwait(false);
         opt.ShouldBeNoneWhere(predicate, because);
         return opt;
@@ -264,9 +287,10 @@ public static class OptionAssertExtensions {
     /// <typeparam name="T">The type of the value contained within the Option.</typeparam>
     /// <returns>The awaited Option, after ensuring it satisfies the specified predicate.</returns>
     public static async ValueTask<Maybe<T>> ShouldBeSomeWhereAsync<T>(this ValueTask<Maybe<T>> awaitable,
-                                                                      Func<T, bool>            predicate,
-                                                                      string?                  because = null)
-        where T : notnull {
+                                                                      Func<T, bool> predicate,
+                                                                      string? because = null)
+        where T : notnull
+    {
         var opt = await awaitable.ConfigureAwait(false);
         opt.ShouldBeSomeWhere(predicate, because);
         return opt;
@@ -280,9 +304,10 @@ public static class OptionAssertExtensions {
     /// <param name="because">An optional descriptive message explaining the reason for the assertion.</param>
     /// <returns>The original Option contained within the ValueTask after the assertion is performed.</returns>
     public static async ValueTask<Maybe<T>> ShouldBeNoneWhereAsync<T>(this ValueTask<Maybe<T>> awaitable,
-                                                                      Func<bool>               predicate,
-                                                                      string?                  because = null)
-        where T : notnull {
+                                                                      Func<bool> predicate,
+                                                                      string? because = null)
+        where T : notnull
+    {
         var opt = await awaitable.ConfigureAwait(false);
         opt.ShouldBeNoneWhere(predicate, because);
         return opt;

@@ -5,9 +5,10 @@ using UnambitiousFx.Core.Results.Reasons;
 namespace UnambitiousFx.Core.Results;
 
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
-public abstract class BaseResult : IResult {
+public abstract class BaseResult : IResult
+{
     private readonly Dictionary<string, object?> _metadata = new(StringComparer.OrdinalIgnoreCase);
-    private readonly List<IReason>               _reasons  = [];
+    private readonly List<IReason> _reasons = [];
 
     public IReadOnlyCollection<IReason> Reasons => _reasons.AsReadOnly();
 
@@ -26,37 +27,44 @@ public abstract class BaseResult : IResult {
     public abstract bool IsFaulted { get; }
     public abstract bool IsSuccess { get; }
 
-    internal void AddReason(IReason reason) {
+    internal void AddReason(IReason reason)
+    {
         _reasons.Add(reason);
     }
 
-    internal void AddReasons(IEnumerable<IReason> reasons) {
+    internal void AddReasons(IEnumerable<IReason> reasons)
+    {
         _reasons.AddRange(reasons);
     }
 
-    internal void AddMetadata(string  key,
-                              object? value) {
+    internal void AddMetadata(string key,
+                              object? value)
+    {
         _metadata[key] = value;
     }
 
-    internal void AddMetadata(IReadOnlyDictionary<string, object?> metadata) {
-        foreach (var kv in metadata) {
+    internal void AddMetadata(IReadOnlyDictionary<string, object?> metadata)
+    {
+        foreach (var kv in metadata)
+        {
             _metadata[kv.Key] = kv.Value;
         }
     }
 
-    public abstract void Match(Action                      success,
+    public abstract void Match(Action success,
                                Action<IEnumerable<IError>> failure);
 
-    public abstract TOut Match<TOut>(Func<TOut>                      success,
+    public abstract TOut Match<TOut>(Func<TOut> success,
                                      Func<IEnumerable<IError>, TOut> failure);
 
     public abstract bool TryGet([NotNullWhen(false)] out IEnumerable<IError>? errors);
-    public abstract void IfSuccess(Action                                    action);
-    public abstract void IfFailure(Action<IEnumerable<IError>>               action);
+    public abstract void IfSuccess(Action action);
+    public abstract void IfFailure(Action<IEnumerable<IError>> action);
 
-    private string BuildDebuggerDisplay() {
-        if (IsSuccess) {
+    private string BuildDebuggerDisplay()
+    {
+        if (IsSuccess)
+        {
             var meta = Metadata.Count == 0
                            ? string.Empty
                            : " meta=" + string.Join(",", Metadata.Select(kv => kv.Key + ":" + (kv.Value ?? "null")));
@@ -68,8 +76,8 @@ public abstract class BaseResult : IResult {
                                          .FirstOrDefault(r => r is not ExceptionalError);
         var firstErrorAny = Reasons.OfType<IError>()
                                    .FirstOrDefault();
-        var chosen      = firstNonExceptional ?? firstErrorAny;
-        var msg         = chosen?.Message     ?? "error";
+        var chosen = firstNonExceptional ?? firstErrorAny;
+        var msg = chosen?.Message ?? "error";
         var includeCode = chosen is not null && chosen is not ExceptionalError; // suppress code display for the primary ExceptionalError only
         var codePart = includeCode
                            ? " code=" + chosen!.Code

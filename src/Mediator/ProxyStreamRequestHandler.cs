@@ -15,28 +15,35 @@ namespace UnambitiousFx.Mediator;
 internal sealed class ProxyStreamRequestHandler<TRequestHandler, TRequest, TItem> : IStreamRequestHandler<TRequest, TItem>
     where TRequestHandler : class, IStreamRequestHandler<TRequest, TItem>
     where TRequest : IStreamRequest<TItem>
-    where TItem : notnull {
+    where TItem : notnull
+{
     private readonly ImmutableArray<IStreamRequestPipelineBehavior> _behaviors;
-    private readonly TRequestHandler                                _handler;
+    private readonly TRequestHandler _handler;
 
-    public ProxyStreamRequestHandler(TRequestHandler                             handler,
-                                     IEnumerable<IStreamRequestPipelineBehavior> behaviors) {
-        _handler   = handler;
-        _behaviors = [..behaviors];
+    public ProxyStreamRequestHandler(TRequestHandler handler,
+                                     IEnumerable<IStreamRequestPipelineBehavior> behaviors)
+    {
+        _handler = handler;
+        _behaviors = [.. behaviors];
     }
 
-    public async IAsyncEnumerable<Result<TItem>> HandleAsync(TRequest                                   request,
-                                                             [EnumeratorCancellation] CancellationToken cancellationToken = default) {
-        await foreach (var item in ExecutePipelineAsync(request, 0, cancellationToken)) {
+    public async IAsyncEnumerable<Result<TItem>> HandleAsync(TRequest request,
+                                                             [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        await foreach (var item in ExecutePipelineAsync(request, 0, cancellationToken))
+        {
             yield return item;
         }
     }
 
-    private async IAsyncEnumerable<Result<TItem>> ExecutePipelineAsync(TRequest                                   request,
-                                                                       int                                        index,
-                                                                       [EnumeratorCancellation] CancellationToken cancellationToken) {
-        if (index >= _behaviors.Length) {
-            await foreach (var item in _handler.HandleAsync(request, cancellationToken)) {
+    private async IAsyncEnumerable<Result<TItem>> ExecutePipelineAsync(TRequest request,
+                                                                       int index,
+                                                                       [EnumeratorCancellation] CancellationToken cancellationToken)
+    {
+        if (index >= _behaviors.Length)
+        {
+            await foreach (var item in _handler.HandleAsync(request, cancellationToken))
+            {
                 yield return item;
             }
 
@@ -44,11 +51,13 @@ internal sealed class ProxyStreamRequestHandler<TRequestHandler, TRequest, TItem
         }
 
         await foreach (var item in _behaviors[index]
-                          .HandleAsync(request, Next, cancellationToken)) {
+                          .HandleAsync(request, Next, cancellationToken))
+        {
             yield return item;
         }
 
-        IAsyncEnumerable<Result<TItem>> Next() {
+        IAsyncEnumerable<Result<TItem>> Next()
+        {
             return ExecutePipelineAsync(request, index + 1, cancellationToken);
         }
     }

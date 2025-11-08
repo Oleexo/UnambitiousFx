@@ -7,13 +7,16 @@ using UnambitiousFx.Core.Results.Reasons;
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Validations.Tasks;
 
 [TestSubject(typeof(ResultEnsureNotNullExtensions))]
-public sealed class ResultEnsureNotNullTests {
-    private sealed class User {
+public sealed class ResultEnsureNotNullTests
+{
+    private sealed class User
+    {
         public string? Name { get; init; }
     }
 
     [Fact]
-    public async Task EnsureNotNullAsync_NullInner_Fails_WithFieldPrefixedMessage() {
+    public async Task EnsureNotNullAsync_NullInner_Fails_WithFieldPrefixedMessage()
+    {
         var user = new User { Name = null };
         var awaitable = Task.FromResult(Result.Success(user));
 
@@ -24,7 +27,8 @@ public sealed class ResultEnsureNotNullTests {
     }
 
     [Fact]
-    public async Task EnsureNotNullAsync_NullInner_Fails_WithoutField_UsesMessage() {
+    public async Task EnsureNotNullAsync_NullInner_Fails_WithoutField_UsesMessage()
+    {
         var user = new User { Name = null };
         var awaitable = Task.FromResult(Result.Success(user));
 
@@ -35,7 +39,8 @@ public sealed class ResultEnsureNotNullTests {
     }
 
     [Fact]
-    public async Task EnsureNotNullAsync_NonNull_PassesThrough() {
+    public async Task EnsureNotNullAsync_NonNull_PassesThrough()
+    {
         var user = new User { Name = "Jane" };
         var awaitable = Task.FromResult(Result.Success(user));
 
@@ -47,7 +52,8 @@ public sealed class ResultEnsureNotNullTests {
     }
 
     [Fact]
-    public async Task EnsureNotNullAsync_FailureInput_PassThrough() {
+    public async Task EnsureNotNullAsync_FailureInput_PassThrough()
+    {
         var initial = Result.Failure<User>("boom");
 
         var r = await Task.FromResult(initial).EnsureNotNullAsync(u => u.Name, "is required");

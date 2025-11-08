@@ -9,7 +9,8 @@ namespace UnambitiousFx.Mediator;
 ///     Represents the configuration provider for the mediator, allowing the setup of different
 ///     components such as handlers, pipelines, and orchestrators.
 /// </summary>
-public interface IMediatorConfig {
+public interface IMediatorConfig
+{
     /// <summary>
     ///     Sets the lifetime of the mediator's components within the dependency injection container.
     /// </summary>

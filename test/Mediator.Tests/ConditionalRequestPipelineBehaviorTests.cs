@@ -5,51 +5,59 @@ using UnambitiousFx.Mediator.Tests.Definitions;
 
 namespace UnambitiousFx.Mediator.Tests;
 
-public sealed class ConditionalRequestPipelineBehaviorTests {
+public sealed class ConditionalRequestPipelineBehaviorTests
+{
     [Fact]
-    public async Task Conditional_untyped_behavior_executes_when_predicate_true() {
+    public async Task Conditional_untyped_behavior_executes_when_predicate_true()
+    {
         var services = new ServiceCollection();
-        services.AddMediator(cfg => {
+        services.AddMediator(cfg =>
+        {
             cfg.RegisterRequestHandler<RequestExampleHandler, RequestExample>();
             cfg.RegisterConditionalRequestPipelineBehavior<UntypedConditionalBehavior>(_ => true);
         });
         var provider = services.BuildServiceProvider();
-        var sender   = provider.GetRequiredService<ISender>();
+        var sender = provider.GetRequiredService<ISender>();
         await sender.SendAsync(new RequestExample());
         var behavior = provider.GetRequiredService<UntypedConditionalBehavior>();
         Assert.Equal(1, behavior.ExecutionCount);
     }
 
     [Fact]
-    public async Task Conditional_untyped_behavior_skips_when_predicate_false() {
+    public async Task Conditional_untyped_behavior_skips_when_predicate_false()
+    {
         var services = new ServiceCollection();
-        services.AddMediator(cfg => {
+        services.AddMediator(cfg =>
+        {
             cfg.RegisterRequestHandler<RequestExampleHandler, RequestExample>();
             cfg.RegisterConditionalRequestPipelineBehavior<UntypedConditionalBehavior>(_ => false);
         });
         var provider = services.BuildServiceProvider();
-        var sender   = provider.GetRequiredService<ISender>();
+        var sender = provider.GetRequiredService<ISender>();
         await sender.SendAsync(new RequestExample());
         var behavior = provider.GetRequiredService<UntypedConditionalBehavior>();
         Assert.Equal(0, behavior.ExecutionCount);
     }
 
-    private sealed class UntypedConditionalBehavior : IRequestPipelineBehavior {
+    private sealed class UntypedConditionalBehavior : IRequestPipelineBehavior
+    {
         public int ExecutionCount { get; private set; }
 
-        public ValueTask<Result> HandleAsync<TRequest>(TRequest               request,
+        public ValueTask<Result> HandleAsync<TRequest>(TRequest request,
                                                        RequestHandlerDelegate next,
-                                                       CancellationToken      cancellationToken = default)
-            where TRequest : IRequest {
+                                                       CancellationToken cancellationToken = default)
+            where TRequest : IRequest
+        {
             ExecutionCount++;
             return next();
         }
 
-        public ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest                          request,
+        public ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest request,
                                                                              RequestHandlerDelegate<TResponse> next,
-                                                                             CancellationToken                 cancellationToken = default)
+                                                                             CancellationToken cancellationToken = default)
             where TResponse : notnull
-            where TRequest : IRequest<TResponse> {
+            where TRequest : IRequest<TResponse>
+        {
             ExecutionCount++;
             return next();
         }

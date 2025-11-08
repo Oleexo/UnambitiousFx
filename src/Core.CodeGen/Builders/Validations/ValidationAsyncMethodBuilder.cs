@@ -6,10 +6,12 @@ namespace UnambitiousFx.Core.CodeGen.Builders.Validations;
 /// <summary>
 ///     Builds async validation extension methods for Result types (Task and ValueTask variants).
 /// </summary>
-internal sealed class ValidationAsyncMethodBuilder {
+internal sealed class ValidationAsyncMethodBuilder
+{
     private readonly string _baseNamespace;
 
-    public ValidationAsyncMethodBuilder(string baseNamespace) {
+    public ValidationAsyncMethodBuilder(string baseNamespace)
+    {
         _baseNamespace = baseNamespace ?? throw new ArgumentNullException(nameof(baseNamespace));
     }
 
@@ -18,7 +20,8 @@ internal sealed class ValidationAsyncMethodBuilder {
     /// <summary>
     ///     Builds EnsureNotNullAsync for Result{T} from Task/ValueTask.
     /// </summary>
-    public MethodWriter BuildEnsureNotNullAsync(bool isValueTask) {
+    public MethodWriter BuildEnsureNotNullAsync(bool isValueTask)
+    {
         var taskType = isValueTask
                            ? "ValueTask"
                            : "Task";
@@ -31,10 +34,10 @@ internal sealed class ValidationAsyncMethodBuilder {
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary($"Ensures a projected inner reference value (from {taskType}) is not null.")
                                             .WithParameter("awaitableResult", $"The {taskType} of result to await.")
-                                            .WithParameter("selector",        "Function to select the inner value to check.")
-                                            .WithParameter("message",         "Validation error message.")
-                                            .WithParameter("field",           "Optional field name for the error message.")
-                                            .WithTypeParameter("T",      "The result value type.")
+                                            .WithParameter("selector", "Function to select the inner value to check.")
+                                            .WithParameter("message", "Validation error message.")
+                                            .WithParameter("field", "Optional field name for the error message.")
+                                            .WithTypeParameter("T", "The result value type.")
                                             .WithTypeParameter("TInner", "The inner reference type to check for null.")
                                             .WithReturns($"A {taskType} with the validated result.");
 
@@ -66,21 +69,23 @@ internal sealed class ValidationAsyncMethodBuilder {
     ///     Builds EnsureAsync method - operates on Result{TValue...}.
     /// </summary>
     public MethodWriter BuildEnsureAsync(ushort arity,
-                                         bool   isValueTask) {
+                                         bool isValueTask)
+    {
         var taskType = isValueTask
                            ? "ValueTask"
                            : "Task";
-        var genericTypes  = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
+        var genericTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
         var genericParams = GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull");
-        var resultType    = $"Result<{genericTypes}>";
+        var resultType = $"Result<{genericTypes}>";
 
         var valueParams = string.Join(", ", Enumerable.Range(1, arity)
                                                       .Select(n => $"value{n}"));
-        var predicateType    = $"Func<{genericTypes}, {taskType}<bool>>";
+        var predicateType = $"Func<{genericTypes}, {taskType}<bool>>";
         var errorFactoryType = $"Func<{genericTypes}, {taskType}<IError>>";
 
         string body;
-        if (arity == 1) {
+        if (arity == 1)
+        {
             body = """
                    return result.ThenAsync(async value => {
                        if (await predicate(value)) {
@@ -92,7 +97,8 @@ internal sealed class ValidationAsyncMethodBuilder {
                    });
                    """;
         }
-        else {
+        else
+        {
             body = $$"""
                      return result.ThenAsync(async ({{valueParams}}) => {
                          if (await predicate({{valueParams}})) {
@@ -108,12 +114,13 @@ internal sealed class ValidationAsyncMethodBuilder {
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary(
                                                  "Validates the result values asynchronously with a predicate and returns a failure with the provided exception if validation fails.")
-                                            .WithParameter("result",       "The result instance.")
-                                            .WithParameter("predicate",    "The async validation predicate.")
+                                            .WithParameter("result", "The result instance.")
+                                            .WithParameter("predicate", "The async validation predicate.")
                                             .WithParameter("errorFactory", "Factory function to create an exception when validation fails.")
                                             .WithReturns($"A {taskType} representing the async operation with the result.");
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Value type {i}.");
         }
 
@@ -140,15 +147,16 @@ internal sealed class ValidationAsyncMethodBuilder {
     ///     Builds EnsureAsync method for awaitable results - operates on Task/ValueTask{Result{TValue...}}.
     /// </summary>
     public MethodWriter BuildEnsureAwaitableAsync(ushort arity,
-                                                  bool   isValueTask) {
+                                                  bool isValueTask)
+    {
         var taskType = isValueTask
                            ? "ValueTask"
                            : "Task";
-        var genericTypes  = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
+        var genericTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
         var genericParams = GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull");
-        var resultType    = $"Result<{genericTypes}>";
+        var resultType = $"Result<{genericTypes}>";
 
-        var predicateType    = $"Func<{genericTypes}, {taskType}<bool>>";
+        var predicateType = $"Func<{genericTypes}, {taskType}<bool>>";
         var errorFactoryType = $"Func<{genericTypes}, {taskType}<IError>>";
 
         var body = """
@@ -159,11 +167,12 @@ internal sealed class ValidationAsyncMethodBuilder {
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary("Validates the awaitable result values asynchronously with a predicate.")
                                             .WithParameter("awaitableResult", $"The {taskType} of result to await.")
-                                            .WithParameter("predicate",       "The async validation predicate.")
-                                            .WithParameter("errorFactory",    "Factory function to create an exception when validation fails.")
+                                            .WithParameter("predicate", "The async validation predicate.")
+                                            .WithParameter("errorFactory", "Factory function to create an exception when validation fails.")
                                             .WithReturns($"A {taskType} representing the async operation with the result.");
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Value type {i}.");
         }
 
@@ -194,7 +203,8 @@ internal sealed class ValidationAsyncMethodBuilder {
     /// <summary>
     ///     Builds EnsureNotEmptyAsync for string results from Task/ValueTask.
     /// </summary>
-    public MethodWriter BuildEnsureNotEmptyStringAsync(bool isValueTask) {
+    public MethodWriter BuildEnsureNotEmptyStringAsync(bool isValueTask)
+    {
         var taskType = isValueTask
                            ? "ValueTask"
                            : "Task";
@@ -207,8 +217,8 @@ internal sealed class ValidationAsyncMethodBuilder {
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary($"Ensures a successful string result value (from {taskType}) is neither null nor empty.")
                                             .WithParameter("awaitableResult", $"The {taskType} of result to await.")
-                                            .WithParameter("message",         "Validation error message.")
-                                            .WithParameter("field",           "Optional field name for the error message.")
+                                            .WithParameter("message", "Validation error message.")
+                                            .WithParameter("field", "Optional field name for the error message.")
                                             .WithReturns($"A {taskType} with the validated result.");
 
         return new MethodWriter(
@@ -229,7 +239,8 @@ internal sealed class ValidationAsyncMethodBuilder {
     /// <summary>
     ///     Builds EnsureNotEmptyAsync for collection results from Task/ValueTask.
     /// </summary>
-    public MethodWriter BuildEnsureNotEmptyCollectionAsync(bool isValueTask) {
+    public MethodWriter BuildEnsureNotEmptyCollectionAsync(bool isValueTask)
+    {
         var taskType = isValueTask
                            ? "ValueTask"
                            : "Task";
@@ -242,10 +253,10 @@ internal sealed class ValidationAsyncMethodBuilder {
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary($"Ensures a successful enumerable result (from {taskType}) is not empty.")
                                             .WithParameter("awaitableResult", $"The {taskType} of result to await.")
-                                            .WithParameter("message",         "Validation error message.")
-                                            .WithParameter("field",           "Optional field name for the error message.")
+                                            .WithParameter("message", "Validation error message.")
+                                            .WithParameter("field", "Optional field name for the error message.")
                                             .WithTypeParameter("TCollection", "The collection type implementing IEnumerable<TItem>.")
-                                            .WithTypeParameter("TItem",       "The item type in the collection.")
+                                            .WithTypeParameter("TItem", "The item type in the collection.")
                                             .WithReturns($"A {taskType} with the validated result.");
 
         return new MethodWriter(

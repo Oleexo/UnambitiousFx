@@ -2,8 +2,10 @@ using UnambitiousFx.Core.CodeGen.Design;
 
 namespace UnambitiousFx.Core.CodeGen.Builders.Results;
 
-internal static class ResultStaticFactoryBuilder {
-    public static ClassWriter Build(ushort arity) {
+internal static class ResultStaticFactoryBuilder
+{
+    public static ClassWriter Build(ushort arity)
+    {
         var writer = new ClassWriter("Result", Visibility.Public, ClassModifier.Partial);
 
         var genericParams = Enumerable.Range(1, arity)

@@ -3,7 +3,8 @@ namespace UnambitiousFx.Core.CodeGen.Design;
 /// <summary>
 ///     Defines the different styles for generating properties.
 /// </summary>
-public enum PropertyStyle {
+public enum PropertyStyle
+{
     /// <summary>
     ///     Generates an auto-implemented property.
     /// </summary>

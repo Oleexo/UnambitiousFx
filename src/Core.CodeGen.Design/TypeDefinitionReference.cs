@@ -5,5 +5,5 @@ namespace UnambitiousFx.Core.CodeGen.Design;
 /// </summary>
 /// <param name="Name">The name of the type.</param>
 /// <param name="Using">The namespace or using directive associated with the type, if any.</param>
-public sealed record TypeDefinitionReference(string  Name,
+public sealed record TypeDefinitionReference(string Name,
                                              string? Using = null);

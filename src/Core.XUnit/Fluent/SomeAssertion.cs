@@ -9,7 +9,8 @@ namespace UnambitiousFx.Core.XUnit.Fluent;
 /// <typeparam name="T">The type of the value contained in the Option.Some.</typeparam>
 [DebuggerStepThrough]
 public readonly struct SomeAssertion<T>
-    where T : notnull {
+    where T : notnull
+{
     /// <summary>
     ///     Stores the underlying value of the assertion, representing an existing valid value of type
     ///     <typeparamref name="T" />.
@@ -25,7 +26,8 @@ public readonly struct SomeAssertion<T>
     ///     Provides methods for chaining additional assertions or transformations
     ///     on the encapsulated value.
     /// </summary>
-    internal SomeAssertion(T value) {
+    internal SomeAssertion(T value)
+    {
         _value = value;
     }
 
@@ -45,7 +47,8 @@ public readonly struct SomeAssertion<T>
     /// <returns>
     ///     The current <see cref="SomeAssertion{T}" /> instance, enabling further chained assertions or operations.
     /// </returns>
-    public SomeAssertion<T> And(Action<T> assert) {
+    public SomeAssertion<T> And(Action<T> assert)
+    {
         assert(_value);
         return this;
     }
@@ -59,7 +62,8 @@ public readonly struct SomeAssertion<T>
     /// <returns>A new <see cref="SomeAssertion{TOut}" /> containing the transformed value.</returns>
     /// <exception cref="ArgumentNullException">Thrown if the <paramref name="map" /> function is null.</exception>
     public SomeAssertion<TOut> Map<TOut>(Func<T, TOut> map)
-        where TOut : notnull {
+        where TOut : notnull
+    {
         return new SomeAssertion<TOut>(map(_value));
     }
 
@@ -67,7 +71,8 @@ public readonly struct SomeAssertion<T>
     ///     Deconstructs the current instance into its value component.
     /// </summary>
     /// <param name="value">The value contained within the current instance.</param>
-    public void Deconstruct(out T value) {
+    public void Deconstruct(out T value)
+    {
         value = _value;
     }
 }

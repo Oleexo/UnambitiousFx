@@ -2,8 +2,10 @@ using UnambitiousFx.Core.CodeGen.Design;
 
 namespace UnambitiousFx.Core.CodeGen.Builders.Results;
 
-internal static class FailureResultClassBuilder {
-    public static ClassWriter Build(ushort arity) {
+internal static class FailureResultClassBuilder
+{
+    public static ClassWriter Build(ushort arity)
+    {
         var genericParams = ResultArityHelpers.MakeGenericParams(arity);
         var allTypeParams = string.Join(", ", genericParams.Select(g => g.Name));
         var baseClassName = $"Result<{allTypeParams}>";
@@ -63,13 +65,16 @@ internal static class FailureResultClassBuilder {
         return classWriter;
     }
 
-    private static void AddDeconstructMethod(ushort      arity,
-                                             ClassWriter classWriter) {
+    private static void AddDeconstructMethod(ushort arity,
+                                             ClassWriter classWriter)
+    {
         var deconstructParams = new List<MethodParameter>();
-        if (arity == 1) {
+        if (arity == 1)
+        {
             deconstructParams.Add(new MethodParameter("out TValue1?", "value"));
         }
-        else {
+        else
+        {
             deconstructParams.AddRange(Enumerable.Range(1, arity)
                                                  .Select(x => new MethodParameter($"out TValue{x}?", $"value{x}")));
         }
@@ -93,10 +98,12 @@ internal static class FailureResultClassBuilder {
                               ));
     }
 
-    private static void AddTryGetMethods(ushort      arity,
-                                         ClassWriter classWriter) {
+    private static void AddTryGetMethods(ushort arity,
+                                         ClassWriter classWriter)
+    {
         var tryGetParamsWithErr = new List<MethodParameter>();
-        for (var i = 1; i <= arity; i++) {
+        for (var i = 1; i <= arity; i++)
+        {
             tryGetParamsWithErr.Add(new MethodParameter($"[NotNullWhen(true)] out TValue{i}?", $"value{i}"));
         }
 
@@ -117,7 +124,8 @@ internal static class FailureResultClassBuilder {
                               ));
 
         var tryGetParamsNoErr = new List<MethodParameter>();
-        for (var i = 1; i <= arity; i++) {
+        for (var i = 1; i <= arity; i++)
+        {
             tryGetParamsNoErr.Add(new MethodParameter($"[NotNullWhen(true)] out TValue{i}?", $"value{i}"));
         }
 
@@ -150,7 +158,8 @@ internal static class FailureResultClassBuilder {
     }
 
     private static void AddMatchMethods(ClassWriter classWriter,
-                                        string      valueParams) {
+                                        string valueParams)
+    {
         classWriter.AddMethod(new MethodWriter(
                                   "Match",
                                   "void",
@@ -177,7 +186,8 @@ internal static class FailureResultClassBuilder {
                               ));
     }
 
-    private static void AddConstructors(ClassWriter classWriter) {
+    private static void AddConstructors(ClassWriter classWriter)
+    {
         classWriter.AddConstructor(new ConstructorWriter(
                                        "FailureResult",
                                        """
@@ -213,7 +223,8 @@ internal static class FailureResultClassBuilder {
                                    ));
     }
 
-    private static void AddBaseMatchMethodsForFailure(ClassWriter classWriter) {
+    private static void AddBaseMatchMethodsForFailure(ClassWriter classWriter)
+    {
         classWriter.AddMethod(new MethodWriter(
                                   "Match",
                                   "void",

@@ -16,34 +16,36 @@ namespace MediatorBenchmark;
 [MemoryDiagnoser]
 [Orderer(SummaryOrderPolicy.FastestToSlowest)]
 [RankColumn]
-public class MediatorVsMediatRBenchmarks {
-    private static readonly RequestWithResponse    RrRequest = new(41, 1);
+public class MediatorVsMediatRBenchmarks
+{
+    private static readonly RequestWithResponse RrRequest = new(41, 1);
     private static readonly RequestWithoutResponse RqRequest = new();
-    private static readonly OurEvent               OurEvt    = new();
+    private static readonly OurEvent OurEvt = new();
 
-    private static readonly MediatRRequestWithResponse    MrRrRequest = new(41, 1);
+    private static readonly MediatRRequestWithResponse MrRrRequest = new(41, 1);
     private static readonly MediatRRequestWithoutResponse MrRqRequest = new();
-    private static readonly MrNotification                MrEvt       = new();
-    private                 IServiceProvider              _mr1BehSp   = default!;
-    private                 IServiceProvider              _mr3BehSp   = default!;
+    private static readonly MrNotification MrEvt = new();
+    private IServiceProvider _mr1BehSp = default!;
+    private IServiceProvider _mr3BehSp = default!;
 
-    private IServiceProvider _mrBaseSp       = default!;
-    private IMediator        _mrMediator1Beh = default!;
-    private IMediator        _mrMediator3Beh = default!;
+    private IServiceProvider _mrBaseSp = default!;
+    private IMediator _mrMediator1Beh = default!;
+    private IMediator _mrMediator3Beh = default!;
 
-    private IMediator        _mrMediatorBase = default!;
-    private IServiceProvider _our1BehSp      = default!;
-    private IServiceProvider _our3BehSp      = default!;
-    private IServiceProvider _ourBaseSp      = default!;
+    private IMediator _mrMediatorBase = default!;
+    private IServiceProvider _our1BehSp = default!;
+    private IServiceProvider _our3BehSp = default!;
+    private IServiceProvider _ourBaseSp = default!;
 
     private OurPublisher _ourPublisherBase = default!;
-    private OurSender    _ourSender1Beh    = default!;
-    private OurSender    _ourSender3Beh    = default!;
+    private OurSender _ourSender1Beh = default!;
+    private OurSender _ourSender3Beh = default!;
 
     private OurSender _ourSenderBase = default!;
 
     [GlobalSetup]
-    public void GlobalSetup() {
+    public void GlobalSetup()
+    {
         _ourBaseSp = BuildOurSp(0, 5);
         _our1BehSp = BuildOurSp(1, 5);
         _our3BehSp = BuildOurSp(3, 5);
@@ -64,9 +66,11 @@ public class MediatorVsMediatRBenchmarks {
     }
 
     private static IServiceProvider BuildOurSp(int behaviors,
-                                               int handlersCountForEvent) {
+                                               int handlersCountForEvent)
+    {
         var services = new ServiceCollection();
-        services.AddMediator(cfg => {
+        services.AddMediator(cfg =>
+        {
             cfg.RegisterRequestHandler<RequestWithResponseHandler, RequestWithResponse, int>();
             cfg.RegisterRequestHandler<RequestWithoutResponseHandler, RequestWithoutResponse>();
 
@@ -78,15 +82,18 @@ public class MediatorVsMediatRBenchmarks {
             cfg.RegisterEventHandler<OurEventHandler5, OurEvent>();
 
             // Request pipeline behaviors (untyped so they apply to both)
-            if (behaviors >= 1) {
+            if (behaviors >= 1)
+            {
                 cfg.RegisterRequestPipelineBehavior<OurNoOpBehavior1>();
             }
 
-            if (behaviors >= 2) {
+            if (behaviors >= 2)
+            {
                 cfg.RegisterRequestPipelineBehavior<OurNoOpBehavior2>();
             }
 
-            if (behaviors >= 3) {
+            if (behaviors >= 3)
+            {
                 cfg.RegisterRequestPipelineBehavior<OurNoOpBehavior3>();
             }
         });
@@ -94,7 +101,8 @@ public class MediatorVsMediatRBenchmarks {
     }
 
     private static IServiceProvider BuildMediatRSp(int behaviors,
-                                                   int handlersCountForEvent) {
+                                                   int handlersCountForEvent)
+    {
         var services = new ServiceCollection();
         // MediatR v13 performs a license check that resolves ILoggerFactory; register minimal no-op logging to satisfy DI
         services.AddSingleton<ILoggerFactory, NullLoggerFactory>();
@@ -115,18 +123,21 @@ public class MediatorVsMediatRBenchmarks {
         services.AddTransient<INotificationHandler<MrNotification>, MrNotificationHandler5>();
 
         // Pipeline behaviors
-        if (behaviors >= 1) {
-            services.AddTransient(typeof(IPipelineBehavior<MediatRRequestWithResponse, int>),     typeof(MrNoOpBehavior1_RR));
+        if (behaviors >= 1)
+        {
+            services.AddTransient(typeof(IPipelineBehavior<MediatRRequestWithResponse, int>), typeof(MrNoOpBehavior1_RR));
             services.AddTransient(typeof(IPipelineBehavior<MediatRRequestWithoutResponse, Unit>), typeof(MrNoOpBehavior1_Void));
         }
 
-        if (behaviors >= 2) {
-            services.AddTransient(typeof(IPipelineBehavior<MediatRRequestWithResponse, int>),     typeof(MrNoOpBehavior2_RR));
+        if (behaviors >= 2)
+        {
+            services.AddTransient(typeof(IPipelineBehavior<MediatRRequestWithResponse, int>), typeof(MrNoOpBehavior2_RR));
             services.AddTransient(typeof(IPipelineBehavior<MediatRRequestWithoutResponse, Unit>), typeof(MrNoOpBehavior2_Void));
         }
 
-        if (behaviors >= 3) {
-            services.AddTransient(typeof(IPipelineBehavior<MediatRRequestWithResponse, int>),     typeof(MrNoOpBehavior3_RR));
+        if (behaviors >= 3)
+        {
+            services.AddTransient(typeof(IPipelineBehavior<MediatRRequestWithResponse, int>), typeof(MrNoOpBehavior3_RR));
             services.AddTransient(typeof(IPipelineBehavior<MediatRRequestWithoutResponse, Unit>), typeof(MrNoOpBehavior3_Void));
         }
 
@@ -135,7 +146,8 @@ public class MediatorVsMediatRBenchmarks {
 
     // 1) Send request with response
     [Benchmark(Baseline = true, Description = "Our Mediator - Send (response)")]
-    public async Task<int> Our_Send_Response() {
+    public async Task<int> Our_Send_Response()
+    {
         var res = await _ourSenderBase.SendAsync<RequestWithResponse, int>(RrRequest);
         return res.TryGet(out var v)
                    ? v!
@@ -143,77 +155,88 @@ public class MediatorVsMediatRBenchmarks {
     }
 
     [Benchmark(Description = "Our Mediator - Direct Send (response)")]
-    public async Task<int> Our_Direct_Send_Response() {
+    public async Task<int> Our_Direct_Send_Response()
+    {
         var handler = _ourBaseSp.GetRequiredService<RequestWithResponseHandler>();
-        var res     = await handler.HandleAsync(RrRequest, CancellationToken.None);
+        var res = await handler.HandleAsync(RrRequest, CancellationToken.None);
         return res.TryGet(out var v)
                    ? v!
                    : -1;
     }
 
     [Benchmark(Description = "Our Mediator - Direct Send (void)")]
-    public async Task Our_Direct_Send_Void() {
+    public async Task Our_Direct_Send_Void()
+    {
         var handler = _ourBaseSp.GetRequiredService<RequestWithoutResponseHandler>();
         await handler.HandleAsync(RqRequest, CancellationToken.None);
     }
 
     [Benchmark(Description = "MediatR - Send (response)")]
-    public async Task<int> MediatR_Send_Response() {
+    public async Task<int> MediatR_Send_Response()
+    {
         return await _mrMediatorBase.Send(MrRrRequest);
     }
 
     // 2) Send request without response
     [Benchmark(Description = "Our Mediator - Send (void)")]
-    public async Task<bool> Our_Send_Void() {
+    public async Task<bool> Our_Send_Void()
+    {
         var res = await _ourSenderBase.SendAsync(RqRequest);
         return res.IsSuccess;
     }
 
     [Benchmark(Description = "MediatR - Send (void)")]
-    public async Task<bool> MediatR_Send_Void() {
+    public async Task<bool> MediatR_Send_Void()
+    {
         await _mrMediatorBase.Send(MrRqRequest);
         return true;
     }
 
     // 3) Publish notification with multiple handlers
     [Benchmark(Description = "Our Mediator - Publish (5 handlers)")]
-    public async Task<bool> Our_Publish_5Handlers() {
+    public async Task<bool> Our_Publish_5Handlers()
+    {
         var res = await _ourPublisherBase.PublishAsync(OurEvt);
         return res.IsSuccess;
     }
 
     [Benchmark(Description = "MediatR - Publish (5 handlers)")]
-    public async Task MediatR_Publish_5Handlers() {
+    public async Task MediatR_Publish_5Handlers()
+    {
         await _mrMediatorBase.Publish(MrEvt);
     }
 
     // 4) Send with 1 pipeline behavior
     [Benchmark(Description = "Our Mediator - Send (1 behavior)")]
-    public async Task<int> Our_Send_Response_1Behavior() {
+    public async Task<int> Our_Send_Response_1Behavior()
+    {
         var sender = _our1BehSp.GetRequiredService<OurSender>();
-        var res    = await sender.SendAsync<RequestWithResponse, int>(RrRequest);
+        var res = await sender.SendAsync<RequestWithResponse, int>(RrRequest);
         return res.TryGet(out var v)
                    ? v!
                    : -1;
     }
 
     [Benchmark(Description = "MediatR - Send (1 behavior)")]
-    public async Task<int> MediatR_Send_Response_1Behavior() {
+    public async Task<int> MediatR_Send_Response_1Behavior()
+    {
         return await _mrMediator1Beh.Send(MrRrRequest);
     }
 
     // 5) Send with 3 pipeline behaviors
     [Benchmark(Description = "Our Mediator - Send (3 behaviors)")]
-    public async Task<int> Our_Send_Response_3Behaviors() {
+    public async Task<int> Our_Send_Response_3Behaviors()
+    {
         var sender = _our3BehSp.GetRequiredService<OurSender>();
-        var res    = await sender.SendAsync<RequestWithResponse, int>(RrRequest);
+        var res = await sender.SendAsync<RequestWithResponse, int>(RrRequest);
         return res.TryGet(out var v)
                    ? v!
                    : -1;
     }
 
     [Benchmark(Description = "MediatR - Send (3 behaviors)")]
-    public async Task<int> MediatR_Send_Response_3Behaviors() {
+    public async Task<int> MediatR_Send_Response_3Behaviors()
+    {
         return await _mrMediator3Beh.Send(MrRrRequest);
     }
 
@@ -223,105 +246,129 @@ public class MediatorVsMediatRBenchmarks {
 
     public sealed record RequestWithoutResponse : UnambitiousFx.Mediator.Abstractions.IRequest;
 
-    public sealed class RequestWithResponseHandler : UnambitiousFx.Mediator.Abstractions.IRequestHandler<RequestWithResponse, int> {
+    public sealed class RequestWithResponseHandler : UnambitiousFx.Mediator.Abstractions.IRequestHandler<RequestWithResponse, int>
+    {
         public ValueTask<Result<int>> HandleAsync(RequestWithResponse request,
-                                                  CancellationToken   cancellationToken = default) {
+                                                  CancellationToken cancellationToken = default)
+        {
             return ValueTask.FromResult(Result.Success(request.A + request.B));
         }
     }
 
-    public sealed class RequestWithoutResponseHandler : UnambitiousFx.Mediator.Abstractions.IRequestHandler<RequestWithoutResponse> {
+    public sealed class RequestWithoutResponseHandler : UnambitiousFx.Mediator.Abstractions.IRequestHandler<RequestWithoutResponse>
+    {
         public ValueTask<Result> HandleAsync(RequestWithoutResponse request,
-                                             CancellationToken      cancellationToken = default) {
+                                             CancellationToken cancellationToken = default)
+        {
             return ValueTask.FromResult(Result.Success());
         }
     }
 
-    public sealed class OurNoOpBehavior1 : IRequestPipelineBehavior {
-        public ValueTask<Result> HandleAsync<TRequest>(TRequest               request,
+    public sealed class OurNoOpBehavior1 : IRequestPipelineBehavior
+    {
+        public ValueTask<Result> HandleAsync<TRequest>(TRequest request,
                                                        RequestHandlerDelegate next,
-                                                       CancellationToken      cancellationToken = default)
-            where TRequest : UnambitiousFx.Mediator.Abstractions.IRequest {
+                                                       CancellationToken cancellationToken = default)
+            where TRequest : UnambitiousFx.Mediator.Abstractions.IRequest
+        {
             return next();
         }
 
-        public ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest                                                              request,
+        public ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest request,
                                                                              UnambitiousFx.Mediator.Abstractions.RequestHandlerDelegate<TResponse> next,
-                                                                             CancellationToken                                                     cancellationToken = default)
+                                                                             CancellationToken cancellationToken = default)
             where TResponse : notnull
-            where TRequest : UnambitiousFx.Mediator.Abstractions.IRequest<TResponse> {
+            where TRequest : UnambitiousFx.Mediator.Abstractions.IRequest<TResponse>
+        {
             return next();
         }
     }
 
-    public sealed class OurNoOpBehavior2 : IRequestPipelineBehavior {
-        public ValueTask<Result> HandleAsync<TRequest>(TRequest               request,
+    public sealed class OurNoOpBehavior2 : IRequestPipelineBehavior
+    {
+        public ValueTask<Result> HandleAsync<TRequest>(TRequest request,
                                                        RequestHandlerDelegate next,
-                                                       CancellationToken      cancellationToken = default)
-            where TRequest : UnambitiousFx.Mediator.Abstractions.IRequest {
+                                                       CancellationToken cancellationToken = default)
+            where TRequest : UnambitiousFx.Mediator.Abstractions.IRequest
+        {
             return next();
         }
 
-        public ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest                                                              request,
+        public ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest request,
                                                                              UnambitiousFx.Mediator.Abstractions.RequestHandlerDelegate<TResponse> next,
-                                                                             CancellationToken                                                     cancellationToken = default)
+                                                                             CancellationToken cancellationToken = default)
             where TResponse : notnull
-            where TRequest : UnambitiousFx.Mediator.Abstractions.IRequest<TResponse> {
+            where TRequest : UnambitiousFx.Mediator.Abstractions.IRequest<TResponse>
+        {
             return next();
         }
     }
 
-    public sealed class OurNoOpBehavior3 : IRequestPipelineBehavior {
-        public ValueTask<Result> HandleAsync<TRequest>(TRequest               request,
+    public sealed class OurNoOpBehavior3 : IRequestPipelineBehavior
+    {
+        public ValueTask<Result> HandleAsync<TRequest>(TRequest request,
                                                        RequestHandlerDelegate next,
-                                                       CancellationToken      cancellationToken = default)
-            where TRequest : UnambitiousFx.Mediator.Abstractions.IRequest {
+                                                       CancellationToken cancellationToken = default)
+            where TRequest : UnambitiousFx.Mediator.Abstractions.IRequest
+        {
             return next();
         }
 
-        public ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest                                                              request,
+        public ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest request,
                                                                              UnambitiousFx.Mediator.Abstractions.RequestHandlerDelegate<TResponse> next,
-                                                                             CancellationToken                                                     cancellationToken = default)
+                                                                             CancellationToken cancellationToken = default)
             where TResponse : notnull
-            where TRequest : UnambitiousFx.Mediator.Abstractions.IRequest<TResponse> {
+            where TRequest : UnambitiousFx.Mediator.Abstractions.IRequest<TResponse>
+        {
             return next();
         }
     }
 
-    public sealed class OurEvent : IEvent {
+    public sealed class OurEvent : IEvent
+    {
     }
 
-    public sealed class OurEventHandler1 : IEventHandler<OurEvent> {
-        public ValueTask<Result> HandleAsync(OurEvent          @event,
-                                             CancellationToken cancellationToken = default) {
+    public sealed class OurEventHandler1 : IEventHandler<OurEvent>
+    {
+        public ValueTask<Result> HandleAsync(OurEvent @event,
+                                             CancellationToken cancellationToken = default)
+        {
             return ValueTask.FromResult(Result.Success());
         }
     }
 
-    public sealed class OurEventHandler2 : IEventHandler<OurEvent> {
-        public ValueTask<Result> HandleAsync(OurEvent          @event,
-                                             CancellationToken cancellationToken = default) {
+    public sealed class OurEventHandler2 : IEventHandler<OurEvent>
+    {
+        public ValueTask<Result> HandleAsync(OurEvent @event,
+                                             CancellationToken cancellationToken = default)
+        {
             return ValueTask.FromResult(Result.Success());
         }
     }
 
-    public sealed class OurEventHandler3 : IEventHandler<OurEvent> {
-        public ValueTask<Result> HandleAsync(OurEvent          @event,
-                                             CancellationToken cancellationToken = default) {
+    public sealed class OurEventHandler3 : IEventHandler<OurEvent>
+    {
+        public ValueTask<Result> HandleAsync(OurEvent @event,
+                                             CancellationToken cancellationToken = default)
+        {
             return ValueTask.FromResult(Result.Success());
         }
     }
 
-    public sealed class OurEventHandler4 : IEventHandler<OurEvent> {
-        public ValueTask<Result> HandleAsync(OurEvent          @event,
-                                             CancellationToken cancellationToken = default) {
+    public sealed class OurEventHandler4 : IEventHandler<OurEvent>
+    {
+        public ValueTask<Result> HandleAsync(OurEvent @event,
+                                             CancellationToken cancellationToken = default)
+        {
             return ValueTask.FromResult(Result.Success());
         }
     }
 
-    public sealed class OurEventHandler5 : IEventHandler<OurEvent> {
-        public ValueTask<Result> HandleAsync(OurEvent          @event,
-                                             CancellationToken cancellationToken = default) {
+    public sealed class OurEventHandler5 : IEventHandler<OurEvent>
+    {
+        public ValueTask<Result> HandleAsync(OurEvent @event,
+                                             CancellationToken cancellationToken = default)
+        {
             return ValueTask.FromResult(Result.Success());
         }
     }
@@ -332,102 +379,129 @@ public class MediatorVsMediatRBenchmarks {
 
     public sealed record MediatRRequestWithoutResponse : IRequest;
 
-    public sealed class MediatRRequestWithResponseHandler : MediatR.IRequestHandler<MediatRRequestWithResponse, int> {
+    public sealed class MediatRRequestWithResponseHandler : MediatR.IRequestHandler<MediatRRequestWithResponse, int>
+    {
         public Task<int> Handle(MediatRRequestWithResponse request,
-                                CancellationToken          cancellationToken) {
+                                CancellationToken cancellationToken)
+        {
             return Task.FromResult(request.A + request.B);
         }
     }
 
-    public sealed class MediatRRequestWithoutResponseHandler : MediatR.IRequestHandler<MediatRRequestWithoutResponse> {
+    public sealed class MediatRRequestWithoutResponseHandler : MediatR.IRequestHandler<MediatRRequestWithoutResponse>
+    {
         public Task Handle(MediatRRequestWithoutResponse request,
-                           CancellationToken             cancellationToken) {
+                           CancellationToken cancellationToken)
+        {
             return Task.CompletedTask;
         }
     }
 
-    public sealed class MrNoOpBehavior1_RR : IPipelineBehavior<MediatRRequestWithResponse, int> {
-        public Task<int> Handle(MediatRRequestWithResponse          request,
+    public sealed class MrNoOpBehavior1_RR : IPipelineBehavior<MediatRRequestWithResponse, int>
+    {
+        public Task<int> Handle(MediatRRequestWithResponse request,
                                 MediatR.RequestHandlerDelegate<int> next,
-                                CancellationToken                   cancellationToken) {
+                                CancellationToken cancellationToken)
+        {
             return next();
         }
     }
 
-    public sealed class MrNoOpBehavior2_RR : IPipelineBehavior<MediatRRequestWithResponse, int> {
-        public Task<int> Handle(MediatRRequestWithResponse          request,
+    public sealed class MrNoOpBehavior2_RR : IPipelineBehavior<MediatRRequestWithResponse, int>
+    {
+        public Task<int> Handle(MediatRRequestWithResponse request,
                                 MediatR.RequestHandlerDelegate<int> next,
-                                CancellationToken                   cancellationToken) {
+                                CancellationToken cancellationToken)
+        {
             return next();
         }
     }
 
-    public sealed class MrNoOpBehavior3_RR : IPipelineBehavior<MediatRRequestWithResponse, int> {
-        public Task<int> Handle(MediatRRequestWithResponse          request,
+    public sealed class MrNoOpBehavior3_RR : IPipelineBehavior<MediatRRequestWithResponse, int>
+    {
+        public Task<int> Handle(MediatRRequestWithResponse request,
                                 MediatR.RequestHandlerDelegate<int> next,
-                                CancellationToken                   cancellationToken) {
+                                CancellationToken cancellationToken)
+        {
             return next();
         }
     }
 
-    public sealed class MrNoOpBehavior1_Void : IPipelineBehavior<MediatRRequestWithoutResponse, Unit> {
-        public Task<Unit> Handle(MediatRRequestWithoutResponse        request,
+    public sealed class MrNoOpBehavior1_Void : IPipelineBehavior<MediatRRequestWithoutResponse, Unit>
+    {
+        public Task<Unit> Handle(MediatRRequestWithoutResponse request,
                                  MediatR.RequestHandlerDelegate<Unit> next,
-                                 CancellationToken                    cancellationToken) {
+                                 CancellationToken cancellationToken)
+        {
             return next();
         }
     }
 
-    public sealed class MrNoOpBehavior2_Void : IPipelineBehavior<MediatRRequestWithoutResponse, Unit> {
-        public Task<Unit> Handle(MediatRRequestWithoutResponse        request,
+    public sealed class MrNoOpBehavior2_Void : IPipelineBehavior<MediatRRequestWithoutResponse, Unit>
+    {
+        public Task<Unit> Handle(MediatRRequestWithoutResponse request,
                                  MediatR.RequestHandlerDelegate<Unit> next,
-                                 CancellationToken                    cancellationToken) {
+                                 CancellationToken cancellationToken)
+        {
             return next();
         }
     }
 
-    public sealed class MrNoOpBehavior3_Void : IPipelineBehavior<MediatRRequestWithoutResponse, Unit> {
-        public Task<Unit> Handle(MediatRRequestWithoutResponse        request,
+    public sealed class MrNoOpBehavior3_Void : IPipelineBehavior<MediatRRequestWithoutResponse, Unit>
+    {
+        public Task<Unit> Handle(MediatRRequestWithoutResponse request,
                                  MediatR.RequestHandlerDelegate<Unit> next,
-                                 CancellationToken                    cancellationToken) {
+                                 CancellationToken cancellationToken)
+        {
             return next();
         }
     }
 
-    public sealed class MrNotification : INotification {
+    public sealed class MrNotification : INotification
+    {
     }
 
-    public sealed class MrNotificationHandler1 : INotificationHandler<MrNotification> {
-        public Task Handle(MrNotification    notification,
-                           CancellationToken cancellationToken) {
+    public sealed class MrNotificationHandler1 : INotificationHandler<MrNotification>
+    {
+        public Task Handle(MrNotification notification,
+                           CancellationToken cancellationToken)
+        {
             return Task.CompletedTask;
         }
     }
 
-    public sealed class MrNotificationHandler2 : INotificationHandler<MrNotification> {
-        public Task Handle(MrNotification    notification,
-                           CancellationToken cancellationToken) {
+    public sealed class MrNotificationHandler2 : INotificationHandler<MrNotification>
+    {
+        public Task Handle(MrNotification notification,
+                           CancellationToken cancellationToken)
+        {
             return Task.CompletedTask;
         }
     }
 
-    public sealed class MrNotificationHandler3 : INotificationHandler<MrNotification> {
-        public Task Handle(MrNotification    notification,
-                           CancellationToken cancellationToken) {
+    public sealed class MrNotificationHandler3 : INotificationHandler<MrNotification>
+    {
+        public Task Handle(MrNotification notification,
+                           CancellationToken cancellationToken)
+        {
             return Task.CompletedTask;
         }
     }
 
-    public sealed class MrNotificationHandler4 : INotificationHandler<MrNotification> {
-        public Task Handle(MrNotification    notification,
-                           CancellationToken cancellationToken) {
+    public sealed class MrNotificationHandler4 : INotificationHandler<MrNotification>
+    {
+        public Task Handle(MrNotification notification,
+                           CancellationToken cancellationToken)
+        {
             return Task.CompletedTask;
         }
     }
 
-    public sealed class MrNotificationHandler5 : INotificationHandler<MrNotification> {
-        public Task Handle(MrNotification    notification,
-                           CancellationToken cancellationToken) {
+    public sealed class MrNotificationHandler5 : INotificationHandler<MrNotification>
+    {
+        public Task Handle(MrNotification notification,
+                           CancellationToken cancellationToken)
+        {
             return Task.CompletedTask;
         }
     }

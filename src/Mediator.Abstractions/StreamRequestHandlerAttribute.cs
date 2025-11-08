@@ -7,5 +7,6 @@ namespace UnambitiousFx.Mediator.Abstractions;
 /// <typeparam name="TItem"></typeparam>
 public sealed class StreamRequestHandlerAttribute<TRequest, TItem> : Attribute
     where TRequest : IStreamRequest<TItem>
-    where TItem : notnull {
+    where TItem : notnull
+{
 }

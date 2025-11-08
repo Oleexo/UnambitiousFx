@@ -3,7 +3,8 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results.ArityTests.Models;
 /// <summary>
 ///     Represents a type and its corresponding test value.
 /// </summary>
-internal sealed class TypeValuePair {
+internal sealed class TypeValuePair
+{
     /// <summary>
     ///     Initializes a new instance of the TypeValuePair class.
     /// </summary>
@@ -13,11 +14,12 @@ internal sealed class TypeValuePair {
     /// <param name="isReferenceType">Whether this is a reference type.</param>
     public TypeValuePair(string typeName,
                          string testValue,
-                         bool   isNullable      = false,
-                         bool   isReferenceType = false) {
-        TypeName        = typeName  ?? throw new ArgumentNullException(nameof(typeName));
-        TestValue       = testValue ?? throw new ArgumentNullException(nameof(testValue));
-        IsNullable      = isNullable;
+                         bool isNullable = false,
+                         bool isReferenceType = false)
+    {
+        TypeName = typeName ?? throw new ArgumentNullException(nameof(typeName));
+        TestValue = testValue ?? throw new ArgumentNullException(nameof(testValue));
+        IsNullable = isNullable;
         IsReferenceType = isReferenceType;
     }
 

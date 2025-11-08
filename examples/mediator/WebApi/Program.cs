@@ -11,7 +11,8 @@ using UnambitiousFx.Mediator.Pipelines;
 using WebApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddMediator(cfg => {
+builder.Services.AddMediator(cfg =>
+{
     cfg.AddRegisterGroup(new ManualRegisterGroup());
 
     cfg.RegisterRequestHandler<CreateTodoCommandHandler, CreateTodoCommand, Guid>()
@@ -29,18 +30,20 @@ app.MapGet("/", () => "Hello World!");
 
 var todoEndpoints = app.MapGroup("/todos");
 
-todoEndpoints.MapGet("/{id:guid}", async ([FromRoute]    Guid    id,
+todoEndpoints.MapGet("/{id:guid}", async ([FromRoute] Guid id,
                                           [FromServices] ISender sender,
-                                          CancellationToken      cancellationToken) => {
-    var query  = new TodoQuery { Id = id };
+                                          CancellationToken cancellationToken) =>
+{
+    var query = new TodoQuery { Id = id };
     var result = await sender.SendAsync<TodoQuery, Todo>(query, cancellationToken);
     return result.Match(Results.Ok,
                         error => Results.BadRequest(error.ToDisplayString()));
 });
 
 todoEndpoints.MapGet("/", async ([FromServices] IRequestHandler<ListTodoQuery, IEnumerable<Todo>> handler,
-                                 [FromServices] IContextFactory                                   contextFactory,
-                                 CancellationToken                                                cancellationToken) => {
+                                 [FromServices] IContextFactory contextFactory,
+                                 CancellationToken cancellationToken) =>
+{
     var query = new ListTodoQuery();
 
     var result = await handler.HandleAsync(query, cancellationToken);
@@ -49,9 +52,10 @@ todoEndpoints.MapGet("/", async ([FromServices] IRequestHandler<ListTodoQuery, I
                         error => Results.BadRequest(error.ToDisplayString()));
 });
 
-todoEndpoints.MapPost("/", async ([FromServices] ISender         sender,
-                                  [FromBody]     CreateTodoModel input,
-                                  CancellationToken              cancellationToken) => {
+todoEndpoints.MapPost("/", async ([FromServices] ISender sender,
+                                  [FromBody] CreateTodoModel input,
+                                  CancellationToken cancellationToken) =>
+{
     var command = new CreateTodoCommand { Name = input.Name };
 
     var result = await sender.SendAsync<CreateTodoCommand, Guid>(command, cancellationToken);
@@ -61,12 +65,14 @@ todoEndpoints.MapPost("/", async ([FromServices] ISender         sender,
 });
 
 todoEndpoints.MapPut("/{id:guid}", async ([FromServices] IRequestHandler<UpdateTodoCommand> handler,
-                                          [FromServices] IContextFactory                    contextFactory,
-                                          [FromRoute]    Guid                               id,
-                                          [FromBody]     UpdateTodoModel                    input,
-                                          CancellationToken                                 cancellationToken) => {
-    var command = new UpdateTodoCommand {
-        Id   = id,
+                                          [FromServices] IContextFactory contextFactory,
+                                          [FromRoute] Guid id,
+                                          [FromBody] UpdateTodoModel input,
+                                          CancellationToken cancellationToken) =>
+{
+    var command = new UpdateTodoCommand
+    {
+        Id = id,
         Name = input.Name
     };
 
@@ -77,8 +83,9 @@ todoEndpoints.MapPut("/{id:guid}", async ([FromServices] IRequestHandler<UpdateT
 });
 
 todoEndpoints.MapDelete("/{id:guid}", async ([FromServices] ISender sender,
-                                             [FromRoute]    Guid    id,
-                                             CancellationToken      cancellationToken) => {
+                                             [FromRoute] Guid id,
+                                             CancellationToken cancellationToken) =>
+{
     var command = new DeleteTodoCommand { Id = id };
 
     var result = await sender.SendAsync(command, cancellationToken);
@@ -90,6 +97,7 @@ todoEndpoints.MapDelete("/{id:guid}", async ([FromServices] ISender sender,
 
 app.Run();
 
-namespace WebApi {
+namespace WebApi
+{
     public class Program;
 }

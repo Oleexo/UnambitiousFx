@@ -6,24 +6,28 @@ using UnambitiousFx.Mediator.Abstractions;
 namespace UnambitiousFx.Examples.ConsoleApp.Handlers.Requests;
 
 [RequestHandler<GetOrderQuery, OrderDto>]
-public sealed class GetOrderQueryHandler : IRequestHandler<GetOrderQuery, OrderDto> {
+public sealed class GetOrderQueryHandler : IRequestHandler<GetOrderQuery, OrderDto>
+{
     private readonly ILogger<GetOrderQueryHandler> _logger;
 
-    public GetOrderQueryHandler(ILogger<GetOrderQueryHandler> logger) {
+    public GetOrderQueryHandler(ILogger<GetOrderQueryHandler> logger)
+    {
         _logger = logger;
     }
 
-    public ValueTask<Result<OrderDto>> HandleAsync(GetOrderQuery     request,
-                                                   CancellationToken cancellationToken = default) {
+    public ValueTask<Result<OrderDto>> HandleAsync(GetOrderQuery request,
+                                                   CancellationToken cancellationToken = default)
+    {
         _logger.LogDebug("Fetching order {OrderId}", request.OrderId);
 
         // Simulate fetching from a database
-        var order = new OrderDto {
-            Id          = request.OrderId,
+        var order = new OrderDto
+        {
+            Id = request.OrderId,
             ProductName = "Sample Product",
-            Quantity    = 1,
+            Quantity = 1,
             TotalAmount = 99.99m,
-            CreatedAt   = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow
         };
 
         return ValueTask.FromResult(Result.Success(order));

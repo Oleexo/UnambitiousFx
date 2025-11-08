@@ -5,7 +5,8 @@ namespace UnambitiousFx.Mediator.Abstractions;
 /// <summary>
 ///     Represents a publisher capable of handling and publishing events to their respective subscribers or processors.
 /// </summary>
-public interface IPublisher {
+public interface IPublisher
+{
     /// <summary>
     ///     Publishes an event asynchronously within the given context and provides feedback about success or failure.
     /// </summary>
@@ -16,7 +17,7 @@ public interface IPublisher {
     /// <param name="event">The event instance to be published.</param>
     /// <param name="cancellationToken">An optional cancellation token to cancel the operation.</param>
     /// <returns>A <see cref="ValueTask{TResult}" /> containing the result of the publish operation.</returns>
-    ValueTask<Result> PublishAsync<TEvent>(TEvent            @event,
+    ValueTask<Result> PublishAsync<TEvent>(TEvent @event,
                                            CancellationToken cancellationToken = default)
         where TEvent : class, IEvent;
 
@@ -37,8 +38,8 @@ public interface IPublisher {
     ///     An optional cancellation token to cancel the operation.
     /// </param>
     /// <returns>A <see cref="ValueTask{TResult}" /> containing the result of the publish operation.</returns>
-    ValueTask<Result> PublishAsync<TEvent>(TEvent            @event,
-                                           PublishMode       mode,
+    ValueTask<Result> PublishAsync<TEvent>(TEvent @event,
+                                           PublishMode mode,
                                            CancellationToken cancellationToken = default)
         where TEvent : class, IEvent;
 

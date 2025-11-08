@@ -3,7 +3,8 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results.ArityTests.Configurati
 /// <summary>
 ///     Defines naming patterns for generated test methods and classes.
 /// </summary>
-internal sealed class TestNamingPattern {
+internal sealed class TestNamingPattern
+{
     /// <summary>
     ///     Gets the suffix for test classes.
     /// </summary>

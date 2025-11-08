@@ -5,7 +5,8 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results.ArityTests;
 /// <summary>
 ///     Interface for analyzing existing test patterns to extract conventions and structures.
 /// </summary>
-internal interface ITestPatternAnalyzer {
+internal interface ITestPatternAnalyzer
+{
     /// <summary>
     ///     Analyzes existing test files in the specified directory to extract patterns.
     /// </summary>

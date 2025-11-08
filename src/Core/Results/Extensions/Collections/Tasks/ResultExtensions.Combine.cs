@@ -2,12 +2,16 @@ using UnambitiousFx.Core.Results.Reasons;
 
 namespace UnambitiousFx.Core.Results.Extensions.Collections.Tasks;
 
-public static partial class ResultExtensions {
-    public static async Task<Result> CombineAsync(this IEnumerable<Task<Result>> tasks) {
+public static partial class ResultExtensions
+{
+    public static async Task<Result> CombineAsync(this IEnumerable<Task<Result>> tasks)
+    {
         var errors = new List<IError>();
-        foreach (var t in tasks) {
+        foreach (var t in tasks)
+        {
             var r = await t.ConfigureAwait(false);
-            if (!r.TryGet(out var error)) {
+            if (!r.TryGet(out var error))
+            {
                 errors.AddRange(error);
             }
         }
@@ -17,7 +21,8 @@ public static partial class ResultExtensions {
                    : Result.Success();
     }
 
-    public static async Task<Result> CombineAsync(this Task<IEnumerable<Result>> awaitableResults) {
+    public static async Task<Result> CombineAsync(this Task<IEnumerable<Result>> awaitableResults)
+    {
         var results = await awaitableResults.ConfigureAwait(false);
         return results.Combine();
     }

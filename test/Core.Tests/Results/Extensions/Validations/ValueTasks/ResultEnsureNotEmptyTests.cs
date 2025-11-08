@@ -7,9 +7,11 @@ using UnambitiousFx.Core.Results.Reasons;
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Validations.ValueTasks;
 
 [TestSubject(typeof(ResultEnsureNotEmptyExtensions))]
-public sealed class ResultEnsureNotEmptyTests {
+public sealed class ResultEnsureNotEmptyTests
+{
     [Fact]
-    public async Task EnsureNotEmptyAsync_String_Empty_Fails_WithFieldAndCustomMessage() {
+    public async Task EnsureNotEmptyAsync_String_Empty_Fails_WithFieldAndCustomMessage()
+    {
         var awaitable = ValueTask.FromResult(Result.Success(""));
 
         var r = await awaitable.EnsureNotEmptyAsync("Must not be empty", field: "name");
@@ -19,7 +21,8 @@ public sealed class ResultEnsureNotEmptyTests {
     }
 
     [Fact]
-    public async Task EnsureNotEmptyAsync_String_Empty_Fails_WithDefaultMessage() {
+    public async Task EnsureNotEmptyAsync_String_Empty_Fails_WithDefaultMessage()
+    {
         var awaitable = ValueTask.FromResult(Result.Success(""));
 
         var r = await awaitable.EnsureNotEmptyAsync();
@@ -29,7 +32,8 @@ public sealed class ResultEnsureNotEmptyTests {
     }
 
     [Fact]
-    public async Task EnsureNotEmptyAsync_String_NonEmpty_Succeeds() {
+    public async Task EnsureNotEmptyAsync_String_NonEmpty_Succeeds()
+    {
         var awaitable = ValueTask.FromResult(Result.Success("value"));
 
         var r = await awaitable.EnsureNotEmptyAsync();
@@ -38,7 +42,8 @@ public sealed class ResultEnsureNotEmptyTests {
     }
 
     [Fact]
-    public async Task EnsureNotEmptyAsync_String_FailureResult_DoNothing() {
+    public async Task EnsureNotEmptyAsync_String_FailureResult_DoNothing()
+    {
         var initial = Result.Failure<string>("failed");
 
         var r = await ValueTask.FromResult(initial).EnsureNotEmptyAsync();
@@ -47,7 +52,8 @@ public sealed class ResultEnsureNotEmptyTests {
     }
 
     [Fact]
-    public async Task EnsureNotEmptyAsync_Collection_Empty_Fails_WithField_AndDefaultMessage() {
+    public async Task EnsureNotEmptyAsync_Collection_Empty_Fails_WithField_AndDefaultMessage()
+    {
         var awaitable = ValueTask.FromResult(Result.Success(new List<int>()));
 
         var r = await awaitable.EnsureNotEmptyAsync<List<int>, int>(field: "items");
@@ -57,7 +63,8 @@ public sealed class ResultEnsureNotEmptyTests {
     }
 
     [Fact]
-    public async Task EnsureNotEmptyAsync_Collection_NonEmpty_Succeeds() {
+    public async Task EnsureNotEmptyAsync_Collection_NonEmpty_Succeeds()
+    {
         var awaitable = ValueTask.FromResult(Result.Success(new List<int> { 1 }));
 
         var r = await awaitable.EnsureNotEmptyAsync<List<int>, int>();
@@ -66,7 +73,8 @@ public sealed class ResultEnsureNotEmptyTests {
     }
 
     [Fact]
-    public async Task EnsureNotEmptyAsync_Collection_FailureResult_DoNothing() {
+    public async Task EnsureNotEmptyAsync_Collection_FailureResult_DoNothing()
+    {
         var initial = Result.Failure<List<int>>("failed");
 
         var r = await ValueTask.FromResult(initial).EnsureNotEmptyAsync<List<int>, int>();

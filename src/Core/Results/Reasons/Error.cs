@@ -4,7 +4,8 @@ namespace UnambitiousFx.Core.Results.Reasons;
 /// <summary>
 ///     Default concrete error implementation used in tests and simple failures.
 /// </summary>
-public sealed record Error : ErrorBase {
+public sealed record Error : ErrorBase
+{
     /// <summary>
     ///     Creates an error with default code "ERROR" and provided message.
     /// </summary>

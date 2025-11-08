@@ -5,17 +5,20 @@ using UnambitiousFx.Mediator.Abstractions;
 namespace UnambitiousFx.Examples.ConsoleApp.Pipelines;
 
 // Simple logging pipeline behavior for requests
-public class LoggingPipelineBehavior : IRequestPipelineBehavior {
+public class LoggingPipelineBehavior : IRequestPipelineBehavior
+{
     private readonly ILogger<LoggingPipelineBehavior> _logger;
 
-    public LoggingPipelineBehavior(ILogger<LoggingPipelineBehavior> logger) {
+    public LoggingPipelineBehavior(ILogger<LoggingPipelineBehavior> logger)
+    {
         _logger = logger;
     }
 
-    public async ValueTask<Result> HandleAsync<TRequest>(TRequest               request,
+    public async ValueTask<Result> HandleAsync<TRequest>(TRequest request,
                                                          RequestHandlerDelegate next,
-                                                         CancellationToken      cancellationToken = default)
-        where TRequest : IRequest {
+                                                         CancellationToken cancellationToken = default)
+        where TRequest : IRequest
+    {
         var requestName = request.GetType()
                                  .Name;
         _logger.LogDebug("Handling request: {RequestName}", requestName);
@@ -26,11 +29,12 @@ public class LoggingPipelineBehavior : IRequestPipelineBehavior {
         return response;
     }
 
-    public async ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest                          request,
+    public async ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest request,
                                                                                RequestHandlerDelegate<TResponse> next,
-                                                                               CancellationToken                 cancellationToken = default)
+                                                                               CancellationToken cancellationToken = default)
         where TRequest : IRequest<TResponse>
-        where TResponse : notnull {
+        where TResponse : notnull
+    {
         var requestName = request.GetType()
                                  .Name;
         _logger.LogDebug("Handling request: {RequestName}", requestName);

@@ -6,9 +6,11 @@ using UnambitiousFx.Core.Results.Extensions.Collections;
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Collections;
 
 [TestSubject(typeof(ResultExtensions))]
-public sealed class ResultCollectionTests {
+public sealed class ResultCollectionTests
+{
     [Fact]
-    public void Sequence_AllSuccess_ReturnsList() {
+    public void Sequence_AllSuccess_ReturnsList()
+    {
         var results = new[] { Result.Success(1), Result.Success(2), Result.Success(3) };
 
         var sequenced = results.Sequence();
@@ -18,8 +20,9 @@ public sealed class ResultCollectionTests {
     }
 
     [Fact]
-    public void Sequence_FirstFailure_PropagatesError() {
-        var ex      = new Exception("bad");
+    public void Sequence_FirstFailure_PropagatesError()
+    {
+        var ex = new Exception("bad");
         var results = new[] { Result.Failure<int>(ex), Result.Success(2), Result.Success(3) };
 
         var sequenced = results.Sequence();
@@ -29,7 +32,8 @@ public sealed class ResultCollectionTests {
     }
 
     [Fact]
-    public void Traverse_AllSuccess_ReturnsList() {
+    public void Traverse_AllSuccess_ReturnsList()
+    {
         var items = new[] { "a", "b", "c" };
 
         var traversed = items.Traverse(s => Result.Success(s.ToUpperInvariant()));
@@ -39,9 +43,10 @@ public sealed class ResultCollectionTests {
     }
 
     [Fact]
-    public void Traverse_WithFailure_PropagatesError() {
+    public void Traverse_WithFailure_PropagatesError()
+    {
         var items = new[] { "1", "x", "3" };
-        var ex    = new FormatException("x");
+        var ex = new FormatException("x");
 
         var traversed = items.Traverse(s => s == "x"
                                                 ? Result.Failure<string>(ex)
@@ -52,7 +57,8 @@ public sealed class ResultCollectionTests {
     }
 
     [Fact]
-    public void Partition_Mixed_SplitsCorrectly() {
+    public void Partition_Mixed_SplitsCorrectly()
+    {
         var ex1 = new Exception("e1");
         var ex2 = new Exception("e2");
         var results = new[] {
@@ -65,13 +71,14 @@ public sealed class ResultCollectionTests {
         var (oks, errors) = results.Partition();
 
         Assert.Equal(new[] { 1, 3 }, oks);
-        Assert.Equal(2,              errors.Count);
+        Assert.Equal(2, errors.Count);
         { var firstError = errors[0] as ExceptionalError; Assert.NotNull(firstError); Assert.Same(ex1, firstError.Exception); }
         { var secondError = errors[1] as ExceptionalError; Assert.NotNull(secondError); Assert.Same(ex2, secondError.Exception); }
     }
 
     [Fact]
-    public void Combine_AllSuccess_ReturnsSuccess() {
+    public void Combine_AllSuccess_ReturnsSuccess()
+    {
         var results = new[] { Result.Success(), Result.Success(), Result.Success() };
 
         var combined = results.Combine();
@@ -80,9 +87,10 @@ public sealed class ResultCollectionTests {
     }
 
     [Fact]
-    public void Combine_WithFailures_ReturnsAggregateWithAllErrors() {
-        var e1      = new Exception("a");
-        var e2      = new Exception("b");
+    public void Combine_WithFailures_ReturnsAggregateWithAllErrors()
+    {
+        var e1 = new Exception("a");
+        var e2 = new Exception("b");
         var results = new[] { Result.Success(), Result.Failure(e1), Result.Failure(e2) };
 
         var combined = results.Combine();
@@ -90,7 +98,7 @@ public sealed class ResultCollectionTests {
         Assert.False(combined.TryGet(out var err));
 
         var errors = err.ToArray();
-        Assert.Equal(2,  errors.Length);
+        Assert.Equal(2, errors.Length);
         Assert.Equal(e1, errors[0].Exception);
         Assert.Equal(e2, errors[1].Exception);
     }

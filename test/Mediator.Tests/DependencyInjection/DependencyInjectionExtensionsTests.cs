@@ -6,9 +6,11 @@ using UnambitiousFx.Mediator.Tests.Definitions;
 namespace UnambitiousFx.Mediator.Tests.DependencyInjection;
 
 [TestSubject(typeof(DependencyInjectionExtensions))]
-public sealed class DependencyInjectionExtensionsTests {
+public sealed class DependencyInjectionExtensionsTests
+{
     [Fact]
-    public async Task GivenRequest_WhenResolve_ThenReturnResult() {
+    public async Task GivenRequest_WhenResolve_ThenReturnResult()
+    {
         var services = new ServiceCollection()
                       .AddMediator(cfg => { cfg.RegisterRequestHandler<RequestWithResponseExampleHandler, RequestWithResponseExample, int>(); })
                       .BuildServiceProvider();
@@ -23,12 +25,14 @@ public sealed class DependencyInjectionExtensionsTests {
     }
 
     [Fact]
-    public async Task GivenRequestWithBehavior_WhenResolve_ThenReturnResult() {
+    public async Task GivenRequestWithBehavior_WhenResolve_ThenReturnResult()
+    {
         var services = new ServiceCollection()
-                      .AddMediator(cfg => {
-                           cfg.RegisterRequestHandler<RequestWithResponseExampleHandler, RequestWithResponseExample, int>();
-                           cfg.RegisterRequestPipelineBehavior<TestRequestPipelineBehavior>();
-                       })
+                      .AddMediator(cfg =>
+                      {
+                          cfg.RegisterRequestHandler<RequestWithResponseExampleHandler, RequestWithResponseExample, int>();
+                          cfg.RegisterRequestPipelineBehavior<TestRequestPipelineBehavior>();
+                      })
                       .BuildServiceProvider();
 
         var handler = services.GetRequiredService<IRequestHandler<RequestWithResponseExample, int>>();

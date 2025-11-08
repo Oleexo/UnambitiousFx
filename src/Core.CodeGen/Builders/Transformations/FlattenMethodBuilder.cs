@@ -6,21 +6,24 @@ namespace UnambitiousFx.Core.CodeGen.Builders.Transformations;
 /// <summary>
 ///     Builds Flatten extension methods for Result types.
 /// </summary>
-internal sealed class FlattenMethodBuilder {
+internal sealed class FlattenMethodBuilder
+{
     private readonly string _baseNamespace;
 
-    public FlattenMethodBuilder(string baseNamespace) {
+    public FlattenMethodBuilder(string baseNamespace)
+    {
         _baseNamespace = baseNamespace ?? throw new ArgumentNullException(nameof(baseNamespace));
     }
 
     /// <summary>
     ///     Builds a standalone Flatten method for a specific arity.
     /// </summary>
-    public MethodWriter BuildStandaloneMethod(ushort arity) {
-        var valueTypes      = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
+    public MethodWriter BuildStandaloneMethod(ushort arity)
+    {
+        var valueTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
         var innerResultType = $"Result<{valueTypes}>";
         var outerResultType = $"Result<{innerResultType}>";
-        var returnType      = innerResultType;
+        var returnType = innerResultType;
 
         // Build generic parameters
         var genericParams = GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull");
@@ -32,7 +35,8 @@ internal sealed class FlattenMethodBuilder {
                                             .WithParameter("result", "The nested result instance.")
                                             .WithReturns("The inner result.");
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Value type {i}.");
         }
 
@@ -54,8 +58,9 @@ internal sealed class FlattenMethodBuilder {
     ///     Builds async Flatten method for Task/ValueTask Result types.
     /// </summary>
     public MethodWriter BuildAsyncMethod(ushort arity,
-                                         bool   isValueTask) {
-        var valueTypes      = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
+                                         bool isValueTask)
+    {
+        var valueTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
         var innerResultType = $"Result<{valueTypes}>";
         var outerResultType = $"Result<{innerResultType}>";
         var asyncOuterType = isValueTask
@@ -79,7 +84,8 @@ internal sealed class FlattenMethodBuilder {
                                             .WithParameter("awaitable", "The awaitable nested result instance.")
                                             .WithReturns("A task with the flattened result.");
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Value type {i}.");
         }
 

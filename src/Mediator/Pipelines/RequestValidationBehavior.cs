@@ -13,13 +13,15 @@ namespace UnambitiousFx.Mediator.Pipelines;
 /// <typeparam name="TResponse">The type of the response expected from the pipeline handling.</typeparam>
 public class RequestValidationBehavior<TRequest, TResponse> : IRequestPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
-    where TResponse : notnull {
+    where TResponse : notnull
+{
     private readonly IEnumerable<IRequestValidator<TRequest>> _validators;
 
     /// <summary>
     /// Represents a pipeline behavior that validates requests before they are processed by the appropriate request handler.
     /// </summary>
-    public RequestValidationBehavior(IEnumerable<IRequestValidator<TRequest>> validators) {
+    public RequestValidationBehavior(IEnumerable<IRequestValidator<TRequest>> validators)
+    {
         _validators = validators;
     }
 
@@ -36,13 +38,15 @@ public class RequestValidationBehavior<TRequest, TResponse> : IRequestPipelineBe
     /// If validation is successful, the result of the next behavior is returned.
     /// If validation fails, a failed result with validation errors is returned.
     /// </returns>
-    public async ValueTask<Result<TResponse>> HandleAsync(TRequest                          request,
+    public async ValueTask<Result<TResponse>> HandleAsync(TRequest request,
                                                           RequestHandlerDelegate<TResponse> next,
-                                                          CancellationToken                 cancellationToken) {
+                                                          CancellationToken cancellationToken)
+    {
         var result = await _validators.Select(x => x.ValidateAsync(request, cancellationToken))
                                       .CombineAsync();
 
-        if (result.IsFaulted) {
+        if (result.IsFaulted)
+        {
             return Result.Failure<TResponse>(result.Errors);
         }
 

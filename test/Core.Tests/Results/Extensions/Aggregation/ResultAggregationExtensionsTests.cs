@@ -7,9 +7,11 @@ using UnambitiousFx.Core.Results.Types;
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Aggregation;
 
 [TestSubject(typeof(ResultExtensions))]
-public sealed class ResultExtensionsTests {
+public sealed class ResultExtensionsTests
+{
     [Fact]
-    public void AllErrors_MixedResults_EnumeratesAllDomainErrors() {
+    public void AllErrors_MixedResults_EnumeratesAllDomainErrors()
+    {
         var r1 = Result.Success()
                        .WithSuccess("ok1");
         var r2 = Result.Failure(new ValidationError(new List<string> { "fail-a" }));
@@ -26,7 +28,8 @@ public sealed class ResultExtensionsTests {
     }
 
     [Fact]
-    public void GroupByErrorCode_GroupsCorrectly() {
+    public void GroupByErrorCode_GroupsCorrectly()
+    {
         var r1 = Result.Failure(new ValidationError(new List<string> { "x" }));
         var r2 = Result.Failure(new ValidationError(new List<string> { "y" }));
         var r3 = Result.Failure(new NotFoundError("Order", "abc"));
@@ -41,7 +44,8 @@ public sealed class ResultExtensionsTests {
     }
 
     [Fact]
-    public void SummarizeErrors_ReturnsCounts() {
+    public void SummarizeErrors_ReturnsCounts()
+    {
         var r1 = Result.Failure(new ValidationError(new List<string> { "a" }));
         var r2 = Result.Failure(new ValidationError(new List<string> { "b" }));
         var r3 = Result.Failure(new NotFoundError("Item", "7"));
@@ -54,7 +58,8 @@ public sealed class ResultExtensionsTests {
     }
 
     [Fact]
-    public void Merge_AllSuccess_PreservesSuccessReasonsAndMetadata() {
+    public void Merge_AllSuccess_PreservesSuccessReasonsAndMetadata()
+    {
         var r1 = Result.Success()
                        .WithSuccess("s1")
                        .WithMetadata("a", 1);
@@ -73,7 +78,8 @@ public sealed class ResultExtensionsTests {
     }
 
     [Fact]
-    public void Merge_MultipleFailures_AggregatesExceptionsAndReasons() {
+    public void Merge_MultipleFailures_AggregatesExceptionsAndReasons()
+    {
         var v1 = new ValidationError(new List<string> { "x" });
         var v2 = new NotFoundError("User", "1");
         var f1 = Result.Failure(v1);
@@ -89,11 +95,12 @@ public sealed class ResultExtensionsTests {
                                .Select(e => e.Code)
                                .ToList();
         Assert.Contains("VALIDATION", errorCodes);
-        Assert.Contains("NOT_FOUND",  errorCodes);
+        Assert.Contains("NOT_FOUND", errorCodes);
     }
 
     [Fact]
-    public void Merge_FirstFailure_StopsEarlyAndDoesNotAccumulateLaterMetadataOrReasons() {
+    public void Merge_FirstFailure_StopsEarlyAndDoesNotAccumulateLaterMetadataOrReasons()
+    {
         var first = Result.Success()
                           .WithSuccess("s1")
                           .WithMetadata("a", 1);
@@ -116,7 +123,8 @@ public sealed class ResultExtensionsTests {
     }
 
     [Fact]
-    public void Merge_AccumulateAll_CollectsAllMetadataLastWriteWins() {
+    public void Merge_AccumulateAll_CollectsAllMetadataLastWriteWins()
+    {
         var r1 = Result.Success()
                        .WithMetadata("k", 1);
         var r2 = Result.Success()
@@ -131,7 +139,8 @@ public sealed class ResultExtensionsTests {
     }
 
     [Fact]
-    public void FirstFailureOrSuccess_AllSuccess_ReturnsSuccess() {
+    public void FirstFailureOrSuccess_AllSuccess_ReturnsSuccess()
+    {
         var r1 = Result.Success()
                        .WithSuccess("a");
         var r2 = Result.Success()
@@ -141,14 +150,16 @@ public sealed class ResultExtensionsTests {
     }
 
     [Fact]
-    public void FirstFailureOrSuccess_Empty_ReturnsSuccess() {
+    public void FirstFailureOrSuccess_Empty_ReturnsSuccess()
+    {
         var ff = Array.Empty<Result>()
                       .FirstFailureOrSuccess();
         Assert.True(ff.TryGet(out _));
     }
 
     [Fact]
-    public void FirstFailureOrSuccess_ReturnsOriginalFailureWithoutAggregation() {
+    public void FirstFailureOrSuccess_ReturnsOriginalFailureWithoutAggregation()
+    {
         var success = Result.Success()
                             .WithSuccess("s1")
                             .WithMetadata("k", "v");

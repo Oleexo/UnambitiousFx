@@ -3,15 +3,18 @@ namespace UnambitiousFx.Core.CodeGen.Common;
 /// <summary>
 ///     Provides utility methods for converting numeric positions to ordinal names.
 /// </summary>
-internal static class OrdinalHelper {
+internal static class OrdinalHelper
+{
     /// <summary>
     ///     Converts a numeric position to its ordinal name.
     /// </summary>
     /// <param name="position">The numeric position (1-8).</param>
     /// <returns>The ordinal name (e.g., "First", "Second", etc.).</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when position is not in range 1-8.</exception>
-    public static string GetOrdinalName(int position) {
-        return position switch {
+    public static string GetOrdinalName(int position)
+    {
+        return position switch
+        {
             1 => "First",
             2 => "Second",
             3 => "Third",

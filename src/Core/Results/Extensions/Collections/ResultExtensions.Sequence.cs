@@ -1,14 +1,19 @@
 namespace UnambitiousFx.Core.Results.Extensions.Collections;
 
-public static partial class ResultExtensions {
+public static partial class ResultExtensions
+{
     public static Result<List<TValue>> Sequence<TValue>(this IEnumerable<Result<TValue>> results)
-        where TValue : notnull {
+        where TValue : notnull
+    {
         var list = new List<TValue>();
-        foreach (var r in results) {
-            if (r.TryGet(out var value, out var error)) {
+        foreach (var r in results)
+        {
+            if (r.TryGet(out var value, out var error))
+            {
                 list.Add(value);
             }
-            else {
+            else
+            {
                 return Result.Failure<List<TValue>>(error);
             }
         }
@@ -16,5 +21,5 @@ public static partial class ResultExtensions {
         return Result.Success(list);
     }
 
- 
+
 }

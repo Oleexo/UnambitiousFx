@@ -11,8 +11,9 @@ namespace UnambitiousFx.Mediator.Pipelines;
 /// <typeparam name="TResponse">The type of the response being returned.</typeparam>
 public sealed class LoggingEnrichmentBehavior<TRequest, TResponse> : IRequestPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
-    where TResponse : notnull {
-    private readonly IContext                                                _context;
+    where TResponse : notnull
+{
+    private readonly IContext _context;
     private readonly ILogger<LoggingEnrichmentBehavior<TRequest, TResponse>> _logger;
 
     /// <summary>
@@ -20,10 +21,11 @@ public sealed class LoggingEnrichmentBehavior<TRequest, TResponse> : IRequestPip
     /// </summary>
     /// <param name="context"></param>
     /// <param name="logger">The logger instance.</param>
-    public LoggingEnrichmentBehavior(IContext                                                context,
-                                     ILogger<LoggingEnrichmentBehavior<TRequest, TResponse>> logger) {
+    public LoggingEnrichmentBehavior(IContext context,
+                                     ILogger<LoggingEnrichmentBehavior<TRequest, TResponse>> logger)
+    {
         _context = context;
-        _logger  = logger;
+        _logger = logger;
     }
 
     /// <summary>
@@ -33,22 +35,27 @@ public sealed class LoggingEnrichmentBehavior<TRequest, TResponse> : IRequestPip
     /// <param name="next">The next handler in the pipeline.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A result containing the response.</returns>
-    public ValueTask<Result<TResponse>> HandleAsync(TRequest                          request,
+    public ValueTask<Result<TResponse>> HandleAsync(TRequest request,
                                                     RequestHandlerDelegate<TResponse> next,
-                                                    CancellationToken                 cancellationToken = default) {
-        using (_logger.BeginScope(CreateState(_context))) {
+                                                    CancellationToken cancellationToken = default)
+    {
+        using (_logger.BeginScope(CreateState(_context)))
+        {
             return next();
         }
     }
 
-    private Dictionary<string, object> CreateState(IContext context) {
-        var state = new Dictionary<string, object> {
+    private Dictionary<string, object> CreateState(IContext context)
+    {
+        var state = new Dictionary<string, object>
+        {
             ["CorrelationId"] = context.CorrelationId,
-            ["OccurredAt"]    = context.OccuredAt
+            ["OccurredAt"] = context.OccuredAt
         };
 
 
-        foreach (var metadata in context.Metadata) {
+        foreach (var metadata in context.Metadata)
+        {
             state[$"Metadata_{metadata.Key}"] = metadata.Value;
         }
 

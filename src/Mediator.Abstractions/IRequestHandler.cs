@@ -12,14 +12,15 @@ namespace UnambitiousFx.Mediator.Abstractions;
 /// <typeparam name="TResponse">The type of the response returned by the handler.</typeparam>
 public interface IRequestHandler<in TRequest, TResponse>
     where TRequest : IRequest<TResponse>
-    where TResponse : notnull {
+    where TResponse : notnull
+{
     /// <summary>
     ///     Handles the given request asynchronously.
     /// </summary>
     /// <param name="request">The request object containing all required data.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous operation and contains the result of the request.</returns>
-    ValueTask<Result<TResponse>> HandleAsync(TRequest          request,
+    ValueTask<Result<TResponse>> HandleAsync(TRequest request,
                                              CancellationToken cancellationToken = default);
 }
 
@@ -31,11 +32,12 @@ public interface IRequestHandler<in TRequest, TResponse>
 /// TResponse: The type of the response produced by the handler.
 /// Must be a notnull type.
 public interface IRequestHandler<in TRequest>
-    where TRequest : IRequest {
+    where TRequest : IRequest
+{
     /// Handles an incoming request asynchronously and produces a result.
     /// <param name="request">The request to be processed by the handler.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests, with a default value of None.</param>
     /// <return>A task that represents the asynchronous operation, containing a result of the processing.</return>
-    ValueTask<Result> HandleAsync(TRequest          request,
+    ValueTask<Result> HandleAsync(TRequest request,
                                   CancellationToken cancellationToken = default);
 }

@@ -3,14 +3,17 @@ namespace UnambitiousFx.Core.CodeGen.Common;
 /// <summary>
 ///     Provides utility methods for working with test types and values.
 /// </summary>
-internal static class TestTypeHelper {
+internal static class TestTypeHelper
+{
     /// <summary>
     ///     Gets the C# type name for a given position in test generation.
     /// </summary>
     /// <param name="position">The position (1-8).</param>
     /// <returns>The C# type name.</returns>
-    public static string GetTestType(int position) {
-        return position switch {
+    public static string GetTestType(int position)
+    {
+        return position switch
+        {
             1 => "int",
             2 => "string",
             3 => "bool",
@@ -29,8 +32,10 @@ internal static class TestTypeHelper {
     /// </summary>
     /// <param name="position">The position (1-8).</param>
     /// <returns>The test value as a string literal.</returns>
-    public static string GetTestValue(int position) {
-        return position switch {
+    public static string GetTestValue(int position)
+    {
+        return position switch
+        {
             1 => "42",
             2 => "\"hello\"",
             3 => "true",
@@ -49,8 +54,10 @@ internal static class TestTypeHelper {
     /// </summary>
     /// <param name="position">The position (1-8).</param>
     /// <returns>True if the type supports multiple test values.</returns>
-    public static bool IsValueTestable(int position) {
-        return position switch {
+    public static bool IsValueTestable(int position)
+    {
+        return position switch
+        {
             1 => true, // int - can use Theory with InlineData
             2 => true, // string - can use Theory with InlineData
             _ => false // other types - use Fact with single value

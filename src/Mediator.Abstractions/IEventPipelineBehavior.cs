@@ -6,7 +6,8 @@ namespace UnambitiousFx.Mediator.Abstractions;
 ///     Defines an interface for implementing a pipeline behavior that can be executed
 ///     around the handling of events in an event-driven mediator pattern.
 /// </summary>
-public interface IEventPipelineBehavior {
+public interface IEventPipelineBehavior
+{
     /// Handles the specified event by invoking the next delegate in the event pipeline behavior chain.
     /// <typeparam name="TEvent">The type of the event being handled. Must implement the <see cref="IEvent" /> interface.</typeparam>
     /// <param name="event">
@@ -25,8 +26,8 @@ public interface IEventPipelineBehavior {
     ///     If successful, the result will indicate the successful processing of the event; otherwise, it will indicate a
     ///     failure.
     /// </returns>
-    ValueTask<Result> HandleAsync<TEvent>(TEvent               @event,
+    ValueTask<Result> HandleAsync<TEvent>(TEvent @event,
                                           EventHandlerDelegate next,
-                                          CancellationToken    cancellationToken = default)
+                                          CancellationToken cancellationToken = default)
         where TEvent : IEvent;
 }

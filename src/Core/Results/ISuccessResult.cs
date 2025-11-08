@@ -1,4 +1,5 @@
 namespace UnambitiousFx.Core.Results;
 
-public interface ISuccessResult {
+public interface ISuccessResult
+{
 }

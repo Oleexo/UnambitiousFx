@@ -3,7 +3,8 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results.ArityTests.Models;
 /// <summary>
 ///     Represents the possible states of a Result type.
 /// </summary>
-internal enum ResultState {
+internal enum ResultState
+{
     /// <summary>
     ///     The Result represents a successful operation.
     /// </summary>

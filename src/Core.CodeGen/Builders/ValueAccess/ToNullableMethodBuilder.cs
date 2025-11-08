@@ -6,25 +6,29 @@ namespace UnambitiousFx.Core.CodeGen.Builders.ValueAccess;
 /// <summary>
 ///     Builds ToNullable extension methods for Result types.
 /// </summary>
-internal sealed class ToNullableMethodBuilder {
+internal sealed class ToNullableMethodBuilder
+{
     private readonly string _baseNamespace;
 
-    public ToNullableMethodBuilder(string baseNamespace) {
+    public ToNullableMethodBuilder(string baseNamespace)
+    {
         _baseNamespace = baseNamespace ?? throw new ArgumentNullException(nameof(baseNamespace));
     }
 
     /// <summary>
     ///     Builds a standalone ToNullable method for a specific arity.
     /// </summary>
-    public MethodWriter BuildStandaloneMethod(ushort arity) {
-        var genericTypes  = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
+    public MethodWriter BuildStandaloneMethod(ushort arity)
+    {
+        var genericTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
         var genericParams = GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull");
-        var resultType    = $"Result<{genericTypes}>";
+        var resultType = $"Result<{genericTypes}>";
 
         string returnType;
         string body;
 
-        if (arity == 1) {
+        if (arity == 1)
+        {
             returnType = "TValue1?";
             body = """
                    return result.TryGet(out var value)
@@ -32,7 +36,8 @@ internal sealed class ToNullableMethodBuilder {
                               : default;
                    """;
         }
-        else {
+        else
+        {
             var tupleType = GenericTypeHelper.BuildTupleTypeString(arity, "TValue");
             returnType = $"{tupleType}?";
 
@@ -63,7 +68,8 @@ internal sealed class ToNullableMethodBuilder {
                                             .WithParameter("result", "The result instance.")
                                             .WithReturns("The nullable value or null/default.");
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Value type {i}.");
         }
 

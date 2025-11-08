@@ -3,7 +3,8 @@ using UnambitiousFx.Mediator.Abstractions;
 namespace UnambitiousFx.Examples.ConsoleApp.Commands;
 
 // Simple Command - No Response
-public sealed record SimpleCommand : IRequest {
+public sealed record SimpleCommand : IRequest
+{
     public required string Message { get; init; }
 }
 

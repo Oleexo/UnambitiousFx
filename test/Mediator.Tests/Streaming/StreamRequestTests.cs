@@ -4,16 +4,19 @@ using UnambitiousFx.Mediator.Abstractions;
 
 namespace UnambitiousFx.Mediator.Tests.Streaming;
 
-public sealed class StreamRequestTests {
+public sealed class StreamRequestTests
+{
     [Fact]
-    public async Task StreamRequest_ShouldYieldAllItems() {
+    public async Task StreamRequest_ShouldYieldAllItems()
+    {
         // Arrange
         var handler = new TestStreamRequestHandler();
         var request = new TestStreamRequest { Count = 10 };
-        var items   = new List<int>();
+        var items = new List<int>();
 
         // Act
-        await foreach (var result in handler.HandleAsync(request)) {
+        await foreach (var result in handler.HandleAsync(request))
+        {
             Assert.True(result.IsSuccess);
             items.Add(result.Match(v => v, _ => -1));
         }
@@ -25,19 +28,22 @@ public sealed class StreamRequestTests {
     }
 
     [Fact]
-    public async Task StreamRequest_ShouldSupportCancellation() {
+    public async Task StreamRequest_ShouldSupportCancellation()
+    {
         // Arrange
         var handler = new TestStreamRequestHandler();
         var request = new TestStreamRequest { Count = 100 };
-        var cts     = new CancellationTokenSource();
-        var items   = new List<int>();
+        var cts = new CancellationTokenSource();
+        var items = new List<int>();
 
         // Act
-        await foreach (var result in handler.HandleAsync(request, cts.Token)) {
+        await foreach (var result in handler.HandleAsync(request, cts.Token))
+        {
             items.Add(result.Match(v => v, _ => -1));
 
             // Cancel after 5 items
-            if (items.Count == 5) {
+            if (items.Count == 5)
+            {
                 await cts.CancelAsync();
             }
         }
@@ -47,14 +53,16 @@ public sealed class StreamRequestTests {
     }
 
     [Fact]
-    public async Task StreamRequest_WithEmptyStream_ShouldReturnNoItems() {
+    public async Task StreamRequest_WithEmptyStream_ShouldReturnNoItems()
+    {
         // Arrange
         var handler = new TestStreamRequestHandler();
         var request = new TestStreamRequest { Count = 0 };
-        var items   = new List<int>();
+        var items = new List<int>();
 
         // Act
-        await foreach (var result in handler.HandleAsync(request)) {
+        await foreach (var result in handler.HandleAsync(request))
+        {
             items.Add(result.Match(v => v, _ => -1));
         }
 
@@ -63,32 +71,40 @@ public sealed class StreamRequestTests {
     }
 
     [Fact]
-    public async Task StreamRequest_ShouldHandleErrors() {
+    public async Task StreamRequest_ShouldHandleErrors()
+    {
         // Arrange
-        var request    = new TestStreamRequest { Count = 10 };
+        var request = new TestStreamRequest { Count = 10 };
         var errorCount = 0;
-        var itemCount  = 0;
+        var itemCount = 0;
 
         // Handler that produces errors on even numbers
-        async IAsyncEnumerable<Result<int>> ErrorProducingHandler([EnumeratorCancellation] CancellationToken cancellationToken = default) {
-            for (var i = 0; i < request.Count; i++) {
+        async IAsyncEnumerable<Result<int>> ErrorProducingHandler([EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            for (var i = 0; i < request.Count; i++)
+            {
                 await Task.Delay(1, cancellationToken);
 
-                if (i % 2 == 0) {
+                if (i % 2 == 0)
+                {
                     yield return Result.Failure<int>($"Error at {i}");
                 }
-                else {
+                else
+                {
                     yield return Result.Success(i);
                 }
             }
         }
 
         // Act
-        await foreach (var result in ErrorProducingHandler()) {
-            if (result.IsSuccess) {
+        await foreach (var result in ErrorProducingHandler())
+        {
+            if (result.IsSuccess)
+            {
                 itemCount++;
             }
-            else {
+            else
+            {
                 errorCount++;
             }
         }
@@ -99,16 +115,21 @@ public sealed class StreamRequestTests {
     }
 
     // Test request
-    private sealed record TestStreamRequest : IStreamRequest<int> {
+    private sealed record TestStreamRequest : IStreamRequest<int>
+    {
         public int Count { get; init; }
     }
 
     // Test handler
-    private sealed class TestStreamRequestHandler : IStreamRequestHandler<TestStreamRequest, int> {
-        public async IAsyncEnumerable<Result<int>> HandleAsync(TestStreamRequest                          request,
-                                                               [EnumeratorCancellation] CancellationToken cancellationToken = default) {
-            for (var i = 0; i < request.Count; i++) {
-                if (cancellationToken.IsCancellationRequested) {
+    private sealed class TestStreamRequestHandler : IStreamRequestHandler<TestStreamRequest, int>
+    {
+        public async IAsyncEnumerable<Result<int>> HandleAsync(TestStreamRequest request,
+                                                               [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            for (var i = 0; i < request.Count; i++)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
                     yield break;
                 }
 

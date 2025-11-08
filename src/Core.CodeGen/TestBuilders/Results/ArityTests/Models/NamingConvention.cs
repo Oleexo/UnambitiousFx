@@ -3,7 +3,8 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results.ArityTests.Models;
 /// <summary>
 ///     Represents naming conventions extracted from existing test files.
 /// </summary>
-internal sealed class NamingConvention {
+internal sealed class NamingConvention
+{
     /// <summary>
     ///     Initializes a new instance of the NamingConvention class.
     /// </summary>
@@ -13,18 +14,19 @@ internal sealed class NamingConvention {
     /// <param name="failureTestSuffix">The failure test suffix.</param>
     /// <param name="exceptionTestSuffix">The exception test suffix.</param>
     /// <param name="asyncTestSuffix">The async test suffix.</param>
-    public NamingConvention(string testClassSuffix     = "Tests",
-                            string testMethodPattern   = "",
-                            string successTestSuffix   = "",
-                            string failureTestSuffix   = "",
+    public NamingConvention(string testClassSuffix = "Tests",
+                            string testMethodPattern = "",
+                            string successTestSuffix = "",
+                            string failureTestSuffix = "",
                             string exceptionTestSuffix = "",
-                            string asyncTestSuffix     = "") {
-        TestClassSuffix     = testClassSuffix;
-        TestMethodPattern   = testMethodPattern;
-        SuccessTestSuffix   = successTestSuffix;
-        FailureTestSuffix   = failureTestSuffix;
+                            string asyncTestSuffix = "")
+    {
+        TestClassSuffix = testClassSuffix;
+        TestMethodPattern = testMethodPattern;
+        SuccessTestSuffix = successTestSuffix;
+        FailureTestSuffix = failureTestSuffix;
         ExceptionTestSuffix = exceptionTestSuffix;
-        AsyncTestSuffix     = asyncTestSuffix;
+        AsyncTestSuffix = asyncTestSuffix;
     }
 
     /// <summary>

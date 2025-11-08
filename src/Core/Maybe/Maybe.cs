@@ -6,12 +6,14 @@ namespace UnambitiousFx.Core.Maybe;
 ///     Provides a static class to create and work with instances of <see cref="Maybe{TValue}" />,
 ///     which represents a value or the absence of a value.
 /// </summary>
-public static class Maybe {
+public static class Maybe
+{
     /// Creates an Option instance that represents a value.
     /// <param name="value">The value to be wrapped inside the Option. It must be a non-null value of type TValue.</param>
     /// <returns>An <see cref="Maybe{TValue}" /> instance containing the provided value.</returns>
     public static Maybe<TValue> Some<TValue>(TValue value)
-        where TValue : notnull {
+        where TValue : notnull
+    {
         return new SomeMaybe<TValue>(value);
     }
 
@@ -21,7 +23,8 @@ public static class Maybe {
     /// <typeparam name="TValue">The type of the service represented by the option.</typeparam>
     /// <returns>An <see cref="Maybe{TValue}" /> instance that indicates no value.</returns>
     public static Maybe<TValue> None<TValue>()
-        where TValue : notnull {
+        where TValue : notnull
+    {
         return Maybe<TValue>.None();
     }
 }
@@ -30,7 +33,8 @@ public static class Maybe {
 ///     Provides a static class to create instances of <see cref="Maybe{TValue}" />, representing a value or no value.
 /// </summary>
 public abstract class Maybe<TValue>
-    where TValue : notnull {
+    where TValue : notnull
+{
     /// <summary>
     ///     Represents the singleton instance of <see cref="NoneMaybe{TValue}" />, used to indicate the absence of a value.
     /// </summary>
@@ -87,7 +91,7 @@ public abstract class Maybe<TValue>
     /// <param name="none">The function to invoke if the Option does not contain a value.</param>
     /// <returns>The result of invoking the appropriate function based on the Option's state.</returns>
     public abstract TOut Match<TOut>(Func<TValue, TOut> some,
-                                     Func<TOut>         none);
+                                     Func<TOut> none);
 
     /// Executes one of the provided actions depending on whether the Option has a value or represents no value.
     /// <param name="some">
@@ -96,11 +100,12 @@ public abstract class Maybe<TValue>
     /// </param>
     /// <param name="none">The action to execute if the Option represents no value.</param>
     public abstract void Match(Action<TValue> some,
-                               Action         none);
+                               Action none);
 
     /// Creates an Option instance that represents no value.
     /// <returns>An <see cref="Maybe{TValue}" /> instance representing no value.</returns>
-    public static Maybe<TValue> None() {
+    public static Maybe<TValue> None()
+    {
         return NoneInstance;
     }
 
@@ -109,7 +114,8 @@ public abstract class Maybe<TValue>
     /// </summary>
     /// <param name="value">The value to wrap within the SomeOption. This value cannot be null.</param>
     /// <returns>An <see cref="Maybe{TValue}" /> containing the specified value.</returns>
-    public static Maybe<TValue> Some(TValue value) {
+    public static Maybe<TValue> Some(TValue value)
+    {
         return new SomeMaybe<TValue>(value);
     }
 
@@ -120,7 +126,8 @@ public abstract class Maybe<TValue>
     /// .
     /// <param name="value">The value to convert into an Option. The value cannot be null.</param>
     /// <returns>An <see cref="Maybe{TValue}" /> instance containing the provided value.</returns>
-    public static implicit operator Maybe<TValue>(TValue value) {
+    public static implicit operator Maybe<TValue>(TValue value)
+    {
         return Some(value);
     }
 }

@@ -4,17 +4,20 @@ using UnambitiousFx.Mediator.Abstractions;
 
 namespace UnambitiousFx.Examples.ConsoleApp.Pipelines;
 
-public class EventLoggingPipelineBehavior : IEventPipelineBehavior {
+public class EventLoggingPipelineBehavior : IEventPipelineBehavior
+{
     private readonly ILogger<EventLoggingPipelineBehavior> _logger;
 
-    public EventLoggingPipelineBehavior(ILogger<EventLoggingPipelineBehavior> logger) {
+    public EventLoggingPipelineBehavior(ILogger<EventLoggingPipelineBehavior> logger)
+    {
         _logger = logger;
     }
 
-    public async ValueTask<Result> HandleAsync<TEvent>(TEvent               @event,
+    public async ValueTask<Result> HandleAsync<TEvent>(TEvent @event,
                                                        EventHandlerDelegate next,
-                                                       CancellationToken    cancellationToken = default)
-        where TEvent : IEvent {
+                                                       CancellationToken cancellationToken = default)
+        where TEvent : IEvent
+    {
         _logger.LogDebug("Processing event: {EventName}", @event.GetType()
                                                                 .Name);
 

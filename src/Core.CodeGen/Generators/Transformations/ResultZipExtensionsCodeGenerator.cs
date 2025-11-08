@@ -10,7 +10,8 @@ namespace UnambitiousFx.Core.CodeGen.Generators.Transformations;
 ///     Generates ONE class containing all Zip methods, organized by arity in regions.
 ///     Follows architecture rule: One generator per class.
 /// </summary>
-internal sealed class ResultZipExtensionsCodeGenerator : BaseCodeGenerator {
+internal sealed class ResultZipExtensionsCodeGenerator : BaseCodeGenerator
+{
     private const string ExtensionsNamespace = "Results.Extensions.Transformations";
 
     private readonly ZipMethodBuilder _zipBuilder;
@@ -21,16 +22,19 @@ internal sealed class ResultZipExtensionsCodeGenerator : BaseCodeGenerator {
                    2, // Zip requires at least 2 results
                    ExtensionsNamespace,
                    "ResultZipExtensions",
-                   FileOrganizationMode.SingleFile)) {
+                   FileOrganizationMode.SingleFile))
+    {
         _zipBuilder = new ZipMethodBuilder();
     }
 
-    protected override string PrepareOutputDirectory(string outputPath) {
+    protected override string PrepareOutputDirectory(string outputPath)
+    {
         var mainOutput = FileSystemHelper.CreateSubdirectory(outputPath, Config.SubNamespace);
         return mainOutput;
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
+    {
         return [
             GenerateSyncMethods(arity),
             GenerateAsyncMethods(arity, false),
@@ -38,7 +42,8 @@ internal sealed class ResultZipExtensionsCodeGenerator : BaseCodeGenerator {
         ];
     }
 
-    private ClassWriter GenerateSyncMethods(ushort arity) {
+    private ClassWriter GenerateSyncMethods(ushort arity)
+    {
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
         var classWriter = new ClassWriter(
             Config.ClassName,
@@ -54,7 +59,8 @@ internal sealed class ResultZipExtensionsCodeGenerator : BaseCodeGenerator {
     }
 
     private ClassWriter GenerateAsyncMethods(ushort arity,
-                                             bool   isValueTask) {
+                                             bool isValueTask)
+    {
         var subNamespace = isValueTask
                                ? "ValueTasks"
                                : "Tasks";

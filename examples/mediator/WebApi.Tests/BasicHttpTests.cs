@@ -4,17 +4,21 @@ using Microsoft.AspNetCore.Mvc.Testing;
 namespace WebApi.Tests;
 
 public sealed class BasicHttpTests
-    : IClassFixture<WebApplicationFactory<Program>> {
+    : IClassFixture<WebApplicationFactory<Program>>
+{
     private readonly WebApplicationFactory<Program> _factory;
 
-    public BasicHttpTests(WebApplicationFactory<Program> factory) {
+    public BasicHttpTests(WebApplicationFactory<Program> factory)
+    {
         _factory = factory;
     }
 
-    private async Task<Guid> CreateTodoOnServer() {
+    private async Task<Guid> CreateTodoOnServer()
+    {
         var client = _factory.CreateClient();
 
-        var response = await client.PostAsJsonAsync("/todos", new {
+        var response = await client.PostAsJsonAsync("/todos", new
+        {
             Name = "Test"
         });
 
@@ -28,12 +32,14 @@ public sealed class BasicHttpTests
     }
 
     [Fact]
-    public async Task CreateTodo_ReturnsSuccess() {
+    public async Task CreateTodo_ReturnsSuccess()
+    {
         // Arrange
         var client = _factory.CreateClient();
 
         // Act
-        var response = await client.PostAsJsonAsync("/todos", new {
+        var response = await client.PostAsJsonAsync("/todos", new
+        {
             Name = "Test"
         });
 
@@ -42,7 +48,8 @@ public sealed class BasicHttpTests
     }
 
     [Fact]
-    public async Task GetTodos_ReturnsSuccess() {
+    public async Task GetTodos_ReturnsSuccess()
+    {
         // Arrange
         await CreateTodoOnServer();
         await CreateTodoOnServer();
@@ -56,9 +63,10 @@ public sealed class BasicHttpTests
     }
 
     [Fact]
-    public async Task GetTodo_ReturnsSuccess() {
+    public async Task GetTodo_ReturnsSuccess()
+    {
         // Arrange
-        var id     = await CreateTodoOnServer();
+        var id = await CreateTodoOnServer();
         var client = _factory.CreateClient();
 
         // Act
@@ -69,13 +77,15 @@ public sealed class BasicHttpTests
     }
 
     [Fact]
-    public async Task UpdateTodo_ReturnsSuccess() {
+    public async Task UpdateTodo_ReturnsSuccess()
+    {
         // Arrange
-        var id     = await CreateTodoOnServer();
+        var id = await CreateTodoOnServer();
         var client = _factory.CreateClient();
 
         // Act
-        var response = await client.PutAsJsonAsync($"/todos/{id}", new {
+        var response = await client.PutAsJsonAsync($"/todos/{id}", new
+        {
             Name = "Updated"
         });
 
@@ -84,9 +94,10 @@ public sealed class BasicHttpTests
     }
 
     [Fact]
-    public async Task DeleteTodo_ReturnSuccess() {
+    public async Task DeleteTodo_ReturnSuccess()
+    {
         // Arrange
-        var id     = await CreateTodoOnServer();
+        var id = await CreateTodoOnServer();
         var client = _factory.CreateClient();
 
         // Act

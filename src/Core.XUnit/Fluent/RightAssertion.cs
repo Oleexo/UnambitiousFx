@@ -8,7 +8,8 @@ namespace UnambitiousFx.Core.XUnit.Fluent;
 [DebuggerStepThrough]
 public readonly struct RightAssertion<TLeft, TRight>
     where TLeft : notnull
-    where TRight : notnull {
+    where TRight : notnull
+{
     /// <summary>
     ///     The internal field representing the Right value of the <see cref="RightAssertion{TLeft, TRight}" /> type.
     /// </summary>
@@ -22,7 +23,8 @@ public readonly struct RightAssertion<TLeft, TRight>
     ///     Represents a fluent wrapper for an Either value's "Right" side, providing
     ///     methods for validation, transformation, and extraction of the "Right" value.
     /// </summary>
-    internal RightAssertion(TRight right) {
+    internal RightAssertion(TRight right)
+    {
         _right = right;
     }
 
@@ -50,7 +52,8 @@ public readonly struct RightAssertion<TLeft, TRight>
     /// <returns>
     ///     The current instance of <see cref="RightAssertion{TLeft, TRight}" /> for further fluent method chaining.
     /// </returns>
-    public RightAssertion<TLeft, TRight> And(Action<TRight> assert) {
+    public RightAssertion<TLeft, TRight> And(Action<TRight> assert)
+    {
         assert(_right);
         return this;
     }
@@ -70,7 +73,8 @@ public readonly struct RightAssertion<TLeft, TRight>
     /// </returns>
     /// <exception cref="ArgumentNullException">Thrown if the <paramref name="projector" /> function is null.</exception>
     public RightAssertion<TLeft, TOut> Map<TOut>(Func<TRight, TOut> projector)
-        where TOut : notnull {
+        where TOut : notnull
+    {
         return new RightAssertion<TLeft, TOut>(projector(_right));
     }
 
@@ -78,7 +82,8 @@ public readonly struct RightAssertion<TLeft, TRight>
     ///     Deconstructs the RightAssertion instance to its contained value.
     /// </summary>
     /// <param name="right">The output parameter representing the contained right value.</param>
-    public void Deconstruct(out TRight right) {
+    public void Deconstruct(out TRight right)
+    {
         right = _right;
     }
 }

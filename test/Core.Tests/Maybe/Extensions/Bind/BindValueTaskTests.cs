@@ -3,27 +3,32 @@ using UnambitiousFx.Core.Maybe.ValueTasks;
 
 namespace UnambitiousFx.Core.Tests.Maybe.Extensions.Bind;
 
-public sealed class BindValueTaskTests {
+public sealed class BindValueTaskTests
+{
     private static ValueTask<Maybe<T>> TaskOption<T>(Maybe<T> maybe)
-        where T : notnull {
+        where T : notnull
+    {
         return new ValueTask<Maybe<T>>(maybe);
     }
 
     [Fact]
-    public async Task BindAsync_SomeToSome_ReturnsSome() {
+    public async Task BindAsync_SomeToSome_ReturnsSome()
+    {
         var option = Core.Maybe.Maybe.Some(10);
         var result = await TaskOption(option)
                         .BindAsync(value => Core.Maybe.Maybe.Some(value.ToString()));
 
         Assert.True(result.IsSome);
-        Assert.Equal("10", result.Match(v => v, () => {
+        Assert.Equal("10", result.Match(v => v, () =>
+        {
             Assert.Fail("Should not be called");
             return null;
         }));
     }
 
     [Fact]
-    public async Task BindAsync_SomeToNone_ReturnsNone() {
+    public async Task BindAsync_SomeToNone_ReturnsNone()
+    {
         var option = Core.Maybe.Maybe.Some(10);
         var result = await TaskOption(option)
                         .BindAsync(_ => Core.Maybe.Maybe.None<string>());
@@ -32,7 +37,8 @@ public sealed class BindValueTaskTests {
     }
 
     [Fact]
-    public async Task BindAsync_None_ReturnsNone() {
+    public async Task BindAsync_None_ReturnsNone()
+    {
         var option = Core.Maybe.Maybe.None<int>();
         var result = await TaskOption(option)
                         .BindAsync(value => Core.Maybe.Maybe.Some(value.ToString()));

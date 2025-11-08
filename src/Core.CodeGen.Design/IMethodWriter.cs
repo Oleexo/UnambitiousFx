@@ -7,7 +7,8 @@ namespace UnambitiousFx.Core.CodeGen.Design;
 ///     This interface provides the necessary components to generate method code including
 ///     required using statements, generic parameters, and the actual method implementation.
 /// </remarks>
-public interface IMethodWriter : ICodeWriter {
+public interface IMethodWriter : ICodeWriter
+{
     /// <summary>
     ///     Gets the collection of generic parameters associated with the method.
     /// </summary>

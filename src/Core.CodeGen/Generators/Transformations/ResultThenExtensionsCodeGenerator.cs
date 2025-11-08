@@ -10,7 +10,8 @@ namespace UnambitiousFx.Core.CodeGen.Generators.Transformations;
 ///     Generates ONE class containing all Then methods, organized by arity in regions.
 ///     Follows architecture rule: One generator per class.
 /// </summary>
-internal sealed class ResultThenExtensionsCodeGenerator : BaseCodeGenerator {
+internal sealed class ResultThenExtensionsCodeGenerator : BaseCodeGenerator
+{
     private const string ExtensionsNamespace = "Results.Extensions.Transformations";
 
     private readonly ThenMethodBuilder _thenBuilder;
@@ -21,16 +22,19 @@ internal sealed class ResultThenExtensionsCodeGenerator : BaseCodeGenerator {
                    1,
                    ExtensionsNamespace,
                    "ResultThenExtensions",
-                   FileOrganizationMode.SingleFile)) {
+                   FileOrganizationMode.SingleFile))
+    {
         _thenBuilder = new ThenMethodBuilder(baseNamespace);
     }
 
-    protected override string PrepareOutputDirectory(string outputPath) {
+    protected override string PrepareOutputDirectory(string outputPath)
+    {
         var mainOutput = FileSystemHelper.CreateSubdirectory(outputPath, Config.SubNamespace);
         return mainOutput;
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
+    {
         return [
             GenerateSyncMethods(arity),
             GenerateAsyncMethodsForTasks(arity, false),
@@ -38,7 +42,8 @@ internal sealed class ResultThenExtensionsCodeGenerator : BaseCodeGenerator {
         ];
     }
 
-    private ClassWriter GenerateSyncMethods(ushort arity) {
+    private ClassWriter GenerateSyncMethods(ushort arity)
+    {
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
         var classWriter = new ClassWriter(
             Config.ClassName,
@@ -52,7 +57,8 @@ internal sealed class ResultThenExtensionsCodeGenerator : BaseCodeGenerator {
     }
 
     private ClassWriter GenerateAsyncMethodsForTasks(ushort arity,
-                                                     bool   isValueTask) {
+                                                     bool isValueTask)
+    {
         var subNamespace = isValueTask
                                ? "ValueTasks"
                                : "Tasks";

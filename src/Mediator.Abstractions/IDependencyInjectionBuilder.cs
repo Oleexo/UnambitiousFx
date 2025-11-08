@@ -3,7 +3,8 @@ using System.Diagnostics.CodeAnalysis;
 namespace UnambitiousFx.Mediator.Abstractions;
 
 /// Provides a contract for configuring and registering dependencies related to request and event handling within a dependency injection container.
-public interface IDependencyInjectionBuilder {
+public interface IDependencyInjectionBuilder
+{
     /// <summary>
     ///     Registers a request handler implementation for a specific request and response type with the dependency injection
     ///     system.

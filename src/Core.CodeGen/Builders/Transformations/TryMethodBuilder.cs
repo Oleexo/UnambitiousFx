@@ -6,32 +6,36 @@ namespace UnambitiousFx.Core.CodeGen.Builders.Transformations;
 /// <summary>
 ///     Builds Try extension methods for Result types.
 /// </summary>
-internal sealed class TryMethodBuilder {
+internal sealed class TryMethodBuilder
+{
     private readonly string _baseNamespace;
 
-    public TryMethodBuilder(string baseNamespace) {
+    public TryMethodBuilder(string baseNamespace)
+    {
         _baseNamespace = baseNamespace ?? throw new ArgumentNullException(nameof(baseNamespace));
     }
 
     /// <summary>
     ///     Builds a standalone Try method for a specific arity.
     /// </summary>
-    public MethodWriter BuildStandaloneMethod(ushort arity) {
+    public MethodWriter BuildStandaloneMethod(ushort arity)
+    {
         var valueTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
-        var outTypes   = GenericTypeHelper.BuildGenericTypeString(arity, "TOut");
+        var outTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TOut");
         var resultType = $"Result<{valueTypes}>";
         var returnType = $"Result<{outTypes}>";
 
         // Build generic parameters
         var genericParams = new List<GenericParameter>();
         genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull"));
-        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "TOut",   "notnull"));
+        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "TOut", "notnull"));
 
         // Build function signature and body
         string funcSignature;
         string bindCall;
 
-        if (arity == 1) {
+        if (arity == 1)
+        {
             funcSignature = "Func<TValue1, TOut1>";
             bindCall = """
                        value => {
@@ -45,7 +49,8 @@ internal sealed class TryMethodBuilder {
                                    }
                        """;
         }
-        else {
+        else
+        {
             var valueParams = string.Join(", ", Enumerable.Range(1, arity)
                                                           .Select(n => $"TValue{n}"));
             var outTuple = GenericTypeHelper.BuildTupleTypeString(arity, "TOut");
@@ -83,14 +88,16 @@ internal sealed class TryMethodBuilder {
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary("Executes a function that may throw, catching exceptions and converting to Result failure.")
                                             .WithParameter("result", "The result instance.")
-                                            .WithParameter("func",   "The function to execute.")
+                                            .WithParameter("func", "The function to execute.")
                                             .WithReturns("A new result with transformed value(s) or failure.");
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Input value type {i}.");
         }
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TOut{i}", $"Output value type {i}.");
         }
 
@@ -113,9 +120,10 @@ internal sealed class TryMethodBuilder {
     ///     Builds async Try method: Result + async func.
     /// </summary>
     public MethodWriter BuildAsyncFuncMethod(ushort arity,
-                                             bool   isValueTask) {
+                                             bool isValueTask)
+    {
         var valueTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
-        var outTypes   = GenericTypeHelper.BuildGenericTypeString(arity, "TOut");
+        var outTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TOut");
         var resultType = $"Result<{valueTypes}>";
         var returnType = $"Result<{outTypes}>";
         var asyncType = isValueTask
@@ -125,13 +133,14 @@ internal sealed class TryMethodBuilder {
         // Build generic parameters
         var genericParams = new List<GenericParameter>();
         genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull"));
-        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "TOut",   "notnull"));
+        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "TOut", "notnull"));
 
         // Build async function signature
         string funcSignature;
         string body;
 
-        if (arity == 1) {
+        if (arity == 1)
+        {
             funcSignature = $"Func<TValue1, {asyncType}<TOut1>>";
             body = """
                    return result.BindAsync(async value =>
@@ -148,7 +157,8 @@ internal sealed class TryMethodBuilder {
                    });
                    """;
         }
-        else {
+        else
+        {
             var valueParams = string.Join(", ", Enumerable.Range(1, arity)
                                                           .Select(n => $"TValue{n}"));
             var outTuple = GenericTypeHelper.BuildTupleTypeString(arity, "TOut");
@@ -182,14 +192,16 @@ internal sealed class TryMethodBuilder {
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary("Async Try executing an async function, catching exceptions and converting to Result.Failure.")
                                             .WithParameter("result", "The result instance.")
-                                            .WithParameter("func",   "The async function to execute.")
+                                            .WithParameter("func", "The async function to execute.")
                                             .WithReturns("A task with the result of the operation.");
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Input value type {i}.");
         }
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TOut{i}", $"Output value type {i}.");
         }
 
@@ -213,9 +225,10 @@ internal sealed class TryMethodBuilder {
     ///     Builds async Try method: Task + sync func.
     /// </summary>
     public MethodWriter BuildTaskSyncFuncMethod(ushort arity,
-                                                bool   isValueTask) {
+                                                bool isValueTask)
+    {
         var valueTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
-        var outTypes   = GenericTypeHelper.BuildGenericTypeString(arity, "TOut");
+        var outTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TOut");
         var resultType = $"Result<{valueTypes}>";
         var asyncResultType = isValueTask
                                   ? $"ValueTask<{resultType}>"
@@ -225,14 +238,16 @@ internal sealed class TryMethodBuilder {
         // Build generic parameters
         var genericParams = new List<GenericParameter>();
         genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull"));
-        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "TOut",   "notnull"));
+        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "TOut", "notnull"));
 
         // Build function signature
         string funcSignature;
-        if (arity == 1) {
+        if (arity == 1)
+        {
             funcSignature = "Func<TValue1, TOut1>";
         }
-        else {
+        else
+        {
             var valueParams = string.Join(", ", Enumerable.Range(1, arity)
                                                           .Select(n => $"TValue{n}"));
             var outTuple = GenericTypeHelper.BuildTupleTypeString(arity, "TOut");
@@ -251,14 +266,16 @@ internal sealed class TryMethodBuilder {
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary("Async Try awaiting result then executing a sync function with exception handling.")
                                             .WithParameter("awaitableResult", "The awaitable result instance.")
-                                            .WithParameter("func",            "The function to execute.")
+                                            .WithParameter("func", "The function to execute.")
                                             .WithReturns("A task with the result of the operation.");
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Input value type {i}.");
         }
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TOut{i}", $"Output value type {i}.");
         }
 
@@ -282,9 +299,10 @@ internal sealed class TryMethodBuilder {
     ///     Builds async Try method: Task + async func.
     /// </summary>
     public MethodWriter BuildTaskAsyncFuncMethod(ushort arity,
-                                                 bool   isValueTask) {
+                                                 bool isValueTask)
+    {
         var valueTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
-        var outTypes   = GenericTypeHelper.BuildGenericTypeString(arity, "TOut");
+        var outTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TOut");
         var resultType = $"Result<{valueTypes}>";
         var asyncResultType = isValueTask
                                   ? $"ValueTask<{resultType}>"
@@ -297,14 +315,16 @@ internal sealed class TryMethodBuilder {
         // Build generic parameters
         var genericParams = new List<GenericParameter>();
         genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull"));
-        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "TOut",   "notnull"));
+        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "TOut", "notnull"));
 
         // Build async function signature
         string funcSignature;
-        if (arity == 1) {
+        if (arity == 1)
+        {
             funcSignature = $"Func<TValue1, {asyncType}<TOut1>>";
         }
-        else {
+        else
+        {
             var valueParams = string.Join(", ", Enumerable.Range(1, arity)
                                                           .Select(n => $"TValue{n}"));
             var outTuple = GenericTypeHelper.BuildTupleTypeString(arity, "TOut");
@@ -323,14 +343,16 @@ internal sealed class TryMethodBuilder {
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary("Async Try awaiting result then executing an async function with exception handling.")
                                             .WithParameter("awaitableResult", "The awaitable result instance.")
-                                            .WithParameter("func",            "The async function to execute.")
+                                            .WithParameter("func", "The async function to execute.")
                                             .WithReturns("A task with the result of the operation.");
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Input value type {i}.");
         }
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TOut{i}", $"Output value type {i}.");
         }
 

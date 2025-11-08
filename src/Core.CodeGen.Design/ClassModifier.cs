@@ -4,7 +4,8 @@ namespace UnambitiousFx.Core.CodeGen.Design;
 ///     Represents modifiers that can be applied to a class.
 /// </summary>
 [Flags]
-public enum ClassModifier {
+public enum ClassModifier
+{
     /// <summary>
     ///     No modifiers applied.
     /// </summary>

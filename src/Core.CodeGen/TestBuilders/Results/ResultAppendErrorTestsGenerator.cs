@@ -8,22 +8,25 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results;
 ///     Test generator for Result.AppendError extension methods (sync, Task, ValueTask, direct async).
 ///     Refactored for homogeneity using shared variant generation helper.
 /// </summary>
-internal sealed class ResultAppendErrorTestsGenerator : ResultTestGeneratorBase {
-    private const int    StartArity          = 0; // Includes non-generic Result
-    private const string ClassName           = "ResultAppendErrorTests";
+internal sealed class ResultAppendErrorTestsGenerator : ResultTestGeneratorBase
+{
+    private const int StartArity = 0; // Includes non-generic Result
+    private const string ClassName = "ResultAppendErrorTests";
     private const string ExtensionsNamespace = "Results.Extensions.ErrorHandling";
 
-    public ResultAppendErrorTestsGenerator(string               baseNamespace,
+    public ResultAppendErrorTestsGenerator(string baseNamespace,
                                            FileOrganizationMode fileOrganization)
         : base(new GenerationConfig(baseNamespace,
                                     StartArity,
                                     ExtensionsNamespace,
                                     ClassName,
                                     fileOrganization,
-                                    true)) {
+                                    true))
+    {
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
+    {
         return GenerateVariants(arity,
                                 ClassName,
                                 (GenerateSyncTests, false),
@@ -31,7 +34,8 @@ internal sealed class ResultAppendErrorTestsGenerator : ResultTestGeneratorBase 
                                 (x => GenerateAwaitableAsyncTests(x, "ValueTask"), true));
     }
 
-    private ClassWriter GenerateSyncTests(ushort arity) {
+    private ClassWriter GenerateSyncTests(ushort arity)
+    {
         var cw = new ClassWriter($"ResultAppendErrorSyncTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Sync AppendError" };
         cw.AddMethod(GenerateSyncSuccessTest(arity));
         cw.AddMethod(GenerateSyncFailureTest(arity));
@@ -41,7 +45,8 @@ internal sealed class ResultAppendErrorTestsGenerator : ResultTestGeneratorBase 
     }
 
     private ClassWriter GenerateAwaitableAsyncTests(ushort arity,
-                                                    string asyncType) {
+                                                    string asyncType)
+    {
         var cw = new ClassWriter($"ResultAppendError{asyncType}TestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - {asyncType} AppendError" };
         cw.AddMethod(GenerateAsyncSuccessTest(arity, asyncType));
         cw.AddMethod(GenerateAsyncFailureTest(arity, asyncType));
@@ -52,7 +57,8 @@ internal sealed class ResultAppendErrorTestsGenerator : ResultTestGeneratorBase 
         return cw;
     }
 
-    private MethodWriter GenerateSyncSuccessTest(ushort arity) {
+    private MethodWriter GenerateSyncSuccessTest(ushort arity)
+    {
         return new MethodWriter($"AppendError_Arity{arity}_Success_ShouldNotAppendError",
                                 "void",
                                 GenerateSyncSuccessBody(arity),
@@ -60,7 +66,8 @@ internal sealed class ResultAppendErrorTestsGenerator : ResultTestGeneratorBase 
                                 usings: GetUsings());
     }
 
-    private MethodWriter GenerateSyncFailureTest(ushort arity) {
+    private MethodWriter GenerateSyncFailureTest(ushort arity)
+    {
         return new MethodWriter($"AppendError_Arity{arity}_Failure_ShouldAppendError",
                                 "void",
                                 GenerateSyncFailureBody(arity),
@@ -69,7 +76,8 @@ internal sealed class ResultAppendErrorTestsGenerator : ResultTestGeneratorBase 
     }
 
     private MethodWriter GenerateAwaitableAsyncSuccessTest(ushort arity,
-                                                           string asyncType) {
+                                                           string asyncType)
+    {
         return new MethodWriter($"AppendError{asyncType}_Arity{arity}_Success_ShouldNotAppendError",
                                 "async Task",
                                 GenerateAwaitableAsyncSuccessBody(arity, asyncType),
@@ -78,7 +86,8 @@ internal sealed class ResultAppendErrorTestsGenerator : ResultTestGeneratorBase 
     }
 
     private MethodWriter GenerateAwaitableAsyncFailureTest(ushort arity,
-                                                           string asyncType) {
+                                                           string asyncType)
+    {
         return new MethodWriter($"AppendError{asyncType}_Arity{arity}_Failure_ShouldAppendError",
                                 "async Task",
                                 GenerateAwaitableAsyncFailureBody(arity, asyncType),
@@ -87,7 +96,8 @@ internal sealed class ResultAppendErrorTestsGenerator : ResultTestGeneratorBase 
     }
 
     private MethodWriter GenerateAsyncSuccessTest(ushort arity,
-                                                  string asyncType) {
+                                                  string asyncType)
+    {
         return new MethodWriter($"AppendErrorAsync_Arity{arity}_Success_ShouldNotAppendError",
                                 "async Task",
                                 GenerateAsyncSuccessBody(arity, asyncType),
@@ -96,7 +106,8 @@ internal sealed class ResultAppendErrorTestsGenerator : ResultTestGeneratorBase 
     }
 
     private MethodWriter GenerateAsyncFailureTest(ushort arity,
-                                                  string asyncType) {
+                                                  string asyncType)
+    {
         return new MethodWriter($"AppendErrorAsync_Arity{arity}_Failure_ShouldAppendError",
                                 "async Task",
                                 GenerateAsyncFailureBody(arity, asyncType),
@@ -104,13 +115,15 @@ internal sealed class ResultAppendErrorTestsGenerator : ResultTestGeneratorBase 
                                 usings: GetUsings());
     }
 
-    private string GenerateSyncSuccessBody(ushort arity) {
+    private string GenerateSyncSuccessBody(ushort arity)
+    {
         var testValues = arity > 0
                              ? GenerateTestValues(arity)
                              : string.Empty;
         var creation = GenerateResultCreation(arity);
-        var call     = GenerateAppendErrorSyncCall(arity);
-        if (arity == 0) {
+        var call = GenerateAppendErrorSyncCall(arity);
+        if (arity == 0)
+        {
             return $"""
                     // Given
                     {creation}
@@ -132,9 +145,10 @@ internal sealed class ResultAppendErrorTestsGenerator : ResultTestGeneratorBase 
                 """;
     }
 
-    private string GenerateSyncFailureBody(ushort arity) {
+    private string GenerateSyncFailureBody(ushort arity)
+    {
         var failureCreation = GenerateFailureResultCreation(arity);
-        var call            = GenerateAppendErrorSyncCall(arity);
+        var call = GenerateAppendErrorSyncCall(arity);
         return $"""
                 // Given
                 {failureCreation}
@@ -149,13 +163,15 @@ internal sealed class ResultAppendErrorTestsGenerator : ResultTestGeneratorBase 
     }
 
     private string GenerateAwaitableAsyncSuccessBody(ushort arity,
-                                                     string asyncType) {
+                                                     string asyncType)
+    {
         var testValues = arity > 0
                              ? GenerateTestValues(arity)
                              : string.Empty;
         var creation = GenerateAsyncSuccessResultCreation(arity, asyncType);
-        var call     = GenerateAppendErrorAwaitableAsyncCall(arity);
-        if (arity == 0) {
+        var call = GenerateAppendErrorAwaitableAsyncCall(arity);
+        if (arity == 0)
+        {
             return $"""
                     // Given
                     {creation}
@@ -178,9 +194,10 @@ internal sealed class ResultAppendErrorTestsGenerator : ResultTestGeneratorBase 
     }
 
     private string GenerateAwaitableAsyncFailureBody(ushort arity,
-                                                     string asyncType) {
+                                                     string asyncType)
+    {
         var creation = GenerateAsyncFailureResultCreation(arity, asyncType);
-        var call     = GenerateAppendErrorAwaitableAsyncCall(arity);
+        var call = GenerateAppendErrorAwaitableAsyncCall(arity);
         return $"""
                 // Given
                 {creation}
@@ -195,13 +212,15 @@ internal sealed class ResultAppendErrorTestsGenerator : ResultTestGeneratorBase 
     }
 
     private string GenerateAsyncSuccessBody(ushort arity,
-                                            string asyncType) {
+                                            string asyncType)
+    {
         var testValues = arity > 0
                              ? GenerateTestValues(arity)
                              : string.Empty;
         var creation = GenerateResultCreation(arity);
-        var call     = GenerateAppendErrorDirectAsyncCall(arity, asyncType);
-        if (arity == 0) {
+        var call = GenerateAppendErrorDirectAsyncCall(arity, asyncType);
+        if (arity == 0)
+        {
             return $"""
                     // Given
                     {creation}
@@ -224,9 +243,10 @@ internal sealed class ResultAppendErrorTestsGenerator : ResultTestGeneratorBase 
     }
 
     private string GenerateAsyncFailureBody(ushort arity,
-                                            string asyncType) {
+                                            string asyncType)
+    {
         var creation = GenerateFailureResultCreation(arity);
-        var call     = GenerateAppendErrorDirectAsyncCall(arity, asyncType);
+        var call = GenerateAppendErrorDirectAsyncCall(arity, asyncType);
         return $"""
                 // Given
                 {creation}
@@ -240,8 +260,10 @@ internal sealed class ResultAppendErrorTestsGenerator : ResultTestGeneratorBase 
                 """;
     }
 
-    private string GenerateAppendErrorSyncCall(ushort arity) {
-        if (arity == 0) {
+    private string GenerateAppendErrorSyncCall(ushort arity)
+    {
+        if (arity == 0)
+        {
             return "var appendedResult = result.AppendError(\"Appended error\");";
         }
 
@@ -249,8 +271,10 @@ internal sealed class ResultAppendErrorTestsGenerator : ResultTestGeneratorBase 
         return $"var appendedResult = result.AppendError<{typeParams}>(\"Appended error\");";
     }
 
-    private string GenerateAppendErrorAwaitableAsyncCall(ushort arity) {
-        if (arity == 0) {
+    private string GenerateAppendErrorAwaitableAsyncCall(ushort arity)
+    {
+        if (arity == 0)
+        {
             return "var appendedResult = await taskResult.AppendErrorAsync(\"Appended error\");";
         }
 
@@ -259,8 +283,10 @@ internal sealed class ResultAppendErrorTestsGenerator : ResultTestGeneratorBase 
     }
 
     private string GenerateAppendErrorDirectAsyncCall(ushort arity,
-                                                      string asyncType) {
-        if (arity == 0) {
+                                                      string asyncType)
+    {
+        if (arity == 0)
+        {
             return "var appendedResult = await result.AppendErrorAsync(\"Appended error\");";
         }
 

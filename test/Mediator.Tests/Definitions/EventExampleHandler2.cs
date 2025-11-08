@@ -3,15 +3,17 @@ using UnambitiousFx.Mediator.Abstractions;
 
 namespace UnambitiousFx.Mediator.Tests.Definitions;
 
-public sealed class EventExampleHandler2 : IEventHandler<EventExample> {
-    public bool          Executed       { get; private set; }
-    public EventExample? EventExecuted  { get; private set; }
-    public int           ExecutionCount { get; private set; }
-    public Action?       OnExecuted     { get; set; }
+public sealed class EventExampleHandler2 : IEventHandler<EventExample>
+{
+    public bool Executed { get; private set; }
+    public EventExample? EventExecuted { get; private set; }
+    public int ExecutionCount { get; private set; }
+    public Action? OnExecuted { get; set; }
 
-    public ValueTask<Result> HandleAsync(EventExample      @event,
-                                         CancellationToken cancellationToken = default) {
-        Executed      = true;
+    public ValueTask<Result> HandleAsync(EventExample @event,
+                                         CancellationToken cancellationToken = default)
+    {
+        Executed = true;
         EventExecuted = @event;
         ExecutionCount++;
         OnExecuted?.Invoke();

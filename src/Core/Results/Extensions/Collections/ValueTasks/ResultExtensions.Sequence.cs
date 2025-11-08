@@ -1,15 +1,20 @@
 namespace UnambitiousFx.Core.Results.Extensions.Collections.ValueTasks;
 
-public static partial class ResultExtensions {
+public static partial class ResultExtensions
+{
     public static async ValueTask<Result<List<TValue>>> SequenceAsync<TValue>(this IEnumerable<ValueTask<Result<TValue>>> tasks)
-        where TValue : notnull {
+        where TValue : notnull
+    {
         var list = new List<TValue>();
-        foreach (var t in tasks) {
+        foreach (var t in tasks)
+        {
             var r = await t.ConfigureAwait(false);
-            if (r.TryGet(out var value, out var error)) {
+            if (r.TryGet(out var value, out var error))
+            {
                 list.Add(value);
             }
-            else {
+            else
+            {
                 return Result.Failure<List<TValue>>(error);
             }
         }
@@ -18,7 +23,8 @@ public static partial class ResultExtensions {
     }
 
     public static async ValueTask<Result<List<TValue>>> SequenceAsync<TValue>(this ValueTask<IEnumerable<Result<TValue>>> awaitableResults)
-        where TValue : notnull {
+        where TValue : notnull
+    {
         var results = await awaitableResults.ConfigureAwait(false);
         return results.Sequence();
     }

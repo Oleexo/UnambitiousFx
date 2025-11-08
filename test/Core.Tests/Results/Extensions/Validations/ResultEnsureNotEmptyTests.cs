@@ -6,9 +6,11 @@ using UnambitiousFx.Core.Results.Reasons;
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Validations;
 
 [TestSubject(typeof(ResultEnsureNotEmptyExtensions))]
-public sealed class ResultEnsureNotEmptyTests {
+public sealed class ResultEnsureNotEmptyTests
+{
     [Fact]
-    public void EnsureNotEmpty_String_Empty_Fails() {
+    public void EnsureNotEmpty_String_Empty_Fails()
+    {
         var r = Result.Success("")
                       .EnsureNotEmpty("Must not be empty", "name");
         Assert.True(r.IsFaulted);
@@ -16,14 +18,16 @@ public sealed class ResultEnsureNotEmptyTests {
     }
 
     [Fact]
-    public void EnsureNotEmpty_String_NonEmpty_Succeeds() {
+    public void EnsureNotEmpty_String_NonEmpty_Succeeds()
+    {
         var r = Result.Success("value")
                       .EnsureNotEmpty();
         Assert.True(r.IsSuccess);
     }
 
     [Fact]
-    public void EnsureNotEmpty_Collection_Empty_Fails() {
+    public void EnsureNotEmpty_Collection_Empty_Fails()
+    {
         var r = Result.Success(new List<int>())
                       .EnsureNotEmpty<List<int>, int>(field: "items");
         Assert.True(r.IsFaulted);
@@ -31,23 +35,26 @@ public sealed class ResultEnsureNotEmptyTests {
     }
 
     [Fact]
-    public void EnsureNotEmpty_Collection_NonEmpty_Succeeds() {
+    public void EnsureNotEmpty_Collection_NonEmpty_Succeeds()
+    {
         var r = Result.Success(new List<int> { 1 })
                       .EnsureNotEmpty<List<int>, int>();
         Assert.True(r.IsSuccess);
     }
 
     [Fact]
-    public void EnsureNotEmpty_String_FailureResult_DoNothing() {
+    public void EnsureNotEmpty_String_FailureResult_DoNothing()
+    {
         var rInitial = Result.Failure<string>("failed");
-        var r        = rInitial.EnsureNotEmpty();
+        var r = rInitial.EnsureNotEmpty();
         Assert.Same(rInitial, r);
     }
-    
+
     [Fact]
-    public void EnsureNotEmpty_Collection_FailureResult_DoNothing() {
+    public void EnsureNotEmpty_Collection_FailureResult_DoNothing()
+    {
         var rInitial = Result.Failure<List<int>>("failed");
-        var r        = rInitial.EnsureNotEmpty<List<int>, int>();
+        var r = rInitial.EnsureNotEmpty<List<int>, int>();
         Assert.Same(rInitial, r);
     }
 }

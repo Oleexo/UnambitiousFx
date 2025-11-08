@@ -5,7 +5,8 @@ namespace UnambitiousFx.Core.CodeGen.Design;
 /// <summary>
 ///     Represents a writer for generating code elements.
 /// </summary>
-public interface ICodeWriter {
+public interface ICodeWriter
+{
     /// <summary>
     ///     Gets the collection of using statements required for the generated method.
     /// </summary>

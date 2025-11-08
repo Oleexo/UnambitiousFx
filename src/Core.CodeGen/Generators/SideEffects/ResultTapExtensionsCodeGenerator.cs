@@ -10,7 +10,8 @@ namespace UnambitiousFx.Core.CodeGen.Generators.SideEffects;
 ///     Generates ONE class containing all Tap methods, organized by arity in regions.
 ///     Follows architecture rule: One generator per class.
 /// </summary>
-internal sealed class ResultTapExtensionsCodeGenerator : BaseCodeGenerator {
+internal sealed class ResultTapExtensionsCodeGenerator : BaseCodeGenerator
+{
     private const string ExtensionsNamespace = "Results.Extensions.SideEffects";
 
     private readonly TapMethodBuilder _tapBuilder;
@@ -21,16 +22,19 @@ internal sealed class ResultTapExtensionsCodeGenerator : BaseCodeGenerator {
                    0,
                    ExtensionsNamespace,
                    "ResultTapExtensions",
-                   FileOrganizationMode.SingleFile)) {
+                   FileOrganizationMode.SingleFile))
+    {
         _tapBuilder = new TapMethodBuilder();
     }
 
-    protected override string PrepareOutputDirectory(string outputPath) {
+    protected override string PrepareOutputDirectory(string outputPath)
+    {
         var mainOutput = FileSystemHelper.CreateSubdirectory(outputPath, Config.SubNamespace);
         return mainOutput;
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
+    {
         return [
             GenerateSyncMethods(arity),
             GenerateAsyncMethods(arity, false),
@@ -38,7 +42,8 @@ internal sealed class ResultTapExtensionsCodeGenerator : BaseCodeGenerator {
         ];
     }
 
-    private ClassWriter GenerateSyncMethods(ushort arity) {
+    private ClassWriter GenerateSyncMethods(ushort arity)
+    {
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
         var classWriter = new ClassWriter(
             Config.ClassName,
@@ -53,7 +58,8 @@ internal sealed class ResultTapExtensionsCodeGenerator : BaseCodeGenerator {
     }
 
     private ClassWriter GenerateAsyncMethods(ushort arity,
-                                             bool   isValueTask) {
+                                             bool isValueTask)
+    {
         var subNamespace = isValueTask
                                ? "ValueTasks"
                                : "Tasks";

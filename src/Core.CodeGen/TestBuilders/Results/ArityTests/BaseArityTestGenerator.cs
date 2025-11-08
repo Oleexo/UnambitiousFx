@@ -10,11 +10,13 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results.ArityTests;
 ///     Provides common structure, validation, and directory preparation for all test generators.
 ///     Extends BaseCodeGenerator to leverage existing infrastructure while adding test-specific functionality.
 /// </summary>
-internal abstract class BaseArityTestGenerator : BaseCodeGenerator, IArityTestGenerator {
+internal abstract class BaseArityTestGenerator : BaseCodeGenerator, IArityTestGenerator
+{
     protected readonly ArityTestGenerationConfig TestConfig;
 
     protected BaseArityTestGenerator(ArityTestGenerationConfig testConfig)
-        : base(testConfig.BaseConfig) {
+        : base(testConfig.BaseConfig)
+    {
         TestConfig = testConfig ?? throw new ArgumentNullException(nameof(testConfig));
     }
 
@@ -23,7 +25,8 @@ internal abstract class BaseArityTestGenerator : BaseCodeGenerator, IArityTestGe
     ///     Uses the base implementation while adding test-specific validation and directory preparation.
     /// </summary>
     public new void Generate(ushort numberOfArity,
-                             string outputPath) {
+                             string outputPath)
+    {
         ValidateTestInputs(numberOfArity, outputPath);
         PrepareTestOutputDirectory(outputPath);
 
@@ -39,7 +42,8 @@ internal abstract class BaseArityTestGenerator : BaseCodeGenerator, IArityTestGe
     /// <summary>
     ///     Gets the required using statements for the generated test class.
     /// </summary>
-    public virtual IEnumerable<string> GetRequiredUsings() {
+    public virtual IEnumerable<string> GetRequiredUsings()
+    {
         return [
             "System",
             "System.Threading.Tasks",
@@ -58,7 +62,8 @@ internal abstract class BaseArityTestGenerator : BaseCodeGenerator, IArityTestGe
     ///     Validates test generation inputs with additional test-specific checks.
     /// </summary>
     protected override void ValidateInputs(ushort numberOfArity,
-                                           string outputPath) {
+                                           string outputPath)
+    {
         // Call base validation first
         base.ValidateInputs(numberOfArity, outputPath);
 
@@ -70,17 +75,21 @@ internal abstract class BaseArityTestGenerator : BaseCodeGenerator, IArityTestGe
     ///     Validates test-specific generation inputs.
     /// </summary>
     protected virtual void ValidateTestInputs(ushort numberOfArity,
-                                              string outputPath) {
-        if (string.IsNullOrWhiteSpace(TestConfig.TestDirectory)) {
+                                              string outputPath)
+    {
+        if (string.IsNullOrWhiteSpace(TestConfig.TestDirectory))
+        {
             throw new ArgumentException("Test directory cannot be null or whitespace.", nameof(TestConfig.TestDirectory));
         }
 
         if (TestConfig.EnabledScenarios == null ||
-            !TestConfig.EnabledScenarios.Any()) {
+            !TestConfig.EnabledScenarios.Any())
+        {
             throw new ArgumentException("At least one test scenario category must be enabled.", nameof(TestConfig.EnabledScenarios));
         }
 
-        if (TestConfig.NamingPattern == null) {
+        if (TestConfig.NamingPattern == null)
+        {
             throw new ArgumentException("Test naming pattern cannot be null.", nameof(TestConfig.NamingPattern));
         }
 
@@ -96,7 +105,8 @@ internal abstract class BaseArityTestGenerator : BaseCodeGenerator, IArityTestGe
     ///     Prepares the test output directory structure.
     ///     Creates necessary subdirectories for test organization.
     /// </summary>
-    protected virtual void PrepareTestOutputDirectory(string outputPath) {
+    protected virtual void PrepareTestOutputDirectory(string outputPath)
+    {
         // Ensure the base test directory exists
         FileSystemHelper.EnsureDirectoryExists(TestConfig.TestDirectory);
 
@@ -106,7 +116,8 @@ internal abstract class BaseArityTestGenerator : BaseCodeGenerator, IArityTestGe
         // Create category-specific subdirectory if needed
         var categoryPath = GetCategoryOutputPath(outputPath);
         if (!string.IsNullOrEmpty(categoryPath) &&
-            categoryPath != outputPath) {
+            categoryPath != outputPath)
+        {
             FileSystemHelper.EnsureDirectoryExists(categoryPath);
         }
     }
@@ -114,8 +125,9 @@ internal abstract class BaseArityTestGenerator : BaseCodeGenerator, IArityTestGe
     /// <summary>
     ///     Gets the output path for the specific test category.
     /// </summary>
-    protected virtual string GetCategoryOutputPath(string baseOutputPath) {
-        var category             = GetCategory();
+    protected virtual string GetCategoryOutputPath(string baseOutputPath)
+    {
+        var category = GetCategory();
         var categorySubdirectory = category.ToString();
 
         return Path.Combine(baseOutputPath, categorySubdirectory);
@@ -125,14 +137,18 @@ internal abstract class BaseArityTestGenerator : BaseCodeGenerator, IArityTestGe
     ///     Generates test classes for a specific arity.
     ///     This is the main template method that derived classes must implement.
     /// </summary>
-    protected sealed override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
+    protected sealed override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
+    {
         var testClasses = new List<ClassWriter>();
 
         // Generate tests for each enabled scenario category
-        foreach (var scenarioCategory in TestConfig.EnabledScenarios) {
-            if (ShouldGenerateForScenario(scenarioCategory, arity)) {
+        foreach (var scenarioCategory in TestConfig.EnabledScenarios)
+        {
+            if (ShouldGenerateForScenario(scenarioCategory, arity))
+            {
                 var classWriter = GenerateTestClassForArity(arity, scenarioCategory);
-                if (classWriter != null) {
+                if (classWriter != null)
+                {
                     testClasses.Add(classWriter);
                 }
             }
@@ -145,16 +161,19 @@ internal abstract class BaseArityTestGenerator : BaseCodeGenerator, IArityTestGe
     ///     Determines whether tests should be generated for a specific scenario and arity.
     /// </summary>
     protected virtual bool ShouldGenerateForScenario(TestScenarioCategory scenarioCategory,
-                                                     ushort               arity) {
+                                                     ushort arity)
+    {
         // Skip async scenarios if async tests are disabled
         if (scenarioCategory == TestScenarioCategory.Async &&
-            !TestConfig.GenerateAsyncTests) {
+            !TestConfig.GenerateAsyncTests)
+        {
             return false;
         }
 
         // Skip performance scenarios in minimal mode
         if (scenarioCategory == TestScenarioCategory.Performance &&
-            TestConfig.Mode  == TestGenerationMode.Minimal) {
+            TestConfig.Mode == TestGenerationMode.Minimal)
+        {
             return false;
         }
 
@@ -165,37 +184,40 @@ internal abstract class BaseArityTestGenerator : BaseCodeGenerator, IArityTestGe
     ///     Generates a test class for a specific arity and scenario category.
     ///     Derived classes must implement this method to provide category-specific test generation.
     /// </summary>
-    protected abstract ClassWriter? GenerateTestClassForArity(ushort               arity,
+    protected abstract ClassWriter? GenerateTestClassForArity(ushort arity,
                                                               TestScenarioCategory scenarioCategory);
 
     /// <summary>
     ///     Generates a test method name following the configured naming pattern.
     /// </summary>
-    protected virtual string GenerateTestMethodName(string               methodName,
-                                                    ushort               arity,
+    protected virtual string GenerateTestMethodName(string methodName,
+                                                    ushort arity,
                                                     TestScenarioCategory scenario,
-                                                    string               expectedBehavior) {
-        var pattern        = TestConfig.NamingPattern.TestMethodPattern;
+                                                    string expectedBehavior)
+    {
+        var pattern = TestConfig.NamingPattern.TestMethodPattern;
         var scenarioSuffix = GetScenarioSuffix(scenario);
 
         return pattern
-              .Replace("{MethodName}",       methodName)
-              .Replace("{Arity}",            arity.ToString())
-              .Replace("{Scenario}",         scenarioSuffix)
+              .Replace("{MethodName}", methodName)
+              .Replace("{Arity}", arity.ToString())
+              .Replace("{Scenario}", scenarioSuffix)
               .Replace("{ExpectedBehavior}", expectedBehavior);
     }
 
     /// <summary>
     ///     Gets the suffix for a test scenario category.
     /// </summary>
-    protected virtual string GetScenarioSuffix(TestScenarioCategory scenario) {
-        return scenario switch {
-            TestScenarioCategory.Success   => TestConfig.NamingPattern.SuccessTestSuffix,
-            TestScenarioCategory.Failure   => TestConfig.NamingPattern.FailureTestSuffix,
+    protected virtual string GetScenarioSuffix(TestScenarioCategory scenario)
+    {
+        return scenario switch
+        {
+            TestScenarioCategory.Success => TestConfig.NamingPattern.SuccessTestSuffix,
+            TestScenarioCategory.Failure => TestConfig.NamingPattern.FailureTestSuffix,
             TestScenarioCategory.Exception => TestConfig.NamingPattern.ExceptionTestSuffix,
-            TestScenarioCategory.Async     => TestConfig.NamingPattern.AsyncTestSuffix,
-            TestScenarioCategory.EdgeCase  => TestConfig.NamingPattern.EdgeCaseTestSuffix,
-            _                              => scenario.ToString()
+            TestScenarioCategory.Async => TestConfig.NamingPattern.AsyncTestSuffix,
+            TestScenarioCategory.EdgeCase => TestConfig.NamingPattern.EdgeCaseTestSuffix,
+            _ => scenario.ToString()
         };
     }
 
@@ -203,10 +225,12 @@ internal abstract class BaseArityTestGenerator : BaseCodeGenerator, IArityTestGe
     ///     Creates a base test class writer with common configuration.
     /// </summary>
     protected virtual ClassWriter CreateBaseTestClass(string className,
-                                                      ushort arity) {
-        var classWriter = new ClassWriter(className, Visibility.Public) {
+                                                      ushort arity)
+    {
+        var classWriter = new ClassWriter(className, Visibility.Public)
+        {
             Namespace = null, // Let BaseCodeGenerator set the full namespace
-            Region    = $"Arity {arity}"
+            Region = $"Arity {arity}"
         };
 
         return classWriter;

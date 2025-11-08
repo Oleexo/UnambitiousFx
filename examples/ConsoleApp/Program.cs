@@ -11,15 +11,16 @@ using UnambitiousFx.Mediator.Abstractions;
 
 // Setup DI container
 var services = new ServiceCollection()
-              .AddLogging(builder => {
-                   builder.AddConsole();
-                   builder.SetMinimumLevel(LogLevel.Information);
-               })
+              .AddLogging(builder =>
+              {
+                  builder.AddConsole();
+                  builder.SetMinimumLevel(LogLevel.Information);
+              })
               .AddMediator(cfg => cfg.AddRegisterGroup(new RegisterGroup()))
               .AddScoped<IStreamRequestPipelineBehavior, StreamLoggingBehavior>()
               .BuildServiceProvider();
 
-var sender    = services.GetRequiredService<ISender>();
+var sender = services.GetRequiredService<ISender>();
 var publisher = services.GetRequiredService<IPublisher>();
 
 Console.WriteLine("=== Mediator Profiling Console App ===\n");
@@ -41,15 +42,18 @@ Console.WriteLine("\n=== All profiling scenarios completed ===");
 return;
 
 // Scenario 1: Simple Command (no response)
-async Task RunSimpleCommandScenario(ISender senderService) {
+async Task RunSimpleCommandScenario(ISender senderService)
+{
     Console.WriteLine("\n--- Scenario 1: Simple Command (No Response) ---");
     var stopwatch = Stopwatch.StartNew();
 
-    for (var i = 0; i < 100; i++) {
+    for (var i = 0; i < 100; i++)
+    {
         var command = new SimpleCommand { Message = $"Command {i}" };
-        var result  = await senderService.SendAsync(command);
+        var result = await senderService.SendAsync(command);
 
-        if (!result.IsSuccess) {
+        if (!result.IsSuccess)
+        {
             Console.WriteLine($"Failed with {result.Errors.Count} errors");
         }
     }
@@ -60,19 +64,23 @@ async Task RunSimpleCommandScenario(ISender senderService) {
 }
 
 // Scenario 2: Command with Response
-async Task RunCommandWithResponseScenario(ISender senderService) {
+async Task RunCommandWithResponseScenario(ISender senderService)
+{
     Console.WriteLine("\n--- Scenario 2: Command with Response ---");
     var stopwatch = Stopwatch.StartNew();
 
-    for (var i = 0; i < 100; i++) {
-        var command = new CreateOrderCommand {
+    for (var i = 0; i < 100; i++)
+    {
+        var command = new CreateOrderCommand
+        {
             ProductName = $"Product {i}",
-            Quantity    = i + 1,
-            Price       = 99.99m * (i + 1)
+            Quantity = i + 1,
+            Price = 99.99m * (i + 1)
         };
         var result = await senderService.SendAsync<CreateOrderCommand, OrderCreatedResponse>(command);
 
-        if (!result.IsSuccess) {
+        if (!result.IsSuccess)
+        {
             Console.WriteLine($"Failed with {result.Errors.Count} errors");
         }
     }
@@ -83,15 +91,18 @@ async Task RunCommandWithResponseScenario(ISender senderService) {
 }
 
 // Scenario 3: Query
-async Task RunQueryScenario(ISender senderService) {
+async Task RunQueryScenario(ISender senderService)
+{
     Console.WriteLine("\n--- Scenario 3: Query Requests ---");
     var stopwatch = Stopwatch.StartNew();
 
-    for (var i = 0; i < 100; i++) {
-        var query  = new GetOrderQuery { OrderId = Guid.NewGuid() };
+    for (var i = 0; i < 100; i++)
+    {
+        var query = new GetOrderQuery { OrderId = Guid.NewGuid() };
         var result = await senderService.SendAsync<GetOrderQuery, OrderDto>(query);
 
-        if (!result.IsSuccess) {
+        if (!result.IsSuccess)
+        {
             Console.WriteLine($"Failed with {result.Errors.Count} errors");
         }
     }
@@ -102,21 +113,26 @@ async Task RunQueryScenario(ISender senderService) {
 }
 
 // Scenario 3.5: Streaming Query
-async Task RunStreamingQueryScenario(ISender senderService) {
+async Task RunStreamingQueryScenario(ISender senderService)
+{
     Console.WriteLine("\n--- Scenario 3.5: Streaming Query ---");
     var stopwatch = Stopwatch.StartNew();
 
-    var streamQuery = new GetOrdersStreamQuery {
-        PageSize    = 50,
+    var streamQuery = new GetOrdersStreamQuery
+    {
+        PageSize = 50,
         TotalOrders = 500
     };
     var orderCount = 0;
 
-    await foreach (var result in senderService.SendStreamAsync<GetOrdersStreamQuery, OrderDto>(streamQuery)) {
-        if (result.IsSuccess) {
+    await foreach (var result in senderService.SendStreamAsync<GetOrdersStreamQuery, OrderDto>(streamQuery))
+    {
+        if (result.IsSuccess)
+        {
             orderCount++;
         }
-        else {
+        else
+        {
             var errorMsg = result.Errors.FirstOrDefault()
                                 ?.Message ??
                            "Unknown error";
@@ -127,23 +143,27 @@ async Task RunStreamingQueryScenario(ISender senderService) {
     stopwatch.Stop();
     Console.WriteLine($"Streamed {orderCount} orders in {stopwatch.ElapsedMilliseconds}ms");
     Console.WriteLine($"Average: {stopwatch.ElapsedMilliseconds / (double)orderCount}ms per order");
-    Console.WriteLine($"Throughput: {orderCount                 / (stopwatch.ElapsedMilliseconds / 1000.0):F2} orders/second");
+    Console.WriteLine($"Throughput: {orderCount / (stopwatch.ElapsedMilliseconds / 1000.0):F2} orders/second");
 }
 
 
 // Scenario 4: Event Publishing
-async Task RunEventPublishingScenario(IPublisher publisherService) {
+async Task RunEventPublishingScenario(IPublisher publisherService)
+{
     Console.WriteLine("\n--- Scenario 4: Event Publishing ---");
     var stopwatch = Stopwatch.StartNew();
 
-    for (var i = 0; i < 100; i++) {
-        var @event = new OrderProcessedEvent {
-            OrderId     = Guid.NewGuid(),
+    for (var i = 0; i < 100; i++)
+    {
+        var @event = new OrderProcessedEvent
+        {
+            OrderId = Guid.NewGuid(),
             ProcessedAt = DateTime.UtcNow
         };
         var result = await publisherService.PublishAsync(@event);
 
-        if (!result.IsSuccess) {
+        if (!result.IsSuccess)
+        {
             Console.WriteLine($"Failed with {result.Errors.Count} errors");
         }
     }
@@ -154,19 +174,23 @@ async Task RunEventPublishingScenario(IPublisher publisherService) {
 }
 
 // Scenario 5: Multiple Event Handlers
-async Task RunMultipleEventHandlersScenario(IPublisher publisherService) {
+async Task RunMultipleEventHandlersScenario(IPublisher publisherService)
+{
     Console.WriteLine("\n--- Scenario 5: Event Publishing to Multiple Handlers ---");
     var stopwatch = Stopwatch.StartNew();
 
-    for (var i = 0; i < 100; i++) {
-        var @event = new OrderShippedEvent {
-            OrderId    = Guid.NewGuid(),
-            ShippedAt  = DateTime.UtcNow,
+    for (var i = 0; i < 100; i++)
+    {
+        var @event = new OrderShippedEvent
+        {
+            OrderId = Guid.NewGuid(),
+            ShippedAt = DateTime.UtcNow,
             ShippingId = Guid.NewGuid()
         };
         var result = await publisherService.PublishAsync(@event);
 
-        if (!result.IsSuccess) {
+        if (!result.IsSuccess)
+        {
             Console.WriteLine($"Failed with {result.Errors.Count} errors");
         }
     }
@@ -177,13 +201,16 @@ async Task RunMultipleEventHandlersScenario(IPublisher publisherService) {
 }
 
 // Scenario 6: High Volume Events
-async Task RunHighVolumeEventScenario(IPublisher publisherService) {
+async Task RunHighVolumeEventScenario(IPublisher publisherService)
+{
     Console.WriteLine("\n--- Scenario 6: High Volume Event Publishing (1000 events) ---");
     var stopwatch = Stopwatch.StartNew();
 
-    for (var i = 0; i < 1000; i++) {
-        var @event = new OrderProcessedEvent {
-            OrderId     = Guid.NewGuid(),
+    for (var i = 0; i < 1000; i++)
+    {
+        var @event = new OrderProcessedEvent
+        {
+            OrderId = Guid.NewGuid(),
             ProcessedAt = DateTime.UtcNow
         };
         await publisherService.PublishAsync(@event);
@@ -192,15 +219,17 @@ async Task RunHighVolumeEventScenario(IPublisher publisherService) {
     stopwatch.Stop();
     Console.WriteLine($"Completed 1000 high-volume event publishes in {stopwatch.ElapsedMilliseconds}ms");
     Console.WriteLine($"Average: {stopwatch.ElapsedMilliseconds / 1000.0}ms per event");
-    Console.WriteLine($"Throughput: {1000.0                     / (stopwatch.ElapsedMilliseconds / 1000.0)} events/second");
+    Console.WriteLine($"Throughput: {1000.0 / (stopwatch.ElapsedMilliseconds / 1000.0)} events/second");
 }
 
 // Scenario 7: High Volume
-async Task RunHighVolumeScenario(ISender senderService) {
+async Task RunHighVolumeScenario(ISender senderService)
+{
     Console.WriteLine("\n--- Scenario 7: High Volume (1000 requests) ---");
     var stopwatch = Stopwatch.StartNew();
 
-    for (var i = 0; i < 1000; i++) {
+    for (var i = 0; i < 1000; i++)
+    {
         var command = new HighVolumeCommand { Data = $"Data {i}" };
         await senderService.SendAsync(command);
     }
@@ -208,16 +237,19 @@ async Task RunHighVolumeScenario(ISender senderService) {
     stopwatch.Stop();
     Console.WriteLine($"Completed 1000 high-volume commands in {stopwatch.ElapsedMilliseconds}ms");
     Console.WriteLine($"Average: {stopwatch.ElapsedMilliseconds / 1000.0}ms per command");
-    Console.WriteLine($"Throughput: {1000.0                     / (stopwatch.ElapsedMilliseconds / 1000.0)} requests/second");
+    Console.WriteLine($"Throughput: {1000.0 / (stopwatch.ElapsedMilliseconds / 1000.0)} requests/second");
 }
 
 // Scenario 8: Pipeline Behavior Impact
-async Task RunPipelineBehaviorScenario(ISender senderService) {
+async Task RunPipelineBehaviorScenario(ISender senderService)
+{
     Console.WriteLine("\n--- Scenario 8: Commands with Pipeline Behaviors ---");
     var stopwatch = Stopwatch.StartNew();
 
-    for (var i = 0; i < 100; i++) {
-        var command = new ComplexCommand {
+    for (var i = 0; i < 100; i++)
+    {
+        var command = new ComplexCommand
+        {
             Step1 = $"Step1-{i}",
             Step2 = i,
             Step3 = DateTime.UtcNow
@@ -231,20 +263,24 @@ async Task RunPipelineBehaviorScenario(ISender senderService) {
 }
 
 // Scenario 9: Concurrent Requests
-async Task RunConcurrentRequestsScenario(ISender senderService) {
+async Task RunConcurrentRequestsScenario(ISender senderService)
+{
     Console.WriteLine("\n--- Scenario 9: Concurrent Requests (10 parallel batches) ---");
     var stopwatch = Stopwatch.StartNew();
 
     var tasks = Enumerable.Range(0, 10)
-                          .Select(async batchIndex => {
-                               for (var i = 0; i < 10; i++) {
-                                   var command = new ConcurrentCommand {
-                                       BatchId = batchIndex,
-                                       ItemId  = i
-                                   };
-                                   await senderService.SendAsync(command);
-                               }
-                           });
+                          .Select(async batchIndex =>
+                          {
+                              for (var i = 0; i < 10; i++)
+                              {
+                                  var command = new ConcurrentCommand
+                                  {
+                                      BatchId = batchIndex,
+                                      ItemId = i
+                                  };
+                                  await senderService.SendAsync(command);
+                              }
+                          });
 
     await Task.WhenAll(tasks);
 

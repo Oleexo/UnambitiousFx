@@ -6,5 +6,6 @@ namespace UnambitiousFx.Mediator.Abstractions;
 /// </summary>
 /// <typeparam name="TResponse">The type of items in the stream. Must be a non-nullable type.</typeparam>
 public interface IStreamRequest<out TResponse>
-    where TResponse : notnull {
+    where TResponse : notnull
+{
 }

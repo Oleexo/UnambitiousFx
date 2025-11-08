@@ -6,18 +6,21 @@ using UnambitiousFx.Mediator.Tests.Definitions;
 
 namespace UnambitiousFx.Mediator.Tests.Senders;
 
-public sealed class SenderTests {
+public sealed class SenderTests
+{
     private readonly IDependencyResolver _resolver;
-    private readonly Sender              _sender;
+    private readonly Sender _sender;
 
-    public SenderTests() {
+    public SenderTests()
+    {
         _resolver = Substitute.For<IDependencyResolver>();
 
         _sender = new Sender(_resolver);
     }
 
     [Fact]
-    public async Task GivenAValidHandlerWithResponse_WhenHandleAsync_ShouldReturnAResponse() {
+    public async Task GivenAValidHandlerWithResponse_WhenHandleAsync_ShouldReturnAResponse()
+    {
         // Arrange
         var request = new RequestWithResponseExample();
         var handler = Substitute.For<IRequestHandler<RequestWithResponseExample, int>>();
@@ -32,16 +35,19 @@ public sealed class SenderTests {
 
         // Assert
         Assert.True(result.IsSuccess);
-        if (result.TryGet(out var value)) {
+        if (result.TryGet(out var value))
+        {
             Assert.Equal(42, value);
         }
-        else {
+        else
+        {
             Assert.Fail("Result should be successful but was marked as failed");
         }
     }
 
     [Fact]
-    public async Task GivenAValidHandlerWithoutResponse_WhenHandleAsync_ShouldReturnAResponse() {
+    public async Task GivenAValidHandlerWithoutResponse_WhenHandleAsync_ShouldReturnAResponse()
+    {
         // Arrange
         var request = new RequestExample();
         var handler = Substitute.For<IRequestHandler<RequestExample>>();

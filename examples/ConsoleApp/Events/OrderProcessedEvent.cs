@@ -3,8 +3,9 @@ using UnambitiousFx.Mediator.Abstractions;
 namespace UnambitiousFx.Examples.ConsoleApp.Events;
 
 // Event published when an order is processed
-public sealed record OrderProcessedEvent : IEvent {
-    public required Guid     OrderId     { get; init; }
+public sealed record OrderProcessedEvent : IEvent
+{
+    public required Guid OrderId { get; init; }
     public required DateTime ProcessedAt { get; init; }
 }
 

@@ -6,7 +6,8 @@ namespace UnambitiousFx.Mediator.Abstractions;
 ///     Provides a mechanism to define custom behavior for handling streaming requests in a processing pipeline.
 ///     Implementers can intercept and modify the stream, add logging, caching, or other cross-cutting concerns.
 /// </summary>
-public interface IStreamRequestPipelineBehavior {
+public interface IStreamRequestPipelineBehavior
+{
     /// <summary>
     ///     Handles the processing of a streaming request asynchronously within the context of a pipeline behavior.
     /// </summary>
@@ -18,9 +19,9 @@ public interface IStreamRequestPipelineBehavior {
     ///     A token to observe while waiting for the task to complete, allowing cancellation if needed.
     /// </param>
     /// <returns>An asynchronous enumerable sequence of results.</returns>
-    IAsyncEnumerable<Result<TItem>> HandleAsync<TRequest, TItem>(TRequest                            request,
+    IAsyncEnumerable<Result<TItem>> HandleAsync<TRequest, TItem>(TRequest request,
                                                                  StreamRequestHandlerDelegate<TItem> next,
-                                                                 CancellationToken                   cancellationToken = default)
+                                                                 CancellationToken cancellationToken = default)
         where TRequest : IStreamRequest<TItem>
         where TItem : notnull;
 }
@@ -33,7 +34,8 @@ public interface IStreamRequestPipelineBehavior {
 /// <typeparam name="TItem">The type of items yielded by the stream.</typeparam>
 public interface IStreamRequestPipelineBehavior<in TRequest, TItem>
     where TRequest : IStreamRequest<TItem>
-    where TItem : notnull {
+    where TItem : notnull
+{
     /// <summary>
     ///     Handles the streaming request within the pipeline for the specific <typeparamref name="TRequest" /> type.
     /// </summary>
@@ -41,7 +43,7 @@ public interface IStreamRequestPipelineBehavior<in TRequest, TItem>
     /// <param name="next">Delegate to invoke the next behavior/handler in the pipeline.</param>
     /// <param name="cancellationToken">Token for cancelling the operation.</param>
     /// <returns>An asynchronous enumerable sequence of results.</returns>
-    IAsyncEnumerable<Result<TItem>> HandleAsync(TRequest                            request,
+    IAsyncEnumerable<Result<TItem>> HandleAsync(TRequest request,
                                                 StreamRequestHandlerDelegate<TItem> next,
-                                                CancellationToken                   cancellationToken = default);
+                                                CancellationToken cancellationToken = default);
 }

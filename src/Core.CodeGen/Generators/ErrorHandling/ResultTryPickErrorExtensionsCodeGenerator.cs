@@ -10,7 +10,8 @@ namespace UnambitiousFx.Core.CodeGen.Generators.ErrorHandling;
 ///     These methods attempt to locate specific attached error reasons via predicate.
 ///     Follows architecture rule: One generator per extension method category.
 /// </summary>
-internal sealed class ResultTryPickErrorExtensionsCodeGenerator : BaseCodeGenerator {
+internal sealed class ResultTryPickErrorExtensionsCodeGenerator : BaseCodeGenerator
+{
     private const string ExtensionsNamespace = "Results.Extensions.ErrorHandling";
 
     public ResultTryPickErrorExtensionsCodeGenerator(string baseNamespace)
@@ -19,15 +20,18 @@ internal sealed class ResultTryPickErrorExtensionsCodeGenerator : BaseCodeGenera
                    0, // Start from Result (arity 0)
                    ExtensionsNamespace,
                    "ResultTryPickErrorExtensions",
-                   FileOrganizationMode.SingleFile)) {
+                   FileOrganizationMode.SingleFile))
+    {
     }
 
-    protected override string PrepareOutputDirectory(string outputPath) {
+    protected override string PrepareOutputDirectory(string outputPath)
+    {
         var mainOutput = FileSystemHelper.CreateSubdirectory(outputPath, Config.SubNamespace);
         return mainOutput;
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
+    {
         return [
             GenerateTryPickErrorMethods(arity),
             GenerateAsyncMethods(arity, false),
@@ -35,7 +39,8 @@ internal sealed class ResultTryPickErrorExtensionsCodeGenerator : BaseCodeGenera
         ];
     }
 
-    private ClassWriter GenerateTryPickErrorMethods(ushort arity) {
+    private ClassWriter GenerateTryPickErrorMethods(ushort arity)
+    {
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
         var classWriter = new ClassWriter(
             Config.ClassName,
@@ -50,7 +55,8 @@ internal sealed class ResultTryPickErrorExtensionsCodeGenerator : BaseCodeGenera
         return classWriter;
     }
 
-    private MethodWriter GenerateTryPickErrorMethod(ushort arity) {
+    private MethodWriter GenerateTryPickErrorMethod(ushort arity)
+    {
         var (resultType, genericParams, constraints) = GetResultTypeInfo(arity);
         var methodName = "TryPickError";
 
@@ -69,24 +75,28 @@ internal sealed class ResultTryPickErrorExtensionsCodeGenerator : BaseCodeGenera
                                   .WithVisibility(Visibility.Public)
                                   .WithExtensionMethod(resultType, "result")
                                   .WithParameter("Func<IError, bool>", "predicate")
-                                  .WithParameter("out IError?",        "error")
+                                  .WithParameter("out IError?", "error")
                                   .WithDocumentation(documentation)
                                   .WithUsings("UnambitiousFx.Core.Results.Reasons");
 
         // Add generic parameters and constraints
-        foreach (var param in genericParams) {
+        foreach (var param in genericParams)
+        {
             builder.WithGenericParameter(param);
         }
 
-        foreach (var constraint in constraints) {
+        foreach (var constraint in constraints)
+        {
             builder.WithGenericConstraint(constraint);
         }
 
         return builder.Build();
     }
 
-    private (string resultType, string[] genericParams, GenericConstraint[] constraints) GetResultTypeInfo(ushort arity) {
-        if (arity == 0) {
+    private (string resultType, string[] genericParams, GenericConstraint[] constraints) GetResultTypeInfo(ushort arity)
+    {
+        if (arity == 0)
+        {
             return ("Result", [], []);
         }
 
@@ -105,7 +115,8 @@ internal sealed class ResultTryPickErrorExtensionsCodeGenerator : BaseCodeGenera
         return (resultType, genericParams, constraints);
     }
 
-    private string GenerateTryPickErrorBody() {
+    private string GenerateTryPickErrorBody()
+    {
         return """
                error = result.Reasons.OfType<IError>()
                              .FirstOrDefault(predicate);
@@ -114,7 +125,8 @@ internal sealed class ResultTryPickErrorExtensionsCodeGenerator : BaseCodeGenera
     }
 
     private ClassWriter GenerateAsyncMethods(ushort arity,
-                                             bool   isValueTask) {
+                                             bool isValueTask)
+    {
         var subNamespace = isValueTask
                                ? "ValueTasks"
                                : "Tasks";
@@ -137,8 +149,9 @@ internal sealed class ResultTryPickErrorExtensionsCodeGenerator : BaseCodeGenera
     }
 
     private MethodWriter GenerateTryPickErrorAsyncMethod(ushort arity,
-                                                         bool   isValueTask,
-                                                         bool   isAwaitable) {
+                                                         bool isValueTask,
+                                                         bool isAwaitable)
+    {
         var (resultType, genericParams, constraints) = GetResultTypeInfo(arity);
         var methodName = "TryPickErrorAsync";
 
@@ -163,9 +176,10 @@ internal sealed class ResultTryPickErrorExtensionsCodeGenerator : BaseCodeGenera
                                                            "A task containing a tuple with success flag and the first error matching the predicate, or null if no match is found.");
 
         // Add documentation for all value type parameters
-        for (var i = 0; i < genericParams.Length; i++) {
+        for (var i = 0; i < genericParams.Length; i++)
+        {
             var paramName = genericParams[i];
-            var ordinal   = GetOrdinalString(i + 1);
+            var ordinal = GetOrdinalString(i + 1);
             documentationBuilder.WithTypeParameter(paramName, $"The type of the {ordinal} value.");
         }
 
@@ -185,19 +199,23 @@ internal sealed class ResultTryPickErrorExtensionsCodeGenerator : BaseCodeGenera
                                   .WithUsings("UnambitiousFx.Core.Results.Reasons");
 
         // Add using for ValueAccess extensions
-        if (isValueTask) {
+        if (isValueTask)
+        {
             builder.WithUsings("UnambitiousFx.Core.Results.Extensions.ValueAccess.ValueTasks");
         }
-        else {
+        else
+        {
             builder.WithUsings("UnambitiousFx.Core.Results.Extensions.ValueAccess.Tasks");
         }
 
         // Add generic parameters and constraints for value types
-        foreach (var param in genericParams) {
+        foreach (var param in genericParams)
+        {
             builder.WithGenericParameter(param);
         }
 
-        foreach (var constraint in constraints) {
+        foreach (var constraint in constraints)
+        {
             builder.WithGenericConstraint(constraint);
         }
 
@@ -205,9 +223,11 @@ internal sealed class ResultTryPickErrorExtensionsCodeGenerator : BaseCodeGenera
     }
 
     private string GenerateTryPickErrorAsyncBody(ushort arity,
-                                                 bool   isValueTask,
-                                                 bool   isAwaitable) {
-        if (isAwaitable) {
+                                                 bool isValueTask,
+                                                 bool isAwaitable)
+    {
+        if (isAwaitable)
+        {
             return """
                    var result = await awaitableResult;
                    return await result.TryPickErrorAsync(predicate);
@@ -224,8 +244,10 @@ internal sealed class ResultTryPickErrorExtensionsCodeGenerator : BaseCodeGenera
                """;
     }
 
-    private static string GetOrdinalString(int number) {
-        return number switch {
+    private static string GetOrdinalString(int number)
+    {
+        return number switch
+        {
             1 => "first",
             2 => "second",
             3 => "third",

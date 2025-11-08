@@ -7,6 +7,6 @@ namespace UnambitiousFx.Core.CodeGen.Design;
 ///     The <c>AttributeReference</c> can be used to describe an attribute with its name,
 ///     optional arguments, and optional namespace using directives.
 /// </remarks>
-public record AttributeReference(string  Name,
+public record AttributeReference(string Name,
                                  string? Arguments = null,
-                                 string? Using     = null);
+                                 string? Using = null);

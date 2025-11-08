@@ -13,7 +13,8 @@ namespace UnambitiousFx.Mediator.Abstractions;
 /// </typeparam>
 public abstract class RequestHandler<TRequest, TResponse> : IRequestHandler<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
-    where TResponse : notnull {
+    where TResponse : notnull
+{
     /// Handles the given request asynchronously.
     /// <param name="request">
     ///     The request instance to be handled.
@@ -25,8 +26,9 @@ public abstract class RequestHandler<TRequest, TResponse> : IRequestHandler<TReq
     ///     A ValueTask representing the result of the asynchronous operation,
     ///     containing the result of type <typeparamref name="TResponse" />.
     /// </return>
-    public ValueTask<Result<TResponse>> HandleAsync(TRequest          request,
-                                                    CancellationToken cancellationToken = default) {
+    public ValueTask<Result<TResponse>> HandleAsync(TRequest request,
+                                                    CancellationToken cancellationToken = default)
+    {
         var result = Handle(request);
 
         return new ValueTask<Result<TResponse>>(result);
@@ -46,7 +48,8 @@ public abstract class RequestHandler<TRequest, TResponse> : IRequestHandler<TReq
 /// TRequest: The type of the request that the handler processes. Must implement the `IRequest` interface.
 /// TResponse: The type of the response produced by the handler. Must be a `notnull` type.
 public abstract class RequestHandler<TRequest> : IRequestHandler<TRequest>
-    where TRequest : IRequest {
+    where TRequest : IRequest
+{
     /// Handles an asynchronous request operation.
     /// <param name="request">
     ///     The request instance to be handled. This parameter contains the data and information required to process the
@@ -60,8 +63,9 @@ public abstract class RequestHandler<TRequest> : IRequestHandler<TRequest>
     ///     A ValueTask of type Result, representing the outcome of processing the specified request. The result indicates
     ///     success or failure.
     /// </returns>
-    public ValueTask<Result> HandleAsync(TRequest          request,
-                                         CancellationToken cancellationToken = default) {
+    public ValueTask<Result> HandleAsync(TRequest request,
+                                         CancellationToken cancellationToken = default)
+    {
         var result = Handle(request);
         return new ValueTask<Result>(result);
     }

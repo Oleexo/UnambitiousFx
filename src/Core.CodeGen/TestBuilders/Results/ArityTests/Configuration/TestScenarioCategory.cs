@@ -3,7 +3,8 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results.ArityTests.Configurati
 /// <summary>
 ///     Defines the categories of test scenarios that can be generated.
 /// </summary>
-internal enum TestScenarioCategory {
+internal enum TestScenarioCategory
+{
     /// <summary>
     ///     Success scenarios where operations complete successfully.
     /// </summary>

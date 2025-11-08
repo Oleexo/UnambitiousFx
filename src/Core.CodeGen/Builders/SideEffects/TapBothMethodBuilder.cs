@@ -7,11 +7,13 @@ namespace UnambitiousFx.Core.CodeGen.Builders.SideEffects;
 ///     Builds TapBoth extension methods for Result types.
 ///     TapBoth executes different side effects for success and failure paths.
 /// </summary>
-internal sealed class TapBothMethodBuilder {
+internal sealed class TapBothMethodBuilder
+{
     /// <summary>
     ///     Builds a sync TapBoth method for a specific arity.
     /// </summary>
-    public MethodWriter BuildStandaloneMethod(ushort arity) {
+    public MethodWriter BuildStandaloneMethod(ushort arity)
+    {
         var genericParams = GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull");
         var resultType = arity == 0
                              ? "Result"
@@ -25,7 +27,7 @@ internal sealed class TapBothMethodBuilder {
         var onSuccessType = arity == 0
                                 ? "Action"
                                 : $"Action<{GenericTypeHelper.BuildGenericTypeString(arity, "TValue")}>";
-        parameters.Add(new MethodParameter(onSuccessType,                 "onSuccess"));
+        parameters.Add(new MethodParameter(onSuccessType, "onSuccess"));
         parameters.Add(new MethodParameter("Action<IEnumerable<IError>>", "onFailure"));
 
         var body = """
@@ -35,12 +37,13 @@ internal sealed class TapBothMethodBuilder {
 
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary("Executes different side effects based on success or failure, then returns the original result.")
-                                            .WithParameter("result",    "The result instance.")
+                                            .WithParameter("result", "The result instance.")
                                             .WithParameter("onSuccess", "Action to execute on success.")
                                             .WithParameter("onFailure", "Action to execute on failure.")
                                             .WithReturns("The original result unchanged.");
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Value type {i}.");
         }
 
@@ -61,7 +64,8 @@ internal sealed class TapBothMethodBuilder {
     ///     Builds async TapBoth method: Result + AsyncFuncs
     /// </summary>
     public MethodWriter BuildAsyncFuncMethod(ushort arity,
-                                             bool   isValueTask) {
+                                             bool isValueTask)
+    {
         var genericParams = GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull");
         var resultType = arity == 0
                              ? "Result"
@@ -78,11 +82,12 @@ internal sealed class TapBothMethodBuilder {
         var onSuccessType = arity == 0
                                 ? $"Func<{taskType}>"
                                 : $"Func<{GenericTypeHelper.BuildGenericTypeString(arity, "TValue")}, {taskType}>";
-        parameters.Add(new MethodParameter(onSuccessType,                            "onSuccess"));
+        parameters.Add(new MethodParameter(onSuccessType, "onSuccess"));
         parameters.Add(new MethodParameter($"Func<IEnumerable<IError>, {taskType}>", "onFailure"));
 
         string body;
-        if (arity == 0) {
+        if (arity == 0)
+        {
             body = """
                    if (result.IsSuccess) {
                        await onSuccess();
@@ -94,7 +99,8 @@ internal sealed class TapBothMethodBuilder {
                    return result;
                    """;
         }
-        else {
+        else
+        {
             // Build TryGet with all value parameters plus error
             var tryGetParams = string.Join(", ", Enumerable.Range(1, arity)
                                                            .Select(i => $"out var value{i}"));
@@ -120,12 +126,13 @@ internal sealed class TapBothMethodBuilder {
 
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary("Async TapBoth executing different side effects with async functions.")
-                                            .WithParameter("result",    "The result instance.")
+                                            .WithParameter("result", "The result instance.")
                                             .WithParameter("onSuccess", "Async function to execute on success.")
                                             .WithParameter("onFailure", "Async function to execute on failure.")
                                             .WithReturns("A task with the original result unchanged.");
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Value type {i}.");
         }
 
@@ -146,7 +153,8 @@ internal sealed class TapBothMethodBuilder {
     ///     Builds async TapBoth method: Task + SyncFuncs
     /// </summary>
     public MethodWriter BuildTaskSyncFuncMethod(ushort arity,
-                                                bool   isValueTask) {
+                                                bool isValueTask)
+    {
         var genericParams = GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull");
         var resultType = arity == 0
                              ? "Result"
@@ -163,7 +171,7 @@ internal sealed class TapBothMethodBuilder {
         var onSuccessType = arity == 0
                                 ? "Action"
                                 : $"Action<{GenericTypeHelper.BuildGenericTypeString(arity, "TValue")}>";
-        parameters.Add(new MethodParameter(onSuccessType,                 "onSuccess"));
+        parameters.Add(new MethodParameter(onSuccessType, "onSuccess"));
         parameters.Add(new MethodParameter("Action<IEnumerable<IError>>", "onFailure"));
 
         var body = """
@@ -177,11 +185,12 @@ internal sealed class TapBothMethodBuilder {
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary("Async TapBoth executing different side effects on an awaitable result with sync actions.")
                                             .WithParameter("awaitableResult", "The awaitable result instance.")
-                                            .WithParameter("onSuccess",       "Action to execute on success.")
-                                            .WithParameter("onFailure",       "Action to execute on failure.")
+                                            .WithParameter("onSuccess", "Action to execute on success.")
+                                            .WithParameter("onFailure", "Action to execute on failure.")
                                             .WithReturns("A task with the original result unchanged.");
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Value type {i}.");
         }
 
@@ -202,7 +211,8 @@ internal sealed class TapBothMethodBuilder {
     ///     Builds async TapBoth method: Task + AsyncFuncs
     /// </summary>
     public MethodWriter BuildTaskAsyncFuncMethod(ushort arity,
-                                                 bool   isValueTask) {
+                                                 bool isValueTask)
+    {
         var genericParams = GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull");
         var resultType = arity == 0
                              ? "Result"
@@ -219,7 +229,7 @@ internal sealed class TapBothMethodBuilder {
         var onSuccessType = arity == 0
                                 ? $"Func<{taskType}>"
                                 : $"Func<{GenericTypeHelper.BuildGenericTypeString(arity, "TValue")}, {taskType}>";
-        parameters.Add(new MethodParameter(onSuccessType,                            "onSuccess"));
+        parameters.Add(new MethodParameter(onSuccessType, "onSuccess"));
         parameters.Add(new MethodParameter($"Func<IEnumerable<IError>, {taskType}>", "onFailure"));
 
         var body = """
@@ -232,11 +242,12 @@ internal sealed class TapBothMethodBuilder {
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary("Async TapBoth executing different side effects on an awaitable result with async functions.")
                                             .WithParameter("awaitableResult", "The awaitable result instance.")
-                                            .WithParameter("onSuccess",       "Async function to execute on success.")
-                                            .WithParameter("onFailure",       "Async function to execute on failure.")
+                                            .WithParameter("onSuccess", "Async function to execute on success.")
+                                            .WithParameter("onFailure", "Async function to execute on failure.")
                                             .WithReturns("A task with the original result unchanged.");
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Value type {i}.");
         }
 

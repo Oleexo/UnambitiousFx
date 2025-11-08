@@ -5,7 +5,8 @@ namespace UnambitiousFx.Mediator.Abstractions;
 /// <summary>
 ///     Represents a sender that dispatches requests to their corresponding handlers.
 /// </summary>
-public interface ISender {
+public interface ISender
+{
     /// Sends a request to the appropriate handler and returns the result.
     /// <typeparam name="TRequest">
     ///     The type of the request message. Must implement <see cref="IRequest{TResponse}" />.
@@ -23,7 +24,7 @@ public interface ISender {
     ///     A task representing the asynchronous operation. The task result contains a <see cref="Result{TValue}" />
     ///     holding the response of type <typeparamref name="TResponse" />.
     /// </returns>
-    ValueTask<Result<TResponse>> SendAsync<TRequest, TResponse>(TRequest          request,
+    ValueTask<Result<TResponse>> SendAsync<TRequest, TResponse>(TRequest request,
                                                                 CancellationToken cancellationToken = default)
         where TResponse : notnull
         where TRequest : IRequest<TResponse>;
@@ -33,7 +34,7 @@ public interface ISender {
     /// <param name="request">The request object to be processed.</param>
     /// <param name="cancellationToken">An optional cancellation token to cancel the operation.</param>
     /// <returns>A <see cref="ValueTask{Result}" /> that represents the result of the operation.</returns>
-    ValueTask<Result> SendAsync<TRequest>(TRequest          request,
+    ValueTask<Result> SendAsync<TRequest>(TRequest request,
                                           CancellationToken cancellationToken = default)
         where TRequest : IRequest;
 
@@ -55,7 +56,7 @@ public interface ISender {
     ///     An asynchronous enumerable sequence of <see cref="Result{TValue}" /> objects,
     ///     where each result holds an item of type <typeparamref name="TItem" /> or an error.
     /// </returns>
-    IAsyncEnumerable<Result<TItem>> SendStreamAsync<TRequest, TItem>(TRequest          request,
+    IAsyncEnumerable<Result<TItem>> SendStreamAsync<TRequest, TItem>(TRequest request,
                                                                      CancellationToken cancellationToken = default)
         where TRequest : IStreamRequest<TItem>
         where TItem : notnull;

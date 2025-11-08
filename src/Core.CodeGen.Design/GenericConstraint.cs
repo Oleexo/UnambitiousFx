@@ -6,15 +6,17 @@ namespace UnambitiousFx.Core.CodeGen.Design;
 /// <param name="ParameterName">The name of the type parameter this constraint applies to.</param>
 /// <param name="Type">The type of constraint.</param>
 /// <param name="TypeName">The name of the type for BaseClass or Interface constraints. Null for other constraint types.</param>
-public sealed record GenericConstraint(string                ParameterName,
+public sealed record GenericConstraint(string ParameterName,
                                        GenericConstraintType Type,
-                                       string?               TypeName = null) {
+                                       string? TypeName = null)
+{
     /// <summary>
     ///     Creates a class constraint for the specified type parameter.
     /// </summary>
     /// <param name="parameterName">The name of the type parameter.</param>
     /// <returns>A new GenericConstraint representing a class constraint.</returns>
-    public static GenericConstraint Class(string parameterName) {
+    public static GenericConstraint Class(string parameterName)
+    {
         return new GenericConstraint(parameterName, GenericConstraintType.Class);
     }
 
@@ -23,7 +25,8 @@ public sealed record GenericConstraint(string                ParameterName,
     /// </summary>
     /// <param name="parameterName">The name of the type parameter.</param>
     /// <returns>A new GenericConstraint representing a struct constraint.</returns>
-    public static GenericConstraint Struct(string parameterName) {
+    public static GenericConstraint Struct(string parameterName)
+    {
         return new GenericConstraint(parameterName, GenericConstraintType.Struct);
     }
 
@@ -32,7 +35,8 @@ public sealed record GenericConstraint(string                ParameterName,
     /// </summary>
     /// <param name="parameterName">The name of the type parameter.</param>
     /// <returns>A new GenericConstraint representing a notnull constraint.</returns>
-    public static GenericConstraint NotNull(string parameterName) {
+    public static GenericConstraint NotNull(string parameterName)
+    {
         return new GenericConstraint(parameterName, GenericConstraintType.NotNull);
     }
 
@@ -41,7 +45,8 @@ public sealed record GenericConstraint(string                ParameterName,
     /// </summary>
     /// <param name="parameterName">The name of the type parameter.</param>
     /// <returns>A new GenericConstraint representing an unmanaged constraint.</returns>
-    public static GenericConstraint Unmanaged(string parameterName) {
+    public static GenericConstraint Unmanaged(string parameterName)
+    {
         return new GenericConstraint(parameterName, GenericConstraintType.Unmanaged);
     }
 
@@ -50,7 +55,8 @@ public sealed record GenericConstraint(string                ParameterName,
     /// </summary>
     /// <param name="parameterName">The name of the type parameter.</param>
     /// <returns>A new GenericConstraint representing a new() constraint.</returns>
-    public static GenericConstraint New(string parameterName) {
+    public static GenericConstraint New(string parameterName)
+    {
         return new GenericConstraint(parameterName, GenericConstraintType.New);
     }
 
@@ -61,7 +67,8 @@ public sealed record GenericConstraint(string                ParameterName,
     /// <param name="baseClassName">The name of the base class.</param>
     /// <returns>A new GenericConstraint representing a base class constraint.</returns>
     public static GenericConstraint BaseClass(string parameterName,
-                                              string baseClassName) {
+                                              string baseClassName)
+    {
         return new GenericConstraint(parameterName, GenericConstraintType.BaseClass, baseClassName);
     }
 
@@ -72,7 +79,8 @@ public sealed record GenericConstraint(string                ParameterName,
     /// <param name="interfaceName">The name of the interface.</param>
     /// <returns>A new GenericConstraint representing an interface constraint.</returns>
     public static GenericConstraint Interface(string parameterName,
-                                              string interfaceName) {
+                                              string interfaceName)
+    {
         return new GenericConstraint(parameterName, GenericConstraintType.Interface, interfaceName);
     }
 
@@ -80,16 +88,18 @@ public sealed record GenericConstraint(string                ParameterName,
     ///     Gets the string representation of this constraint for use in C# code.
     /// </summary>
     /// <returns>The constraint string.</returns>
-    public string ToConstraintString() {
-        return Type switch {
-            GenericConstraintType.Class     => "class",
-            GenericConstraintType.Struct    => "struct",
-            GenericConstraintType.NotNull   => "notnull",
+    public string ToConstraintString()
+    {
+        return Type switch
+        {
+            GenericConstraintType.Class => "class",
+            GenericConstraintType.Struct => "struct",
+            GenericConstraintType.NotNull => "notnull",
             GenericConstraintType.Unmanaged => "unmanaged",
-            GenericConstraintType.New       => "new()",
+            GenericConstraintType.New => "new()",
             GenericConstraintType.BaseClass => TypeName ?? throw new InvalidOperationException("BaseClass constraint requires TypeName"),
             GenericConstraintType.Interface => TypeName ?? throw new InvalidOperationException("Interface constraint requires TypeName"),
-            _                               => throw new ArgumentOutOfRangeException(nameof(Type), Type, "Unknown constraint type")
+            _ => throw new ArgumentOutOfRangeException(nameof(Type), Type, "Unknown constraint type")
         };
     }
 }

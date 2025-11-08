@@ -12,7 +12,8 @@ namespace UnambitiousFx.Mediator.Abstractions;
 /// <typeparam name="TItem">The type of items yielded by the stream. Must be a non-nullable type.</typeparam>
 public interface IStreamRequestHandler<in TRequest, TItem>
     where TRequest : IStreamRequest<TItem>
-    where TItem : notnull {
+    where TItem : notnull
+{
     /// <summary>
     ///     Handles the streaming request and yields items asynchronously.
     ///     Each item is wrapped in a Result to allow per-item error handling.
@@ -23,6 +24,6 @@ public interface IStreamRequestHandler<in TRequest, TItem>
     ///     An asynchronous enumerable sequence of results, where each result contains an item of type
     ///     <typeparamref name="TItem" /> or an error.
     /// </returns>
-    IAsyncEnumerable<Result<TItem>> HandleAsync(TRequest          request,
+    IAsyncEnumerable<Result<TItem>> HandleAsync(TRequest request,
                                                 CancellationToken cancellationToken = default);
 }

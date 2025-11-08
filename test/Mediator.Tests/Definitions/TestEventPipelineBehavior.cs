@@ -3,17 +3,19 @@ using UnambitiousFx.Mediator.Abstractions;
 
 namespace UnambitiousFx.Mediator.Tests.Definitions;
 
-public sealed class TestEventPipelineBehavior : IEventPipelineBehavior {
-    public bool    Executed       { get; private set; }
-    public object? EventExecuted  { get; private set; }
-    public int     ExecutionCount { get; private set; }
-    public Action? OnExecuted     { get; set; }
+public sealed class TestEventPipelineBehavior : IEventPipelineBehavior
+{
+    public bool Executed { get; private set; }
+    public object? EventExecuted { get; private set; }
+    public int ExecutionCount { get; private set; }
+    public Action? OnExecuted { get; set; }
 
-    public ValueTask<Result> HandleAsync<TEvent>(TEvent               @event,
+    public ValueTask<Result> HandleAsync<TEvent>(TEvent @event,
                                                  EventHandlerDelegate next,
-                                                 CancellationToken    cancellationToken = default)
-        where TEvent : IEvent {
-        Executed      = true;
+                                                 CancellationToken cancellationToken = default)
+        where TEvent : IEvent
+    {
+        Executed = true;
         EventExecuted = @event;
         ExecutionCount++;
         OnExecuted?.Invoke();

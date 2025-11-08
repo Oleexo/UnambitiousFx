@@ -3,7 +3,8 @@ namespace UnambitiousFx.Core.Results.Reasons;
 /// <summary>
 ///     Represents an error reason attached to a Result.
 /// </summary>
-public interface IError : IReason {
+public interface IError : IReason
+{
     /// <summary>
     ///     A stable machine readable code (e.g. VALIDATION, NOT_FOUND, etc.).
     /// </summary>

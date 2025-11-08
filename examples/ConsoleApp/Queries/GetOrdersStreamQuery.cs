@@ -6,7 +6,8 @@ namespace UnambitiousFx.Examples.ConsoleApp.Queries;
 ///     Streaming query that returns orders incrementally in batches.
 ///     This demonstrates efficient handling of large datasets without loading everything into memory.
 /// </summary>
-public sealed record GetOrdersStreamQuery : IStreamRequest<OrderDto> {
+public sealed record GetOrdersStreamQuery : IStreamRequest<OrderDto>
+{
     /// <summary>
     ///     Gets or initializes the page size for batching results.
     /// </summary>

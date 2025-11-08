@@ -9,7 +9,8 @@ namespace UnambitiousFx.Mediator.Abstractions;
 /// </typeparam>
 [AttributeUsage(AttributeTargets.Class)]
 public sealed class RequestHandlerAttribute<TRequest> : Attribute
-    where TRequest : IRequest {
+    where TRequest : IRequest
+{
 }
 
 /// <summary>
@@ -25,5 +26,6 @@ public sealed class RequestHandlerAttribute<TRequest> : Attribute
 [AttributeUsage(AttributeTargets.Class)]
 public sealed class RequestHandlerAttribute<TRequest, TResponse> : Attribute
     where TRequest : IRequest<TResponse>
-    where TResponse : notnull {
+    where TResponse : notnull
+{
 }

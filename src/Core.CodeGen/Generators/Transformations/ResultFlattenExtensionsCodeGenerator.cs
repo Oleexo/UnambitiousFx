@@ -10,7 +10,8 @@ namespace UnambitiousFx.Core.CodeGen.Generators.Transformations;
 ///     Generates ONE class containing all Flatten methods, organized by arity in regions.
 ///     Follows architecture rule: One generator per class.
 /// </summary>
-internal sealed class ResultFlattenExtensionsCodeGenerator : BaseCodeGenerator {
+internal sealed class ResultFlattenExtensionsCodeGenerator : BaseCodeGenerator
+{
     private const string ExtensionsNamespace = "Results.Extensions.Transformations";
 
     private readonly FlattenMethodBuilder _flattenBuilder;
@@ -21,16 +22,19 @@ internal sealed class ResultFlattenExtensionsCodeGenerator : BaseCodeGenerator {
                    1,
                    ExtensionsNamespace,
                    "ResultFlattenExtensions",
-                   FileOrganizationMode.SingleFile)) {
+                   FileOrganizationMode.SingleFile))
+    {
         _flattenBuilder = new FlattenMethodBuilder(baseNamespace);
     }
 
-    protected override string PrepareOutputDirectory(string outputPath) {
+    protected override string PrepareOutputDirectory(string outputPath)
+    {
         var mainOutput = FileSystemHelper.CreateSubdirectory(outputPath, Config.SubNamespace);
         return mainOutput;
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
+    {
         return [
             GenerateSyncMethods(arity),
             GenerateAsyncMethods(arity, false),
@@ -38,7 +42,8 @@ internal sealed class ResultFlattenExtensionsCodeGenerator : BaseCodeGenerator {
         ];
     }
 
-    private ClassWriter GenerateSyncMethods(ushort arity) {
+    private ClassWriter GenerateSyncMethods(ushort arity)
+    {
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
         var classWriter = new ClassWriter(
             Config.ClassName,
@@ -52,7 +57,8 @@ internal sealed class ResultFlattenExtensionsCodeGenerator : BaseCodeGenerator {
     }
 
     private ClassWriter GenerateAsyncMethods(ushort arity,
-                                             bool   isValueTask) {
+                                             bool isValueTask)
+    {
         var subNamespace = isValueTask
                                ? "ValueTasks"
                                : "Tasks";

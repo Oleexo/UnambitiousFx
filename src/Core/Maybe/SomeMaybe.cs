@@ -3,44 +3,53 @@ using System.Diagnostics.CodeAnalysis;
 namespace UnambitiousFx.Core.Maybe;
 
 internal sealed class SomeMaybe<TValue> : Maybe<TValue>
-    where TValue : notnull {
+    where TValue : notnull
+{
     private readonly TValue _value;
 
-    public SomeMaybe(TValue value) {
+    public SomeMaybe(TValue value)
+    {
         _value = value;
     }
 
-    public override bool   IsSome => true;
-    public override bool   IsNone => false;
-    public override object Case   => _value;
+    public override bool IsSome => true;
+    public override bool IsNone => false;
+    public override object Case => _value;
 
-    public override void IfNone(Action none) {
+    public override void IfNone(Action none)
+    {
     }
 
-    public override ValueTask IfNone(Func<ValueTask> none) {
+    public override ValueTask IfNone(Func<ValueTask> none)
+    {
         return new ValueTask();
     }
 
-    public override void IfSome(Action<TValue> some) {
+    public override void IfSome(Action<TValue> some)
+    {
         some(_value);
     }
 
-    public override ValueTask IfSome(Func<TValue, ValueTask> some) {
+    public override ValueTask IfSome(Func<TValue, ValueTask> some)
+    {
         return some(_value);
     }
 
-    public override bool Some([NotNullWhen(true)] out TValue? value) {
+    public override bool Some([NotNullWhen(true)] out TValue? value)
+    {
         value = _value;
         return true;
     }
 
     public override TOut Match<TOut>(Func<TValue, TOut> some,
-                                     Func<TOut>         none) {
+                                     Func<TOut> none)
+    {
         return some(_value);
     }
 
     public override void Match(Action<TValue> some,
-                               Action         none) {
+                               Action none)
+    {
         some(_value);
     }
 }

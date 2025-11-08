@@ -4,7 +4,8 @@ namespace UnambitiousFx.Mediator;
 ///     Provides configuration options for the Mediator outbox implementation including retry logic,
 ///     exponential backoff and batch processing.
 /// </summary>
-public sealed record OutboxOptions {
+public sealed record OutboxOptions
+{
     /// <summary>
     ///     Maximum number of retry attempts before an event is moved to the dead-letter queue.
     /// </summary>

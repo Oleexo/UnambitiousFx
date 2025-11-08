@@ -10,8 +10,9 @@ namespace UnambitiousFx.Core.CodeGen.Generators.ValueAccess;
 ///     Generates ONE class containing all ValueOrThrow methods, organized by arity in regions.
 ///     Follows architecture rule: One generator per class.
 /// </summary>
-internal sealed class ResultValueOrThrowExtensionsCodeGenerator : BaseCodeGenerator {
-    private const    string             ExtensionsNamespace = "Results.Extensions.ValueAccess";
+internal sealed class ResultValueOrThrowExtensionsCodeGenerator : BaseCodeGenerator
+{
+    private const string ExtensionsNamespace = "Results.Extensions.ValueAccess";
     private readonly AsyncMethodBuilder _asyncBuilder;
 
     private readonly ValueOrThrowMethodBuilder _valueOrThrowBuilder;
@@ -22,17 +23,20 @@ internal sealed class ResultValueOrThrowExtensionsCodeGenerator : BaseCodeGenera
                    1,
                    ExtensionsNamespace,
                    "ResultValueOrThrowExtensions",
-                   FileOrganizationMode.SingleFile)) {
+                   FileOrganizationMode.SingleFile))
+    {
         _valueOrThrowBuilder = new ValueOrThrowMethodBuilder(baseNamespace);
-        _asyncBuilder        = new AsyncMethodBuilder(baseNamespace);
+        _asyncBuilder = new AsyncMethodBuilder(baseNamespace);
     }
 
-    protected override string PrepareOutputDirectory(string outputPath) {
+    protected override string PrepareOutputDirectory(string outputPath)
+    {
         var mainOutput = FileSystemHelper.CreateSubdirectory(outputPath, Config.SubNamespace);
         return mainOutput;
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
+    {
         return [
             GenerateSyncMethods(arity),
 
@@ -41,7 +45,8 @@ internal sealed class ResultValueOrThrowExtensionsCodeGenerator : BaseCodeGenera
         ];
     }
 
-    private ClassWriter GenerateSyncMethods(ushort arity) {
+    private ClassWriter GenerateSyncMethods(ushort arity)
+    {
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
 
         // Add methods organized by arity regions
@@ -60,7 +65,8 @@ internal sealed class ResultValueOrThrowExtensionsCodeGenerator : BaseCodeGenera
     }
 
     private ClassWriter GenerateAsyncMethods(ushort arity,
-                                             bool   isValueTask) {
+                                             bool isValueTask)
+    {
         var subNamespace = isValueTask
                                ? "ValueTasks"
                                : "Tasks";

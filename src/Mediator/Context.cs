@@ -3,53 +3,62 @@ using UnambitiousFx.Mediator.Abstractions;
 
 namespace UnambitiousFx.Mediator;
 
-internal sealed class ContextAccessor : IContextAccessor {
-    public ContextAccessor(IContext context) {
+internal sealed class ContextAccessor : IContextAccessor
+{
+    public ContextAccessor(IContext context)
+    {
         Context = context;
     }
 
     public IContext Context { get; set; }
 }
 
-internal readonly struct Context : IContext {
-    private readonly IPublisher                 _publisher;
+internal readonly struct Context : IContext
+{
+    private readonly IPublisher _publisher;
     private readonly Dictionary<string, object> _metadata;
 
-    public Context(IPublisher                  publisher,
-                   string?                     correlationId = null,
-                   DateTimeOffset?             occuredAt     = null,
-                   Dictionary<string, object>? metadata      = null) {
+    public Context(IPublisher publisher,
+                   string? correlationId = null,
+                   DateTimeOffset? occuredAt = null,
+                   Dictionary<string, object>? metadata = null)
+    {
         _publisher = publisher;
         CorrelationId = correlationId ??
                         Guid.CreateVersion7()
                             .ToString();
         OccuredAt = occuredAt ?? DateTimeOffset.UtcNow;
-        _metadata = metadata  ?? new Dictionary<string, object>();
+        _metadata = metadata ?? new Dictionary<string, object>();
     }
 
-    private Context(Context context) {
-        _publisher    = context._publisher;
+    private Context(Context context)
+    {
+        _publisher = context._publisher;
         CorrelationId = context.CorrelationId;
-        OccuredAt     = context.OccuredAt;
-        _metadata     = new Dictionary<string, object>(context._metadata);
+        OccuredAt = context.OccuredAt;
+        _metadata = new Dictionary<string, object>(context._metadata);
     }
 
-    public string         CorrelationId { get; }
-    public DateTimeOffset OccuredAt     { get; }
+    public string CorrelationId { get; }
+    public DateTimeOffset OccuredAt { get; }
 
     public void SetMetadata(string key,
-                            object value) {
+                            object value)
+    {
         _metadata[key] = value;
     }
 
-    public bool RemoveMetadata(string key) {
+    public bool RemoveMetadata(string key)
+    {
         return _metadata.Remove(key);
     }
 
     public bool TryGetMetadata<T>(string key,
-                                  out T? value) {
+                                  out T? value)
+    {
         if (_metadata.TryGetValue(key, out var obj) &&
-            obj is T tValue) {
+            obj is T tValue)
+        {
             value = tValue;
             return true;
         }
@@ -58,9 +67,11 @@ internal readonly struct Context : IContext {
         return false;
     }
 
-    public T? GetMetadata<T>(string key) {
+    public T? GetMetadata<T>(string key)
+    {
         if (_metadata.TryGetValue(key, out var obj) &&
-            obj is T tValue) {
+            obj is T tValue)
+        {
             return tValue;
         }
 
@@ -69,20 +80,23 @@ internal readonly struct Context : IContext {
 
     public IReadOnlyDictionary<string, object> Metadata => _metadata;
 
-    public ValueTask<Result> PublishEventAsync<TEvent>(TEvent            @event,
+    public ValueTask<Result> PublishEventAsync<TEvent>(TEvent @event,
                                                        CancellationToken cancellationToken = default)
-        where TEvent : class, IEvent {
+        where TEvent : class, IEvent
+    {
         return _publisher.PublishAsync(@event, cancellationToken);
     }
 
-    public ValueTask<Result> PublishEventAsync<TEvent>(TEvent            @event,
-                                                       PublishMode       mode,
+    public ValueTask<Result> PublishEventAsync<TEvent>(TEvent @event,
+                                                       PublishMode mode,
                                                        CancellationToken cancellationToken = default)
-        where TEvent : class, IEvent {
+        where TEvent : class, IEvent
+    {
         return _publisher.PublishAsync(@event, mode, cancellationToken);
     }
 
-    public ValueTask<Result> CommitEventsAsync(CancellationToken cancellationToken = default) {
+    public ValueTask<Result> CommitEventsAsync(CancellationToken cancellationToken = default)
+    {
         return _publisher.CommitAsync(cancellationToken);
     }
 }

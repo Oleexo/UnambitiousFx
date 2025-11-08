@@ -3,7 +3,8 @@ namespace UnambitiousFx.Mediator.Resolvers;
 /// <summary>
 ///     Represents a dependency resolver used to retrieve implementations of services.
 /// </summary>
-public interface IDependencyResolver {
+public interface IDependencyResolver
+{
     /// Retrieves a service of the specified type from the dependency resolver.
     /// <typeparam name="TService">The type of the service to retrieve.</typeparam>
     /// <returns>

@@ -8,27 +8,32 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results.ArityTests.Utilities;
 /// <summary>
 ///     Generates assertion code for Result test scenarios using Core.XUnit patterns.
 /// </summary>
-internal sealed class ResultAssertionGenerator {
+internal sealed class ResultAssertionGenerator
+{
     /// <summary>
     ///     Generates assertion code for successful Result scenarios.
     /// </summary>
     /// <param name="scenario">The test scenario.</param>
     /// <returns>Assertion code for success scenarios.</returns>
-    public string GenerateSuccessAssertion(TestScenario scenario) {
+    public string GenerateSuccessAssertion(TestScenario scenario)
+    {
         var sb = new StringBuilder();
 
         // Use Core.XUnit assertion patterns for success scenarios
-        if (scenario.Arity == 1) {
+        if (scenario.Arity == 1)
+        {
             sb.AppendLine("result.ShouldBeSuccess(out var value);");
             sb.AppendLine($"Assert.Equal({TestTypeHelper.GetTestValue(1)}, value);");
         }
-        else {
+        else
+        {
             sb.AppendLine("result.ShouldBeSuccess(out var values);");
             GenerateMultiArityValueAssertions(sb, scenario.Arity);
         }
 
         // Method-specific success assertions
-        switch (scenario.MethodName) {
+        switch (scenario.MethodName)
+        {
             case "Match":
                 sb.AppendLine("// Match should execute success action");
                 break;
@@ -52,7 +57,8 @@ internal sealed class ResultAssertionGenerator {
     /// </summary>
     /// <param name="scenario">The test scenario.</param>
     /// <returns>Assertion code for failure scenarios.</returns>
-    public string GenerateFailureAssertion(TestScenario scenario) {
+    public string GenerateFailureAssertion(TestScenario scenario)
+    {
         var sb = new StringBuilder();
 
         // Use Core.XUnit assertion patterns for failure scenarios
@@ -61,7 +67,8 @@ internal sealed class ResultAssertionGenerator {
         sb.AppendLine("Assert.Equal(\"Test error\", firstError.Message);");
 
         // Method-specific failure assertions
-        switch (scenario.MethodName) {
+        switch (scenario.MethodName)
+        {
             case "Match":
                 sb.AppendLine("// Match should execute failure action");
                 break;
@@ -92,7 +99,8 @@ internal sealed class ResultAssertionGenerator {
     /// </summary>
     /// <param name="scenario">The test scenario.</param>
     /// <returns>Assertion code for exception scenarios.</returns>
-    public string GenerateExceptionAssertion(TestScenario scenario) {
+    public string GenerateExceptionAssertion(TestScenario scenario)
+    {
         var sb = new StringBuilder();
 
         // Use Core.XUnit assertion patterns for exception scenarios
@@ -102,7 +110,8 @@ internal sealed class ResultAssertionGenerator {
         sb.AppendLine("Assert.Equal(\"Test exception\", firstError.Exception.Message);");
 
         // Method-specific exception assertions
-        switch (scenario.MethodName) {
+        switch (scenario.MethodName)
+        {
             case "TryGet":
                 sb.AppendLine("Assert.False(result);");
                 GenerateTryGetFailureAssertions(sb, scenario.Arity);
@@ -123,7 +132,8 @@ internal sealed class ResultAssertionGenerator {
     /// </summary>
     /// <param name="scenario">The test scenario.</param>
     /// <returns>Assertion code for edge case scenarios.</returns>
-    public string GenerateEdgeCaseAssertion(TestScenario scenario) {
+    public string GenerateEdgeCaseAssertion(TestScenario scenario)
+    {
         var sb = new StringBuilder();
 
         // Basic edge case assertions (usually success with edge values)
@@ -131,7 +141,8 @@ internal sealed class ResultAssertionGenerator {
         sb.AppendLine("Assert.False(result.IsFaulted);");
 
         // Edge case specific assertions
-        switch (scenario.MethodName) {
+        switch (scenario.MethodName)
+        {
             case "Map":
             case "Bind":
                 GenerateEdgeCaseValueAssertions(sb, scenario.Arity);
@@ -157,7 +168,8 @@ internal sealed class ResultAssertionGenerator {
     /// </summary>
     /// <param name="scenario">The test scenario.</param>
     /// <returns>Assertion code for async scenarios.</returns>
-    public string GenerateAsyncAssertion(TestScenario scenario) {
+    public string GenerateAsyncAssertion(TestScenario scenario)
+    {
         var sb = new StringBuilder();
 
         // Async-specific assertions
@@ -165,7 +177,8 @@ internal sealed class ResultAssertionGenerator {
         sb.AppendLine("Assert.True(result.IsCompleted);");
 
         // Delegate to appropriate assertion based on expected outcome
-        switch (scenario.ExpectedResult.State) {
+        switch (scenario.ExpectedResult.State)
+        {
             case ResultState.Success:
                 sb.AppendLine(GenerateSuccessAssertion(scenario));
                 break;
@@ -188,7 +201,8 @@ internal sealed class ResultAssertionGenerator {
     /// </summary>
     /// <param name="scenario">The test scenario.</param>
     /// <returns>Assertion code for performance scenarios.</returns>
-    public string GeneratePerformanceAssertion(TestScenario scenario) {
+    public string GeneratePerformanceAssertion(TestScenario scenario)
+    {
         var sb = new StringBuilder();
 
         // Performance-specific assertions
@@ -209,9 +223,10 @@ internal sealed class ResultAssertionGenerator {
     /// <param name="arity">The arity of the Result type.</param>
     /// <param name="scenario">The test scenario type.</param>
     /// <returns>Descriptive assertion message.</returns>
-    public string GenerateAssertionMessage(string               methodName,
-                                           ushort               arity,
-                                           TestScenarioCategory scenario) {
+    public string GenerateAssertionMessage(string methodName,
+                                           ushort arity,
+                                           TestScenarioCategory scenario)
+    {
         var arityText = arity == 1
                             ? "single value"
                             : $"{arity} values";
@@ -228,21 +243,23 @@ internal sealed class ResultAssertionGenerator {
     /// <param name="customMessage">Custom assertion message.</param>
     /// <returns>Assertion code with custom message.</returns>
     public string GenerateAssertionWithMessage(TestScenario scenario,
-                                               string       customMessage) {
+                                               string customMessage)
+    {
         var sb = new StringBuilder();
 
         // Add custom message as comment
         sb.AppendLine($"// {customMessage}");
 
         // Generate appropriate assertion based on scenario type
-        var assertionCode = scenario.Type switch {
-            TestScenarioCategory.Success     => GenerateSuccessAssertion(scenario),
-            TestScenarioCategory.Failure     => GenerateFailureAssertion(scenario),
-            TestScenarioCategory.Exception   => GenerateExceptionAssertion(scenario),
-            TestScenarioCategory.EdgeCase    => GenerateEdgeCaseAssertion(scenario),
-            TestScenarioCategory.Async       => GenerateAsyncAssertion(scenario),
+        var assertionCode = scenario.Type switch
+        {
+            TestScenarioCategory.Success => GenerateSuccessAssertion(scenario),
+            TestScenarioCategory.Failure => GenerateFailureAssertion(scenario),
+            TestScenarioCategory.Exception => GenerateExceptionAssertion(scenario),
+            TestScenarioCategory.EdgeCase => GenerateEdgeCaseAssertion(scenario),
+            TestScenarioCategory.Async => GenerateAsyncAssertion(scenario),
             TestScenarioCategory.Performance => GeneratePerformanceAssertion(scenario),
-            _                                => GenerateSuccessAssertion(scenario)
+            _ => GenerateSuccessAssertion(scenario)
         };
 
         sb.AppendLine(assertionCode);
@@ -250,45 +267,57 @@ internal sealed class ResultAssertionGenerator {
     }
 
     private void GenerateValueAssertions(StringBuilder sb,
-                                         ushort        arity,
-                                         string        resultVariable) {
-        for (var i = 1; i <= arity; i++) {
+                                         ushort arity,
+                                         string resultVariable)
+    {
+        for (var i = 1; i <= arity; i++)
+        {
             var expectedValue = TestTypeHelper.GetTestValue(i);
             sb.AppendLine($"Assert.Equal({expectedValue}, {resultVariable}.Value{i});");
         }
     }
 
     private void GenerateMultiArityValueAssertions(StringBuilder sb,
-                                                   ushort        arity) {
-        for (var i = 1; i <= arity; i++) {
+                                                   ushort arity)
+    {
+        for (var i = 1; i <= arity; i++)
+        {
             var expectedValue = TestTypeHelper.GetTestValue(i);
             sb.AppendLine($"Assert.Equal({expectedValue}, values.Item{i});");
         }
     }
 
     private void GenerateTryGetValueAssertions(StringBuilder sb,
-                                               ushort        arity) {
-        for (var i = 1; i <= arity; i++) {
+                                               ushort arity)
+    {
+        for (var i = 1; i <= arity; i++)
+        {
             var expectedValue = TestTypeHelper.GetTestValue(i);
             sb.AppendLine($"Assert.Equal({expectedValue}, outValue{i});");
         }
     }
 
     private void GenerateTryGetFailureAssertions(StringBuilder sb,
-                                                 ushort        arity) {
-        for (var i = 1; i <= arity; i++) {
+                                                 ushort arity)
+    {
+        for (var i = 1; i <= arity; i++)
+        {
             var defaultValue = GetDefaultValue(TestTypeHelper.GetTestType(i));
             sb.AppendLine($"Assert.Equal({defaultValue}, outValue{i});");
         }
     }
 
     private void GenerateValueOrSuccessAssertions(StringBuilder sb,
-                                                  ushort        arity) {
-        if (arity == 1) {
+                                                  ushort arity)
+    {
+        if (arity == 1)
+        {
             sb.AppendLine($"Assert.Equal({TestTypeHelper.GetTestValue(1)}, result);");
         }
-        else {
-            for (var i = 1; i <= arity; i++) {
+        else
+        {
+            for (var i = 1; i <= arity; i++)
+            {
                 var expectedValue = TestTypeHelper.GetTestValue(i);
                 sb.AppendLine($"Assert.Equal({expectedValue}, result.Item{i});");
             }
@@ -296,81 +325,99 @@ internal sealed class ResultAssertionGenerator {
     }
 
     private void GenerateValueOrFailureAssertions(StringBuilder sb,
-                                                  ushort        arity) {
-        if (arity == 1) {
+                                                  ushort arity)
+    {
+        if (arity == 1)
+        {
             sb.AppendLine("Assert.Equal(default1, result);");
         }
-        else {
-            for (var i = 1; i <= arity; i++) {
+        else
+        {
+            for (var i = 1; i <= arity; i++)
+            {
                 sb.AppendLine($"Assert.Equal(default{i}, result.Item{i});");
             }
         }
     }
 
     private void GenerateEdgeCaseValueAssertions(StringBuilder sb,
-                                                 ushort        arity) {
-        for (var i = 1; i <= arity; i++) {
-            var typeName  = TestTypeHelper.GetTestType(i);
+                                                 ushort arity)
+    {
+        for (var i = 1; i <= arity; i++)
+        {
+            var typeName = TestTypeHelper.GetTestType(i);
             var edgeValue = GetEdgeCaseValue(typeName);
             sb.AppendLine($"Assert.Equal({edgeValue}, result.Value{i});");
         }
     }
 
     private void GenerateEdgeCaseTryGetAssertions(StringBuilder sb,
-                                                  ushort        arity) {
-        for (var i = 1; i <= arity; i++) {
-            var typeName  = TestTypeHelper.GetTestType(i);
+                                                  ushort arity)
+    {
+        for (var i = 1; i <= arity; i++)
+        {
+            var typeName = TestTypeHelper.GetTestType(i);
             var edgeValue = GetEdgeCaseValue(typeName);
             sb.AppendLine($"Assert.Equal({edgeValue}, outValue{i});");
         }
     }
 
     private void GenerateEdgeCaseValueOrAssertions(StringBuilder sb,
-                                                   ushort        arity) {
-        if (arity == 1) {
+                                                   ushort arity)
+    {
+        if (arity == 1)
+        {
             var edgeValue = GetEdgeCaseValue(TestTypeHelper.GetTestType(1));
             sb.AppendLine($"Assert.Equal({edgeValue}, result);");
         }
-        else {
-            for (var i = 1; i <= arity; i++) {
-                var typeName  = TestTypeHelper.GetTestType(i);
+        else
+        {
+            for (var i = 1; i <= arity; i++)
+            {
+                var typeName = TestTypeHelper.GetTestType(i);
                 var edgeValue = GetEdgeCaseValue(typeName);
                 sb.AppendLine($"Assert.Equal({edgeValue}, result.Item{i});");
             }
         }
     }
 
-    private string GetDefaultValue(string typeName) {
-        return typeName switch {
-            "int"     => "0",
-            "string"  => "null",
-            "bool"    => "false",
-            "double"  => "0.0",
+    private string GetDefaultValue(string typeName)
+    {
+        return typeName switch
+        {
+            "int" => "0",
+            "string" => "null",
+            "bool" => "false",
+            "double" => "0.0",
             "decimal" => "0m",
-            "long"    => "0L",
-            "char"    => "'\\0'",
-            "float"   => "0f",
-            _         => "default"
+            "long" => "0L",
+            "char" => "'\\0'",
+            "float" => "0f",
+            _ => "default"
         };
     }
 
-    private string GetEdgeCaseValue(string typeName) {
-        return typeName switch {
-            "int"     => "int.MaxValue",
-            "string"  => "string.Empty",
-            "bool"    => "false",
-            "double"  => "double.MaxValue",
+    private string GetEdgeCaseValue(string typeName)
+    {
+        return typeName switch
+        {
+            "int" => "int.MaxValue",
+            "string" => "string.Empty",
+            "bool" => "false",
+            "double" => "double.MaxValue",
             "decimal" => "decimal.MaxValue",
-            "long"    => "long.MaxValue",
-            "char"    => "'\\0'",
-            "float"   => "float.MaxValue",
-            _         => TestTypeHelper.GetTestValue(1)
+            "long" => "long.MaxValue",
+            "char" => "'\\0'",
+            "float" => "float.MaxValue",
+            _ => TestTypeHelper.GetTestValue(1)
         };
     }
 
-    private string GenerateArityTypeString(ushort arity) {
+    private string GenerateArityTypeString(ushort arity)
+    {
         var types = new List<string>();
-        for (var i = 1; i <= arity; i++) {
+        for (var i = 1; i <= arity; i++)
+        {
             types.Add(TestTypeHelper.GetTestType(i));
         }
 

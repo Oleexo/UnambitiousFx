@@ -7,29 +7,33 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results;
 /// <summary>
 ///     Test generator for Result.Try extension methods (sync, Task, ValueTask) including exception path.
 /// </summary>
-internal sealed class ResultTryTestsGenerator : ResultTestGeneratorBase {
-    private const int    StartArity          = 1;
-    private const string ClassName           = "ResultTryTests";
+internal sealed class ResultTryTestsGenerator : ResultTestGeneratorBase
+{
+    private const int StartArity = 1;
+    private const string ClassName = "ResultTryTests";
     private const string ExtensionsNamespace = "Results.Extensions.Transformations";
 
-    public ResultTryTestsGenerator(string               baseNamespace,
+    public ResultTryTestsGenerator(string baseNamespace,
                                    FileOrganizationMode fileOrganization)
         : base(new GenerationConfig(baseNamespace,
                                     StartArity,
                                     ExtensionsNamespace,
                                     ClassName,
                                     fileOrganization,
-                                    true)) {
+                                    true))
+    {
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
+    {
         return GenerateVariants(arity, ClassName,
                                 (GenerateSyncTests, false),
                                 (x => GenerateAsyncTests(x, "Task"), true),
                                 (x => GenerateAsyncTests(x, "ValueTask"), true));
     }
 
-    private ClassWriter GenerateSyncTests(ushort arity) {
+    private ClassWriter GenerateSyncTests(ushort arity)
+    {
         var cw = new ClassWriter($"ResultTrySyncTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Sync Try" };
         cw.AddMethod(new MethodWriter($"Try_Arity{arity}_Success_ShouldTransform",
                                       "void",
@@ -52,7 +56,8 @@ internal sealed class ResultTryTestsGenerator : ResultTestGeneratorBase {
     }
 
     private ClassWriter GenerateAsyncTests(ushort arity,
-                                           string asyncType) {
+                                           string asyncType)
+    {
         var cw = new ClassWriter($"ResultTry{asyncType}TestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - {asyncType} Try" };
         cw.AddMethod(new MethodWriter($"Try{asyncType}_Arity{arity}_Success_ShouldTransform",
                                       "async Task",
@@ -74,61 +79,69 @@ internal sealed class ResultTryTestsGenerator : ResultTestGeneratorBase {
         return cw;
     }
 
-    private string GenerateSyncSuccessBody(ushort arity) {
+    private string GenerateSyncSuccessBody(ushort arity)
+    {
         var testValues = GenerateTestValues(arity);
-        var creation   = GenerateResultCreation(arity);
-        var call       = GenerateTrySyncCall(arity);
+        var creation = GenerateResultCreation(arity);
+        var call = GenerateTrySyncCall(arity);
         var assertions = GenerateTrySuccessAssertions(arity)
            .Split('\n', StringSplitOptions.RemoveEmptyEntries);
         return BuildTestBody([testValues, creation], [call], assertions);
     }
 
-    private string GenerateSyncFailureBody(ushort arity) {
+    private string GenerateSyncFailureBody(ushort arity)
+    {
         var creation = GenerateFailureResultCreation(arity);
-        var call     = GenerateTrySyncCall(arity);
+        var call = GenerateTrySyncCall(arity);
         return BuildTestBody([creation], [call], ["Assert.False(transformedResult.IsSuccess);"]);
     }
 
-    private string GenerateSyncExceptionBody(ushort arity) {
+    private string GenerateSyncExceptionBody(ushort arity)
+    {
         var testValues = GenerateTestValues(arity);
-        var creation   = GenerateResultCreation(arity);
-        var call       = GenerateTrySyncExceptionCall(arity);
+        var creation = GenerateResultCreation(arity);
+        var call = GenerateTrySyncExceptionCall(arity);
         var assertions = GenerateTryExceptionAssertions(arity)
            .Split('\n', StringSplitOptions.RemoveEmptyEntries);
         return BuildTestBody([testValues, creation], [call], assertions);
     }
 
     private string GenerateAsyncSuccessBody(ushort arity,
-                                            string asyncType) {
+                                            string asyncType)
+    {
         var testValues = GenerateTestValues(arity);
-        var creation   = GenerateAsyncSuccessResultCreation(arity, asyncType);
-        var call       = GenerateTryAsyncCall(arity, asyncType);
+        var creation = GenerateAsyncSuccessResultCreation(arity, asyncType);
+        var call = GenerateTryAsyncCall(arity, asyncType);
         var assertions = GenerateTrySuccessAssertions(arity)
            .Split('\n', StringSplitOptions.RemoveEmptyEntries);
         return BuildTestBody([testValues, creation], [call], assertions);
     }
 
     private string GenerateAsyncFailureBody(ushort arity,
-                                            string asyncType) {
+                                            string asyncType)
+    {
         var creation = GenerateAsyncFailureResultCreation(arity, asyncType);
-        var call     = GenerateTryAsyncCall(arity, asyncType);
+        var call = GenerateTryAsyncCall(arity, asyncType);
         return BuildTestBody([creation], [call], ["Assert.False(transformedResult.IsSuccess);"]);
     }
 
     private string GenerateAsyncExceptionBody(ushort arity,
-                                              string asyncType) {
-        var testValues  = GenerateTestValues(arity);
-        var creation    = GenerateAsyncSuccessResultCreation(arity, asyncType);
+                                              string asyncType)
+    {
+        var testValues = GenerateTestValues(arity);
+        var creation = GenerateAsyncSuccessResultCreation(arity, asyncType);
         var tryCallCore = GenerateTryAsyncCallCoreCreation(arity, asyncType);
-        var call        = GenerateTryAsyncExceptionCall(arity, asyncType);
+        var call = GenerateTryAsyncExceptionCall(arity, asyncType);
         var assertions = GenerateTryExceptionAssertions(arity)
            .Split('\n', StringSplitOptions.RemoveEmptyEntries);
         return BuildTestBody([testValues, creation, tryCallCore], [call], assertions);
     }
 
     private string GenerateTryAsyncCallCoreCreation(ushort arity,
-                                                    string asyncType) {
-        if (arity == 1) {
+                                                    string asyncType)
+    {
+        if (arity == 1)
+        {
             return $"Func<int, {asyncType}<string>> tryCall = (value1) => {{ throw new InvalidOperationException(\"Test exception\"); }};";
         }
 
@@ -138,8 +151,10 @@ internal sealed class ResultTryTestsGenerator : ResultTestGeneratorBase {
     }
 
     private string GenerateTryAsyncCall(ushort arity,
-                                        string asyncType) {
-        if (arity == 1) {
+                                        string asyncType)
+    {
+        if (arity == 1)
+        {
             return $"var transformedResult = await taskResult.TryAsync<int, string>(x => {asyncType}.FromResult(x.ToString() + \"_tried\"));";
         }
 
@@ -151,8 +166,10 @@ internal sealed class ResultTryTestsGenerator : ResultTestGeneratorBase {
     }
 
     private string GenerateTryAsyncExceptionCall(ushort arity,
-                                                 string asyncType) {
-        if (arity == 1) {
+                                                 string asyncType)
+    {
+        if (arity == 1)
+        {
             return "var transformedResult = await taskResult.TryAsync<int, string>(tryCall);";
         }
 
@@ -161,8 +178,10 @@ internal sealed class ResultTryTestsGenerator : ResultTestGeneratorBase {
     }
 
     // Helper methods reintroduced
-    private string GenerateTrySyncCall(ushort arity) {
-        if (arity == 1) {
+    private string GenerateTrySyncCall(ushort arity)
+    {
+        if (arity == 1)
+        {
             return "var transformedResult = result.Try<int, string>(x => x.ToString() + \"_tried\");";
         }
 
@@ -176,7 +195,8 @@ internal sealed class ResultTryTestsGenerator : ResultTestGeneratorBase {
         return $"var transformedResult = result.Try<{inputTypes}, {outputTypes}>(({paramsList}) => ({tupleItems}));";
     }
 
-    private string GenerateTrySyncExceptionCall(ushort arity) {
+    private string GenerateTrySyncExceptionCall(ushort arity)
+    {
         var inputTypes = GenerateTypeParams(arity);
         var outputTypes = arity == 1
                               ? "string"
@@ -187,11 +207,13 @@ internal sealed class ResultTryTestsGenerator : ResultTestGeneratorBase {
                    : $"var transformedResult = result.Try<{inputTypes}, {outputTypes}>(({string.Join(", ", Enumerable.Range(1, arity).Select(i => $"x{i}"))}) => throw new Exception(\"Boom\"));";
     }
 
-    private string GenerateTrySuccessAssertions(ushort arity) {
+    private string GenerateTrySuccessAssertions(ushort arity)
+    {
         return "Assert.True(transformedResult.IsSuccess);";
     }
 
-    private string GenerateTryExceptionAssertions(ushort arity) {
+    private string GenerateTryExceptionAssertions(ushort arity)
+    {
         return "Assert.False(transformedResult.IsSuccess);";
     }
 }

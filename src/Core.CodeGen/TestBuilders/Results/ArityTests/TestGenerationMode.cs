@@ -3,7 +3,8 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results.ArityTests;
 /// <summary>
 ///     Defines the modes of test generation for controlling scope and depth.
 /// </summary>
-internal enum TestGenerationMode {
+internal enum TestGenerationMode
+{
     /// <summary>
     ///     Generate only core functionality tests, minimal coverage.
     /// </summary>

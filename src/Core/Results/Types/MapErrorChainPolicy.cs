@@ -3,7 +3,8 @@ namespace UnambitiousFx.Core.Results.Types;
 /// <summary>
 ///     Policy controlling how successive MapError operations behave in a chain.
 /// </summary>
-public enum MapErrorChainPolicy {
+public enum MapErrorChainPolicy
+{
     /// <summary>
     ///     Short-circuit (default): each MapError replaces the previous failure result (current built-in behavior).
     ///     Reasons / metadata are not implicitly copied forward unless higher-level helpers do so.

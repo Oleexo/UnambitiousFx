@@ -9,7 +9,8 @@ namespace UnambitiousFx.Core.XUnit.Fluent;
 /// </summary>
 [DebuggerStepThrough]
 public readonly struct SuccessAssertion<TValue>
-    where TValue : notnull {
+    where TValue : notnull
+{
     /// <summary>
     ///     Holds the success result value for the current assertion context.
     /// </summary>
@@ -22,7 +23,8 @@ public readonly struct SuccessAssertion<TValue>
     /// <summary>
     ///     Provides a fluent API for asserting success values in a result type.
     /// </summary>
-    internal SuccessAssertion(TValue value) {
+    internal SuccessAssertion(TValue value)
+    {
         _value = value;
     }
 
@@ -39,7 +41,8 @@ public readonly struct SuccessAssertion<TValue>
     /// </summary>
     /// <param name="assert">An action to perform custom assertions on the success value.</param>
     /// <returns>The current <see cref="SuccessAssertion{TValue}" /> instance, enabling further chaining.</returns>
-    public SuccessAssertion<TValue> And(Action<TValue> assert) {
+    public SuccessAssertion<TValue> And(Action<TValue> assert)
+    {
         assert(_value);
         return this;
     }
@@ -51,7 +54,8 @@ public readonly struct SuccessAssertion<TValue>
     /// <typeparam name="TOut">The type of the new value returned by the projection.</typeparam>
     /// <returns>A new success assertion containing the projected value.</returns>
     public SuccessAssertion<TOut> Map<TOut>(Func<TValue, TOut> map)
-        where TOut : notnull {
+        where TOut : notnull
+    {
         return new SuccessAssertion<TOut>(map(_value));
     }
 
@@ -59,7 +63,8 @@ public readonly struct SuccessAssertion<TValue>
     /// <param name="map">A function to transform the current value into a new value of type TOut.</param>
     /// <returns>A new SuccessAssertion containing the transformed value.</returns>
     public SuccessAssertion<TOut> Select<TOut>(Func<TValue, TOut> map)
-        where TOut : notnull {
+        where TOut : notnull
+    {
         return Map(map);
     }
 
@@ -68,7 +73,8 @@ public readonly struct SuccessAssertion<TValue>
     /// <typeparam name="TOut">The type of the value encapsulated by the new Result.</typeparam>
     /// <returns>A Result containing the projected value.</returns>
     public Result<TOut> ToResult<TOut>(Func<TValue, TOut> projector)
-        where TOut : notnull {
+        where TOut : notnull
+    {
         return Result.Success(projector(_value));
     }
 
@@ -76,7 +82,8 @@ public readonly struct SuccessAssertion<TValue>
     ///     Deconstructs the success assertion to extract its value.
     /// </summary>
     /// <param name="value">The value contained in the success assertion.</param>
-    public void Deconstruct(out TValue value) {
+    public void Deconstruct(out TValue value)
+    {
         value = _value;
     }
 }

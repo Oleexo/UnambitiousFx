@@ -3,7 +3,8 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results.ArityTests.Models;
 /// <summary>
 ///     Represents the extracted pattern information from existing test files.
 /// </summary>
-internal sealed class TestPattern {
+internal sealed class TestPattern
+{
     /// <summary>
     ///     Initializes a new instance of the TestPattern class.
     /// </summary>
@@ -12,15 +13,16 @@ internal sealed class TestPattern {
     /// <param name="commonUsings">The common using statements.</param>
     /// <param name="attributePatterns">The attribute patterns.</param>
     /// <param name="directoryStructure">The directory structure.</param>
-    public TestPattern(NamingConvention              namingConvention,
-                       AssertionPattern              assertionPattern,
-                       IEnumerable<string>           commonUsings,
+    public TestPattern(NamingConvention namingConvention,
+                       AssertionPattern assertionPattern,
+                       IEnumerable<string> commonUsings,
                        IEnumerable<AttributePattern> attributePatterns,
-                       DirectoryStructure            directoryStructure) {
-        NamingConvention   = namingConvention   ?? throw new ArgumentNullException(nameof(namingConvention));
-        AssertionPattern   = assertionPattern   ?? throw new ArgumentNullException(nameof(assertionPattern));
-        CommonUsings       = commonUsings       ?? throw new ArgumentNullException(nameof(commonUsings));
-        AttributePatterns  = attributePatterns  ?? throw new ArgumentNullException(nameof(attributePatterns));
+                       DirectoryStructure directoryStructure)
+    {
+        NamingConvention = namingConvention ?? throw new ArgumentNullException(nameof(namingConvention));
+        AssertionPattern = assertionPattern ?? throw new ArgumentNullException(nameof(assertionPattern));
+        CommonUsings = commonUsings ?? throw new ArgumentNullException(nameof(commonUsings));
+        AttributePatterns = attributePatterns ?? throw new ArgumentNullException(nameof(attributePatterns));
         DirectoryStructure = directoryStructure ?? throw new ArgumentNullException(nameof(directoryStructure));
     }
 

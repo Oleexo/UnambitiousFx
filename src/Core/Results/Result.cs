@@ -2,11 +2,14 @@ using UnambitiousFx.Core.Results.Reasons;
 
 namespace UnambitiousFx.Core.Results;
 
-public abstract partial class Result : BaseResult {
+public abstract partial class Result : BaseResult
+{
     public abstract void Deconstruct(out IEnumerable<IError>? error);
 
-    public override string ToString() {
-        if (IsSuccess) {
+    public override string ToString()
+    {
+        if (IsSuccess)
+        {
             var metaPart = Metadata.Count == 0
                                ? string.Empty
                                : " meta=" +
@@ -19,13 +22,15 @@ public abstract partial class Result : BaseResult {
                                          .FirstOrDefault(r => r is not ExceptionalError);
         var firstAny = Reasons.OfType<IError>()
                               .FirstOrDefault();
-        var    chosen = firstNonExceptional ?? firstAny;
+        var chosen = firstNonExceptional ?? firstAny;
         string headerType;
         string headerMessage;
-        if (chosen is ExceptionalError exErr) {
+        if (chosen is ExceptionalError exErr)
+        {
             var ex = exErr.Exception;
-            if (ex is null) {
-                headerType    = "Failure";
+            if (ex is null)
+            {
+                headerType = "Failure";
                 headerMessage = "Error";
                 return $"Failure({headerType}: {headerMessage})";
             }
@@ -34,13 +39,15 @@ public abstract partial class Result : BaseResult {
                            .Name;
             headerMessage = ex.Message;
         }
-        else if (chosen is not null) {
+        else if (chosen is not null)
+        {
             headerType = chosen.GetType()
                                .Name;
             headerMessage = chosen.Message;
         }
-        else {
-            headerType    = "Failure";
+        else
+        {
+            headerType = "Failure";
             headerMessage = "Error";
         }
 
@@ -57,7 +64,8 @@ public abstract partial class Result : BaseResult {
 
     #region Static Success
 
-    public static Result Success() {
+    public static Result Success()
+    {
         return new SuccessResult();
     }
 
@@ -65,25 +73,30 @@ public abstract partial class Result : BaseResult {
 
     #region Static Failure
 
-    public static Result Failure(Exception error) {
+    public static Result Failure(Exception error)
+    {
         return new FailureResult(error);
     }
 
-    public static Result Failure(IError error) {
+    public static Result Failure(IError error)
+    {
         var r = new FailureResult(error.Exception ?? new Exception(error.Message), false);
         r.AddReason(error);
-        foreach (var kv in error.Metadata) {
+        foreach (var kv in error.Metadata)
+        {
             r.AddMetadata(kv.Key, kv.Value);
         }
 
         return r;
     }
 
-    public static Result Failure(string message) {
+    public static Result Failure(string message)
+    {
         return new FailureResult(message);
     }
 
-    public static Result Failure(IEnumerable<IError> errors) {
+    public static Result Failure(IEnumerable<IError> errors)
+    {
         return new FailureResult(errors);
     }
 

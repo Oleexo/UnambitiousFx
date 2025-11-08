@@ -9,7 +9,8 @@ namespace UnambitiousFx.Core.CodeGen.Generators.ErrorHandling;
 ///     Generates AppendError extension methods for all Result arities.
 ///     Follows architecture rule: One generator per extension method category.
 /// </summary>
-internal sealed class ResultAppendErrorExtensionsCodeGenerator : BaseCodeGenerator {
+internal sealed class ResultAppendErrorExtensionsCodeGenerator : BaseCodeGenerator
+{
     private const string ExtensionsNamespace = "Results.Extensions.ErrorHandling";
 
     public ResultAppendErrorExtensionsCodeGenerator(string baseNamespace)
@@ -18,15 +19,18 @@ internal sealed class ResultAppendErrorExtensionsCodeGenerator : BaseCodeGenerat
                    0, // Start from Result (arity 0)
                    ExtensionsNamespace,
                    "ResultAppendErrorExtensions",
-                   FileOrganizationMode.SingleFile)) {
+                   FileOrganizationMode.SingleFile))
+    {
     }
 
-    protected override string PrepareOutputDirectory(string outputPath) {
+    protected override string PrepareOutputDirectory(string outputPath)
+    {
         var mainOutput = FileSystemHelper.CreateSubdirectory(outputPath, Config.SubNamespace);
         return mainOutput;
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
+    {
         return [
             GenerateAppendErrorMethods(arity),
             GenerateAsyncMethods(arity, false),
@@ -34,7 +38,8 @@ internal sealed class ResultAppendErrorExtensionsCodeGenerator : BaseCodeGenerat
         ];
     }
 
-    private ClassWriter GenerateAppendErrorMethods(ushort arity) {
+    private ClassWriter GenerateAppendErrorMethods(ushort arity)
+    {
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
         var classWriter = new ClassWriter(
             Config.ClassName,
@@ -49,7 +54,8 @@ internal sealed class ResultAppendErrorExtensionsCodeGenerator : BaseCodeGenerat
         return classWriter;
     }
 
-    private MethodWriter GenerateAppendErrorMethod(ushort arity) {
+    private MethodWriter GenerateAppendErrorMethod(ushort arity)
+    {
         var (resultType, genericParams, constraints) = GetResultTypeInfo(arity);
         var methodName = "AppendError";
 
@@ -69,19 +75,23 @@ internal sealed class ResultAppendErrorExtensionsCodeGenerator : BaseCodeGenerat
                                   .WithDocumentation(documentation);
 
         // Add generic parameters and constraints
-        foreach (var param in genericParams) {
+        foreach (var param in genericParams)
+        {
             builder.WithGenericParameter(param);
         }
 
-        foreach (var constraint in constraints) {
+        foreach (var constraint in constraints)
+        {
             builder.WithGenericConstraint(constraint);
         }
 
         return builder.Build();
     }
 
-    private (string resultType, string[] genericParams, GenericConstraint[] constraints) GetResultTypeInfo(ushort arity) {
-        if (arity == 0) {
+    private (string resultType, string[] genericParams, GenericConstraint[] constraints) GetResultTypeInfo(ushort arity)
+    {
+        if (arity == 0)
+        {
             return ("Result", [], []);
         }
 
@@ -100,7 +110,8 @@ internal sealed class ResultAppendErrorExtensionsCodeGenerator : BaseCodeGenerat
         return (resultType, genericParams, constraints);
     }
 
-    private string GenerateAppendErrorBody(ushort arity) {
+    private string GenerateAppendErrorBody(ushort arity)
+    {
         return """
                if (string.IsNullOrEmpty(suffix) || result.IsSuccess) return result; // no-op
                return result.MapError(errs => errs.Select(x => x.WithMessage(x.Message + suffix)));
@@ -108,7 +119,8 @@ internal sealed class ResultAppendErrorExtensionsCodeGenerator : BaseCodeGenerat
     }
 
     private ClassWriter GenerateAsyncMethods(ushort arity,
-                                             bool   isValueTask) {
+                                             bool isValueTask)
+    {
         var subNamespace = isValueTask
                                ? "ValueTasks"
                                : "Tasks";
@@ -131,8 +143,9 @@ internal sealed class ResultAppendErrorExtensionsCodeGenerator : BaseCodeGenerat
     }
 
     private MethodWriter GenerateAppendErrorAsyncMethod(ushort arity,
-                                                        bool   isValueTask,
-                                                        bool   isAwaitable) {
+                                                        bool isValueTask,
+                                                        bool isAwaitable)
+    {
         var (resultType, genericParams, constraints) = GetResultTypeInfo(arity);
         var methodName = "AppendErrorAsync";
 
@@ -156,9 +169,10 @@ internal sealed class ResultAppendErrorExtensionsCodeGenerator : BaseCodeGenerat
                                                            "A task with a new result containing the appended error message if the original result failed, otherwise the original successful result.");
 
         // Add documentation for all value type parameters
-        for (var i = 0; i < genericParams.Length; i++) {
+        for (var i = 0; i < genericParams.Length; i++)
+        {
             var paramName = genericParams[i];
-            var ordinal   = GetOrdinalString(i + 1);
+            var ordinal = GetOrdinalString(i + 1);
             documentationBuilder.WithTypeParameter(paramName, $"The type of the {ordinal} value.");
         }
 
@@ -167,7 +181,8 @@ internal sealed class ResultAppendErrorExtensionsCodeGenerator : BaseCodeGenerat
         var body = GenerateAppendErrorAsyncBody(arity, isValueTask, isAwaitable);
 
         var modifiers = MethodModifier.Static;
-        if (isAwaitable) {
+        if (isAwaitable)
+        {
             modifiers |= MethodModifier.Async;
         }
 
@@ -180,19 +195,23 @@ internal sealed class ResultAppendErrorExtensionsCodeGenerator : BaseCodeGenerat
                                   .WithDocumentation(documentation);
 
         // Add using for ValueAccess extensions
-        if (isValueTask) {
+        if (isValueTask)
+        {
             builder.WithUsings("UnambitiousFx.Core.Results.Extensions.ValueAccess.ValueTasks");
         }
-        else {
+        else
+        {
             builder.WithUsings("UnambitiousFx.Core.Results.Extensions.ValueAccess.Tasks");
         }
 
         // Add generic parameters and constraints for value types
-        foreach (var param in genericParams) {
+        foreach (var param in genericParams)
+        {
             builder.WithGenericParameter(param);
         }
 
-        foreach (var constraint in constraints) {
+        foreach (var constraint in constraints)
+        {
             builder.WithGenericConstraint(constraint);
         }
 
@@ -200,9 +219,11 @@ internal sealed class ResultAppendErrorExtensionsCodeGenerator : BaseCodeGenerat
     }
 
     private string GenerateAppendErrorAsyncBody(ushort arity,
-                                                bool   isValueTask,
-                                                bool   isAwaitable) {
-        if (isAwaitable) {
+                                                bool isValueTask,
+                                                bool isAwaitable)
+    {
+        if (isAwaitable)
+        {
             return """
                    var result = await awaitableResult;
                    return result.AppendError(suffix);
@@ -220,8 +241,10 @@ internal sealed class ResultAppendErrorExtensionsCodeGenerator : BaseCodeGenerat
                 """;
     }
 
-    private static string GetOrdinalString(int number) {
-        return number switch {
+    private static string GetOrdinalString(int number)
+    {
+        return number switch
+        {
             1 => "first",
             2 => "second",
             3 => "third",

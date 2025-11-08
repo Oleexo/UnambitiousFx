@@ -7,10 +7,12 @@ namespace UnambitiousFx.Core.CodeGen.Builders.Transformations;
 ///     Builds Bind extension methods for Result types.
 ///     Bind chains operations that return Result types, propagating failures.
 /// </summary>
-internal sealed class BindMethodBuilder {
+internal sealed class BindMethodBuilder
+{
     private readonly string _baseNamespace;
 
-    public BindMethodBuilder(string baseNamespace) {
+    public BindMethodBuilder(string baseNamespace)
+    {
         _baseNamespace = baseNamespace ?? throw new ArgumentNullException(nameof(baseNamespace));
     }
 
@@ -20,7 +22,8 @@ internal sealed class BindMethodBuilder {
     /// <param name="inputArity">Number of input value types (0-8)</param>
     /// <param name="outputArity">Number of output value types (0-8)</param>
     public MethodWriter BuildStandaloneMethod(ushort inputArity,
-                                              ushort outputArity) {
+                                              ushort outputArity)
+    {
         // Build input and output types
         var inputResultType = inputArity == 0
                                   ? "Result"
@@ -32,25 +35,28 @@ internal sealed class BindMethodBuilder {
 
         // Build generic parameters
         var genericParams = new List<GenericParameter>();
-        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(inputArity,  "TValue", "notnull"));
-        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(outputArity, "TOut",   "notnull"));
+        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(inputArity, "TValue", "notnull"));
+        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(outputArity, "TOut", "notnull"));
 
         // Build function signature
         string funcSignature;
         string matchSuccessParams;
         string bindCallParams;
 
-        if (inputArity == 0) {
-            funcSignature      = $"Func<{outputResultType}>";
+        if (inputArity == 0)
+        {
+            funcSignature = $"Func<{outputResultType}>";
             matchSuccessParams = "";
-            bindCallParams     = "";
+            bindCallParams = "";
         }
-        else if (inputArity == 1) {
-            funcSignature      = $"Func<TValue1, {outputResultType}>";
+        else if (inputArity == 1)
+        {
+            funcSignature = $"Func<TValue1, {outputResultType}>";
             matchSuccessParams = "v";
-            bindCallParams     = "v";
+            bindCallParams = "v";
         }
-        else {
+        else
+        {
             var valueParams = string.Join(", ", Enumerable.Range(1, inputArity)
                                                           .Select(n => $"TValue{n}"));
             funcSignature = $"Func<{valueParams}, {outputResultType}>";
@@ -112,16 +118,18 @@ internal sealed class BindMethodBuilder {
         // Build documentation
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary("Chains a function that returns a Result, propagating failures.")
-                                            .WithParameter("result",                 "The result instance.")
-                                            .WithParameter("bind",                   "The function to execute if the result is successful.")
+                                            .WithParameter("result", "The result instance.")
+                                            .WithParameter("bind", "The function to execute if the result is successful.")
                                             .WithParameter("copyReasonsAndMetadata", "Whether to copy reasons and metadata from original result.")
                                             .WithReturns("The result from the bind function, or a failure result.");
 
-        for (var i = 1; i <= inputArity; i++) {
+        for (var i = 1; i <= inputArity; i++)
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Input value type {i}.");
         }
 
-        for (var i = 1; i <= outputArity; i++) {
+        for (var i = 1; i <= outputArity; i++)
+        {
             docBuilder.WithTypeParameter($"TOut{i}", $"Output value type {i}.");
         }
 
@@ -147,7 +155,8 @@ internal sealed class BindMethodBuilder {
     /// </summary>
     public MethodWriter BuildResultWithAsyncFuncMethod(ushort inputArity,
                                                        ushort outputArity,
-                                                       bool   isValueTask) {
+                                                       bool isValueTask)
+    {
         var asyncType = isValueTask
                             ? "ValueTask"
                             : "Task";
@@ -166,8 +175,8 @@ internal sealed class BindMethodBuilder {
 
         // Build generic parameters
         var genericParams = new List<GenericParameter>();
-        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(inputArity,  "TValue", "notnull"));
-        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(outputArity, "TOut",   "notnull"));
+        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(inputArity, "TValue", "notnull"));
+        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(outputArity, "TOut", "notnull"));
 
         // Build function signature
         string funcSignature;
@@ -175,25 +184,28 @@ internal sealed class BindMethodBuilder {
         string bindCallParams;
         string matchReturnType;
 
-        if (inputArity == 0) {
-            funcSignature      = $"Func<{asyncType}<{outputResultType}>>";
+        if (inputArity == 0)
+        {
+            funcSignature = $"Func<{asyncType}<{outputResultType}>>";
             matchSuccessParams = "";
-            bindCallParams     = "";
-            matchReturnType    = $"<{asyncType}<{outputResultType}>>";
+            bindCallParams = "";
+            matchReturnType = $"<{asyncType}<{outputResultType}>>";
         }
-        else if (inputArity == 1) {
-            funcSignature      = $"Func<TValue1, {asyncType}<{outputResultType}>>";
+        else if (inputArity == 1)
+        {
+            funcSignature = $"Func<TValue1, {asyncType}<{outputResultType}>>";
             matchSuccessParams = "v";
-            bindCallParams     = "v";
-            matchReturnType    = $"<{asyncType}<{outputResultType}>>";
+            bindCallParams = "v";
+            matchReturnType = $"<{asyncType}<{outputResultType}>>";
         }
-        else {
+        else
+        {
             var valueParams = string.Join(", ", Enumerable.Range(1, inputArity)
                                                           .Select(n => $"TValue{n}"));
             funcSignature = $"Func<{valueParams}, {asyncType}<{outputResultType}>>";
             matchSuccessParams = string.Join(", ", Enumerable.Range(1, inputArity)
                                                              .Select(n => $"v{n}"));
-            bindCallParams  = matchSuccessParams;
+            bindCallParams = matchSuccessParams;
             matchReturnType = $"<{asyncType}<{outputResultType}>>";
         }
 
@@ -204,7 +216,8 @@ internal sealed class BindMethodBuilder {
 
         // Build method body based on Task or ValueTask
         string body;
-        if (isValueTask) {
+        if (isValueTask)
+        {
             var successLambda = inputArity == 0
                                     ? """
                                       async () => {
@@ -249,7 +262,8 @@ internal sealed class BindMethodBuilder {
                      });
                      """;
         }
-        else {
+        else
+        {
             var successLambda = inputArity == 0
                                     ? """
                                       async () => {
@@ -299,16 +313,18 @@ internal sealed class BindMethodBuilder {
 
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary("Async Bind chaining an async function that returns a Result.")
-                                            .WithParameter("result",                 "The result instance.")
-                                            .WithParameter("bind",                   "The async function to execute if the result is successful.")
+                                            .WithParameter("result", "The result instance.")
+                                            .WithParameter("bind", "The async function to execute if the result is successful.")
                                             .WithParameter("copyReasonsAndMetadata", "Whether to copy reasons and metadata from original result.")
                                             .WithReturns("A task with the result from the bind function.");
 
-        for (var i = 1; i <= inputArity; i++) {
+        for (var i = 1; i <= inputArity; i++)
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Input value type {i}.");
         }
 
-        for (var i = 1; i <= outputArity; i++) {
+        for (var i = 1; i <= outputArity; i++)
+        {
             docBuilder.WithTypeParameter($"TOut{i}", $"Output value type {i}.");
         }
 
@@ -335,7 +351,8 @@ internal sealed class BindMethodBuilder {
     /// </summary>
     public MethodWriter BuildAwaitableWithSyncFuncMethod(ushort inputArity,
                                                          ushort outputArity,
-                                                         bool   isValueTask) {
+                                                         bool isValueTask)
+    {
         var asyncType = isValueTask
                             ? "ValueTask"
                             : "Task";
@@ -353,25 +370,28 @@ internal sealed class BindMethodBuilder {
 
         // Build generic parameters
         var genericParams = new List<GenericParameter>();
-        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(inputArity,  "TValue", "notnull"));
-        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(outputArity, "TOut",   "notnull"));
+        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(inputArity, "TValue", "notnull"));
+        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(outputArity, "TOut", "notnull"));
 
         // Build function signature
         string funcSignature;
         string matchSuccessParams;
         string bindCallParams;
 
-        if (inputArity == 0) {
-            funcSignature      = $"Func<{outputResultType}>";
+        if (inputArity == 0)
+        {
+            funcSignature = $"Func<{outputResultType}>";
             matchSuccessParams = "";
-            bindCallParams     = "";
+            bindCallParams = "";
         }
-        else if (inputArity == 1) {
-            funcSignature      = $"Func<TValue1, {outputResultType}>";
+        else if (inputArity == 1)
+        {
+            funcSignature = $"Func<TValue1, {outputResultType}>";
             matchSuccessParams = "v";
-            bindCallParams     = "v";
+            bindCallParams = "v";
         }
-        else {
+        else
+        {
             var valueParams = string.Join(", ", Enumerable.Range(1, inputArity)
                                                           .Select(n => $"TValue{n}"));
             funcSignature = $"Func<{valueParams}, {outputResultType}>";
@@ -435,16 +455,18 @@ internal sealed class BindMethodBuilder {
 
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary("Async Bind awaiting result then chaining a sync function.")
-                                            .WithParameter("awaitable",              "The awaitable result instance.")
-                                            .WithParameter("bind",                   "The function to execute if the result is successful.")
+                                            .WithParameter("awaitable", "The awaitable result instance.")
+                                            .WithParameter("bind", "The function to execute if the result is successful.")
                                             .WithParameter("copyReasonsAndMetadata", "Whether to copy reasons and metadata from original result.")
                                             .WithReturns("A task with the result from the bind function.");
 
-        for (var i = 1; i <= inputArity; i++) {
+        for (var i = 1; i <= inputArity; i++)
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Input value type {i}.");
         }
 
-        for (var i = 1; i <= outputArity; i++) {
+        for (var i = 1; i <= outputArity; i++)
+        {
             docBuilder.WithTypeParameter($"TOut{i}", $"Output value type {i}.");
         }
 
@@ -471,7 +493,8 @@ internal sealed class BindMethodBuilder {
     /// </summary>
     public MethodWriter BuildAwaitableWithAsyncFuncMethod(ushort inputArity,
                                                           ushort outputArity,
-                                                          bool   isValueTask) {
+                                                          bool isValueTask)
+    {
         var asyncType = isValueTask
                             ? "ValueTask"
                             : "Task";
@@ -489,19 +512,22 @@ internal sealed class BindMethodBuilder {
 
         // Build generic parameters
         var genericParams = new List<GenericParameter>();
-        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(inputArity,  "TValue", "notnull"));
-        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(outputArity, "TOut",   "notnull"));
+        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(inputArity, "TValue", "notnull"));
+        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(outputArity, "TOut", "notnull"));
 
         // Build function signature
         string funcSignature;
 
-        if (inputArity == 0) {
+        if (inputArity == 0)
+        {
             funcSignature = $"Func<{asyncType}<{outputResultType}>>";
         }
-        else if (inputArity == 1) {
+        else if (inputArity == 1)
+        {
             funcSignature = $"Func<TValue1, {asyncType}<{outputResultType}>>";
         }
-        else {
+        else
+        {
             var valueParams = string.Join(", ", Enumerable.Range(1, inputArity)
                                                           .Select(n => $"TValue{n}"));
             funcSignature = $"Func<{valueParams}, {asyncType}<{outputResultType}>>";
@@ -522,16 +548,18 @@ internal sealed class BindMethodBuilder {
 
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary("Async Bind awaiting result then chaining an async function.")
-                                            .WithParameter("awaitable",              "The awaitable result instance.")
-                                            .WithParameter("bind",                   "The async function to execute if the result is successful.")
+                                            .WithParameter("awaitable", "The awaitable result instance.")
+                                            .WithParameter("bind", "The async function to execute if the result is successful.")
                                             .WithParameter("copyReasonsAndMetadata", "Whether to copy reasons and metadata from original result.")
                                             .WithReturns("A task with the result from the bind function.");
 
-        for (var i = 1; i <= inputArity; i++) {
+        for (var i = 1; i <= inputArity; i++)
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Input value type {i}.");
         }
 
-        for (var i = 1; i <= outputArity; i++) {
+        for (var i = 1; i <= outputArity; i++)
+        {
             docBuilder.WithTypeParameter($"TOut{i}", $"Output value type {i}.");
         }
 

@@ -7,7 +7,8 @@ namespace UnambitiousFx.Mediator.Abstractions;
 /// </summary>
 /// <typeparam name="TRequest">The request type.</typeparam>
 public interface IRequestPipelineBehavior<in TRequest>
-    where TRequest : IRequest {
+    where TRequest : IRequest
+{
     /// <summary>
     ///     Handles the request within the pipeline for the specific <typeparamref name="TRequest" /> type.
     /// </summary>
@@ -15,9 +16,9 @@ public interface IRequestPipelineBehavior<in TRequest>
     /// <param name="next">Delegate to invoke the next behavior/handler.</param>
     /// <param name="cancellationToken">Token for cancelling the operation.</param>
     /// <returns>A task containing the result of the operation.</returns>
-    ValueTask<Result> HandleAsync(TRequest               request,
+    ValueTask<Result> HandleAsync(TRequest request,
                                   RequestHandlerDelegate next,
-                                  CancellationToken      cancellationToken = default);
+                                  CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -27,7 +28,8 @@ public interface IRequestPipelineBehavior<in TRequest>
 /// <typeparam name="TResponse">Response type.</typeparam>
 public interface IRequestPipelineBehavior<in TRequest, TResponse>
     where TRequest : IRequest<TResponse>
-    where TResponse : notnull {
+    where TResponse : notnull
+{
     /// <summary>
     ///     Handles the request within the pipeline for the specific <typeparamref name="TRequest" /> returning a
     ///     <typeparamref name="TResponse" />.
@@ -36,7 +38,7 @@ public interface IRequestPipelineBehavior<in TRequest, TResponse>
     /// <param name="next">Delegate to invoke the next behavior/handler.</param>
     /// <param name="cancellationToken">Token for cancelling the operation.</param>
     /// <returns>A task containing the result of the operation.</returns>
-    ValueTask<Result<TResponse>> HandleAsync(TRequest                          request,
+    ValueTask<Result<TResponse>> HandleAsync(TRequest request,
                                              RequestHandlerDelegate<TResponse> next,
-                                             CancellationToken                 cancellationToken = default);
+                                             CancellationToken cancellationToken = default);
 }

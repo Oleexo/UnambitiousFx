@@ -5,9 +5,11 @@ using UnambitiousFx.Core.Results.Reasons;
 
 namespace UnambitiousFx.Core.Tests.Results.Policies;
 
-public sealed class ResultPolicyTests {
+public sealed class ResultPolicyTests
+{
     [Fact]
-    public async Task Retry_Succeeds_FirstAttempt() {
+    public async Task Retry_Succeeds_FirstAttempt()
+    {
         var policy = ResultPolicies.Retry(3);
         var r = await policy.ExecuteAsync(() => Result.Success());
         Assert.True(r.IsSuccess);
@@ -15,10 +17,12 @@ public sealed class ResultPolicyTests {
     }
 
     [Fact]
-    public async Task Retry_Retries_OnFailure_ResultPredicate() {
+    public async Task Retry_Retries_OnFailure_ResultPredicate()
+    {
         var attempts = 0;
         var policy = ResultPolicies.Retry(5, resultFilter: _ => true);
-        var r = await policy.ExecuteAsync(() => {
+        var r = await policy.ExecuteAsync(() =>
+        {
             attempts++;
             if (attempts < 3) return Result.Failure(new Exception("boom"));
             return Result.Success();
@@ -28,7 +32,8 @@ public sealed class ResultPolicyTests {
     }
 
     [Fact]
-    public async Task Retry_StopsEarly_WhenPredicateBlocks() {
+    public async Task Retry_StopsEarly_WhenPredicateBlocks()
+    {
         var attempts = 0;
         var policy = ResultPolicies.Retry(5, resultFilter: _ => false); // never retry failures
         var r = await policy.ExecuteAsync(() => { attempts++; return Result.Failure(new Exception("fail")); });
@@ -37,10 +42,12 @@ public sealed class ResultPolicyTests {
     }
 
     [Fact]
-    public async Task Retry_Generic_SucceedsAfterRetries() {
+    public async Task Retry_Generic_SucceedsAfterRetries()
+    {
         var attempts = 0;
         var policy = ResultPolicies.Retry(4, resultFilter: _ => true);
-        var r = await policy.ExecuteAsync(() => {
+        var r = await policy.ExecuteAsync(() =>
+        {
             attempts++;
             if (attempts < 4) return Result.Failure<int>(new Exception("no"));
             return Result.Success(42);
@@ -51,10 +58,12 @@ public sealed class ResultPolicyTests {
     }
 
     [Fact]
-    public async Task Retry_StopsOnUnhandledException() {
+    public async Task Retry_StopsOnUnhandledException()
+    {
         var attempts = 0;
         var policy = ResultPolicies.Retry(5, exceptionFilter: ex => ex is InvalidOperationException);
-        var r = await policy.ExecuteAsync(() => {
+        var r = await policy.ExecuteAsync(() =>
+        {
             attempts++;
             throw new ArgumentException("boom");
         });
@@ -63,9 +72,11 @@ public sealed class ResultPolicyTests {
     }
 
     [Fact]
-    public async Task Timeout_Fails_WhenExceeded() {
+    public async Task Timeout_Fails_WhenExceeded()
+    {
         var policy = ResultPolicies.Timeout(TimeSpan.FromMilliseconds(50));
-        var r = await policy.ExecuteAsync(async () => {
+        var r = await policy.ExecuteAsync(async () =>
+        {
             await Task.Delay(200);
             return Result.Success();
         });
@@ -75,9 +86,11 @@ public sealed class ResultPolicyTests {
     }
 
     [Fact]
-    public async Task Timeout_Succeeds_WhenWithinLimit() {
+    public async Task Timeout_Succeeds_WhenWithinLimit()
+    {
         var policy = ResultPolicies.Timeout(TimeSpan.FromMilliseconds(200));
-        var r = await policy.ExecuteAsync(async () => {
+        var r = await policy.ExecuteAsync(async () =>
+        {
             await Task.Delay(50);
             return Result.Success();
         });
@@ -86,9 +99,11 @@ public sealed class ResultPolicyTests {
     }
 
     [Fact]
-    public async Task Timeout_Generic_Works() {
+    public async Task Timeout_Generic_Works()
+    {
         var policy = ResultPolicies.Timeout(TimeSpan.FromMilliseconds(200));
-        var r = await policy.ExecuteAsync(async () => {
+        var r = await policy.ExecuteAsync(async () =>
+        {
             await Task.Delay(20);
             return Result.Success(123);
         });

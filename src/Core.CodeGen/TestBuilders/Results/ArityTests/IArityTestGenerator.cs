@@ -4,7 +4,8 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results.ArityTests;
 ///     Interface for generating arity-specific test methods for Result types.
 ///     Extends the base ICodeGenerator to provide specialized test generation capabilities.
 /// </summary>
-internal interface IArityTestGenerator : ICodeGenerator {
+internal interface IArityTestGenerator : ICodeGenerator
+{
     /// <summary>
     ///     Gets the name of the test class that will be generated.
     /// </summary>

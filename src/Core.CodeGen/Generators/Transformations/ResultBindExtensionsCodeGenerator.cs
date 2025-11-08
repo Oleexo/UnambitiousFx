@@ -12,7 +12,8 @@ namespace UnambitiousFx.Core.CodeGen.Generators.Transformations;
 ///     Each file contains all input arities (0-8) × all output arities (0-8) for that async type.
 ///     Generates methods in 3 categories: sync, Task-based async, and ValueTask-based async.
 /// </summary>
-internal sealed class ResultBindExtensionsCodeGenerator : BaseCodeGenerator {
+internal sealed class ResultBindExtensionsCodeGenerator : BaseCodeGenerator
+{
     private const string ExtensionsNamespace = "Results.Extensions.Transformations";
 
     private readonly BindMethodBuilder _bindBuilder;
@@ -23,16 +24,19 @@ internal sealed class ResultBindExtensionsCodeGenerator : BaseCodeGenerator {
                    0, // Bind starts at 0 (Result with no values)
                    ExtensionsNamespace,
                    "ResultBindExtensions",
-                   FileOrganizationMode.SingleFile)) {
+                   FileOrganizationMode.SingleFile))
+    {
         _bindBuilder = new BindMethodBuilder(baseNamespace);
     }
 
-    protected override string PrepareOutputDirectory(string outputPath) {
+    protected override string PrepareOutputDirectory(string outputPath)
+    {
         var mainOutput = FileSystemHelper.CreateSubdirectory(outputPath, Config.SubNamespace);
         return mainOutput;
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
+    {
         var inputArity = arity;
 
         return [
@@ -46,7 +50,8 @@ internal sealed class ResultBindExtensionsCodeGenerator : BaseCodeGenerator {
     ///     Generates synchronous Bind methods for a given input arity.
     ///     For each input arity, we generate methods for all possible output arities (0-8).
     /// </summary>
-    private ClassWriter GenerateSyncMethodsForInputArity(ushort inputArity) {
+    private ClassWriter GenerateSyncMethodsForInputArity(ushort inputArity)
+    {
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
         var classWriter = new ClassWriter(
             Config.ClassName,
@@ -55,7 +60,8 @@ internal sealed class ResultBindExtensionsCodeGenerator : BaseCodeGenerator {
         );
 
         // Generate Bind methods for all output arities (0-8)
-        for (ushort outputArity = 0; outputArity <= 8; outputArity++) {
+        for (ushort outputArity = 0; outputArity <= 8; outputArity++)
+        {
             classWriter.AddMethod(_bindBuilder.BuildStandaloneMethod(inputArity, outputArity));
         }
 
@@ -71,7 +77,8 @@ internal sealed class ResultBindExtensionsCodeGenerator : BaseCodeGenerator {
     ///     3. Task/ValueTask + async func -> Task/ValueTask
     /// </summary>
     private ClassWriter GenerateAsyncMethodsForInputArity(ushort inputArity,
-                                                          bool   isValueTask) {
+                                                          bool isValueTask)
+    {
         var subNamespace = isValueTask
                                ? "ValueTasks"
                                : "Tasks";
@@ -84,7 +91,8 @@ internal sealed class ResultBindExtensionsCodeGenerator : BaseCodeGenerator {
         );
 
         // Generate async methods for all output arities (0-8)
-        for (ushort outputArity = 0; outputArity <= 8; outputArity++) {
+        for (ushort outputArity = 0; outputArity <= 8; outputArity++)
+        {
             // Pattern 1: Result + async func
             classWriter.AddMethod(_bindBuilder.BuildResultWithAsyncFuncMethod(inputArity, outputArity, isValueTask));
 

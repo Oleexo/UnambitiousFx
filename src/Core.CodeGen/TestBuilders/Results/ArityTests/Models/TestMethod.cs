@@ -3,7 +3,8 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results.ArityTests.Models;
 /// <summary>
 ///     Represents a generated test method with its structure and content.
 /// </summary>
-internal sealed class TestMethod {
+internal sealed class TestMethod
+{
     /// <summary>
     ///     Initializes a new instance of the TestMethod class.
     /// </summary>
@@ -12,13 +13,14 @@ internal sealed class TestMethod {
     /// <param name="attributes">The method attributes.</param>
     /// <param name="returnType">The return type.</param>
     /// <param name="visibility">The visibility modifier.</param>
-    public TestMethod(string              name,
-                      string              body,
+    public TestMethod(string name,
+                      string body,
                       IEnumerable<string> attributes,
-                      string              returnType = "void",
-                      string              visibility = "public") {
-        Name       = name       ?? throw new ArgumentNullException(nameof(name));
-        Body       = body       ?? throw new ArgumentNullException(nameof(body));
+                      string returnType = "void",
+                      string visibility = "public")
+    {
+        Name = name ?? throw new ArgumentNullException(nameof(name));
+        Body = body ?? throw new ArgumentNullException(nameof(body));
         Attributes = attributes ?? throw new ArgumentNullException(nameof(attributes));
         ReturnType = returnType ?? throw new ArgumentNullException(nameof(returnType));
         Visibility = visibility ?? throw new ArgumentNullException(nameof(visibility));

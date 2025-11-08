@@ -5,15 +5,18 @@ using UnambitiousFx.Mediator.Abstractions;
 
 namespace Application.Application.Todos;
 
-public sealed class TodoCreatedHandler : IEventHandler<TodoCreated> {
+public sealed class TodoCreatedHandler : IEventHandler<TodoCreated>
+{
     private readonly ILogger<TodoCreatedHandler> _logger;
 
-    public TodoCreatedHandler(ILogger<TodoCreatedHandler> logger) {
+    public TodoCreatedHandler(ILogger<TodoCreatedHandler> logger)
+    {
         _logger = logger;
     }
 
-    public ValueTask<Result> HandleAsync(TodoCreated       @event,
-                                         CancellationToken cancellationToken = default) {
+    public ValueTask<Result> HandleAsync(TodoCreated @event,
+                                         CancellationToken cancellationToken = default)
+    {
         _logger.LogInformation("New todo created {TodoId}", @event.Todo.Id);
 
         return ValueTask.FromResult(Result.Success());

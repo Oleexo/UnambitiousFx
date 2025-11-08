@@ -7,29 +7,33 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results;
 /// <summary>
 ///     Test generator for Result.ShapeError extension methods (Sync, Task, ValueTask).
 /// </summary>
-internal sealed class ResultShapeErrorTestsGenerator : ResultTestGeneratorBase {
-    private const int    StartArity          = 0;
-    private const string ClassName           = "ResultShapeErrorTests";
+internal sealed class ResultShapeErrorTestsGenerator : ResultTestGeneratorBase
+{
+    private const int StartArity = 0;
+    private const string ClassName = "ResultShapeErrorTests";
     private const string ExtensionsNamespace = "Results.Extensions.ErrorHandling";
 
-    public ResultShapeErrorTestsGenerator(string               baseNamespace,
+    public ResultShapeErrorTestsGenerator(string baseNamespace,
                                           FileOrganizationMode fileOrganization)
         : base(new GenerationConfig(baseNamespace,
                                     StartArity,
                                     ExtensionsNamespace,
                                     ClassName,
                                     fileOrganization,
-                                    true)) {
+                                    true))
+    {
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
+    {
         return GenerateVariants(arity, ClassName,
                                 (x => GenerateSyncTests(x), false),
                                 (x => GenerateAsyncTests(x, "Task"), true),
                                 (x => GenerateAsyncTests(x, "ValueTask"), true));
     }
 
-    private ClassWriter GenerateSyncTests(ushort arity) {
+    private ClassWriter GenerateSyncTests(ushort arity)
+    {
         var cw = new ClassWriter($"ResultShapeErrorTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Sync ShapeError" };
         cw.AddMethod(new MethodWriter($"ShapeError_Arity{arity}_Success_ShouldReturnSuccess", "void", GenerateSyncSuccessBody(arity),
                                       attributes: [new FactAttributeReference()], usings: GetUsings()));
@@ -41,7 +45,8 @@ internal sealed class ResultShapeErrorTestsGenerator : ResultTestGeneratorBase {
     }
 
     private ClassWriter GenerateAsyncTests(ushort arity,
-                                           string asyncType) {
+                                           string asyncType)
+    {
         var cw = new ClassWriter($"ResultShapeError{asyncType}TestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - {asyncType} ShapeError" };
         cw.AddMethod(new MethodWriter($"ShapeError{asyncType}_Arity{arity}_Success_ShouldReturnSuccess", "async Task", GenerateAsyncSuccessBody(arity, asyncType),
                                       attributes: [new FactAttributeReference()], usings: GetUsings()));
@@ -55,7 +60,8 @@ internal sealed class ResultShapeErrorTestsGenerator : ResultTestGeneratorBase {
     }
 
     private string GenerateAsyncSuccessBody(ushort arity,
-                                            string asyncType) {
+                                            string asyncType)
+    {
         var given = arity == 0
                         ? new[] { GenerateResultCreation(arity) }
                         : new[] { GenerateTestValues(arity), GenerateResultCreation(arity) };
@@ -65,25 +71,29 @@ internal sealed class ResultShapeErrorTestsGenerator : ResultTestGeneratorBase {
     }
 
     private string GenerateAsyncFailureBody(ushort arity,
-                                            string asyncType) {
+                                            string asyncType)
+    {
         var given = new[] { GenerateFailureResultCreation(arity) };
-        var when  = new[] { GenerateShapeErrorAsyncCall(arity, asyncType) };
-        var then  = new[] { "Assert.False(shaped.IsSuccess);", "Assert.Contains(shaped.Errors, e => e.Message.Contains(\"Shaped\"));" };
+        var when = new[] { GenerateShapeErrorAsyncCall(arity, asyncType) };
+        var then = new[] { "Assert.False(shaped.IsSuccess);", "Assert.Contains(shaped.Errors, e => e.Message.Contains(\"Shaped\"));" };
         return BuildTestBody(given, when, then);
     }
 
     private string GenerateAsyncAwaitableFailureBody(ushort arity,
-                                                     string asyncType) {
+                                                     string asyncType)
+    {
         var given = new[] { GenerateAsyncFailureResultCreation(arity, asyncType) };
-        var when  = new[] { GenerateShapeErrorAwaitableAsyncCall(arity, asyncType) };
-        var then  = new[] { "Assert.False(shaped.IsSuccess);", "Assert.Contains(shaped.Errors, e => e.Message.Contains(\"Shaped\"));" };
+        var when = new[] { GenerateShapeErrorAwaitableAsyncCall(arity, asyncType) };
+        var then = new[] { "Assert.False(shaped.IsSuccess);", "Assert.Contains(shaped.Errors, e => e.Message.Contains(\"Shaped\"));" };
         return BuildTestBody(given, when, then);
     }
 
     private string GenerateAsyncFailureResultCreation(ushort arity,
-                                                      string asyncType) {
+                                                      string asyncType)
+    {
         var varName = $"{asyncType.ToLowerInvariant()}Result";
-        if (arity == 0) {
+        if (arity == 0)
+        {
             return $"var {varName} = {asyncType}.FromResult(Result.Failure(\"Test error\"));";
         }
 
@@ -92,7 +102,8 @@ internal sealed class ResultShapeErrorTestsGenerator : ResultTestGeneratorBase {
     }
 
     private string GenerateShapeErrorAsyncCall(ushort arity,
-                                               string asyncType) {
+                                               string asyncType)
+    {
         var typeParams = arity == 0
                              ? ""
                              : $"<{GenerateTypeParams(arity)}>";
@@ -101,7 +112,8 @@ internal sealed class ResultShapeErrorTestsGenerator : ResultTestGeneratorBase {
     }
 
     private string GenerateShapeErrorAwaitableAsyncCall(ushort arity,
-                                                        string asyncType) {
+                                                        string asyncType)
+    {
         var varName = $"{asyncType.ToLowerInvariant()}Result";
         var typeParams = arity == 0
                              ? ""
@@ -111,7 +123,8 @@ internal sealed class ResultShapeErrorTestsGenerator : ResultTestGeneratorBase {
     }
 
     // Synchronous test generation methods
-    private string GenerateSyncSuccessBody(ushort arity) {
+    private string GenerateSyncSuccessBody(ushort arity)
+    {
         var given = arity == 0
                         ? new[] { GenerateResultCreation(arity) }
                         : new[] { GenerateTestValues(arity), GenerateResultCreation(arity) };
@@ -120,14 +133,16 @@ internal sealed class ResultShapeErrorTestsGenerator : ResultTestGeneratorBase {
         return BuildTestBody(given, when, then);
     }
 
-    private string GenerateSyncFailureBody(ushort arity) {
+    private string GenerateSyncFailureBody(ushort arity)
+    {
         var given = new[] { GenerateFailureResultCreation(arity) };
-        var when  = new[] { GenerateShapeErrorSyncCall(arity) };
-        var then  = new[] { "Assert.False(shaped.IsSuccess);", "Assert.Contains(shaped.Errors, e => e.Message.Contains(\"Shaped\"));" };
+        var when = new[] { GenerateShapeErrorSyncCall(arity) };
+        var then = new[] { "Assert.False(shaped.IsSuccess);", "Assert.Contains(shaped.Errors, e => e.Message.Contains(\"Shaped\"));" };
         return BuildTestBody(given, when, then);
     }
 
-    private string GenerateShapeErrorSyncCall(ushort arity) {
+    private string GenerateShapeErrorSyncCall(ushort arity)
+    {
         var typeParams = arity == 0
                              ? ""
                              : $"<{GenerateTypeParams(arity)}>";

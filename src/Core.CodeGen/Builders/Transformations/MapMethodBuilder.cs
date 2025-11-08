@@ -6,36 +6,41 @@ namespace UnambitiousFx.Core.CodeGen.Builders.Transformations;
 /// <summary>
 ///     Builds Map extension methods for Result types.
 /// </summary>
-internal sealed class MapMethodBuilder {
+internal sealed class MapMethodBuilder
+{
     private readonly string _baseNamespace;
 
-    public MapMethodBuilder(string baseNamespace) {
+    public MapMethodBuilder(string baseNamespace)
+    {
         _baseNamespace = baseNamespace ?? throw new ArgumentNullException(nameof(baseNamespace));
     }
 
     /// <summary>
     ///     Builds a standalone Map method for a specific arity.
     /// </summary>
-    public MethodWriter BuildStandaloneMethod(ushort arity) {
+    public MethodWriter BuildStandaloneMethod(ushort arity)
+    {
         var valueTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
-        var outTypes   = GenericTypeHelper.BuildGenericTypeString(arity, "TOut");
+        var outTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TOut");
         var resultType = $"Result<{valueTypes}>";
         var returnType = $"Result<{outTypes}>";
 
         // Build generic parameters
         var genericParams = new List<GenericParameter>();
         genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull"));
-        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "TOut",   "notnull"));
+        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "TOut", "notnull"));
 
         // Build function signature
         string funcSignature;
         string bindCall;
 
-        if (arity == 1) {
+        if (arity == 1)
+        {
             funcSignature = "Func<TValue1, TOut1>";
-            bindCall      = "value => Result.Success(map(value))";
+            bindCall = "value => Result.Success(map(value))";
         }
-        else {
+        else
+        {
             var valueParams = string.Join(", ", Enumerable.Range(1, arity)
                                                           .Select(n => $"TValue{n}"));
             var outTuple = GenericTypeHelper.BuildTupleTypeString(arity, "TOut");
@@ -66,14 +71,16 @@ internal sealed class MapMethodBuilder {
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary("Transforms the success value(s) using the provided mapping function.")
                                             .WithParameter("result", "The result instance.")
-                                            .WithParameter("map",    "The mapping function.")
+                                            .WithParameter("map", "The mapping function.")
                                             .WithReturns("A new result with transformed value(s).");
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Input value type {i}.");
         }
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TOut{i}", $"Output value type {i}.");
         }
 
@@ -96,9 +103,10 @@ internal sealed class MapMethodBuilder {
     ///     Builds async Map method: Result + async func.
     /// </summary>
     public MethodWriter BuildAsyncFuncMethod(ushort arity,
-                                             bool   isValueTask) {
+                                             bool isValueTask)
+    {
         var valueTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
-        var outTypes   = GenericTypeHelper.BuildGenericTypeString(arity, "TOut");
+        var outTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TOut");
         var resultType = $"Result<{valueTypes}>";
         var returnType = $"Result<{outTypes}>";
         var asyncType = isValueTask
@@ -108,13 +116,14 @@ internal sealed class MapMethodBuilder {
         // Build generic parameters
         var genericParams = new List<GenericParameter>();
         genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull"));
-        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "TOut",   "notnull"));
+        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "TOut", "notnull"));
 
         // Build async function signature
         string funcSignature;
         string body;
 
-        if (arity == 1) {
+        if (arity == 1)
+        {
             funcSignature = $"Func<TValue1, {asyncType}<TOut1>>";
             body = """
                    return result.BindAsync(async value =>
@@ -124,7 +133,8 @@ internal sealed class MapMethodBuilder {
                    });
                    """.Replace("{asyncType}", asyncType);
         }
-        else {
+        else
+        {
             var valueParams = string.Join(", ", Enumerable.Range(1, arity)
                                                           .Select(n => $"TValue{n}"));
             var outTuple = GenericTypeHelper.BuildTupleTypeString(arity, "TOut");
@@ -152,14 +162,16 @@ internal sealed class MapMethodBuilder {
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary("Async Map transforming success value(s) using an async mapping function.")
                                             .WithParameter("result", "The result instance.")
-                                            .WithParameter("map",    "The async mapping function.")
+                                            .WithParameter("map", "The async mapping function.")
                                             .WithReturns("A task with the transformed result.");
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Input value type {i}.");
         }
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TOut{i}", $"Output value type {i}.");
         }
 
@@ -183,9 +195,10 @@ internal sealed class MapMethodBuilder {
     ///     Builds async Map method: Task + sync func.
     /// </summary>
     public MethodWriter BuildTaskSyncFuncMethod(ushort arity,
-                                                bool   isValueTask) {
+                                                bool isValueTask)
+    {
         var valueTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
-        var outTypes   = GenericTypeHelper.BuildGenericTypeString(arity, "TOut");
+        var outTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TOut");
         var resultType = $"Result<{valueTypes}>";
         var asyncResultType = isValueTask
                                   ? $"ValueTask<{resultType}>"
@@ -195,14 +208,16 @@ internal sealed class MapMethodBuilder {
         // Build generic parameters
         var genericParams = new List<GenericParameter>();
         genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull"));
-        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "TOut",   "notnull"));
+        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "TOut", "notnull"));
 
         // Build function signature
         string funcSignature;
-        if (arity == 1) {
+        if (arity == 1)
+        {
             funcSignature = "Func<TValue1, TOut1>";
         }
-        else {
+        else
+        {
             var valueParams = string.Join(", ", Enumerable.Range(1, arity)
                                                           .Select(n => $"TValue{n}"));
             var outTuple = GenericTypeHelper.BuildTupleTypeString(arity, "TOut");
@@ -221,14 +236,16 @@ internal sealed class MapMethodBuilder {
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary("Async Map awaiting result then transforming using a sync mapping function.")
                                             .WithParameter("awaitableResult", "The awaitable result instance.")
-                                            .WithParameter("map",             "The mapping function.")
+                                            .WithParameter("map", "The mapping function.")
                                             .WithReturns("A task with the transformed result.");
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Input value type {i}.");
         }
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TOut{i}", $"Output value type {i}.");
         }
 
@@ -252,9 +269,10 @@ internal sealed class MapMethodBuilder {
     ///     Builds async Map method: Task + async func.
     /// </summary>
     public MethodWriter BuildTaskAsyncFuncMethod(ushort arity,
-                                                 bool   isValueTask) {
+                                                 bool isValueTask)
+    {
         var valueTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
-        var outTypes   = GenericTypeHelper.BuildGenericTypeString(arity, "TOut");
+        var outTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TOut");
         var resultType = $"Result<{valueTypes}>";
         var asyncResultType = isValueTask
                                   ? $"ValueTask<{resultType}>"
@@ -267,13 +285,14 @@ internal sealed class MapMethodBuilder {
         // Build generic parameters
         var genericParams = new List<GenericParameter>();
         genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull"));
-        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "TOut",   "notnull"));
+        genericParams.AddRange(GenericTypeHelper.CreateGenericParameters(arity, "TOut", "notnull"));
 
         // Build async function signature
         string funcSignature;
         string body;
 
-        if (arity == 1) {
+        if (arity == 1)
+        {
             funcSignature = $"Func<TValue1, {asyncType}<TOut1>>";
             body = """
                    return awaitableResult.BindAsync(async value =>
@@ -283,7 +302,8 @@ internal sealed class MapMethodBuilder {
                    });
                    """.Replace("{asyncType}", asyncType);
         }
-        else {
+        else
+        {
             var valueParams = string.Join(", ", Enumerable.Range(1, arity)
                                                           .Select(n => $"TValue{n}"));
             var outTuple = GenericTypeHelper.BuildTupleTypeString(arity, "TOut");
@@ -311,14 +331,16 @@ internal sealed class MapMethodBuilder {
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary("Async Map awaiting result then transforming using an async mapping function.")
                                             .WithParameter("awaitableResult", "The awaitable result instance.")
-                                            .WithParameter("map",             "The async mapping function.")
+                                            .WithParameter("map", "The async mapping function.")
                                             .WithReturns("A task with the transformed result.");
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Input value type {i}.");
         }
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TOut{i}", $"Output value type {i}.");
         }
 

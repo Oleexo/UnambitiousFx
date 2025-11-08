@@ -3,18 +3,20 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results.ArityTests.Models;
 /// <summary>
 ///     Represents the expected result for a test scenario.
 /// </summary>
-internal sealed class ExpectedResult {
+internal sealed class ExpectedResult
+{
     /// <summary>
     ///     Initializes a new instance of the ExpectedResult class.
     /// </summary>
     /// <param name="state">The expected state.</param>
     /// <param name="assertionCode">The assertion code.</param>
     /// <param name="validationChecks">The validation checks.</param>
-    public ExpectedResult(ResultState         state,
-                          string              assertionCode,
-                          IEnumerable<string> validationChecks) {
-        State            = state;
-        AssertionCode    = assertionCode    ?? throw new ArgumentNullException(nameof(assertionCode));
+    public ExpectedResult(ResultState state,
+                          string assertionCode,
+                          IEnumerable<string> validationChecks)
+    {
+        State = state;
+        AssertionCode = assertionCode ?? throw new ArgumentNullException(nameof(assertionCode));
         ValidationChecks = validationChecks ?? throw new ArgumentNullException(nameof(validationChecks));
     }
 

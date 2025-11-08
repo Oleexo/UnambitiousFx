@@ -3,7 +3,8 @@ namespace UnambitiousFx.Core.CodeGen.Design;
 /// <summary>
 ///     Represents the different types of generic constraints that can be applied to type parameters.
 /// </summary>
-public enum GenericConstraintType {
+public enum GenericConstraintType
+{
     /// <summary>
     ///     The type parameter must be a reference type (class constraint).
     /// </summary>

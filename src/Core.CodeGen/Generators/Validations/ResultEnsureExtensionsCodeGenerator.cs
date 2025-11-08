@@ -9,10 +9,11 @@ namespace UnambitiousFx.Core.CodeGen.Generators.Validations;
 ///     Generator for Result validation extension methods.
 ///     Generates Ensure, EnsureNotEmpty, EnsureNotNull extensions, and their async variants.
 /// </summary>
-internal sealed class ResultEnsureExtensionsCodeGenerator : BaseCodeGenerator {
-    private const    string                       ExtensionsNamespace = "Results.Extensions.Validations";
+internal sealed class ResultEnsureExtensionsCodeGenerator : BaseCodeGenerator
+{
+    private const string ExtensionsNamespace = "Results.Extensions.Validations";
     private readonly ValidationAsyncMethodBuilder _asyncBuilder;
-    private readonly EnsureMethodBuilder          _ensureBuilder;
+    private readonly EnsureMethodBuilder _ensureBuilder;
 
     public ResultEnsureExtensionsCodeGenerator(string baseNamespace)
         : base(new GenerationConfig(
@@ -20,17 +21,20 @@ internal sealed class ResultEnsureExtensionsCodeGenerator : BaseCodeGenerator {
                    1,
                    ExtensionsNamespace,
                    "ResultEnsureExtensions",
-                   FileOrganizationMode.SingleFile)) {
+                   FileOrganizationMode.SingleFile))
+    {
         _ensureBuilder = new EnsureMethodBuilder(baseNamespace);
-        _asyncBuilder  = new ValidationAsyncMethodBuilder(baseNamespace);
+        _asyncBuilder = new ValidationAsyncMethodBuilder(baseNamespace);
     }
 
-    protected override string PrepareOutputDirectory(string outputPath) {
+    protected override string PrepareOutputDirectory(string outputPath)
+    {
         var mainOutput = FileSystemHelper.CreateSubdirectory(outputPath, Config.SubNamespace);
         return mainOutput;
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
+    {
         var results = new List<ClassWriter>();
         results.Add(GenerateEnsurePartial(arity));
         results.AddRange(GenerateEnsureAsyncMethods(arity, false));
@@ -40,7 +44,8 @@ internal sealed class ResultEnsureExtensionsCodeGenerator : BaseCodeGenerator {
 
     #region Ensure
 
-    private ClassWriter GenerateEnsurePartial(ushort arity) {
+    private ClassWriter GenerateEnsurePartial(ushort arity)
+    {
         var classWriter = new ClassWriter(
             "ResultEnsureExtensions",
             Visibility.Public,
@@ -52,7 +57,8 @@ internal sealed class ResultEnsureExtensionsCodeGenerator : BaseCodeGenerator {
     }
 
     private IEnumerable<ClassWriter> GenerateEnsureAsyncMethods(ushort arity,
-                                                                bool   isValueTask) {
+                                                                bool isValueTask)
+    {
         var subNamespace = isValueTask
                                ? "ValueTasks"
                                : "Tasks";

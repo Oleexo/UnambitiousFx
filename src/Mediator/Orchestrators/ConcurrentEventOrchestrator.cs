@@ -11,12 +11,14 @@ namespace UnambitiousFx.Mediator.Orchestrators;
 ///     The <see cref="ConcurrentEventOrchestrator" /> is responsible for running all event handlers concurrently for
 ///     a given event.
 /// </remarks>
-public sealed class ConcurrentEventOrchestrator : IEventOrchestrator {
+public sealed class ConcurrentEventOrchestrator : IEventOrchestrator
+{
     /// <inheritdoc />
     public async ValueTask<Result> RunAsync<TEvent>(IEnumerable<IEventHandler<TEvent>> handlers,
-                                                    TEvent                             @event,
-                                                    CancellationToken                  cancellationToken = default)
-        where TEvent : class, IEvent {
+                                                    TEvent @event,
+                                                    CancellationToken cancellationToken = default)
+        where TEvent : class, IEvent
+    {
         var tasks = handlers.Select(eventHandler => eventHandler.HandleAsync(@event, cancellationToken)
                                                                 .AsTask())
                             .ToList();

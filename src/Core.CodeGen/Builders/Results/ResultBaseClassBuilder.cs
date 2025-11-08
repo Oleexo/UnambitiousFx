@@ -2,8 +2,10 @@ using UnambitiousFx.Core.CodeGen.Design;
 
 namespace UnambitiousFx.Core.CodeGen.Builders.Results;
 
-internal static class ResultBaseClassBuilder {
-    public static ClassWriter Build(ushort arity) {
+internal static class ResultBaseClassBuilder
+{
+    public static ClassWriter Build(ushort arity)
+    {
         var genericParams = Enumerable.Range(1, arity)
                                       .Select(i => new GenericParameter($"TValue{i}", "notnull"))
                                       .ToArray();
@@ -11,7 +13,8 @@ internal static class ResultBaseClassBuilder {
         var classDocBuilder = DocumentationWriter.Create()
                                                  .WithSummary($"Represents the result of an operation that can succeed with {arity} value(s) or fail with an exception.");
 
-        for (var i = 0; i < genericParams.Length; i++) {
+        for (var i = 0; i < genericParams.Length; i++)
+        {
             classDocBuilder.WithTypeParameter(
                 genericParams[i].Name,
                 $"The type of the {ResultArityHelpers.GetOrdinalName(i + 1).ToLower()} value.");
@@ -84,7 +87,8 @@ internal static class ResultBaseClassBuilder {
 
         // Generate TryGet method with error
         var okParams = new List<MethodParameter>();
-        for (var i = 1; i <= arity; i++) {
+        for (var i = 1; i <= arity; i++)
+        {
             okParams.Add(new MethodParameter($"[NotNullWhen(true)] out TValue{i}?", $"value{i}"));
         }
 
@@ -93,7 +97,8 @@ internal static class ResultBaseClassBuilder {
         var okDoc = DocumentationWriter.Create()
                                        .WithSummary("Attempts to extract the success values and error.");
 
-        for (var i = 1; i <= arity; i++) {
+        for (var i = 1; i <= arity; i++)
+        {
             okDoc.WithParameter($"value{i}", $"The {ResultArityHelpers.GetOrdinalName(i).ToLower()} value if successful");
         }
 
@@ -111,14 +116,16 @@ internal static class ResultBaseClassBuilder {
 
         // Generate TryGet method without error
         var okWithoutErrorParams = new List<MethodParameter>();
-        for (var i = 1; i <= arity; i++) {
+        for (var i = 1; i <= arity; i++)
+        {
             okWithoutErrorParams.Add(new MethodParameter($"[NotNullWhen(true)] out TValue{i}?", $"value{i}"));
         }
 
         var okWithoutErrorDoc = DocumentationWriter.Create()
                                                    .WithSummary("Attempts to extract the success values.");
 
-        for (var i = 1; i <= arity; i++) {
+        for (var i = 1; i <= arity; i++)
+        {
             okWithoutErrorDoc.WithParameter($"value{i}", $"The {ResultArityHelpers.GetOrdinalName(i).ToLower()} value if successful");
         }
 
@@ -135,10 +142,12 @@ internal static class ResultBaseClassBuilder {
 
         // Generate Deconstruct method
         var deconstructParams = new List<MethodParameter>();
-        if (arity == 1) {
+        if (arity == 1)
+        {
             deconstructParams.Add(new MethodParameter("out TValue1?", "value"));
         }
-        else {
+        else
+        {
             deconstructParams.AddRange(Enumerable.Range(1, arity)
                                                  .Select(x => new MethodParameter($"out TValue{x}?", $"value{x}")));
         }
@@ -147,11 +156,14 @@ internal static class ResultBaseClassBuilder {
 
         var deconstructDocBuilder = DocumentationWriter.Create()
                                                        .WithSummary("Deconstructs the result into its components.");
-        if (arity == 1) {
+        if (arity == 1)
+        {
             deconstructDocBuilder = deconstructDocBuilder.WithParameter("value", "The success value(s) if successful");
         }
-        else {
-            for (var i = 1; i <= arity; i++) {
+        else
+        {
+            for (var i = 1; i <= arity; i++)
+            {
                 deconstructDocBuilder = deconstructDocBuilder.WithParameter($"value{i}", "The success value(s) if successful");
             }
         }

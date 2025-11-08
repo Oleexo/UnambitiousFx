@@ -9,7 +9,8 @@ namespace UnambitiousFx.Core.CodeGen.Generators.ErrorHandling;
 ///     Generates ShapeError extension methods for all Result arities to transform error structure.
 ///     Follows architecture rule: One generator per extension method category.
 /// </summary>
-internal sealed class ResultShapeErrorExtensionsCodeGenerator : BaseCodeGenerator {
+internal sealed class ResultShapeErrorExtensionsCodeGenerator : BaseCodeGenerator
+{
     private const string ExtensionsNamespace = "Results.Extensions.ErrorHandling";
 
     public ResultShapeErrorExtensionsCodeGenerator(string baseNamespace)
@@ -18,15 +19,18 @@ internal sealed class ResultShapeErrorExtensionsCodeGenerator : BaseCodeGenerato
                    0,
                    ExtensionsNamespace,
                    "ResultShapeErrorExtensions",
-                   FileOrganizationMode.SingleFile)) {
+                   FileOrganizationMode.SingleFile))
+    {
     }
 
-    protected override string PrepareOutputDirectory(string outputPath) {
+    protected override string PrepareOutputDirectory(string outputPath)
+    {
         var mainOutput = FileSystemHelper.CreateSubdirectory(outputPath, Config.SubNamespace);
         return mainOutput;
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
+    {
         return [
             GenerateShapeErrorMethods(arity),
             GenerateAsyncMethods(arity, false),
@@ -34,7 +38,8 @@ internal sealed class ResultShapeErrorExtensionsCodeGenerator : BaseCodeGenerato
         ];
     }
 
-    private ClassWriter GenerateShapeErrorMethods(ushort arity) {
+    private ClassWriter GenerateShapeErrorMethods(ushort arity)
+    {
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
         var classWriter = new ClassWriter(
             Config.ClassName,
@@ -49,14 +54,15 @@ internal sealed class ResultShapeErrorExtensionsCodeGenerator : BaseCodeGenerato
         return classWriter;
     }
 
-    private MethodWriter GenerateShapeErrorMethod(ushort arity) {
+    private MethodWriter GenerateShapeErrorMethod(ushort arity)
+    {
         var (resultType, genericParams, constraints) = GetResultTypeInfo(arity);
         var methodName = "ShapeError";
 
         var documentation = DocumentationWriter.Create()
                                                .WithSummary("Transforms the error structure of the result using the specified shaping function.")
                                                .WithParameter("result", "The result to shape errors for.")
-                                               .WithParameter("shape",  "The function to transform the error structure.")
+                                               .WithParameter("shape", "The function to transform the error structure.")
                                                .WithReturns(
                                                     "A new result with transformed error structure if the original result failed, otherwise the original successful result.")
                                                .Build();
@@ -71,19 +77,23 @@ internal sealed class ResultShapeErrorExtensionsCodeGenerator : BaseCodeGenerato
                                   .WithUsings("UnambitiousFx.Core.Results.Reasons");
 
         // Add generic parameters and constraints
-        foreach (var param in genericParams) {
+        foreach (var param in genericParams)
+        {
             builder.WithGenericParameter(param);
         }
 
-        foreach (var constraint in constraints) {
+        foreach (var constraint in constraints)
+        {
             builder.WithGenericConstraint(constraint);
         }
 
         return builder.Build();
     }
 
-    private (string resultType, string[] genericParams, GenericConstraint[] constraints) GetResultTypeInfo(ushort arity) {
-        if (arity == 0) {
+    private (string resultType, string[] genericParams, GenericConstraint[] constraints) GetResultTypeInfo(ushort arity)
+    {
+        if (arity == 0)
+        {
             return ("Result", [], []);
         }
 
@@ -102,8 +112,10 @@ internal sealed class ResultShapeErrorExtensionsCodeGenerator : BaseCodeGenerato
         return (resultType, genericParams, constraints);
     }
 
-    private string GenerateShapeErrorBody(ushort arity) {
-        if (arity == 0) {
+    private string GenerateShapeErrorBody(ushort arity)
+    {
+        if (arity == 0)
+        {
             return """
                    return result.IsSuccess
                        ? result
@@ -119,7 +131,8 @@ internal sealed class ResultShapeErrorExtensionsCodeGenerator : BaseCodeGenerato
     }
 
     private ClassWriter GenerateAsyncMethods(ushort arity,
-                                             bool   isValueTask) {
+                                             bool isValueTask)
+    {
         var subNamespace = isValueTask
                                ? "ValueTasks"
                                : "Tasks";
@@ -142,8 +155,9 @@ internal sealed class ResultShapeErrorExtensionsCodeGenerator : BaseCodeGenerato
     }
 
     private MethodWriter GenerateShapeErrorAsyncMethod(ushort arity,
-                                                       bool   isValueTask,
-                                                       bool   isAwaitable) {
+                                                       bool isValueTask,
+                                                       bool isAwaitable)
+    {
         var (resultType, genericParams, constraints) = GetResultTypeInfo(arity);
         var methodName = "ShapeErrorAsync";
 
@@ -168,9 +182,10 @@ internal sealed class ResultShapeErrorExtensionsCodeGenerator : BaseCodeGenerato
                                                            "A task with a new result containing transformed error structure if the original result failed, otherwise the original successful result.");
 
         // Add documentation for all value type parameters
-        for (var i = 0; i < genericParams.Length; i++) {
+        for (var i = 0; i < genericParams.Length; i++)
+        {
             var paramName = genericParams[i];
-            var ordinal   = GetOrdinalString(i + 1);
+            var ordinal = GetOrdinalString(i + 1);
             documentationBuilder.WithTypeParameter(paramName, $"The type of the {ordinal} value.");
         }
 
@@ -190,19 +205,23 @@ internal sealed class ResultShapeErrorExtensionsCodeGenerator : BaseCodeGenerato
                                   .WithUsings("UnambitiousFx.Core.Results.Reasons");
 
         // Add using for ValueAccess extensions
-        if (isValueTask) {
+        if (isValueTask)
+        {
             builder.WithUsings("UnambitiousFx.Core.Results.Extensions.ValueAccess.ValueTasks");
         }
-        else {
+        else
+        {
             builder.WithUsings("UnambitiousFx.Core.Results.Extensions.ValueAccess.Tasks");
         }
 
         // Add generic parameters and constraints for value types
-        foreach (var param in genericParams) {
+        foreach (var param in genericParams)
+        {
             builder.WithGenericParameter(param);
         }
 
-        foreach (var constraint in constraints) {
+        foreach (var constraint in constraints)
+        {
             builder.WithGenericConstraint(constraint);
         }
 
@@ -210,9 +229,11 @@ internal sealed class ResultShapeErrorExtensionsCodeGenerator : BaseCodeGenerato
     }
 
     private string GenerateShapeErrorAsyncBody(ushort arity,
-                                               bool   isValueTask,
-                                               bool   isAwaitable) {
-        if (isAwaitable) {
+                                               bool isValueTask,
+                                               bool isAwaitable)
+    {
+        if (isAwaitable)
+        {
             return """
                    var result = await awaitableResult;
                    return await result.ShapeErrorAsync(shape);
@@ -238,8 +259,10 @@ internal sealed class ResultShapeErrorExtensionsCodeGenerator : BaseCodeGenerato
                """;
     }
 
-    private static string GetOrdinalString(int number) {
-        return number switch {
+    private static string GetOrdinalString(int number)
+    {
+        return number switch
+        {
             1 => "first",
             2 => "second",
             3 => "third",

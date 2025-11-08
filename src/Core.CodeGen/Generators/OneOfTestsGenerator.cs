@@ -7,21 +7,25 @@ namespace UnambitiousFx.Core.CodeGen.Generators;
 /// <summary>
 ///     Generator for OneOf unit tests using Template Method pattern.
 /// </summary>
-internal sealed class OneOfTestsGenerator : BaseCodeGenerator {
+internal sealed class OneOfTestsGenerator : BaseCodeGenerator
+{
     public OneOfTestsGenerator(string baseNamespace)
         : base(new GenerationConfig(
                    baseNamespace,
                    2,
                    "OneOf",
                    "OneOf",
-                   isTest: true)) {
+                   isTest: true))
+    {
     }
 
-    private ClassWriter GenerateTestClass(ushort arity) {
+    private ClassWriter GenerateTestClass(ushort arity)
+    {
         return OneOfTestClassBuilder.Build(arity);
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
+    {
         return [
             GenerateTestClass(arity)
         ];

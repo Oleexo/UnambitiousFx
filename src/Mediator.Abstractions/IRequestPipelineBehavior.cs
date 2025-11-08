@@ -14,7 +14,8 @@ namespace UnambitiousFx.Mediator.Abstractions;
 /// Generic Type Parameters:
 /// - TRequest: Represents the type of the request being handled.
 /// - TResponse: Represents the type of the response produced by the request.
-public interface IRequestPipelineBehavior {
+public interface IRequestPipelineBehavior
+{
     /// Handles the processing of a request asynchronously within the context of a pipeline behavior.
     /// <typeparam name="TRequest">The type of the request object being processed.</typeparam>
     /// <param name="request">The request object to be processed.</param>
@@ -27,9 +28,9 @@ public interface IRequestPipelineBehavior {
     ///     A task representing the asynchronous operation, containing a result object indicating the success or failure
     ///     of the process.
     /// </returns>
-    ValueTask<Result> HandleAsync<TRequest>(TRequest               request,
+    ValueTask<Result> HandleAsync<TRequest>(TRequest request,
                                             RequestHandlerDelegate next,
-                                            CancellationToken      cancellationToken = default)
+                                            CancellationToken cancellationToken = default)
         where TRequest : IRequest;
 
     /// Handles the execution of a request pipeline behavior.
@@ -42,9 +43,9 @@ public interface IRequestPipelineBehavior {
     ///     A <see cref="ValueTask{TResult}" /> containing a <see cref="Result{TResponse}" /> which indicates the outcome
     ///     of the request handling process.
     /// </returns>
-    ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest                          request,
+    ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest request,
                                                                   RequestHandlerDelegate<TResponse> next,
-                                                                  CancellationToken                 cancellationToken = default)
+                                                                  CancellationToken cancellationToken = default)
         where TResponse : notnull
         where TRequest : IRequest<TResponse>;
 }

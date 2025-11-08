@@ -4,9 +4,11 @@ using UnambitiousFx.Core.Results.Reasons;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Reason;
 
-public sealed partial class ResultReasonExtensionsTests {
+public sealed partial class ResultReasonExtensionsTests
+{
     [Fact]
-    public void WithErrors_AddsAllErrors() {
+    public void WithErrors_AddsAllErrors()
+    {
         var e1 = new ConflictError("conflict");
         var e2 = new UnauthorizedError();
         var result = Result.Success()
@@ -16,7 +18,8 @@ public sealed partial class ResultReasonExtensionsTests {
     }
 
     [Fact]
-    public void WithErrors_CopiesMetadata_WhenEnabled() {
+    public void WithErrors_CopiesMetadata_WhenEnabled()
+    {
         var e1 = new ConflictError("c", new Dictionary<string, object?> { { "k", 1 } });
         var result = Result.Success()
                            .WithErrors(new IError[] { e1 });
@@ -25,7 +28,8 @@ public sealed partial class ResultReasonExtensionsTests {
     }
 
     [Fact]
-    public void WithErrors_DoesNotCopyMetadata_WhenDisabled() {
+    public void WithErrors_DoesNotCopyMetadata_WhenDisabled()
+    {
         var e1 = new ConflictError("c", new Dictionary<string, object?> { { "k", 1 } });
         var result = Result.Success()
                            .WithErrors(new IError[] { e1 }, false);

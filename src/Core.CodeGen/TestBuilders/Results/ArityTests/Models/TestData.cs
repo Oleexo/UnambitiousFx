@@ -3,7 +3,8 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results.ArityTests.Models;
 /// <summary>
 ///     Represents test data for a specific test scenario.
 /// </summary>
-internal sealed class TestData {
+internal sealed class TestData
+{
     /// <summary>
     ///     Initializes a new instance of the TestData class.
     /// </summary>
@@ -11,14 +12,15 @@ internal sealed class TestData {
     /// <param name="values">The type-value pairs.</param>
     /// <param name="expectedState">The expected state.</param>
     /// <param name="setupCode">The setup code.</param>
-    public TestData(ushort                     arity,
+    public TestData(ushort arity,
                     IEnumerable<TypeValuePair> values,
-                    ResultState                expectedState,
-                    string                     setupCode = "") {
-        Arity         = arity;
-        Values        = values ?? throw new ArgumentNullException(nameof(values));
+                    ResultState expectedState,
+                    string setupCode = "")
+    {
+        Arity = arity;
+        Values = values ?? throw new ArgumentNullException(nameof(values));
         ExpectedState = expectedState;
-        SetupCode     = setupCode ?? string.Empty;
+        SetupCode = setupCode ?? string.Empty;
     }
 
     /// <summary>

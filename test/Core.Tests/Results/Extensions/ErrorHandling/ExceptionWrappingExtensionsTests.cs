@@ -3,36 +3,41 @@ using UnambitiousFx.Core.Results.Reasons;
 
 namespace UnambitiousFx.Core.Tests.Results.Extensions.ErrorHandling;
 
-public sealed class ExceptionWrappingExtensionsTests {
+public sealed class ExceptionWrappingExtensionsTests
+{
     [Fact]
-    public void Wrap_Exception_ToExceptionalError() {
+    public void Wrap_Exception_ToExceptionalError()
+    {
         var ex = new InvalidOperationException("boom");
 
         var error = ex.Wrap();
 
         Assert.Equal("EXCEPTION", error.Code);
-        Assert.Equal("boom",      error.Message);
-        Assert.Equal(ex,          error.Exception);
+        Assert.Equal("boom", error.Message);
+        Assert.Equal(ex, error.Exception);
         Assert.True(error.Metadata.ContainsKey("exceptionType"));
     }
 
     [Fact]
-    public void Wrap_WithMessageOverride_UsesOverride() {
-        var ex    = new InvalidOperationException("boom");
+    public void Wrap_WithMessageOverride_UsesOverride()
+    {
+        var ex = new InvalidOperationException("boom");
         var error = ex.Wrap("override message");
         Assert.Equal("override message", error.Message);
     }
 
     [Fact]
-    public void AsError_Alias_Works() {
-        var ex    = new ArgumentNullException("param");
+    public void AsError_Alias_Works()
+    {
+        var ex = new ArgumentNullException("param");
         var error = ex.AsError();
         Assert.Equal("EXCEPTION", error.Code);
     }
 
     [Fact]
-    public void Wrap_CanBeAttachedToResult() {
-        var ex     = new Exception("broken");
+    public void Wrap_CanBeAttachedToResult()
+    {
+        var ex = new Exception("broken");
         var result = Result.Failure(ex.Wrap());
         Assert.False(result.TryGet(out _));
         Assert.Single(result.Reasons);
@@ -41,24 +46,27 @@ public sealed class ExceptionWrappingExtensionsTests {
     }
 
     [Fact]
-    public void WrapAndPrepend_PrefixesOriginalMessage() {
-        var ex    = new InvalidOperationException("boom");
+    public void WrapAndPrepend_PrefixesOriginalMessage()
+    {
+        var ex = new InvalidOperationException("boom");
         var error = ex.WrapAndPrepend("CTX: ");
         Assert.Equal("CTX: boom", error.Message);
-        Assert.Equal(ex,          error.Exception);
+        Assert.Equal(ex, error.Exception);
     }
 
     [Fact]
-    public void WrapAndPrepend_WithOverride_UsesOverrideAfterPrefix() {
-        var ex    = new InvalidOperationException("boom");
+    public void WrapAndPrepend_WithOverride_UsesOverrideAfterPrefix()
+    {
+        var ex = new InvalidOperationException("boom");
         var error = ex.WrapAndPrepend("CTX: ", "override");
         Assert.Equal("CTX: override", error.Message);
     }
 
     [Fact]
-    public void WrapAndPrepend_WithMetadata_CopiesMetadata() {
-        var ex    = new Exception("uh");
-        var meta  = new Dictionary<string, object?> { { "traceId", "abc" } };
+    public void WrapAndPrepend_WithMetadata_CopiesMetadata()
+    {
+        var ex = new Exception("uh");
+        var meta = new Dictionary<string, object?> { { "traceId", "abc" } };
         var error = ex.WrapAndPrepend("API/", extra: meta);
         Assert.True(error.Metadata.ContainsKey("traceId"));
         Assert.Equal("abc", error.Metadata["traceId"]);

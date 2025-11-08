@@ -5,7 +5,8 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results.ArityTests;
 /// <summary>
 ///     Interface for building test methods using Gherkin Given-When-Then structure.
 /// </summary>
-internal interface IGherkinTestBuilder {
+internal interface IGherkinTestBuilder
+{
     /// <summary>
     ///     Builds a complete test method using Gherkin structure.
     /// </summary>
@@ -13,8 +14,8 @@ internal interface IGherkinTestBuilder {
     /// <param name="arity">The arity of the Result type being tested.</param>
     /// <param name="scenario">The test scenario to generate.</param>
     /// <returns>The generated test method.</returns>
-    TestMethod BuildGherkinTest(string       methodName,
-                                ushort       arity,
+    TestMethod BuildGherkinTest(string methodName,
+                                ushort arity,
                                 TestScenario scenario);
 
     /// <summary>

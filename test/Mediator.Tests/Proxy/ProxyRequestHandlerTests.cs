@@ -4,22 +4,26 @@ using UnambitiousFx.Mediator.Tests.Definitions;
 
 namespace UnambitiousFx.Mediator.Tests.Proxy;
 
-public sealed class ProxyRequestHandlerTests {
+public sealed class ProxyRequestHandlerTests
+{
     [Fact]
-    public async Task GivenARequestPipelineBehavior_WhenProxyHandle_ShouldCallTheBehavior() {
-        var order     = 0;
+    public async Task GivenARequestPipelineBehavior_WhenProxyHandle_ShouldCallTheBehavior()
+    {
+        var order = 0;
         var publisher = Substitute.For<IPublisher>();
-        var handler   = new RequestWithResponseExampleHandler();
-        handler.OnExecuted = () => {
+        var handler = new RequestWithResponseExampleHandler();
+        handler.OnExecuted = () =>
+        {
             Assert.Equal(1, order);
             order++;
         };
         var behavior = new TestRequestPipelineBehavior();
-        behavior.OnExecuted = () => {
+        behavior.OnExecuted = () =>
+        {
             Assert.Equal(0, order);
             order++;
         };
-        var proxy   = new ProxyRequestHandler<RequestWithResponseExampleHandler, RequestWithResponseExample, int>(handler, [behavior]);
+        var proxy = new ProxyRequestHandler<RequestWithResponseExampleHandler, RequestWithResponseExample, int>(handler, [behavior]);
         var request = new RequestWithResponseExample();
 
         var result = await proxy.HandleAsync(request, CancellationToken.None);

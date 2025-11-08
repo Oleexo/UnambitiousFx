@@ -9,15 +9,17 @@ namespace UnambitiousFx.Mediator.Pipelines;
 ///     - Queries from being sent within query handlers
 ///     - Commands from being sent within query handlers
 /// </summary>
-public sealed class CqrsBoundaryEnforcementBehavior : IRequestPipelineBehavior {
-    private const    string   CQRSBoundaryEnforcementKey     = "__CQRSBoundaryEnforcement";
-    private const    string   CQRSBoundaryEnforcementNameKey = "__CQRSBoundaryEnforcement_Name";
+public sealed class CqrsBoundaryEnforcementBehavior : IRequestPipelineBehavior
+{
+    private const string CQRSBoundaryEnforcementKey = "__CQRSBoundaryEnforcement";
+    private const string CQRSBoundaryEnforcementNameKey = "__CQRSBoundaryEnforcement_Name";
     private readonly IContext _context;
 
     /// <summary>
     /// </summary>
     /// <param name="context"></param>
-    public CqrsBoundaryEnforcementBehavior(IContext context) {
+    public CqrsBoundaryEnforcementBehavior(IContext context)
+    {
         _context = context;
     }
 
@@ -28,10 +30,11 @@ public sealed class CqrsBoundaryEnforcementBehavior : IRequestPipelineBehavior {
     /// <param name="cancellationToken"></param>
     /// <typeparam name="TRequest"></typeparam>
     /// <returns></returns>
-    public async ValueTask<Result> HandleAsync<TRequest>(TRequest               request,
+    public async ValueTask<Result> HandleAsync<TRequest>(TRequest request,
                                                          RequestHandlerDelegate next,
-                                                         CancellationToken      cancellationToken = default)
-        where TRequest : IRequest {
+                                                         CancellationToken cancellationToken = default)
+        where TRequest : IRequest
+    {
         var requestName = typeof(TRequest).Name;
         ValidateBoundaries(_context, requestName);
 
@@ -50,11 +53,12 @@ public sealed class CqrsBoundaryEnforcementBehavior : IRequestPipelineBehavior {
     /// <typeparam name="TRequest"></typeparam>
     /// <typeparam name="TResponse"></typeparam>
     /// <returns></returns>
-    public async ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest                          request,
+    public async ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest request,
                                                                                RequestHandlerDelegate<TResponse> next,
-                                                                               CancellationToken                 cancellationToken = default)
+                                                                               CancellationToken cancellationToken = default)
         where TRequest : IRequest<TResponse>
-        where TResponse : notnull {
+        where TResponse : notnull
+    {
         var requestName = typeof(TRequest).Name;
         ValidateBoundaries(_context, requestName);
 
@@ -64,8 +68,10 @@ public sealed class CqrsBoundaryEnforcementBehavior : IRequestPipelineBehavior {
         return response;
     }
 
-    private static void RemoveBoundaryMetadata(IContext context) {
-        if (!context.RemoveMetadata(CQRSBoundaryEnforcementKey)) {
+    private static void RemoveBoundaryMetadata(IContext context)
+    {
+        if (!context.RemoveMetadata(CQRSBoundaryEnforcementKey))
+        {
             throw new CqrsBoundaryViolationException(
                 "CQRS boundary enforcement metadata was missing when trying to remove it. This indicates a violation of the CQRS boundary enforcement behavior.");
         }
@@ -74,15 +80,18 @@ public sealed class CqrsBoundaryEnforcementBehavior : IRequestPipelineBehavior {
     }
 
     private static void AddBoundaryMetadata(IContext context,
-                                            string   requestName) {
-        context.SetMetadata(CQRSBoundaryEnforcementKey,     true);
+                                            string requestName)
+    {
+        context.SetMetadata(CQRSBoundaryEnforcementKey, true);
         context.SetMetadata(CQRSBoundaryEnforcementNameKey, requestName);
     }
 
     private static void ValidateBoundaries(IContext context,
-                                           string   requestName) {
+                                           string requestName)
+    {
         if (!context.TryGetMetadata<bool>(CQRSBoundaryEnforcementKey, out var isInRequest) ||
-            !isInRequest) {
+            !isInRequest)
+        {
             return;
         }
 

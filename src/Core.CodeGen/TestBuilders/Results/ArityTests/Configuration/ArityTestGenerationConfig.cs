@@ -5,7 +5,8 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results.ArityTests.Configurati
 /// <summary>
 ///     Configuration for arity test generation operations, using composition with GenerationConfig.
 /// </summary>
-internal sealed class ArityTestGenerationConfig {
+internal sealed class ArityTestGenerationConfig
+{
     /// <summary>
     ///     Initializes a new instance of the ArityTestGenerationConfig class.
     /// </summary>
@@ -20,27 +21,29 @@ internal sealed class ArityTestGenerationConfig {
     /// <param name="mode">The test generation mode.</param>
     /// <param name="generateAsyncTests">Whether to generate async tests.</param>
     /// <param name="generateErrorHandlingTests">Whether to generate error handling tests.</param>
-    public ArityTestGenerationConfig(string                             baseNamespace,
-                                     string                             testDirectory,
-                                     int                                startArity                 = 1,
-                                     string                             subNamespace               = "",
-                                     string                             className                  = "",
-                                     FileOrganizationMode               fileOrganization           = FileOrganizationMode.SeparateFiles,
-                                     TestNamingPattern?                 namingPattern              = null,
-                                     IEnumerable<TestScenarioCategory>? enabledScenarios           = null,
-                                     TestGenerationMode                 mode                       = TestGenerationMode.Comprehensive,
-                                     bool                               generateAsyncTests         = true,
-                                     bool                               generateErrorHandlingTests = true) {
-        if (string.IsNullOrWhiteSpace(testDirectory)) {
+    public ArityTestGenerationConfig(string baseNamespace,
+                                     string testDirectory,
+                                     int startArity = 1,
+                                     string subNamespace = "",
+                                     string className = "",
+                                     FileOrganizationMode fileOrganization = FileOrganizationMode.SeparateFiles,
+                                     TestNamingPattern? namingPattern = null,
+                                     IEnumerable<TestScenarioCategory>? enabledScenarios = null,
+                                     TestGenerationMode mode = TestGenerationMode.Comprehensive,
+                                     bool generateAsyncTests = true,
+                                     bool generateErrorHandlingTests = true)
+    {
+        if (string.IsNullOrWhiteSpace(testDirectory))
+        {
             throw new ArgumentException("Test directory cannot be null or whitespace.", nameof(testDirectory));
         }
 
-        BaseConfig                 = new GenerationConfig(baseNamespace, startArity, subNamespace, className, fileOrganization, true);
-        TestDirectory              = testDirectory;
-        NamingPattern              = namingPattern    ?? new TestNamingPattern();
-        EnabledScenarios           = enabledScenarios ?? GetDefaultEnabledScenarios();
-        Mode                       = mode;
-        GenerateAsyncTests         = generateAsyncTests;
+        BaseConfig = new GenerationConfig(baseNamespace, startArity, subNamespace, className, fileOrganization, true);
+        TestDirectory = testDirectory;
+        NamingPattern = namingPattern ?? new TestNamingPattern();
+        EnabledScenarios = enabledScenarios ?? GetDefaultEnabledScenarios();
+        Mode = mode;
+        GenerateAsyncTests = generateAsyncTests;
         GenerateErrorHandlingTests = generateErrorHandlingTests;
     }
 
@@ -79,7 +82,8 @@ internal sealed class ArityTestGenerationConfig {
     /// </summary>
     public TestGenerationMode Mode { get; init; } = TestGenerationMode.Comprehensive;
 
-    private static IEnumerable<TestScenarioCategory> GetDefaultEnabledScenarios() {
+    private static IEnumerable<TestScenarioCategory> GetDefaultEnabledScenarios()
+    {
         return [
             TestScenarioCategory.Success,
             TestScenarioCategory.Failure,

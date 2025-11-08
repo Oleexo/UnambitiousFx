@@ -5,7 +5,8 @@ namespace UnambitiousFx.Mediator.Abstractions;
 /// <summary>
 ///     Provides functionality to dispatch events in an asynchronous manner.
 /// </summary>
-public interface IEventDispatcher {
+public interface IEventDispatcher
+{
     /// Dispatches an event asynchronously, handling the specified context and cancellation token.
     /// <param name="event">
     ///     The event to be handled asynchronously.
@@ -16,7 +17,7 @@ public interface IEventDispatcher {
     /// <returns>
     ///     A ValueTask containing the result of the dispatch operation, which may indicate success or a failure.
     /// </returns>
-    ValueTask<Result> DispatchAsync(IEvent            @event,
+    ValueTask<Result> DispatchAsync(IEvent @event,
                                     CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -29,7 +30,7 @@ public interface IEventDispatcher {
     ///     A task that represents the asynchronous operation. The task's result contains a <see cref="Result" />
     ///     indicating the outcome of the operation.
     /// </returns>
-    ValueTask<Result> DispatchAsync<TEvent>(TEvent            @event,
+    ValueTask<Result> DispatchAsync<TEvent>(TEvent @event,
                                             CancellationToken cancellationToken = default)
         where TEvent : class, IEvent;
 }

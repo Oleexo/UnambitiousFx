@@ -7,9 +7,11 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results;
 ///     Base class for Result test generators that provides common functionality for generating test values,
 ///     result creation, and test method structures across sync, Task, and ValueTask variants.
 /// </summary>
-internal abstract class ResultTestGeneratorBase : BaseCodeGenerator {
+internal abstract class ResultTestGeneratorBase : BaseCodeGenerator
+{
     protected ResultTestGeneratorBase(GenerationConfig config)
-        : base(config) {
+        : base(config)
+    {
     }
 
     #region Variant Generation Helper
@@ -25,17 +27,21 @@ internal abstract class ResultTestGeneratorBase : BaseCodeGenerator {
     ///     (UnderClass).
     /// </param>
     /// <returns>Collection of generated class writers.</returns>
-    protected IReadOnlyCollection<ClassWriter> GenerateVariants(ushort                                                             arity,
-                                                                string                                                             baseClassName,
-                                                                params (Func<ushort, ClassWriter?> factory, bool underBaseClass)[] variants) {
+    protected IReadOnlyCollection<ClassWriter> GenerateVariants(ushort arity,
+                                                                string baseClassName,
+                                                                params (Func<ushort, ClassWriter?> factory, bool underBaseClass)[] variants)
+    {
         var list = new List<ClassWriter>();
-        foreach (var (factory, under) in variants) {
+        foreach (var (factory, under) in variants)
+        {
             var writer = factory(arity);
-            if (writer == null) {
+            if (writer == null)
+            {
                 continue;
             }
 
-            if (under && string.IsNullOrEmpty(writer.UnderClass)) {
+            if (under && string.IsNullOrEmpty(writer.UnderClass))
+            {
                 writer.UnderClass = baseClassName;
             }
 
@@ -49,13 +55,16 @@ internal abstract class ResultTestGeneratorBase : BaseCodeGenerator {
 
     #region Common Test Value Generation
 
-    protected string GenerateTestValues(ushort arity) {
+    protected string GenerateTestValues(ushort arity)
+    {
         return string.Join("\n", Enumerable.Range(1, arity)
                                            .Select(i => $"var value{i} = {GetTestValue(i)};"));
     }
 
-    protected string GetTestValue(int index) {
-        return index switch {
+    protected string GetTestValue(int index)
+    {
+        return index switch
+        {
             1 => "42",
             2 => "\"test\"",
             3 => "true",
@@ -68,8 +77,10 @@ internal abstract class ResultTestGeneratorBase : BaseCodeGenerator {
         };
     }
 
-    protected string GetTestType(int index) {
-        return index switch {
+    protected string GetTestType(int index)
+    {
+        return index switch
+        {
             1 => "int",
             2 => "string",
             3 => "bool",
@@ -82,8 +93,10 @@ internal abstract class ResultTestGeneratorBase : BaseCodeGenerator {
         };
     }
 
-    public string GetOtherValue(int index) {
-        return index switch {
+    public string GetOtherValue(int index)
+    {
+        return index switch
+        {
             1 => "100",
             2 => "\"World\"",
             3 => "false",
@@ -100,12 +113,15 @@ internal abstract class ResultTestGeneratorBase : BaseCodeGenerator {
 
     #region Result Creation Helpers
 
-    protected string GenerateResultCreation(ushort arity) {
-        if (arity == 0) {
+    protected string GenerateResultCreation(ushort arity)
+    {
+        if (arity == 0)
+        {
             return "var result = Result.Success();";
         }
 
-        if (arity == 1) {
+        if (arity == 1)
+        {
             return "var result = Result.Success(value1);";
         }
 
@@ -116,12 +132,15 @@ internal abstract class ResultTestGeneratorBase : BaseCodeGenerator {
 
     protected string GenerateAsyncSuccessResultCreation(ushort arity,
                                                         string asyncType,
-                                                        string resultVarName = "taskResult") {
-        if (arity == 0) {
+                                                        string resultVarName = "taskResult")
+    {
+        if (arity == 0)
+        {
             return $"var {resultVarName} = {asyncType}.FromResult(Result.Success());";
         }
 
-        if (arity == 1) {
+        if (arity == 1)
+        {
             return $"var {resultVarName} = {asyncType}.FromResult(Result.Success(value1));";
         }
 
@@ -131,8 +150,10 @@ internal abstract class ResultTestGeneratorBase : BaseCodeGenerator {
     }
 
     protected string GenerateFailureResultCreation(ushort arity,
-                                                   string errorMessage = "\"Test error\"") {
-        if (arity == 0) {
+                                                   string errorMessage = "\"Test error\"")
+    {
+        if (arity == 0)
+        {
             return $"var result = Result.Failure({errorMessage});";
         }
 
@@ -141,8 +162,10 @@ internal abstract class ResultTestGeneratorBase : BaseCodeGenerator {
         return $"var result = Result.Failure<{typeParams}>({errorMessage});";
     }
 
-    protected string GenerateErrorTypeFailureResultCreation(ushort arity) {
-        if (arity == 0) {
+    protected string GenerateErrorTypeFailureResultCreation(ushort arity)
+    {
+        if (arity == 0)
+        {
             return "var result = Result.Failure(new Error(\"Test error\"));";
         }
 
@@ -154,8 +177,10 @@ internal abstract class ResultTestGeneratorBase : BaseCodeGenerator {
     protected string GenerateAsyncFailureResultCreation(ushort arity,
                                                         string asyncType,
                                                         string resultVarName = "taskResult",
-                                                        string errorMessage  = "\"Test error\"") {
-        if (arity == 0) {
+                                                        string errorMessage = "\"Test error\"")
+    {
+        if (arity == 0)
+        {
             return $"var {resultVarName} = {asyncType}.FromResult(Result.Failure({errorMessage}));";
         }
 
@@ -168,8 +193,10 @@ internal abstract class ResultTestGeneratorBase : BaseCodeGenerator {
 
     #region Type Parameter Generation
 
-    protected string GenerateTypeParams(ushort arity) {
-        if (arity == 0) {
+    protected string GenerateTypeParams(ushort arity)
+    {
+        if (arity == 0)
+        {
             return string.Empty;
         }
 
@@ -178,7 +205,8 @@ internal abstract class ResultTestGeneratorBase : BaseCodeGenerator {
     }
 
     protected string GenerateTypeParamsWithPrefix(ushort arity,
-                                                  string prefix) {
+                                                  string prefix)
+    {
         var types = Enumerable.Range(1, arity)
                               .Select(GetTestType)
                               .ToList();
@@ -186,16 +214,19 @@ internal abstract class ResultTestGeneratorBase : BaseCodeGenerator {
         return string.Join(", ", types);
     }
 
-    protected string GenerateValueParams(ushort  arity,
-                                         string? prefix = null) {
+    protected string GenerateValueParams(ushort arity,
+                                         string? prefix = null)
+    {
         List<string> valueParams;
 
-        if (prefix is null) {
+        if (prefix is null)
+        {
             valueParams = Enumerable.Range(1, arity)
                                     .Select(_ => "_")
                                     .ToList();
         }
-        else {
+        else
+        {
             valueParams = Enumerable.Range(1, arity)
                                     .Select(x => $"value{x}")
                                     .ToList();
@@ -208,11 +239,13 @@ internal abstract class ResultTestGeneratorBase : BaseCodeGenerator {
 
     #region Common Usings
 
-    protected virtual IEnumerable<string> GetAdditionalUsings() {
+    protected virtual IEnumerable<string> GetAdditionalUsings()
+    {
         return [];
     }
 
-    protected IEnumerable<string> GetUsings() {
+    protected IEnumerable<string> GetUsings()
+    {
         return GetAdditionalUsings()
            .Concat([
                 "System",
@@ -232,11 +265,13 @@ internal abstract class ResultTestGeneratorBase : BaseCodeGenerator {
     /// <summary>
     ///     Builds a section (Given/When/Then) with its lines.
     /// </summary>
-    protected string BuildSection(string              title,
-                                  IEnumerable<string> lines) {
+    protected string BuildSection(string title,
+                                  IEnumerable<string> lines)
+    {
         var contentLines = lines.Where(l => !string.IsNullOrWhiteSpace(l))
                                 .ToList();
-        if (!contentLines.Any()) {
+        if (!contentLines.Any())
+        {
             return string.Empty; // Allow caller to skip empty sections
         }
 
@@ -248,20 +283,24 @@ internal abstract class ResultTestGeneratorBase : BaseCodeGenerator {
     /// </summary>
     protected string BuildTestBody(IEnumerable<string> givenLines,
                                    IEnumerable<string> whenLines,
-                                   IEnumerable<string> thenLines) {
+                                   IEnumerable<string> thenLines)
+    {
         var sections = new List<string>();
-        var given    = BuildSection("Given", givenLines);
-        if (!string.IsNullOrEmpty(given)) {
+        var given = BuildSection("Given", givenLines);
+        if (!string.IsNullOrEmpty(given))
+        {
             sections.Add(given);
         }
 
         var when = BuildSection("When", whenLines);
-        if (!string.IsNullOrEmpty(when)) {
+        if (!string.IsNullOrEmpty(when))
+        {
             sections.Add(when);
         }
 
         var then = BuildSection("Then", thenLines);
-        if (!string.IsNullOrEmpty(then)) {
+        if (!string.IsNullOrEmpty(then))
+        {
             sections.Add(then);
         }
 

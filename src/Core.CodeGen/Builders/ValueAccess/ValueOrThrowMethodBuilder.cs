@@ -6,21 +6,24 @@ namespace UnambitiousFx.Core.CodeGen.Builders.ValueAccess;
 /// <summary>
 ///     Builds ValueOrThrow extension methods for Result types.
 /// </summary>
-internal sealed class ValueOrThrowMethodBuilder {
+internal sealed class ValueOrThrowMethodBuilder
+{
     private readonly string _baseNamespace;
 
-    public ValueOrThrowMethodBuilder(string baseNamespace) {
+    public ValueOrThrowMethodBuilder(string baseNamespace)
+    {
         _baseNamespace = baseNamespace ?? throw new ArgumentNullException(nameof(baseNamespace));
     }
 
     /// <summary>
     ///     Builds ValueOrThrow method with default exception.
     /// </summary>
-    public MethodWriter BuildWithDefaultException(ushort arity) {
-        var genericTypes  = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
+    public MethodWriter BuildWithDefaultException(ushort arity)
+    {
+        var genericTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
         var genericParams = GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull");
-        var resultType    = $"Result<{genericTypes}>";
-        var returnType    = GenericTypeHelper.BuildTupleTypeString(arity, "TValue");
+        var resultType = $"Result<{genericTypes}>";
+        var returnType = GenericTypeHelper.BuildTupleTypeString(arity, "TValue");
 
         var body = "return result.ValueOrThrow(errors => throw errors.ToException());";
 
@@ -29,7 +32,8 @@ internal sealed class ValueOrThrowMethodBuilder {
                                             .WithParameter("result", "The result instance.")
                                             .WithReturns("The value(s) or throws.");
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Value type {i}.");
         }
 
@@ -49,17 +53,20 @@ internal sealed class ValueOrThrowMethodBuilder {
     /// <summary>
     ///     Builds ValueOrThrow method with custom exception factory.
     /// </summary>
-    public MethodWriter BuildWithExceptionFactory(ushort arity) {
-        var genericTypes  = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
+    public MethodWriter BuildWithExceptionFactory(ushort arity)
+    {
+        var genericTypes = GenericTypeHelper.BuildGenericTypeString(arity, "TValue");
         var genericParams = GenericTypeHelper.CreateGenericParameters(arity, "TValue", "notnull");
-        var resultType    = $"Result<{genericTypes}>";
-        var returnType    = GenericTypeHelper.BuildTupleTypeString(arity, "TValue");
+        var resultType = $"Result<{genericTypes}>";
+        var returnType = GenericTypeHelper.BuildTupleTypeString(arity, "TValue");
 
         string body;
-        if (arity == 1) {
+        if (arity == 1)
+        {
             body = "return result.Match<TValue1>(value1 => value1, e => throw exceptionFactory(e));";
         }
-        else {
+        else
+        {
             var valueParams = string.Join(", ",
                                           Enumerable.Range(1, arity)
                                                     .Select(n => $"value{n}"));
@@ -68,11 +75,12 @@ internal sealed class ValueOrThrowMethodBuilder {
 
         var docBuilder = DocumentationWriter.Create()
                                             .WithSummary("Returns contained value(s); otherwise throws exception from factory.")
-                                            .WithParameter("result",           "The result instance.")
+                                            .WithParameter("result", "The result instance.")
                                             .WithParameter("exceptionFactory", "Factory creating exception from errors.")
                                             .WithReturns("The value(s) or throws custom exception.");
 
-        foreach (var i in Enumerable.Range(1, arity)) {
+        foreach (var i in Enumerable.Range(1, arity))
+        {
             docBuilder.WithTypeParameter($"TValue{i}", $"Value type {i}.");
         }
 

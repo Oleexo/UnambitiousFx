@@ -11,7 +11,8 @@ namespace UnambitiousFx.Core.CodeGen.Generators.ErrorHandling;
 ///     and preserving all reasons and metadata from the original result.
 ///     Follows architecture rule: One generator per extension method category.
 /// </summary>
-internal sealed class ResultAccumulateExtensionsCodeGenerator : BaseCodeGenerator {
+internal sealed class ResultAccumulateExtensionsCodeGenerator : BaseCodeGenerator
+{
     private const string ExtensionsNamespace = "Results.Extensions.ErrorHandling";
 
     public ResultAccumulateExtensionsCodeGenerator(string baseNamespace)
@@ -20,15 +21,18 @@ internal sealed class ResultAccumulateExtensionsCodeGenerator : BaseCodeGenerato
                    0, // Start from Result (arity 0)
                    ExtensionsNamespace,
                    "ResultAccumulateExtensions",
-                   FileOrganizationMode.SingleFile)) {
+                   FileOrganizationMode.SingleFile))
+    {
     }
 
-    protected override string PrepareOutputDirectory(string outputPath) {
+    protected override string PrepareOutputDirectory(string outputPath)
+    {
         var mainOutput = FileSystemHelper.CreateSubdirectory(outputPath, Config.SubNamespace);
         return mainOutput;
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
+    {
         return [
             GenerateAccumulateMethods(arity),
             GenerateAsyncMethods(arity, false),
@@ -36,7 +40,8 @@ internal sealed class ResultAccumulateExtensionsCodeGenerator : BaseCodeGenerato
         ];
     }
 
-    private ClassWriter GenerateAccumulateMethods(ushort arity) {
+    private ClassWriter GenerateAccumulateMethods(ushort arity)
+    {
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
         var classWriter = new ClassWriter(
             Config.ClassName,
@@ -51,7 +56,8 @@ internal sealed class ResultAccumulateExtensionsCodeGenerator : BaseCodeGenerato
         return classWriter;
     }
 
-    private MethodWriter GenerateAccumulateMethod(ushort arity) {
+    private MethodWriter GenerateAccumulateMethod(ushort arity)
+    {
         var (resultType, genericParams, constraints) = GetResultTypeInfo(arity);
         var methodName = "Accumulate";
 
@@ -73,19 +79,23 @@ internal sealed class ResultAccumulateExtensionsCodeGenerator : BaseCodeGenerato
                                   .WithUsings("UnambitiousFx.Core.Results.Reasons");
 
         // Add generic parameters and constraints
-        foreach (var param in genericParams) {
+        foreach (var param in genericParams)
+        {
             builder.WithGenericParameter(param);
         }
 
-        foreach (var constraint in constraints) {
+        foreach (var constraint in constraints)
+        {
             builder.WithGenericConstraint(constraint);
         }
 
         return builder.Build();
     }
 
-    private (string resultType, string[] genericParams, GenericConstraint[] constraints) GetResultTypeInfo(ushort arity) {
-        if (arity == 0) {
+    private (string resultType, string[] genericParams, GenericConstraint[] constraints) GetResultTypeInfo(ushort arity)
+    {
+        if (arity == 0)
+        {
             return ("Result", [], []);
         }
 
@@ -104,8 +114,9 @@ internal sealed class ResultAccumulateExtensionsCodeGenerator : BaseCodeGenerato
         return (resultType, genericParams, constraints);
     }
 
-    private string GenerateAccumulateBody(ushort arity) {
-        var tryGetCall  = GenerateTryGetCall(arity);
+    private string GenerateAccumulateBody(ushort arity)
+    {
+        var tryGetCall = GenerateTryGetCall(arity);
         var failureCall = GenerateFailureCall(arity);
 
         return $$"""
@@ -124,8 +135,10 @@ internal sealed class ResultAccumulateExtensionsCodeGenerator : BaseCodeGenerato
                  """;
     }
 
-    private string GenerateTryGetCall(ushort arity) {
-        if (arity == 0) {
+    private string GenerateTryGetCall(ushort arity)
+    {
+        if (arity == 0)
+        {
             return "original.TryGet(out var existingError);";
         }
 
@@ -136,12 +149,15 @@ internal sealed class ResultAccumulateExtensionsCodeGenerator : BaseCodeGenerato
         return $"original.TryGet({allParams});";
     }
 
-    private string GenerateFailureCall(ushort arity) {
-        if (arity == 0) {
+    private string GenerateFailureCall(ushort arity)
+    {
+        if (arity == 0)
+        {
             return "Result.Failure(newEx)";
         }
 
-        if (arity == 1) {
+        if (arity == 1)
+        {
             return "Result.Failure<T1>(newEx)";
         }
 
@@ -151,7 +167,8 @@ internal sealed class ResultAccumulateExtensionsCodeGenerator : BaseCodeGenerato
     }
 
     private ClassWriter GenerateAsyncMethods(ushort arity,
-                                             bool   isValueTask) {
+                                             bool isValueTask)
+    {
         var subNamespace = isValueTask
                                ? "ValueTasks"
                                : "Tasks";
@@ -174,8 +191,9 @@ internal sealed class ResultAccumulateExtensionsCodeGenerator : BaseCodeGenerato
     }
 
     private MethodWriter GenerateAccumulateAsyncMethod(ushort arity,
-                                                       bool   isValueTask,
-                                                       bool   isAwaitable) {
+                                                       bool isValueTask,
+                                                       bool isAwaitable)
+    {
         var (resultType, genericParams, constraints) = GetResultTypeInfo(arity);
         var methodName = "AccumulateAsync";
 
@@ -201,9 +219,10 @@ internal sealed class ResultAccumulateExtensionsCodeGenerator : BaseCodeGenerato
                                                            "A task with a new result containing accumulated errors, preserving all reasons and metadata from the original result.");
 
         // Add documentation for all value type parameters
-        for (var i = 0; i < genericParams.Length; i++) {
+        for (var i = 0; i < genericParams.Length; i++)
+        {
             var paramName = genericParams[i];
-            var ordinal   = GetOrdinalString(i + 1);
+            var ordinal = GetOrdinalString(i + 1);
             documentationBuilder.WithTypeParameter(paramName, $"The type of the {ordinal} value.");
         }
 
@@ -224,19 +243,23 @@ internal sealed class ResultAccumulateExtensionsCodeGenerator : BaseCodeGenerato
                                   .WithUsings("UnambitiousFx.Core.Results.Reasons");
 
         // Add using for ValueAccess extensions
-        if (isValueTask) {
+        if (isValueTask)
+        {
             builder.WithUsings("UnambitiousFx.Core.Results.Extensions.ValueAccess.ValueTasks");
         }
-        else {
+        else
+        {
             builder.WithUsings("UnambitiousFx.Core.Results.Extensions.ValueAccess.Tasks");
         }
 
         // Add generic parameters and constraints for value types
-        foreach (var param in genericParams) {
+        foreach (var param in genericParams)
+        {
             builder.WithGenericParameter(param);
         }
 
-        foreach (var constraint in constraints) {
+        foreach (var constraint in constraints)
+        {
             builder.WithGenericConstraint(constraint);
         }
 
@@ -244,16 +267,18 @@ internal sealed class ResultAccumulateExtensionsCodeGenerator : BaseCodeGenerato
     }
 
     private string GenerateAccumulateAsyncBody(ushort arity,
-                                               bool   isValueTask,
-                                               bool   isAwaitable) {
-        if (isAwaitable) {
+                                               bool isValueTask,
+                                               bool isAwaitable)
+    {
+        if (isAwaitable)
+        {
             return """
                    var original = await awaitableOriginal;
                    return await original.AccumulateAsync(mapError);
                    """;
         }
 
-        var tryGetCall  = GenerateTryGetCall(arity);
+        var tryGetCall = GenerateTryGetCall(arity);
         var failureCall = GenerateFailureCall(arity);
         var taskType = isValueTask
                            ? "ValueTask"
@@ -274,8 +299,10 @@ internal sealed class ResultAccumulateExtensionsCodeGenerator : BaseCodeGenerato
                  """;
     }
 
-    private static string GetOrdinalString(int number) {
-        return number switch {
+    private static string GetOrdinalString(int number)
+    {
+        return number switch
+        {
             1 => "first",
             2 => "second",
             3 => "third",

@@ -5,14 +5,15 @@ namespace UnambitiousFx.Core.CodeGen.Design;
 /// <summary>
 ///     A writer class responsible for generating constructor code for a given class.
 /// </summary>
-public sealed class ConstructorWriter : ICodeWriter {
-    private readonly string?              _baseCall;
-    private readonly string               _body;
-    private readonly string               _className;
+public sealed class ConstructorWriter : ICodeWriter
+{
+    private readonly string? _baseCall;
+    private readonly string _body;
+    private readonly string _className;
     private readonly DocumentationWriter? _documentation;
-    private readonly MethodParameter[]    _parameters;
+    private readonly MethodParameter[] _parameters;
     private readonly IEnumerable<string>? _usings;
-    private readonly Visibility           _visibility;
+    private readonly Visibility _visibility;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ConstructorWriter" /> class.
@@ -24,20 +25,21 @@ public sealed class ConstructorWriter : ICodeWriter {
     /// <param name="documentation">Optional documentation writer for the constructor.</param>
     /// <param name="baseCall">Optional base call to include in the constructor.</param>
     /// <param name="usings">Optional list of using directives required for the constructor.</param>
-    public ConstructorWriter(string                        className,
-                             string                        body,
-                             Visibility                    visibility    = Visibility.Public,
-                             IEnumerable<MethodParameter>? parameters    = null,
-                             DocumentationWriter?          documentation = null,
-                             string?                       baseCall      = null,
-                             IEnumerable<string>?          usings        = null) {
-        _className     = className;
-        _body          = body;
-        _visibility    = visibility;
-        _parameters    = parameters?.ToArray() ?? [];
+    public ConstructorWriter(string className,
+                             string body,
+                             Visibility visibility = Visibility.Public,
+                             IEnumerable<MethodParameter>? parameters = null,
+                             DocumentationWriter? documentation = null,
+                             string? baseCall = null,
+                             IEnumerable<string>? usings = null)
+    {
+        _className = className;
+        _body = body;
+        _visibility = visibility;
+        _parameters = parameters?.ToArray() ?? [];
         _documentation = documentation;
-        _baseCall      = baseCall;
-        _usings        = usings;
+        _baseCall = baseCall;
+        _usings = usings;
     }
 
     /// <summary>
@@ -49,7 +51,8 @@ public sealed class ConstructorWriter : ICodeWriter {
     ///     Writes the constructor code to the specified <see cref="IndentedTextWriter" />.
     /// </summary>
     /// <param name="writer">The writer to which the constructor code will be written.</param>
-    public void Write(IndentedTextWriter writer) {
+    public void Write(IndentedTextWriter writer)
+    {
         // Write documentation
         _documentation?.Write(writer);
 
@@ -58,13 +61,15 @@ public sealed class ConstructorWriter : ICodeWriter {
         writer.Write(_className);
         writer.Write('(');
 
-        if (_parameters.Length > 0) {
+        if (_parameters.Length > 0)
+        {
             writer.Write(string.Join(", ", _parameters.Select(p => $"{p.Type} {p.Name}")));
         }
 
         writer.Write(")");
 
-        if (!string.IsNullOrEmpty(_baseCall)) {
+        if (!string.IsNullOrEmpty(_baseCall))
+        {
             writer.Write(" : ");
             writer.Write(_baseCall);
         }
@@ -73,7 +78,8 @@ public sealed class ConstructorWriter : ICodeWriter {
         writer.Indent++;
 
         var bodyLines = _body.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-        foreach (var line in bodyLines) {
+        foreach (var line in bodyLines)
+        {
             writer.WriteLine(line);
         }
 
@@ -87,15 +93,17 @@ public sealed class ConstructorWriter : ICodeWriter {
     /// <param name="visibility">The visibility enum value.</param>
     /// <returns>The string representation of the visibility.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if the visibility value is not recognized.</exception>
-    private static string GetVisibilityString(Visibility visibility) {
-        return visibility switch {
-            Visibility.Public            => "public",
-            Visibility.Internal          => "internal",
-            Visibility.Private           => "private",
-            Visibility.Protected         => "protected",
+    private static string GetVisibilityString(Visibility visibility)
+    {
+        return visibility switch
+        {
+            Visibility.Public => "public",
+            Visibility.Internal => "internal",
+            Visibility.Private => "private",
+            Visibility.Protected => "protected",
             Visibility.ProtectedInternal => "protected internal",
-            Visibility.PrivateProtected  => "private protected",
-            _                            => throw new ArgumentOutOfRangeException(nameof(visibility))
+            Visibility.PrivateProtected => "private protected",
+            _ => throw new ArgumentOutOfRangeException(nameof(visibility))
         };
     }
 }

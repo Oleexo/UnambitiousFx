@@ -9,7 +9,8 @@ namespace UnambitiousFx.Core.CodeGen.Generators.ErrorHandling;
 ///     Generates Recovery extension methods for all Result arities with error recovery scenarios.
 ///     Follows architecture rule: One generator per extension method category.
 /// </summary>
-internal sealed class ResultRecoveryExtensionsCodeGenerator : BaseCodeGenerator {
+internal sealed class ResultRecoveryExtensionsCodeGenerator : BaseCodeGenerator
+{
     private const string ExtensionsNamespace = "Results.Extensions.ErrorHandling";
 
     public ResultRecoveryExtensionsCodeGenerator(string baseNamespace)
@@ -18,15 +19,18 @@ internal sealed class ResultRecoveryExtensionsCodeGenerator : BaseCodeGenerator 
                    1,
                    ExtensionsNamespace,
                    "ResultRecoveryExtensions",
-                   FileOrganizationMode.SingleFile)) {
+                   FileOrganizationMode.SingleFile))
+    {
     }
 
-    protected override string PrepareOutputDirectory(string outputPath) {
+    protected override string PrepareOutputDirectory(string outputPath)
+    {
         var mainOutput = FileSystemHelper.CreateSubdirectory(outputPath, Config.SubNamespace);
         return mainOutput;
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
+    {
         return [
             GenerateSyncMethods(arity),
             GenerateAsyncMethods(arity, false),
@@ -34,7 +38,8 @@ internal sealed class ResultRecoveryExtensionsCodeGenerator : BaseCodeGenerator 
         ];
     }
 
-    private ClassWriter GenerateSyncMethods(ushort arity) {
+    private ClassWriter GenerateSyncMethods(ushort arity)
+    {
         var ns = $"{Config.BaseNamespace}.{ExtensionsNamespace}";
         var classWriter = new ClassWriter(
             Config.ClassName,
@@ -51,7 +56,8 @@ internal sealed class ResultRecoveryExtensionsCodeGenerator : BaseCodeGenerator 
     }
 
     private ClassWriter GenerateAsyncMethods(ushort arity,
-                                             bool   isValueTask) {
+                                             bool isValueTask)
+    {
         var subNamespace = isValueTask
                                ? "ValueTasks"
                                : "Tasks";
@@ -70,18 +76,20 @@ internal sealed class ResultRecoveryExtensionsCodeGenerator : BaseCodeGenerator 
         return classWriter;
     }
 
-    private MethodWriter GenerateRecoveryWithFunctionMethod(ushort arity) {
+    private MethodWriter GenerateRecoveryWithFunctionMethod(ushort arity)
+    {
         var (resultType, genericParams, constraints, tupleType) = GetResultTypeInfo(arity);
         var methodName = "Recover";
 
         var documentationBuilder = DocumentationWriter.Create()
                                                       .WithSummary("Recovers from a failed result by providing fallback values through a recovery function.")
-                                                      .WithParameter("result",  "The result to recover from.")
+                                                      .WithParameter("result", "The result to recover from.")
                                                       .WithParameter("recover", "A function that takes the errors and returns fallback values.")
                                                       .WithReturns("A successful result with the fallback values if the original result failed; otherwise, the original result.");
 
         // Add documentation for all value type parameters
-        for (var i = 0; i < genericParams.Length; i++) {
+        for (var i = 0; i < genericParams.Length; i++)
+        {
             var paramName = genericParams[i];
             var ordinal = OrdinalHelper.GetOrdinalName(i + 1)
                                        .ToLowerInvariant();
@@ -100,18 +108,21 @@ internal sealed class ResultRecoveryExtensionsCodeGenerator : BaseCodeGenerator 
                                   .WithUsings("UnambitiousFx.Core.Results.Reasons");
 
         // Add generic parameters and constraints for value types
-        foreach (var param in genericParams) {
+        foreach (var param in genericParams)
+        {
             builder.WithGenericParameter(param);
         }
 
-        foreach (var constraint in constraints) {
+        foreach (var constraint in constraints)
+        {
             builder.WithGenericConstraint(constraint);
         }
 
         return builder.Build();
     }
 
-    private MethodWriter GenerateRecoveryWithValuesMethod(ushort arity) {
+    private MethodWriter GenerateRecoveryWithValuesMethod(ushort arity)
+    {
         var (resultType, genericParams, constraints, _) = GetResultTypeInfo(arity);
         var methodName = "Recover";
 
@@ -121,7 +132,8 @@ internal sealed class ResultRecoveryExtensionsCodeGenerator : BaseCodeGenerator 
                                                       .WithReturns("A successful result with the fallback values if the original result failed; otherwise, the original result.");
 
         // Add documentation for all value type parameters
-        for (var i = 0; i < genericParams.Length; i++) {
+        for (var i = 0; i < genericParams.Length; i++)
+        {
             var paramName = genericParams[i];
             var ordinal = OrdinalHelper.GetOrdinalName(i + 1)
                                        .ToLowerInvariant();
@@ -142,25 +154,29 @@ internal sealed class ResultRecoveryExtensionsCodeGenerator : BaseCodeGenerator 
                                   .WithUsings("UnambitiousFx.Core.Results.Reasons");
 
         // Add fallback parameters
-        for (var i = 0; i < arity; i++) {
+        for (var i = 0; i < arity; i++)
+        {
             var paramName = $"fallback{i + 1}";
             var paramType = genericParams[i];
             builder.WithParameter(paramType, paramName);
         }
 
         // Add generic parameters and constraints for value types
-        foreach (var param in genericParams) {
+        foreach (var param in genericParams)
+        {
             builder.WithGenericParameter(param);
         }
 
-        foreach (var constraint in constraints) {
+        foreach (var constraint in constraints)
+        {
             builder.WithGenericConstraint(constraint);
         }
 
         return builder.Build();
     }
 
-    private (string resultType, string[] genericParams, GenericConstraint[] constraints, string tupleType) GetResultTypeInfo(ushort arity) {
+    private (string resultType, string[] genericParams, GenericConstraint[] constraints, string tupleType) GetResultTypeInfo(ushort arity)
+    {
         var genericParams = Enumerable.Range(1, arity)
                                       .Select(i => $"TValue{i}")
                                       .ToArray();
@@ -169,7 +185,8 @@ internal sealed class ResultRecoveryExtensionsCodeGenerator : BaseCodeGenerator 
                          .Select(param => GenericConstraint.NotNull(param))
                          .ToArray();
 
-        var resultType = arity switch {
+        var resultType = arity switch
+        {
             0 => "Result",
             1 => "Result<TValue1>",
             _ => $"Result<{string.Join(", ", genericParams)}>"
@@ -182,7 +199,8 @@ internal sealed class ResultRecoveryExtensionsCodeGenerator : BaseCodeGenerator 
         return (resultType, genericParams, constraints, tupleType);
     }
 
-    private string GenerateRecoveryWithFunctionBody(ushort arity) {
+    private string GenerateRecoveryWithFunctionBody(ushort arity)
+    {
         var tryGetParams = string.Join(", ", Enumerable.Range(1, arity)
                                                        .Select(_ => "out _"));
         var tryGetCall = $"result.TryGet({tryGetParams}, out var error)";
@@ -203,7 +221,8 @@ internal sealed class ResultRecoveryExtensionsCodeGenerator : BaseCodeGenerator 
                  """;
     }
 
-    private string GenerateRecoveryWithValuesBody(ushort arity) {
+    private string GenerateRecoveryWithValuesBody(ushort arity)
+    {
         var fallbackParams = string.Join(", ", Enumerable.Range(1, arity)
                                                          .Select(i => $"fallback{i}"));
         var recoverCall = arity == 1
@@ -213,33 +232,36 @@ internal sealed class ResultRecoveryExtensionsCodeGenerator : BaseCodeGenerator 
         return recoverCall;
     }
 
-    private string GenerateSuccessCallWithTuple(ushort arity) {
+    private string GenerateSuccessCallWithTuple(ushort arity)
+    {
         var tupleItems = string.Join(", ", Enumerable.Range(1, arity)
                                                      .Select(i => $"fallback.Item{i}"));
         return $"return Result.Success({tupleItems});";
     }
 
     private MethodWriter GenerateRecoveryAsyncMethod(ushort arity,
-                                                     bool   isValueTask) {
+                                                     bool isValueTask)
+    {
         var (resultType, genericParams, constraints, tupleType) = GetResultTypeInfo(arity);
         var methodName = "RecoverAsync";
 
         var taskType = isValueTask
                            ? "ValueTask"
                            : "Task";
-        var returnType    = $"{taskType}<{resultType}>";
+        var returnType = $"{taskType}<{resultType}>";
         var parameterType = $"{taskType}<{resultType}>";
-        var recoveryType  = $"Func<IEnumerable<IError>, {taskType}<{tupleType}>>";
+        var recoveryType = $"Func<IEnumerable<IError>, {taskType}<{tupleType}>>";
 
         var documentationBuilder = DocumentationWriter.Create()
                                                       .WithSummary("Asynchronously recovers from a failed result by providing fallback values through a recovery function.")
                                                       .WithParameter("awaitableResult", "The awaitable result to recover from.")
-                                                      .WithParameter("recover",         "The async function that takes the errors and returns fallback values.")
+                                                      .WithParameter("recover", "The async function that takes the errors and returns fallback values.")
                                                       .WithReturns(
                                                            "A task with a successful result containing the fallback values if the original result failed; otherwise, the original result.");
 
         // Add documentation for all value type parameters
-        for (var i = 0; i < genericParams.Length; i++) {
+        for (var i = 0; i < genericParams.Length; i++)
+        {
             var paramName = genericParams[i];
             var ordinal = OrdinalHelper.GetOrdinalName(i + 1)
                                        .ToLowerInvariant();
@@ -258,11 +280,13 @@ internal sealed class ResultRecoveryExtensionsCodeGenerator : BaseCodeGenerator 
                                   .WithUsings("UnambitiousFx.Core.Results.Reasons");
 
         // Add generic parameters and constraints for value types
-        foreach (var param in genericParams) {
+        foreach (var param in genericParams)
+        {
             builder.WithGenericParameter(param);
         }
 
-        foreach (var constraint in constraints) {
+        foreach (var constraint in constraints)
+        {
             builder.WithGenericConstraint(constraint);
         }
 
@@ -270,8 +294,9 @@ internal sealed class ResultRecoveryExtensionsCodeGenerator : BaseCodeGenerator 
     }
 
     private string GenerateRecoveryAsyncBody(ushort arity,
-                                             bool   isValueTask,
-                                             string tupleType) {
+                                             bool isValueTask,
+                                             string tupleType)
+    {
         var taskType = isValueTask
                            ? "ValueTask"
                            : "Task";
@@ -298,7 +323,8 @@ internal sealed class ResultRecoveryExtensionsCodeGenerator : BaseCodeGenerator 
                  """;
     }
 
-    private string GenerateAsyncSuccessCallWithTuple(ushort arity) {
+    private string GenerateAsyncSuccessCallWithTuple(ushort arity)
+    {
         var tupleItems = string.Join(", ", Enumerable.Range(1, arity)
                                                      .Select(i => $"fallback.Item{i}"));
         return $"Result.Success({tupleItems})";

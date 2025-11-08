@@ -3,25 +3,28 @@ namespace UnambitiousFx.Core.CodeGen.Configuration;
 /// <summary>
 ///     Configuration for code generation operations.
 /// </summary>
-internal sealed class GenerationConfig {
+internal sealed class GenerationConfig
+{
     private readonly string _baseNamespace;
 
-    public GenerationConfig(string               baseNamespace,
-                            int                  startArity       = 1,
-                            string               subNamespace     = "",
-                            string               className        = "",
+    public GenerationConfig(string baseNamespace,
+                            int startArity = 1,
+                            string subNamespace = "",
+                            string className = "",
                             FileOrganizationMode fileOrganization = FileOrganizationMode.SeparateFiles,
-                            bool                 isTest           = false) {
-        if (string.IsNullOrWhiteSpace(baseNamespace)) {
+                            bool isTest = false)
+    {
+        if (string.IsNullOrWhiteSpace(baseNamespace))
+        {
             throw new ArgumentException("Base namespace cannot be null or whitespace.", nameof(baseNamespace));
         }
 
-        _baseNamespace   = baseNamespace;
-        StartArity       = startArity;
-        SubNamespace     = subNamespace;
-        ClassName        = className;
+        _baseNamespace = baseNamespace;
+        StartArity = startArity;
+        SubNamespace = subNamespace;
+        ClassName = className;
         FileOrganization = fileOrganization;
-        IsTest           = isTest;
+        IsTest = isTest;
     }
 
     /// <summary>

@@ -7,8 +7,10 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.OneOf;
 /// <summary>
 ///     Builds OneOf test classes with comprehensive test methods.
 /// </summary>
-internal static class OneOfTestClassBuilder {
-    public static ClassWriter Build(ushort arity) {
+internal static class OneOfTestClassBuilder
+{
+    public static ClassWriter Build(ushort arity)
+    {
         var classWriter = new ClassWriter(
             $"OneOf{arity}Tests",
             Visibility.Public,
@@ -26,15 +28,18 @@ internal static class OneOfTestClassBuilder {
     }
 
     private static void AddFromPositionTests(ClassWriter classWriter,
-                                             ushort      arity) {
-        for (ushort i = 1; i <= arity; i++) {
+                                             ushort arity)
+    {
+        for (ushort i = 1; i <= arity; i++)
+        {
             var ordinalName = OrdinalHelper.GetOrdinalName(i);
-            var testValue   = TestTypeHelper.GetTestValue(i);
+            var testValue = TestTypeHelper.GetTestValue(i);
             var genericTypes = string.Join(", ", Enumerable.Range(1, arity)
                                                            .Select(TestTypeHelper.GetTestType));
 
             var body = $"var result = OneOf<{genericTypes}>.From{ordinalName}({testValue});\n\n";
-            for (ushort j = 1; j <= arity; j++) {
+            for (ushort j = 1; j <= arity; j++)
+            {
                 var currentOrdinal = OrdinalHelper.GetOrdinalName(j);
                 body += j == i
                             ? $"Assert.True(result.Is{currentOrdinal});\n"
@@ -53,11 +58,13 @@ internal static class OneOfTestClassBuilder {
     }
 
     private static void AddStoreValueTests(ClassWriter classWriter,
-                                           ushort      arity) {
-        for (ushort i = 1; i <= arity; i++) {
+                                           ushort arity)
+    {
+        for (ushort i = 1; i <= arity; i++)
+        {
             var ordinalName = OrdinalHelper.GetOrdinalName(i);
-            var testType    = TestTypeHelper.GetTestType(i);
-            var testValue   = TestTypeHelper.GetTestValue(i);
+            var testType = TestTypeHelper.GetTestType(i);
+            var testValue = TestTypeHelper.GetTestValue(i);
             var genericTypes = string.Join(", ", Enumerable.Range(1, arity)
                                                            .Select(TestTypeHelper.GetTestType));
 
@@ -67,14 +74,17 @@ internal static class OneOfTestClassBuilder {
                         ? "Assert.True(extracted);\n"
                         : "Assert.Equal(value, extracted);\n";
 
-            for (ushort j = 1; j <= arity; j++) {
-                if (j != i) {
+            for (ushort j = 1; j <= arity; j++)
+            {
+                if (j != i)
+                {
                     var currentOrdinal = OrdinalHelper.GetOrdinalName(j);
                     body += $"Assert.False(result.{currentOrdinal}(out _));\n";
                 }
             }
 
-            if (TestTypeHelper.IsValueTestable(i)) {
+            if (TestTypeHelper.IsValueTestable(i))
+            {
                 classWriter.AddMethod(new MethodWriter(
                                           $"From{ordinalName}_ShouldStoreValue",
                                           "void",
@@ -86,7 +96,8 @@ internal static class OneOfTestClassBuilder {
                                           usings: ["UnambitiousFx.Core.OneOf"]
                                       ));
             }
-            else {
+            else
+            {
                 classWriter.AddMethod(new MethodWriter(
                                           $"From{ordinalName}_ShouldStoreValue",
                                           "void",
@@ -101,26 +112,32 @@ internal static class OneOfTestClassBuilder {
     }
 
     private static void AddMatchWithResponseTests(ClassWriter classWriter,
-                                                  ushort      arity) {
-        for (ushort i = 1; i <= arity; i++) {
+                                                  ushort arity)
+    {
+        for (ushort i = 1; i <= arity; i++)
+        {
             var ordinalName = OrdinalHelper.GetOrdinalName(i);
-            var testValue   = TestTypeHelper.GetTestValue(i);
-            var testType    = TestTypeHelper.GetTestType(i);
+            var testValue = TestTypeHelper.GetTestValue(i);
+            var testType = TestTypeHelper.GetTestType(i);
             var genericTypes = string.Join(", ", Enumerable.Range(1, arity)
                                                            .Select(TestTypeHelper.GetTestType));
 
             var body = $"var oneOf = OneOf<{genericTypes}>.From{ordinalName}({testValue});\n\n";
             body += "var result = oneOf.Match(";
 
-            for (ushort j = 1; j <= arity; j++) {
-                if (j > 1) {
+            for (ushort j = 1; j <= arity; j++)
+            {
+                if (j > 1)
+                {
                     body += ", ";
                 }
 
-                if (j == i) {
+                if (j == i)
+                {
                     body += "x => x";
                 }
-                else {
+                else
+                {
                     var currentOrdinal = OrdinalHelper.GetOrdinalName(j);
                     body += $"_ => {{ Assert.Fail(\"{currentOrdinal} handler was called for OneOf holding {ordinalName} value\"); return default; }}";
                 }
@@ -143,28 +160,34 @@ internal static class OneOfTestClassBuilder {
     }
 
     private static void AddMatchVoidTests(ClassWriter classWriter,
-                                          ushort      arity) {
-        for (ushort i = 1; i <= arity; i++) {
+                                          ushort arity)
+    {
+        for (ushort i = 1; i <= arity; i++)
+        {
             var ordinalName = OrdinalHelper.GetOrdinalName(i);
-            var testValue   = TestTypeHelper.GetTestValue(i);
-            var testType    = TestTypeHelper.GetTestType(i);
+            var testValue = TestTypeHelper.GetTestValue(i);
+            var testType = TestTypeHelper.GetTestType(i);
             var genericTypes = string.Join(", ", Enumerable.Range(1, arity)
                                                            .Select(TestTypeHelper.GetTestType));
 
             var body = $"var oneOf = OneOf<{genericTypes}>.From{ordinalName}({testValue});\n\n";
             body += "oneOf.Match(";
 
-            for (ushort j = 1; j <= arity; j++) {
-                if (j > 1) {
+            for (ushort j = 1; j <= arity; j++)
+            {
+                if (j > 1)
+                {
                     body += ", ";
                 }
 
-                if (j == i) {
+                if (j == i)
+                {
                     body += testType == "bool"
                                 ? "x => { Assert.True(x); }"
                                 : $"x => {{ Assert.Equal({testValue}, x); }}";
                 }
-                else {
+                else
+                {
                     var currentOrdinal = OrdinalHelper.GetOrdinalName(j);
                     body += $"_ => {{ Assert.Fail(\"{currentOrdinal} handler was called for OneOf holding {ordinalName} value\"); }}";
                 }
@@ -184,17 +207,19 @@ internal static class OneOfTestClassBuilder {
     }
 
     private static void AddImplicitConversionTests(ClassWriter classWriter,
-                                                   ushort      arity) {
+                                                   ushort arity)
+    {
         var allTypeParams = string.Join(", ", Enumerable.Range(1, arity)
                                                         .Select(TestTypeHelper.GetTestType));
 
-        for (ushort i = 1; i <= arity; i++) {
+        for (ushort i = 1; i <= arity; i++)
+        {
             var ordinalName = OrdinalHelper.GetOrdinalName(i);
-            var testValue   = TestTypeHelper.GetTestValue(i);
-            var testType    = TestTypeHelper.GetTestType(i);
+            var testValue = TestTypeHelper.GetTestValue(i);
+            var testType = TestTypeHelper.GetTestType(i);
 
             var body = $"OneOf<{allTypeParams}> result = {testValue};\n\n" +
-                       $"Assert.True(result.Is{ordinalName});\n"           +
+                       $"Assert.True(result.Is{ordinalName});\n" +
                        $"Assert.True(result.{ordinalName}(out var value));\n";
 
             body += testType == "bool"
@@ -212,8 +237,10 @@ internal static class OneOfTestClassBuilder {
         }
     }
 
-    private static AttributeReference[] GenerateInlineData(int position) {
-        return position switch {
+    private static AttributeReference[] GenerateInlineData(int position)
+    {
+        return position switch
+        {
             1 => [
                 new AttributeReference("InlineData(0)"),
                 new AttributeReference("InlineData(42)"),

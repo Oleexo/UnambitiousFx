@@ -3,26 +3,28 @@ namespace UnambitiousFx.Core.CodeGen.Design;
 /// <summary>
 ///     Builder for creating immutable MethodWriter instances with fluent API.
 /// </summary>
-public sealed class MethodWriterBuilder {
+public sealed class MethodWriterBuilder
+{
     private readonly List<AttributeReference> _attributes = new();
-    private readonly string                   _body;
-    private readonly List<GenericConstraint>  _genericConstraints = new();
-    private readonly List<GenericParameter>   _genericParameters  = new();
-    private readonly string                   _name;
-    private readonly List<MethodParameter>    _parameters = new();
-    private readonly string                   _returnType;
-    private readonly HashSet<string>          _usings = new();
-    private          DocumentationWriter?     _documentation;
-    private          bool                     _isExtensionMethod;
-    private          MethodModifier           _modifier   = MethodModifier.None;
-    private          Visibility               _visibility = Visibility.Public;
+    private readonly string _body;
+    private readonly List<GenericConstraint> _genericConstraints = new();
+    private readonly List<GenericParameter> _genericParameters = new();
+    private readonly string _name;
+    private readonly List<MethodParameter> _parameters = new();
+    private readonly string _returnType;
+    private readonly HashSet<string> _usings = new();
+    private DocumentationWriter? _documentation;
+    private bool _isExtensionMethod;
+    private MethodModifier _modifier = MethodModifier.None;
+    private Visibility _visibility = Visibility.Public;
 
     internal MethodWriterBuilder(string name,
                                  string returnType,
-                                 string body) {
-        _name       = name       ?? throw new ArgumentNullException(nameof(name));
+                                 string body)
+    {
+        _name = name ?? throw new ArgumentNullException(nameof(name));
         _returnType = returnType ?? throw new ArgumentNullException(nameof(returnType));
-        _body       = body       ?? throw new ArgumentNullException(nameof(body));
+        _body = body ?? throw new ArgumentNullException(nameof(body));
     }
 
     /// <summary>
@@ -30,7 +32,8 @@ public sealed class MethodWriterBuilder {
     /// </summary>
     /// <param name="visibility">The visibility level.</param>
     /// <returns>This builder instance for method chaining.</returns>
-    public MethodWriterBuilder WithVisibility(Visibility visibility) {
+    public MethodWriterBuilder WithVisibility(Visibility visibility)
+    {
         _visibility = visibility;
         return this;
     }
@@ -40,7 +43,8 @@ public sealed class MethodWriterBuilder {
     /// </summary>
     /// <param name="modifier">The method modifiers.</param>
     /// <returns>This builder instance for method chaining.</returns>
-    public MethodWriterBuilder WithModifier(MethodModifier modifier) {
+    public MethodWriterBuilder WithModifier(MethodModifier modifier)
+    {
         _modifier = modifier;
         return this;
     }
@@ -52,7 +56,8 @@ public sealed class MethodWriterBuilder {
     /// <param name="name">The parameter name.</param>
     /// <returns>This builder instance for method chaining.</returns>
     public MethodWriterBuilder WithParameter(string type,
-                                             string name) {
+                                             string name)
+    {
         _parameters.Add(new MethodParameter(type, name));
         return this;
     }
@@ -62,7 +67,8 @@ public sealed class MethodWriterBuilder {
     /// </summary>
     /// <param name="parameters">The parameters to add.</param>
     /// <returns>This builder instance for method chaining.</returns>
-    public MethodWriterBuilder WithParameters(params MethodParameter[] parameters) {
+    public MethodWriterBuilder WithParameters(params MethodParameter[] parameters)
+    {
         _parameters.AddRange(parameters);
         return this;
     }
@@ -73,8 +79,9 @@ public sealed class MethodWriterBuilder {
     /// <param name="name">The generic parameter name.</param>
     /// <param name="using">Optional using directive for the parameter.</param>
     /// <returns>This builder instance for method chaining.</returns>
-    public MethodWriterBuilder WithGenericParameter(string  name,
-                                                    string? @using = null) {
+    public MethodWriterBuilder WithGenericParameter(string name,
+                                                    string? @using = null)
+    {
         _genericParameters.Add(new GenericParameter(name, (IReadOnlyList<GenericConstraint>?)null, @using));
         return this;
     }
@@ -84,7 +91,8 @@ public sealed class MethodWriterBuilder {
     /// </summary>
     /// <param name="parameters">The generic parameters to add.</param>
     /// <returns>This builder instance for method chaining.</returns>
-    public MethodWriterBuilder WithGenericParameters(params GenericParameter[] parameters) {
+    public MethodWriterBuilder WithGenericParameters(params GenericParameter[] parameters)
+    {
         _genericParameters.AddRange(parameters);
         return this;
     }
@@ -94,7 +102,8 @@ public sealed class MethodWriterBuilder {
     /// </summary>
     /// <param name="constraint">The generic constraint to add.</param>
     /// <returns>This builder instance for method chaining.</returns>
-    public MethodWriterBuilder WithGenericConstraint(GenericConstraint constraint) {
+    public MethodWriterBuilder WithGenericConstraint(GenericConstraint constraint)
+    {
         _genericConstraints.Add(constraint);
         return this;
     }
@@ -106,16 +115,18 @@ public sealed class MethodWriterBuilder {
     /// <param name="constraint">The constraint string.</param>
     /// <returns>This builder instance for method chaining.</returns>
     public MethodWriterBuilder WithGenericConstraint(string parameterName,
-                                                     string constraint) {
+                                                     string constraint)
+    {
         // Parse the constraint and create appropriate GenericConstraint
-        var constraintType = constraint.Trim() switch {
-            "class"                                                          => GenericConstraintType.Class,
-            "struct"                                                         => GenericConstraintType.Struct,
-            "notnull"                                                        => GenericConstraintType.NotNull,
-            "unmanaged"                                                      => GenericConstraintType.Unmanaged,
-            "new()"                                                          => GenericConstraintType.New,
+        var constraintType = constraint.Trim() switch
+        {
+            "class" => GenericConstraintType.Class,
+            "struct" => GenericConstraintType.Struct,
+            "notnull" => GenericConstraintType.NotNull,
+            "unmanaged" => GenericConstraintType.Unmanaged,
+            "new()" => GenericConstraintType.New,
             _ when constraint.StartsWith("I") && char.IsUpper(constraint[1]) => GenericConstraintType.Interface,
-            _                                                                => GenericConstraintType.BaseClass
+            _ => GenericConstraintType.BaseClass
         };
 
         var typeName = constraintType == GenericConstraintType.Interface || constraintType == GenericConstraintType.BaseClass
@@ -131,7 +142,8 @@ public sealed class MethodWriterBuilder {
     /// </summary>
     /// <param name="constraints">The constraints to add.</param>
     /// <returns>This builder instance for method chaining.</returns>
-    public MethodWriterBuilder WithGenericConstraints(params GenericConstraint[] constraints) {
+    public MethodWriterBuilder WithGenericConstraints(params GenericConstraint[] constraints)
+    {
         _genericConstraints.AddRange(constraints);
         return this;
     }
@@ -141,7 +153,8 @@ public sealed class MethodWriterBuilder {
     /// </summary>
     /// <param name="attribute">The attribute to add.</param>
     /// <returns>This builder instance for method chaining.</returns>
-    public MethodWriterBuilder WithAttribute(AttributeReference attribute) {
+    public MethodWriterBuilder WithAttribute(AttributeReference attribute)
+    {
         _attributes.Add(attribute);
         return this;
     }
@@ -151,7 +164,8 @@ public sealed class MethodWriterBuilder {
     /// </summary>
     /// <param name="attributes">The attributes to add.</param>
     /// <returns>This builder instance for method chaining.</returns>
-    public MethodWriterBuilder WithAttributes(params AttributeReference[] attributes) {
+    public MethodWriterBuilder WithAttributes(params AttributeReference[] attributes)
+    {
         _attributes.AddRange(attributes);
         return this;
     }
@@ -161,7 +175,8 @@ public sealed class MethodWriterBuilder {
     /// </summary>
     /// <param name="documentation">The documentation writer.</param>
     /// <returns>This builder instance for method chaining.</returns>
-    public MethodWriterBuilder WithDocumentation(DocumentationWriter documentation) {
+    public MethodWriterBuilder WithDocumentation(DocumentationWriter documentation)
+    {
         _documentation = documentation;
         return this;
     }
@@ -171,7 +186,8 @@ public sealed class MethodWriterBuilder {
     /// </summary>
     /// <param name="using">The using directive to add.</param>
     /// <returns>This builder instance for method chaining.</returns>
-    public MethodWriterBuilder WithUsing(string @using) {
+    public MethodWriterBuilder WithUsing(string @using)
+    {
         _usings.Add(@using);
         return this;
     }
@@ -181,8 +197,10 @@ public sealed class MethodWriterBuilder {
     /// </summary>
     /// <param name="usings">The using directives to add.</param>
     /// <returns>This builder instance for method chaining.</returns>
-    public MethodWriterBuilder WithUsings(params string[] usings) {
-        foreach (var @using in usings) {
+    public MethodWriterBuilder WithUsings(params string[] usings)
+    {
+        foreach (var @using in usings)
+        {
             _usings.Add(@using);
         }
 
@@ -196,13 +214,15 @@ public sealed class MethodWriterBuilder {
     /// <param name="thisParameterName">The name of the 'this' parameter (defaults to 'source').</param>
     /// <returns>This builder instance for method chaining.</returns>
     public MethodWriterBuilder WithExtensionMethod(string thisParameterType,
-                                                   string thisParameterName = "source") {
-        _isExtensionMethod =  true;
-        _modifier          |= MethodModifier.Static;
+                                                   string thisParameterName = "source")
+    {
+        _isExtensionMethod = true;
+        _modifier |= MethodModifier.Static;
 
         // Insert the 'this' parameter at the beginning if not already present
-        if (_parameters.Count   == 0 ||
-            _parameters[0].Type != thisParameterType) {
+        if (_parameters.Count == 0 ||
+            _parameters[0].Type != thisParameterType)
+        {
             _parameters.Insert(0, new MethodParameter(thisParameterType, thisParameterName));
         }
 
@@ -214,16 +234,19 @@ public sealed class MethodWriterBuilder {
     /// </summary>
     /// <param name="isValueTask">Whether to use ValueTask instead of Task.</param>
     /// <returns>This builder instance for method chaining.</returns>
-    public MethodWriterBuilder WithAsyncModifier(bool isValueTask = false) {
+    public MethodWriterBuilder WithAsyncModifier(bool isValueTask = false)
+    {
         _modifier |= MethodModifier.Async;
 
         // Update return type if it's not already async
         if (!_returnType.StartsWith("Task") &&
-            !_returnType.StartsWith("ValueTask")) {
+            !_returnType.StartsWith("ValueTask"))
+        {
             var asyncReturnType = isValueTask
                                       ? "ValueTask"
                                       : "Task";
-            if (_returnType != "void") {
+            if (_returnType != "void")
+            {
                 asyncReturnType += $"<{_returnType}>";
             }
             // Note: We can't modify _returnType here as it's readonly, 
@@ -237,7 +260,8 @@ public sealed class MethodWriterBuilder {
     ///     Builds the immutable MethodWriter instance.
     /// </summary>
     /// <returns>A new MethodWriter instance.</returns>
-    public MethodWriter Build() {
+    public MethodWriter Build()
+    {
         return new MethodWriter(
             _name,
             _returnType,

@@ -6,15 +6,18 @@ using UnambitiousFx.Mediator.Abstractions;
 namespace Application.Application.Todos;
 
 [EventHandler<TodoDeleted>]
-public sealed class TodoDeletedHandler : IEventHandler<TodoDeleted> {
+public sealed class TodoDeletedHandler : IEventHandler<TodoDeleted>
+{
     private readonly ILogger<TodoDeletedHandler> _logger;
 
-    public TodoDeletedHandler(ILogger<TodoDeletedHandler> logger) {
+    public TodoDeletedHandler(ILogger<TodoDeletedHandler> logger)
+    {
         _logger = logger;
     }
 
-    public ValueTask<Result> HandleAsync(TodoDeleted       @event,
-                                         CancellationToken cancellationToken = default) {
+    public ValueTask<Result> HandleAsync(TodoDeleted @event,
+                                         CancellationToken cancellationToken = default)
+    {
         _logger.LogInformation("Todo deleted {TodoId}", @event.Todo.Id);
 
         return ValueTask.FromResult(Result.Success());

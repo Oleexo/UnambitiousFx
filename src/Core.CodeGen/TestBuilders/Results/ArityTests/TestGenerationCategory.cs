@@ -3,7 +3,8 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results.ArityTests;
 /// <summary>
 ///     Defines the categories of test generation for Result types.
 /// </summary>
-internal enum TestGenerationCategory {
+internal enum TestGenerationCategory
+{
     /// <summary>
     ///     Tests for Result direct methods (Match, IfSuccess, IfFailure, TryGet).
     /// </summary>

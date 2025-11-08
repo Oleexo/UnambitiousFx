@@ -6,9 +6,11 @@ using UnambitiousFx.Core.Results.Extensions.Collections;
 namespace UnambitiousFx.Core.Tests.Results.Extensions.Collections.Apply;
 
 [TestSubject(typeof(ResultExtensions))]
-public sealed class ResultExtensionsTests {
+public sealed class ResultExtensionsTests
+{
     [Fact]
-    public void Apply_FunctionAndArgSuccess_Applies() {
+    public void Apply_FunctionAndArgSuccess_Applies()
+    {
         var rf = Result.Success<Func<int, int>>(x => x * 2);
         var ra = Result.Success(21);
 
@@ -19,7 +21,8 @@ public sealed class ResultExtensionsTests {
     }
 
     [Fact]
-    public void Apply_FunctionFailure_PropagatesError() {
+    public void Apply_FunctionFailure_PropagatesError()
+    {
         var ex = new Exception("ferr");
         var rf = Result.Failure<Func<int, int>>(ex);
         var ra = Result.Success(1);
@@ -31,7 +34,8 @@ public sealed class ResultExtensionsTests {
     }
 
     [Fact]
-    public void Apply_ArgFailure_PropagatesError() {
+    public void Apply_ArgFailure_PropagatesError()
+    {
         var ex = new Exception("aerr");
         var rf = Result.Success<Func<int, int>>(x => x + 1);
         var ra = Result.Failure<int>(ex);

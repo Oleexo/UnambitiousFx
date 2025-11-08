@@ -10,7 +10,8 @@ namespace UnambitiousFx.Core.XUnit.Fluent;
 [DebuggerStepThrough]
 public readonly struct LeftAssertion<TLeft, TRight>
     where TLeft : notnull
-    where TRight : notnull {
+    where TRight : notnull
+{
     /// <summary>
     ///     Represents the left value of an Either type in the context of assertions.
     /// </summary>
@@ -24,7 +25,8 @@ public readonly struct LeftAssertion<TLeft, TRight>
     ///     Provides a fluent interface for assertions and transformations on a Left value
     ///     of an Either.
     /// </summary>
-    internal LeftAssertion(TLeft left) {
+    internal LeftAssertion(TLeft left)
+    {
         _left = left;
     }
 
@@ -43,7 +45,8 @@ public readonly struct LeftAssertion<TLeft, TRight>
     /// </summary>
     /// <param name="assert">An <see cref="Action{TLeft}" /> that specifies the assertion to be performed on the left value.</param>
     /// <returns>The current <see cref="LeftAssertion{TLeft,TRight}" /> instance to allow method chaining.</returns>
-    public LeftAssertion<TLeft, TRight> And(Action<TLeft> assert) {
+    public LeftAssertion<TLeft, TRight> And(Action<TLeft> assert)
+    {
         assert(_left);
         return this;
     }
@@ -55,7 +58,8 @@ public readonly struct LeftAssertion<TLeft, TRight>
     /// <param name="projector">The function to project the current Left value to a new type.</param>
     /// <returns>A new instance of <see cref="LeftAssertion{TOut,TRight}" /> with the projected Left value.</returns>
     public LeftAssertion<TOut, TRight> Map<TOut>(Func<TLeft, TOut> projector)
-        where TOut : notnull {
+        where TOut : notnull
+    {
         return new LeftAssertion<TOut, TRight>(projector(_left));
     }
 
@@ -63,7 +67,8 @@ public readonly struct LeftAssertion<TLeft, TRight>
     ///     Deconstructs the current instance into its <typeparamref name="TLeft" /> value.
     /// </summary>
     /// <param name="left">The deconstructed <typeparamref name="TLeft" /> value.</param>
-    public void Deconstruct(out TLeft left) {
+    public void Deconstruct(out TLeft left)
+    {
         left = _left;
     }
 }

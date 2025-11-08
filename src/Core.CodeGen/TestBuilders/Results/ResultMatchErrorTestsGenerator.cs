@@ -7,26 +7,30 @@ namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results;
 /// <summary>
 ///     Test generator for Result.MatchError extension methods (sync, Task, ValueTask).
 /// </summary>
-internal sealed class ResultMatchErrorTestsGenerator : ResultTestGeneratorBase {
-    private const int    StartArity          = 0; // Changed to 0 to support non-generic Result
-    private const string ClassName           = "ResultMatchErrorTests";
+internal sealed class ResultMatchErrorTestsGenerator : ResultTestGeneratorBase
+{
+    private const int StartArity = 0; // Changed to 0 to support non-generic Result
+    private const string ClassName = "ResultMatchErrorTests";
     private const string ExtensionsNamespace = "Results.Extensions.ErrorHandling";
 
-    public ResultMatchErrorTestsGenerator(string               baseNamespace,
+    public ResultMatchErrorTestsGenerator(string baseNamespace,
                                           FileOrganizationMode fileOrganization)
         : base(new GenerationConfig(baseNamespace,
                                     StartArity,
                                     ExtensionsNamespace,
                                     ClassName,
                                     fileOrganization,
-                                    true)) {
+                                    true))
+    {
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity) {
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort arity)
+    {
         return GenerateVariants(arity, ClassName, (GenerateSyncTests, false), (x => GenerateAsyncTests(x, "Task"), true), (x => GenerateAsyncTests(x, "ValueTask"), true));
     }
 
-    private ClassWriter GenerateSyncTests(ushort arity) {
+    private ClassWriter GenerateSyncTests(ushort arity)
+    {
         var cw = new ClassWriter($"ResultMatchErrorSyncTestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - Sync MatchError" };
         cw.AddMethod(new MethodWriter($"MatchError_Arity{arity}_Success_ShouldReturnDefault", "void", GenerateSyncSuccessBody(arity), attributes: [new FactAttributeReference()],
                                       usings: GetUsings()));
@@ -38,7 +42,8 @@ internal sealed class ResultMatchErrorTestsGenerator : ResultTestGeneratorBase {
     }
 
     private ClassWriter GenerateAsyncTests(ushort arity,
-                                           string asyncType) {
+                                           string asyncType)
+    {
         var cw = new ClassWriter($"ResultMatchError{asyncType}TestsArity{arity}", Visibility.Public) { Region = $"Arity {arity} - {asyncType} MatchError" };
         cw.AddMethod(new MethodWriter($"MatchError{asyncType}_Arity{arity}_Success_ShouldReturnDefault", "async Task", GenerateAsyncSuccessBody(arity, asyncType),
                                       attributes: [new FactAttributeReference()], usings: GetUsings()));
@@ -49,7 +54,8 @@ internal sealed class ResultMatchErrorTestsGenerator : ResultTestGeneratorBase {
         return cw;
     }
 
-    private string GenerateSyncSuccessBody(ushort arity) {
+    private string GenerateSyncSuccessBody(ushort arity)
+    {
         var given = arity == 0
                         ? new[] { GenerateResultCreation(arity) }
                         : new[] { GenerateTestValues(arity), GenerateResultCreation(arity) };
@@ -58,17 +64,19 @@ internal sealed class ResultMatchErrorTestsGenerator : ResultTestGeneratorBase {
         return BuildTestBody(given, when, then);
     }
 
-    private string GenerateSyncFailureBody(ushort arity) {
+    private string GenerateSyncFailureBody(ushort arity)
+    {
         var given = new[] { GenerateErrorTypeFailureResultCreation(arity) };
-        var when  = new[] { GenerateMatchErrorSyncCall(arity) };
-        var then  = new[] { "Assert.Equal(\"matched\", matchResult);" };
+        var when = new[] { GenerateMatchErrorSyncCall(arity) };
+        var then = new[] { "Assert.Equal(\"matched\", matchResult);" };
         return BuildTestBody(given, when, then);
     }
 
     private string GenerateAsyncSuccessBody(ushort arity,
-                                            string asyncType) {
+                                            string asyncType)
+    {
         var given = arity == 0
-                        ? new[] { GenerateAsyncSuccessResultCreation(arity,                            asyncType) }
+                        ? new[] { GenerateAsyncSuccessResultCreation(arity, asyncType) }
                         : new[] { GenerateTestValues(arity), GenerateAsyncSuccessResultCreation(arity, asyncType) };
         var when = new[] { GenerateMatchErrorAsyncCall(arity, asyncType) };
         var then = new[] { "Assert.Equal(\"default\", matchResult);" };
@@ -76,16 +84,19 @@ internal sealed class ResultMatchErrorTestsGenerator : ResultTestGeneratorBase {
     }
 
     private string GenerateAsyncFailureBody(ushort arity,
-                                            string asyncType) {
+                                            string asyncType)
+    {
         var given = new[] { GenerateAsyncFailureResultCreation(arity, asyncType) };
-        var when  = new[] { GenerateMatchErrorAsyncCall(arity, asyncType) };
-        var then  = new[] { "Assert.Equal(\"matched\", matchResult);" };
+        var when = new[] { GenerateMatchErrorAsyncCall(arity, asyncType) };
+        var then = new[] { "Assert.Equal(\"matched\", matchResult);" };
         return BuildTestBody(given, when, then);
     }
 
     private string GenerateMatchErrorAsyncCall(ushort arity,
-                                               string asyncType) {
-        if (arity == 0) {
+                                               string asyncType)
+    {
+        if (arity == 0)
+        {
             return $"var matchResult = await taskResult.MatchErrorAsync<ExceptionalError, string>(error => {asyncType}.FromResult(\"matched\"), () => {asyncType}.FromResult(\"default\"));";
         }
 
@@ -95,8 +106,10 @@ internal sealed class ResultMatchErrorTestsGenerator : ResultTestGeneratorBase {
         return $"var matchResult = await taskResult.MatchErrorAsync<{typeParams}>(error => {asyncType}.FromResult(\"matched\"), () => {asyncType}.FromResult(\"default\"));";
     }
 
-    private string GenerateMatchErrorSyncCall(ushort arity) {
-        if (arity == 0) {
+    private string GenerateMatchErrorSyncCall(ushort arity)
+    {
+        if (arity == 0)
+        {
             return "var matchResult = result.MatchError<Error, string>(error => \"matched\", () => \"default\");";
         }
 

@@ -4,22 +4,26 @@ using UnambitiousFx.Core.CodeGen.TestBuilders.AttributeReferences;
 
 namespace UnambitiousFx.Core.CodeGen.TestBuilders.Results;
 
-internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase {
-    private const int    StartArity          = 0;
-    private const string ClassName           = "ResultBindTests";
+internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase
+{
+    private const int StartArity = 0;
+    private const string ClassName = "ResultBindTests";
     private const string ExtensionsNamespace = "Results.Extensions.Transformations";
-    private const int    MaxOutputArity      = 8;
+    private const int MaxOutputArity = 8;
 
-    public ResultBindTestsGenerator(string               baseNamespace,
+    public ResultBindTestsGenerator(string baseNamespace,
                                     FileOrganizationMode fileOrganization)
-        : base(new GenerationConfig(baseNamespace, StartArity, ExtensionsNamespace, ClassName, fileOrganization, true)) {
+        : base(new GenerationConfig(baseNamespace, StartArity, ExtensionsNamespace, ClassName, fileOrganization, true))
+    {
     }
 
-    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort inputArity) {
+    protected override IReadOnlyCollection<ClassWriter> GenerateForArity(ushort inputArity)
+    {
         var results = new List<ClassWriter>();
 
         // Generate tests for all output arities (0 to MaxOutputArity) for this input arity
-        for (ushort outputArity = 0; outputArity <= MaxOutputArity; outputArity++) {
+        for (ushort outputArity = 0; outputArity <= MaxOutputArity; outputArity++)
+        {
             results.AddRange(
                 GenerateVariants(inputArity, ClassName,
                                  (ia => GenerateSyncTests(ia, outputArity), false),
@@ -36,29 +40,33 @@ internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase {
     ///     Generates the Result creation for the output of the Bind operation.
     ///     This creates Result.Success() or Result.Success(values...) based on output arity.
     /// </summary>
-    private string GenerateOutputResultCreation(ushort outputArity) {
-        if (outputArity == 0) {
+    private string GenerateOutputResultCreation(ushort outputArity)
+    {
+        if (outputArity == 0)
+        {
             return "Result.Success()";
         }
 
         // Create output values - use simple transformations
         var outputValues = string.Join(", ", Enumerable.Range(1, outputArity)
-                                                       .Select(i => {
-                                                            var type = GetTestType(i);
-                                                            return type switch {
-                                                                "int"    => $"{i * 100}",
-                                                                "string" => $"\"output{i}\"",
-                                                                "bool" => i % 2 == 0
-                                                                              ? "true"
-                                                                              : "false",
-                                                                "double"   => $"{i * 1.5}",
-                                                                "long"     => $"{i * 1000}L",
-                                                                "DateTime" => "DateTime.UtcNow.AddDays(1)",
-                                                                "Guid"     => "Guid.NewGuid()",
-                                                                "TimeSpan" => $"TimeSpan.FromMinutes({i * 10})",
-                                                                _          => $"\"output{i}\""
-                                                            };
-                                                        }));
+                                                       .Select(i =>
+                                                       {
+                                                           var type = GetTestType(i);
+                                                           return type switch
+                                                           {
+                                                               "int" => $"{i * 100}",
+                                                               "string" => $"\"output{i}\"",
+                                                               "bool" => i % 2 == 0
+                                                                             ? "true"
+                                                                             : "false",
+                                                               "double" => $"{i * 1.5}",
+                                                               "long" => $"{i * 1000}L",
+                                                               "DateTime" => "DateTime.UtcNow.AddDays(1)",
+                                                               "Guid" => "Guid.NewGuid()",
+                                                               "TimeSpan" => $"TimeSpan.FromMinutes({i * 10})",
+                                                               _ => $"\"output{i}\""
+                                                           };
+                                                       }));
 
         return $"Result.Success({outputValues})";
     }
@@ -68,8 +76,10 @@ internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase {
     #region Sync Tests
 
     private ClassWriter GenerateSyncTests(ushort inputArity,
-                                          ushort outputArity) {
-        var cw = new ClassWriter($"ResultBindSyncTestsInput{inputArity}Output{outputArity}", Visibility.Public) {
+                                          ushort outputArity)
+    {
+        var cw = new ClassWriter($"ResultBindSyncTestsInput{inputArity}Output{outputArity}", Visibility.Public)
+        {
             Region = $"Input {inputArity} → Output {outputArity} - Sync Bind"
         };
 
@@ -81,7 +91,8 @@ internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase {
     }
 
     private MethodWriter GenerateSyncSuccessTest(ushort inputArity,
-                                                 ushort outputArity) {
+                                                 ushort outputArity)
+    {
         return new MethodWriter(
             $"Bind_Input{inputArity}Output{outputArity}_Success_ShouldTransform",
             "void",
@@ -91,7 +102,8 @@ internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase {
     }
 
     private MethodWriter GenerateSyncFailureTest(ushort inputArity,
-                                                 ushort outputArity) {
+                                                 ushort outputArity)
+    {
         return new MethodWriter(
             $"Bind_Input{inputArity}Output{outputArity}_Failure_ShouldNotTransform",
             "void",
@@ -101,30 +113,34 @@ internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase {
     }
 
     private string GenerateSyncSuccessBody(ushort inputArity,
-                                           ushort outputArity) {
+                                           ushort outputArity)
+    {
         var givenLines = new List<string>();
 
-        if (inputArity > 0) {
+        if (inputArity > 0)
+        {
             givenLines.Add(GenerateTestValues(inputArity));
         }
 
         givenLines.Add(GenerateResultCreation(inputArity));
 
-        var call       = GenerateBindSyncCall(inputArity, outputArity);
+        var call = GenerateBindSyncCall(inputArity, outputArity);
         var assertions = new[] { "Assert.True(transformedResult.IsSuccess);" };
 
         return BuildTestBody(givenLines, [call], assertions);
     }
 
     private string GenerateSyncFailureBody(ushort inputArity,
-                                           ushort outputArity) {
+                                           ushort outputArity)
+    {
         var creation = GenerateFailureResultCreation(inputArity);
-        var call     = GenerateBindSyncCall(inputArity, outputArity);
+        var call = GenerateBindSyncCall(inputArity, outputArity);
         return BuildTestBody([creation], [call], ["Assert.False(transformedResult.IsSuccess);"]);
     }
 
     private string GenerateBindSyncCall(ushort inputArity,
-                                        ushort outputArity) {
+                                        ushort outputArity)
+    {
         // Generate the bind lambda parameters based on input arity
         var lambdaParams = inputArity == 0 ? "()" :
                            inputArity == 1 ? "x" :
@@ -145,8 +161,10 @@ internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase {
 
     private ClassWriter GenerateAsyncTests(ushort inputArity,
                                            ushort outputArity,
-                                           string asyncType) {
-        var cw = new ClassWriter($"ResultBind{asyncType}TestsInput{inputArity}Output{outputArity}", Visibility.Public) {
+                                           string asyncType)
+    {
+        var cw = new ClassWriter($"ResultBind{asyncType}TestsInput{inputArity}Output{outputArity}", Visibility.Public)
+        {
             Region = $"Input {inputArity} → Output {outputArity} - {asyncType} Bind"
         };
 
@@ -170,7 +188,8 @@ internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase {
     // Sync Result with async bind function
     private MethodWriter GenerateSyncResultAsyncBindSuccessTest(ushort inputArity,
                                                                 ushort outputArity,
-                                                                string asyncType) {
+                                                                string asyncType)
+    {
         return new MethodWriter(
             $"BindAsync{asyncType}_SyncResult_Input{inputArity}Output{outputArity}_Success_ShouldTransform",
             "async Task",
@@ -181,7 +200,8 @@ internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase {
 
     private MethodWriter GenerateSyncResultAsyncBindFailureTest(ushort inputArity,
                                                                 ushort outputArity,
-                                                                string asyncType) {
+                                                                string asyncType)
+    {
         return new MethodWriter(
             $"BindAsync{asyncType}_SyncResult_Input{inputArity}Output{outputArity}_Failure_ShouldNotTransform",
             "async Task",
@@ -192,16 +212,18 @@ internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase {
 
     private string GenerateSyncResultAsyncBindSuccessBody(ushort inputArity,
                                                           ushort outputArity,
-                                                          string asyncType) {
+                                                          string asyncType)
+    {
         var givenLines = new List<string>();
 
-        if (inputArity > 0) {
+        if (inputArity > 0)
+        {
             givenLines.Add(GenerateTestValues(inputArity));
         }
 
         givenLines.Add(GenerateResultCreation(inputArity));
 
-        var call       = GenerateSyncResultAsyncBindCall(inputArity, outputArity, asyncType);
+        var call = GenerateSyncResultAsyncBindCall(inputArity, outputArity, asyncType);
         var assertions = new[] { "Assert.True(transformedResult.IsSuccess);" };
 
         return BuildTestBody(givenLines, [call], assertions);
@@ -209,15 +231,17 @@ internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase {
 
     private string GenerateSyncResultAsyncBindFailureBody(ushort inputArity,
                                                           ushort outputArity,
-                                                          string asyncType) {
+                                                          string asyncType)
+    {
         var creation = GenerateFailureResultCreation(inputArity);
-        var call     = GenerateSyncResultAsyncBindCall(inputArity, outputArity, asyncType);
+        var call = GenerateSyncResultAsyncBindCall(inputArity, outputArity, asyncType);
         return BuildTestBody([creation], [call], ["Assert.False(transformedResult.IsSuccess);"]);
     }
 
     private string GenerateSyncResultAsyncBindCall(ushort inputArity,
                                                    ushort outputArity,
-                                                   string asyncType) {
+                                                   string asyncType)
+    {
         // Generate the bind lambda parameters based on input arity
         var lambdaParams = inputArity == 0 ? "()" :
                            inputArity == 1 ? "x" :
@@ -231,14 +255,15 @@ internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase {
 
         // Use Task.FromResult or ValueTask.FromResult depending on asyncType
         var fromResultMethod = asyncType == "Task" ? "Task.FromResult" : "ValueTask.FromResult";
-        
+
         return $"var transformedResult = await result.BindAsync({lambdaParams} => {fromResultMethod}({resultCreation}));";
     }
 
     // Async Task<Result> with sync bind function
     private MethodWriter GenerateAsyncResultSyncBindSuccessTest(ushort inputArity,
                                                                 ushort outputArity,
-                                                                string asyncType) {
+                                                                string asyncType)
+    {
         return new MethodWriter(
             $"BindAsync{asyncType}_AsyncResult_SyncBind_Input{inputArity}Output{outputArity}_Success_ShouldTransform",
             "async Task",
@@ -249,7 +274,8 @@ internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase {
 
     private MethodWriter GenerateAsyncResultSyncBindFailureTest(ushort inputArity,
                                                                 ushort outputArity,
-                                                                string asyncType) {
+                                                                string asyncType)
+    {
         return new MethodWriter(
             $"BindAsync{asyncType}_AsyncResult_SyncBind_Input{inputArity}Output{outputArity}_Failure_ShouldNotTransform",
             "async Task",
@@ -260,16 +286,18 @@ internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase {
 
     private string GenerateAsyncResultSyncBindSuccessBody(ushort inputArity,
                                                           ushort outputArity,
-                                                          string asyncType) {
+                                                          string asyncType)
+    {
         var givenLines = new List<string>();
 
-        if (inputArity > 0) {
+        if (inputArity > 0)
+        {
             givenLines.Add(GenerateTestValues(inputArity));
         }
 
         givenLines.Add(GenerateAsyncSuccessResultCreation(inputArity, asyncType, "taskResult"));
 
-        var call       = GenerateAsyncResultSyncBindCall(inputArity, outputArity);
+        var call = GenerateAsyncResultSyncBindCall(inputArity, outputArity);
         var assertions = new[] { "Assert.True(transformedResult.IsSuccess);" };
 
         return BuildTestBody(givenLines, [call], assertions);
@@ -277,14 +305,16 @@ internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase {
 
     private string GenerateAsyncResultSyncBindFailureBody(ushort inputArity,
                                                           ushort outputArity,
-                                                          string asyncType) {
+                                                          string asyncType)
+    {
         var creation = GenerateAsyncFailureResultCreation(inputArity, asyncType, "taskResult");
-        var call     = GenerateAsyncResultSyncBindCall(inputArity, outputArity);
+        var call = GenerateAsyncResultSyncBindCall(inputArity, outputArity);
         return BuildTestBody([creation], [call], ["Assert.False(transformedResult.IsSuccess);"]);
     }
 
     private string GenerateAsyncResultSyncBindCall(ushort inputArity,
-                                                   ushort outputArity) {
+                                                   ushort outputArity)
+    {
         // Generate the bind lambda parameters based on input arity
         var lambdaParams = inputArity == 0 ? "()" :
                            inputArity == 1 ? "x" :
@@ -303,7 +333,8 @@ internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase {
     // Async Task<Result> with async bind function
     private MethodWriter GenerateAsyncResultAsyncBindSuccessTest(ushort inputArity,
                                                                  ushort outputArity,
-                                                                 string asyncType) {
+                                                                 string asyncType)
+    {
         return new MethodWriter(
             $"BindAsync{asyncType}_AsyncResult_Input{inputArity}Output{outputArity}_Success_ShouldTransform",
             "async Task",
@@ -314,7 +345,8 @@ internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase {
 
     private MethodWriter GenerateAsyncResultAsyncBindFailureTest(ushort inputArity,
                                                                  ushort outputArity,
-                                                                 string asyncType) {
+                                                                 string asyncType)
+    {
         return new MethodWriter(
             $"BindAsync{asyncType}_AsyncResult_Input{inputArity}Output{outputArity}_Failure_ShouldNotTransform",
             "async Task",
@@ -325,16 +357,18 @@ internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase {
 
     private string GenerateAsyncResultAsyncBindSuccessBody(ushort inputArity,
                                                            ushort outputArity,
-                                                           string asyncType) {
+                                                           string asyncType)
+    {
         var givenLines = new List<string>();
 
-        if (inputArity > 0) {
+        if (inputArity > 0)
+        {
             givenLines.Add(GenerateTestValues(inputArity));
         }
 
         givenLines.Add(GenerateAsyncSuccessResultCreation(inputArity, asyncType, "taskResult"));
 
-        var call       = GenerateAsyncResultAsyncBindCall(inputArity, outputArity, asyncType);
+        var call = GenerateAsyncResultAsyncBindCall(inputArity, outputArity, asyncType);
         var assertions = new[] { "Assert.True(transformedResult.IsSuccess);" };
 
         return BuildTestBody(givenLines, [call], assertions);
@@ -342,15 +376,17 @@ internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase {
 
     private string GenerateAsyncResultAsyncBindFailureBody(ushort inputArity,
                                                            ushort outputArity,
-                                                           string asyncType) {
+                                                           string asyncType)
+    {
         var creation = GenerateAsyncFailureResultCreation(inputArity, asyncType, "taskResult");
-        var call     = GenerateAsyncResultAsyncBindCall(inputArity, outputArity, asyncType);
+        var call = GenerateAsyncResultAsyncBindCall(inputArity, outputArity, asyncType);
         return BuildTestBody([creation], [call], ["Assert.False(transformedResult.IsSuccess);"]);
     }
 
     private string GenerateAsyncResultAsyncBindCall(ushort inputArity,
                                                     ushort outputArity,
-                                                    string asyncType) {
+                                                    string asyncType)
+    {
         // Generate the bind lambda parameters based on input arity
         var lambdaParams = inputArity == 0 ? "()" :
                            inputArity == 1 ? "x" :
@@ -364,7 +400,7 @@ internal sealed class ResultBindTestsGenerator : ResultTestGeneratorBase {
 
         // Use Task.FromResult or ValueTask.FromResult depending on asyncType
         var fromResultMethod = asyncType == "Task" ? "Task.FromResult" : "ValueTask.FromResult";
-        
+
         return $"var transformedResult = await taskResult.BindAsync({lambdaParams} => {fromResultMethod}({resultCreation}));";
     }
 

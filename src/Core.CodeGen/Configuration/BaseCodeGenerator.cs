@@ -7,10 +7,12 @@ namespace UnambitiousFx.Core.CodeGen.Configuration;
 ///     Base class for code generators implementing the Template Method pattern.
 ///     Provides common structure and validation for all generators.
 /// </summary>
-internal abstract class BaseCodeGenerator : ICodeGenerator {
+internal abstract class BaseCodeGenerator : ICodeGenerator
+{
     protected readonly GenerationConfig Config;
 
-    protected BaseCodeGenerator(GenerationConfig config) {
+    protected BaseCodeGenerator(GenerationConfig config)
+    {
         Config = config ?? throw new ArgumentNullException(nameof(config));
     }
 
@@ -19,42 +21,53 @@ internal abstract class BaseCodeGenerator : ICodeGenerator {
     ///     Implements template method pattern with validation and directory setup.
     /// </summary>
     public void Generate(ushort numberOfArity,
-                         string outputPath) {
+                         string outputPath)
+    {
         ValidateInputs(numberOfArity, outputPath);
         var allClasses = new List<ClassWriter>();
-        for (var arity = (ushort)Config.StartArity; arity <= numberOfArity; arity++) {
+        for (var arity = (ushort)Config.StartArity; arity <= numberOfArity; arity++)
+        {
             var classes = GenerateForArity(arity);
-            foreach (var @class in classes) {
-                if (@class.Namespace is null) {
+            foreach (var @class in classes)
+            {
+                if (@class.Namespace is null)
+                {
                     @class.Namespace = $"{Config.BaseNamespace}.{Config.SubNamespace}";
                 }
 
-                if (@class.Region is null) {
+                if (@class.Region is null)
+                {
                     @class.Region = $"Arity {arity}";
                 }
             }
 
-            if (classes.Count == 0) {
+            if (classes.Count == 0)
+            {
                 continue;
             }
 
-            if (Config.FileOrganization == FileOrganizationMode.SingleFile) {
+            if (Config.FileOrganization == FileOrganizationMode.SingleFile)
+            {
                 allClasses.AddRange(classes);
             }
-            else {
+            else
+            {
                 WriteSeparatedFiles(classes, outputPath, arity);
             }
         }
 
-        if (Config.FileOrganization == FileOrganizationMode.SingleFile) {
+        if (Config.FileOrganization == FileOrganizationMode.SingleFile)
+        {
             WriteSingleFile(allClasses, outputPath);
         }
     }
 
     private void WriteSingleFile(IEnumerable<ClassWriter> classes,
-                                 string                   targetPath) {
-        foreach (var g in classes.GroupBy(x => x.Namespace ?? $"{Config.BaseNamespace}.{x.Name}")) {
-            var ns   = g.Key;
+                                 string targetPath)
+    {
+        foreach (var g in classes.GroupBy(x => x.Namespace ?? $"{Config.BaseNamespace}.{x.Name}"))
+        {
+            var ns = g.Key;
             var file = new FileWriter(ns);
             file.AddClass(ClassWriter.Merge(g.ToArray()));
             var filePath = GetPathFromNamespace(targetPath, ns, $"{Config.ClassName}.g.cs");
@@ -63,15 +76,18 @@ internal abstract class BaseCodeGenerator : ICodeGenerator {
     }
 
     private void WriteSeparatedFiles(IEnumerable<ClassWriter> classes,
-                                     string                   targetPath,
-                                     ushort                   arity) {
-        foreach (var g in classes.GroupBy(x => GetFileName(arity, x))) {
+                                     string targetPath,
+                                     ushort arity)
+    {
+        foreach (var g in classes.GroupBy(x => GetFileName(arity, x)))
+        {
             var fileName = g.Key;
             var ns = g.FirstOrDefault()
                      ?.Namespace ??
                      $"{Config.BaseNamespace}.{Config.ClassName}";
             var file = new FileWriter(ns);
-            foreach (var @class in g) {
+            foreach (var @class in g)
+            {
                 file.AddClass(@class);
             }
 
@@ -82,21 +98,26 @@ internal abstract class BaseCodeGenerator : ICodeGenerator {
 
     private string GetPathFromNamespace(string targetPath,
                                         string @namespace,
-                                        string filename) {
+                                        string filename)
+    {
         var sub = @namespace[(Config.BaseNamespace.Length + 1)..]
            .Replace('.', Path.DirectorySeparatorChar);
         return Path.Combine(targetPath, sub, filename);
     }
 
-    private string GetFileName(ushort      arity,
-                               ClassWriter @class) {
-        if (@class.UnderClass is not null) {
+    private string GetFileName(ushort arity,
+                               ClassWriter @class)
+    {
+        if (@class.UnderClass is not null)
+        {
             var className = @class.Name;
 
-            if (className.StartsWith(Config.ClassName)) {
+            if (className.StartsWith(Config.ClassName))
+            {
                 className = className[Config.ClassName.Length..];
             }
-            else if (className.EndsWith(Config.ClassName)) {
+            else if (className.EndsWith(Config.ClassName))
+            {
                 className = className[..^Config.ClassName.Length];
             }
 
@@ -114,13 +135,16 @@ internal abstract class BaseCodeGenerator : ICodeGenerator {
     ///     Validates generation inputs.
     /// </summary>
     protected virtual void ValidateInputs(ushort numberOfArity,
-                                          string outputPath) {
-        if (numberOfArity < Config.StartArity) {
+                                          string outputPath)
+    {
+        if (numberOfArity < Config.StartArity)
+        {
             throw new ArgumentOutOfRangeException(nameof(numberOfArity),
                                                   $"Arity must be >= {Config.StartArity}.");
         }
 
-        if (string.IsNullOrWhiteSpace(outputPath)) {
+        if (string.IsNullOrWhiteSpace(outputPath))
+        {
             throw new ArgumentException("Output path cannot be null or whitespace.", nameof(outputPath));
         }
     }
@@ -128,8 +152,10 @@ internal abstract class BaseCodeGenerator : ICodeGenerator {
     /// <summary>
     ///     Prepares the output directory structure.
     /// </summary>
-    protected virtual string PrepareOutputDirectory(string outputPath) {
-        if (string.IsNullOrEmpty(Config.SubNamespace)) {
+    protected virtual string PrepareOutputDirectory(string outputPath)
+    {
+        if (string.IsNullOrEmpty(Config.SubNamespace))
+        {
             return outputPath;
         }
 

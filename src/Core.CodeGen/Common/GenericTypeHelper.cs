@@ -5,7 +5,8 @@ namespace UnambitiousFx.Core.CodeGen.Common;
 /// <summary>
 ///     Provides utility methods for working with generic types in code generation.
 /// </summary>
-internal static class GenericTypeHelper {
+internal static class GenericTypeHelper
+{
     /// <summary>
     ///     Creates generic type parameters for a given arity.
     /// </summary>
@@ -13,9 +14,10 @@ internal static class GenericTypeHelper {
     /// <param name="prefix">Prefix for type parameter names (e.g., "T" or "TValue").</param>
     /// <param name="constraint">Generic constraint (e.g., "notnull" or empty string).</param>
     /// <returns>Array of GenericParameter objects.</returns>
-    public static GenericParameter[] CreateGenericParameters(int    arity,
-                                                             string prefix     = "T",
-                                                             string constraint = "") {
+    public static GenericParameter[] CreateGenericParameters(int arity,
+                                                             string prefix = "T",
+                                                             string constraint = "")
+    {
         return Enumerable.Range(1, arity)
                          .Select(i => new GenericParameter($"{prefix}{i}", constraint))
                          .ToArray();
@@ -28,9 +30,10 @@ internal static class GenericTypeHelper {
     /// <param name="prefix">Prefix for type parameter names (e.g., "T").</param>
     /// <param name="constraint">Generic constraint.</param>
     /// <returns>Array of GenericParameter objects with ordinal names.</returns>
-    public static GenericParameter[] CreateOrdinalGenericParameters(int    arity,
-                                                                    string prefix     = "T",
-                                                                    string constraint = "notnull") {
+    public static GenericParameter[] CreateOrdinalGenericParameters(int arity,
+                                                                    string prefix = "T",
+                                                                    string constraint = "notnull")
+    {
         return Enumerable.Range(1, arity)
                          .Select(i => new GenericParameter($"{prefix}{OrdinalHelper.GetOrdinalName(i)}", constraint))
                          .ToArray();
@@ -42,8 +45,9 @@ internal static class GenericTypeHelper {
     /// <param name="arity">Number of generic types.</param>
     /// <param name="prefix">Prefix for type names (e.g., "T" or "TValue").</param>
     /// <returns>Comma-separated generic type string (e.g., "T1, T2, T3").</returns>
-    public static string BuildGenericTypeString(int    arity,
-                                                string prefix = "T") {
+    public static string BuildGenericTypeString(int arity,
+                                                string prefix = "T")
+    {
         return string.Join(", ", Enumerable.Range(1, arity)
                                            .Select(n => $"{prefix}{n}"));
     }
@@ -54,9 +58,11 @@ internal static class GenericTypeHelper {
     /// <param name="arity">Number of types in the tuple.</param>
     /// <param name="prefix">Prefix for type names.</param>
     /// <returns>Tuple type string (e.g., "(T1, T2, T3)").</returns>
-    public static string BuildTupleTypeString(int    arity,
-                                              string prefix = "T") {
-        if (arity == 1) {
+    public static string BuildTupleTypeString(int arity,
+                                              string prefix = "T")
+    {
+        if (arity == 1)
+        {
             return $"{prefix}1";
         }
 
