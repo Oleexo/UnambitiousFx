@@ -55,4 +55,29 @@ public interface IDependencyInjectionBuilder {
     IDependencyInjectionBuilder RegisterEventHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TEventHandler, TEvent>()
         where TEventHandler : class, IEventHandler<TEvent>
         where TEvent : class, IEvent;
+
+    /// <summary>
+    ///     Registers a streaming request handler implementation for a specific streaming request and item type with the
+    ///     dependency injection system.
+    /// </summary>
+    /// <typeparam name="TStreamRequestHandler">
+    ///     The type of the streaming request handler to be registered, which must implement
+    ///     <see cref="IStreamRequestHandler{TRequest, TItem}" />.
+    /// </typeparam>
+    /// <typeparam name="TRequest">
+    ///     The type of the streaming request being handled, which must implement <see cref="IStreamRequest{TItem}" />.
+    /// </typeparam>
+    /// <typeparam name="TItem">
+    ///     The type of items yielded by the stream, ensuring it is not null.
+    /// </typeparam>
+    /// <remarks>
+    ///     This method is used to register a streaming request handler that processes a specific request and returns an
+    ///     asynchronous stream of items. This enables efficient handling of large datasets without loading everything into
+    ///     memory.
+    /// </remarks>
+    IDependencyInjectionBuilder RegisterStreamRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TStreamRequestHandler, TRequest,
+                                                             TItem>()
+        where TStreamRequestHandler : class, IStreamRequestHandler<TRequest, TItem>
+        where TItem : notnull
+        where TRequest : IStreamRequest<TItem>;
 }

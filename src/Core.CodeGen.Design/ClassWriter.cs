@@ -1,5 +1,4 @@
 using System.CodeDom.Compiler;
-using System.Diagnostics;
 
 namespace UnambitiousFx.Core.CodeGen.Design;
 
@@ -17,9 +16,9 @@ public sealed class ClassWriter : IConcreteTypeWriter {
     private readonly List<TypeDefinitionReference> _interfaces;
     private readonly List<IMethodWriter>           _methods;
     private readonly List<PropertyWriter>          _properties;
-    private readonly HashSet<string>               _usings;
 
     private readonly List<RegionGroup> _regions;
+    private readonly HashSet<string>   _usings;
 
     // Private fields for storing class metadata and components
     private readonly Visibility _visibility;
@@ -429,12 +428,21 @@ public sealed class ClassWriter : IConcreteTypeWriter {
             foreach (var @using in g.SelectMany(x => x._usings)) {
                 result._usings.Add(@using);
             }
+
             foreach (var method in g.SelectMany(x => x.Methods)) {
                 result.AddMethod(method, g.Key);
             }
         }
 
         return result;
+    }
+
+    /// <summary>
+    ///     Adds a using directive to the class.
+    /// </summary>
+    /// <param name="using">The using directive to add.</param>
+    public void AddUsing(string @using) {
+        _usings.Add(@using);
     }
 
     /// <summary>
@@ -465,13 +473,5 @@ public sealed class ClassWriter : IConcreteTypeWriter {
         ///     Gets the methods in the region.
         /// </summary>
         public List<IMethodWriter> Methods { get; } = [];
-    }
-
-    /// <summary>
-    ///     Adds a using directive to the class.
-    /// </summary>
-    /// <param name="using">The using directive to add.</param>
-    public void AddUsing(string @using) {
-        _usings.Add(@using);
     }
 }

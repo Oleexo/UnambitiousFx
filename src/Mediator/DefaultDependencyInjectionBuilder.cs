@@ -33,6 +33,16 @@ internal sealed class DefaultDependencyInjectionBuilder : IDependencyInjectionBu
         return this;
     }
 
+    public IDependencyInjectionBuilder RegisterStreamRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TStreamRequestHandler,
+                                                                    TRequest, TItem>()
+        where TStreamRequestHandler : class, IStreamRequestHandler<TRequest, TItem>
+        where TItem : notnull
+        where TRequest : IStreamRequest<TItem> {
+        _actions.Add((services,
+                      lifetime) => services.RegisterStreamRequestHandler<TStreamRequestHandler, TRequest, TItem>(lifetime));
+        return this;
+    }
+
     public void Apply(IServiceCollection services,
                       ServiceLifetime    lifetime) {
         foreach (var action in _actions) {

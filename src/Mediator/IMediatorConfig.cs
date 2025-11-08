@@ -270,6 +270,10 @@ public interface IMediatorConfig {
     /// <returns>The current config instance.</returns>
     IMediatorConfig EnableCqrsBoundaryEnforcement(bool enable = true);
 
+    IMediatorConfig AddValidator<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TValidator, TRequest>()
+        where TValidator : class, IRequestValidator<TRequest>
+        where TRequest : IRequest;
+
     /// <summary>
     ///     Applies the current configuration to set up the mediator with the provided services and options.
     ///     This method finalizes the configuration by ensuring that all registered components such as

@@ -29,6 +29,9 @@ internal static class RegisterGroupFactory {
                 case HandlerType.EventHandler:
                     RegisterEventHandler(sb, detail.Value);
                     break;
+                case HandlerType.StreamRequestHandler:
+                    RegisterStreamRequestHandler(sb, detail.Value);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -52,6 +55,15 @@ internal static class RegisterGroupFactory {
         else {
             sb.AppendLine(
                 $"        builder.RegisterRequestHandler<{GlobalizeType(detail.FullHandlerTypeName)}, {GlobalizeType(detail.FullTargetTypeName)}, {GlobalizeType(detail.FullResponseType)}>();");
+        }
+    }
+
+    private static void RegisterStreamRequestHandler(StringBuilder sb,
+                                                     HandlerDetail detail) {
+        // Streaming handlers always have a response type (the item type)
+        if (detail.FullResponseType is not null) {
+            sb.AppendLine(
+                $"        builder.RegisterStreamRequestHandler<{GlobalizeType(detail.FullHandlerTypeName)}, {GlobalizeType(detail.FullTargetTypeName)}, {GlobalizeType(detail.FullResponseType)}>();");
         }
     }
 

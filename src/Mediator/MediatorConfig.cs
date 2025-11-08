@@ -160,6 +160,14 @@ internal sealed class MediatorConfig : IMediatorConfig {
         return RegisterRequestPipelineBehavior<CqrsBoundaryEnforcementBehavior>();
     }
 
+    public IMediatorConfig AddValidator<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TValidator, TRequest>()
+        where TValidator : class, IRequestValidator<TRequest>
+        where TRequest : IRequest {
+        _actions.Add((services,
+                      _) => services.AddScoped<IRequestValidator<TRequest>, TValidator>());
+        return this;
+    }
+
     public void Apply() {
         _builder.Apply(_services, _lifetime);
 

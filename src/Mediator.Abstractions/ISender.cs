@@ -36,4 +36,27 @@ public interface ISender {
     ValueTask<Result> SendAsync<TRequest>(TRequest          request,
                                           CancellationToken cancellationToken = default)
         where TRequest : IRequest;
+
+    /// Sends a streaming request and returns an async enumerable of results.
+    /// <typeparam name="TRequest">
+    ///     The type of the streaming request message. Must implement <see cref="IStreamRequest{TItem}" />.
+    /// </typeparam>
+    /// <typeparam name="TItem">
+    ///     The type of items in the stream. The item type must be a non-nullable type.
+    /// </typeparam>
+    /// <param name="request">
+    ///     The streaming request object to be sent. This parameter cannot be null.
+    /// </param>
+    /// <param name="cancellationToken">
+    ///     A cancellation token that can be used to cancel the streaming operation.
+    ///     Defaults to <see cref="CancellationToken.None" />.
+    /// </param>
+    /// <returns>
+    ///     An asynchronous enumerable sequence of <see cref="Result{TValue}" /> objects,
+    ///     where each result holds an item of type <typeparamref name="TItem" /> or an error.
+    /// </returns>
+    IAsyncEnumerable<Result<TItem>> SendStreamAsync<TRequest, TItem>(TRequest          request,
+                                                                     CancellationToken cancellationToken = default)
+        where TRequest : IStreamRequest<TItem>
+        where TItem : notnull;
 }

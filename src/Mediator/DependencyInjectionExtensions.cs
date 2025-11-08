@@ -140,4 +140,23 @@ public static class DependencyInjectionExtensions {
                                            lifetime));
         return services;
     }
+
+    internal static IServiceCollection RegisterStreamRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest, TItem>(
+        this IServiceCollection services,
+        ServiceLifetime         lifetime = ServiceLifetime.Scoped)
+        where TItem : notnull
+        where TRequest : IStreamRequest<TItem>
+        where THandler : class, IStreamRequestHandler<TRequest, TItem> {
+        services.Add(new ServiceDescriptor(typeof(THandler),                               typeof(THandler),                                             lifetime));
+        services.Add(new ServiceDescriptor(typeof(IStreamRequestHandler<TRequest, TItem>), typeof(ProxyStreamRequestHandler<THandler, TRequest, TItem>), lifetime));
+        return services;
+    }
+
+    internal static IServiceCollection RegisterStreamRequestPipelineBehavior<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TStreamPipelineBehavior>(this IServiceCollection services,
+                                                                                                                 ServiceLifetime         lifetime = ServiceLifetime.Scoped)
+        where TStreamPipelineBehavior : class, IStreamRequestPipelineBehavior {
+        services.Add(new ServiceDescriptor(typeof(IStreamRequestPipelineBehavior), typeof(TStreamPipelineBehavior), lifetime));
+        return services;
+    }
 }

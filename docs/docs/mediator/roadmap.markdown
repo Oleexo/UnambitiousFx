@@ -31,8 +31,8 @@ high-signal planning items and provides visibility into the evolution of the med
 |------------------------------|--------|----------------------------------------------------------------------------------------|
 | Request/response with Result | ✅      | Functional error handling                                                              |
 | Request without response     | ✅      | Command pattern support                                                                |
-| Streaming requests           | ⭐      | IAsyncEnumerable support for large datasets                                            |
-| Request validation behavior  | ⭐      | Built-in validation pipeline behavior                                                  |
+| Streaming requests           | ✅      | IAsyncEnumerable support for large datasets                                            |
+| Request validation behavior  | ✅      | Built-in validation pipeline behavior                                                  |
 | CQRS boundary enforcement    | ✅      | Prevent queries in command, commands in query, commands in command or queries in query |
 | Request caching behavior     | 📋     | Automatic response caching with invalidation                                           |
 | Request deduplication        | 📋     | Prevent duplicate request processing                                                   |
@@ -85,7 +85,7 @@ high-signal planning items and provides visibility into the evolution of the med
 | ValueTask usage            | ✅      | Reduce allocations for synchronous completions |
 | Handler result caching     | 🤔     | Cache expensive request results                |
 | Request batching           | 🤔     | Group similar requests for efficiency          |
-| Streaming support          | ⭐      | Handle large datasets with IAsyncEnumerable    |
+| Streaming support          | ✅      | Handle large datasets with IAsyncEnumerable    |
 | Memory pooling             | 🤔     | Reuse buffers for event/request processing     |
 | Parallel event dispatching | ✅      | Concurrent orchestrator                        |
 | Rate limiting behavior     | 🤔     | Throttle request/event processing              |

@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 using UnambitiousFx.Mediator.Resolvers;
@@ -25,5 +26,15 @@ internal sealed class Sender : ISender {
         var handler = _resolver.GetRequiredService<IRequestHandler<TRequest>>();
         var result  = handler.HandleAsync(request, cancellationToken);
         return result;
+    }
+
+    public async IAsyncEnumerable<Result<TItem>> SendStreamAsync<TRequest, TItem>(TRequest                                   request,
+                                                                                  [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        where TRequest : IStreamRequest<TItem>
+        where TItem : notnull {
+        var handler = _resolver.GetRequiredService<IStreamRequestHandler<TRequest, TItem>>();
+        await foreach (var item in handler.HandleAsync(request, cancellationToken)) {
+            yield return item;
+        }
     }
 }

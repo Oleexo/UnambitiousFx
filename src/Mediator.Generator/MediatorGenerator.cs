@@ -15,14 +15,17 @@ namespace UnambitiousFx.Mediator.Generator;
 /// </remarks>
 [Generator]
 public class MediatorGenerator : IIncrementalGenerator {
-    private const string BaseNamespace                    = "UnambitiousFx.Mediator";
-    private const string AbstractionsNamespace            = $"{BaseNamespace}.Abstractions";
-    private const string ShortRequestHandlerAttributeName = "RequestHandler";
-    private const string ShortEventHandlerAttributeName   = "EventHandler";
-    private const string LongRequestHandlerAttributeName  = $"{ShortRequestHandlerAttributeName}Attribute";
-    private const string LongEventHandlerAttributeName    = $"{ShortEventHandlerAttributeName}Attribute";
-    private const string FullRequestHandlerAttributeName  = $"{AbstractionsNamespace}.{LongRequestHandlerAttributeName}";
-    private const string FullEventHandlerAttributeName    = $"{AbstractionsNamespace}.{LongEventHandlerAttributeName}";
+    private const string BaseNamespace                          = "UnambitiousFx.Mediator";
+    private const string AbstractionsNamespace                  = $"{BaseNamespace}.Abstractions";
+    private const string ShortRequestHandlerAttributeName       = "RequestHandler";
+    private const string ShortEventHandlerAttributeName         = "EventHandler";
+    private const string ShortRequestStreamHandlerAttributeName = "StreamRequestHandler";
+    private const string LongRequestHandlerAttributeName        = $"{ShortRequestHandlerAttributeName}Attribute";
+    private const string LongEventHandlerAttributeName          = $"{ShortEventHandlerAttributeName}Attribute";
+    private const string LongRequestStreamHandlerAttributeName  = $"{ShortRequestStreamHandlerAttributeName}Attribute";
+    private const string FullRequestHandlerAttributeName        = $"{AbstractionsNamespace}.{LongRequestHandlerAttributeName}";
+    private const string FullEventHandlerAttributeName          = $"{AbstractionsNamespace}.{LongEventHandlerAttributeName}";
+    private const string FullRequestStreamHandlerAttributeName  = $"{AbstractionsNamespace}.{LongRequestStreamHandlerAttributeName}";
 
     /// <summary>
     ///     Initializes the MediatorGenerator by registering post-initialization output with the provided
@@ -68,11 +71,23 @@ public class MediatorGenerator : IIncrementalGenerator {
                                                                                       static (ctx,
                                                                                               _) => GetEventHandlerDetail(ctx));
 
+        var streamRequestDetails = context.SyntaxProvider.ForAttributeWithMetadataName($"{FullRequestStreamHandlerAttributeName}`2", static (node,
+                                                                                           _) => {
+                                                                                           var isClass = node is ClassDeclarationSyntax;
+
+                                                                                           return isClass;
+                                                                                       },
+                                                                                       static (ctx,
+                                                                                               _) => GetStreamRequestHandlerDetail(ctx));
+
         var allHandlerDetails = requestHandlerWithResponseDetails.Collect()
                                                                  .Combine(requestHandlerWithoutResponseDetails.Collect())
                                                                  .Select(static (tuple,
                                                                                  _) => tuple.Left.AddRange(tuple.Right))
                                                                  .Combine(eventHandlerDetails.Collect())
+                                                                 .Select(static (tuple,
+                                                                                 _) => tuple.Left.AddRange(tuple.Right))
+                                                                 .Combine(streamRequestDetails.Collect())
                                                                  .Select(static (tuple,
                                                                                  _) => tuple.Left.AddRange(tuple.Right));
 
@@ -147,6 +162,29 @@ public class MediatorGenerator : IIncrementalGenerator {
         });
     }
 
+    private static HandlerDetail? GetStreamRequestHandlerDetail(GeneratorAttributeSyntaxContext ctx) {
+        foreach (var attribute in ctx.Attributes) {
+            if (!(attribute.AttributeClass?.Name is LongRequestStreamHandlerAttributeName or ShortRequestStreamHandlerAttributeName)) {
+                // wrong attribute
+                continue;
+            }
+
+            if (ctx.TargetNode is not ClassDeclarationSyntax classDeclaration) {
+                // not a class
+                continue;
+            }
+
+            var className  = classDeclaration.Identifier.ValueText;
+            var @namespace = classDeclaration.GetNamespace();
+            var (requestType, responseType) = GetRequestInfo(attribute);
+            var location    = classDeclaration.GetLocation();
+            var handlerType = HandlerType.StreamRequestHandler;
+            return new HandlerDetail(handlerType, className, @namespace, requestType, responseType, location);
+        }
+
+        return null;
+    }
+
     private static HandlerDetail? GetRequestHandlerDetail(GeneratorAttributeSyntaxContext ctx) {
         foreach (var attribute in ctx.Attributes) {
             if (!(attribute.AttributeClass?.Name is LongRequestHandlerAttributeName or ShortRequestHandlerAttributeName)) {
@@ -163,8 +201,10 @@ public class MediatorGenerator : IIncrementalGenerator {
             var @namespace = classDeclaration.GetNamespace();
             var (requestType, responseType) = GetRequestInfo(attribute);
 
-            var location = classDeclaration.GetLocation();
-            return new HandlerDetail(HandlerType.RequestHandler, className, @namespace, requestType, responseType, location);
+
+            var location    = classDeclaration.GetLocation();
+            var handlerType = HandlerType.RequestHandler;
+            return new HandlerDetail(handlerType, className, @namespace, requestType, responseType, location);
         }
 
         return null;

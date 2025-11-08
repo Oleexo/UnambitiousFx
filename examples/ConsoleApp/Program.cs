@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using UnambitiousFx.Examples.ConsoleApp.Commands;
 using UnambitiousFx.Examples.ConsoleApp.Events;
+using UnambitiousFx.Examples.ConsoleApp.Pipelines;
 using UnambitiousFx.Examples.ConsoleApp.Queries;
 using UnambitiousFx.Mediator;
 using UnambitiousFx.Mediator.Abstractions;
@@ -15,6 +16,7 @@ var services = new ServiceCollection()
                    builder.SetMinimumLevel(LogLevel.Information);
                })
               .AddMediator(cfg => cfg.AddRegisterGroup(new RegisterGroup()))
+              .AddScoped<IStreamRequestPipelineBehavior, StreamLoggingBehavior>()
               .BuildServiceProvider();
 
 var sender    = services.GetRequiredService<ISender>();
@@ -26,6 +28,7 @@ Console.WriteLine("=== Mediator Profiling Console App ===\n");
 await RunSimpleCommandScenario(sender);
 await RunCommandWithResponseScenario(sender);
 await RunQueryScenario(sender);
+await RunStreamingQueryScenario(sender);
 await RunEventPublishingScenario(publisher);
 await RunMultipleEventHandlersScenario(publisher);
 await RunHighVolumeEventScenario(publisher);
@@ -97,6 +100,36 @@ async Task RunQueryScenario(ISender senderService) {
     Console.WriteLine($"Completed 100 queries in {stopwatch.ElapsedMilliseconds}ms");
     Console.WriteLine($"Average: {stopwatch.ElapsedMilliseconds / 100.0}ms per query");
 }
+
+// Scenario 3.5: Streaming Query
+async Task RunStreamingQueryScenario(ISender senderService) {
+    Console.WriteLine("\n--- Scenario 3.5: Streaming Query ---");
+    var stopwatch = Stopwatch.StartNew();
+
+    var streamQuery = new GetOrdersStreamQuery {
+        PageSize    = 50,
+        TotalOrders = 500
+    };
+    var orderCount = 0;
+
+    await foreach (var result in senderService.SendStreamAsync<GetOrdersStreamQuery, OrderDto>(streamQuery)) {
+        if (result.IsSuccess) {
+            orderCount++;
+        }
+        else {
+            var errorMsg = result.Errors.FirstOrDefault()
+                                ?.Message ??
+                           "Unknown error";
+            Console.WriteLine($"Error receiving order: {errorMsg}");
+        }
+    }
+
+    stopwatch.Stop();
+    Console.WriteLine($"Streamed {orderCount} orders in {stopwatch.ElapsedMilliseconds}ms");
+    Console.WriteLine($"Average: {stopwatch.ElapsedMilliseconds / (double)orderCount}ms per order");
+    Console.WriteLine($"Throughput: {orderCount                 / (stopwatch.ElapsedMilliseconds / 1000.0):F2} orders/second");
+}
+
 
 // Scenario 4: Event Publishing
 async Task RunEventPublishingScenario(IPublisher publisherService) {
