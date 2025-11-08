@@ -2,7 +2,7 @@ using Microsoft.Extensions.Logging;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 
-namespace UnambitiousFx.Examples.ConsoleApp;
+namespace UnambitiousFx.Examples.ConsoleApp.Pipelines;
 
 public class ValidationPipelineBehavior : IRequestPipelineBehavior
 {
