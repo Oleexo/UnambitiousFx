@@ -60,12 +60,12 @@ internal sealed class ArityTestGenerationConfig
     /// <summary>
     ///     Gets a value indicating whether async tests should be generated.
     /// </summary>
-    public bool GenerateAsyncTests { get; init; } = true;
+    public bool GenerateAsyncTests { get; init; }
 
     /// <summary>
     ///     Gets a value indicating whether error handling tests should be generated.
     /// </summary>
-    public bool GenerateErrorHandlingTests { get; init; } = true;
+    public bool GenerateErrorHandlingTests { get; init; }
 
     /// <summary>
     ///     Gets the naming pattern for generated tests.
@@ -80,7 +80,7 @@ internal sealed class ArityTestGenerationConfig
     /// <summary>
     ///     Gets the test generation mode.
     /// </summary>
-    public TestGenerationMode Mode { get; init; } = TestGenerationMode.Comprehensive;
+    public TestGenerationMode Mode { get; init; }
 
     private static IEnumerable<TestScenarioCategory> GetDefaultEnabledScenarios()
     {

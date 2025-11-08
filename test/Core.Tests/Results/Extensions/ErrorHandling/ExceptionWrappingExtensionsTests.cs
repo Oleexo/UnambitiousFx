@@ -29,7 +29,7 @@ public sealed class ExceptionWrappingExtensionsTests
     [Fact]
     public void AsError_Alias_Works()
     {
-        var ex = new ArgumentNullException("param");
+        var ex = new ArgumentNullException();
         var error = ex.AsError();
         Assert.Equal("EXCEPTION", error.Code);
     }

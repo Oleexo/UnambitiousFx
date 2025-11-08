@@ -38,35 +38,30 @@ public class MediatorVsMediatRBenchmarks
     private IServiceProvider _ourBaseSp = default!;
 
     private OurPublisher _ourPublisherBase = default!;
-    private OurSender _ourSender1Beh = default!;
-    private OurSender _ourSender3Beh = default!;
 
     private OurSender _ourSenderBase = default!;
 
     [GlobalSetup]
     public void GlobalSetup()
     {
-        _ourBaseSp = BuildOurSp(0, 5);
-        _our1BehSp = BuildOurSp(1, 5);
-        _our3BehSp = BuildOurSp(3, 5);
+        _ourBaseSp = BuildOurSp(0);
+        _our1BehSp = BuildOurSp(1);
+        _our3BehSp = BuildOurSp(3);
 
         _ourSenderBase = _ourBaseSp.GetRequiredService<OurSender>();
-        _ourSender1Beh = _our1BehSp.GetRequiredService<OurSender>();
-        _ourSender3Beh = _our3BehSp.GetRequiredService<OurSender>();
 
         _ourPublisherBase = _ourBaseSp.GetRequiredService<OurPublisher>();
 
-        _mrBaseSp = BuildMediatRSp(0, 5);
-        _mr1BehSp = BuildMediatRSp(1, 5);
-        _mr3BehSp = BuildMediatRSp(3, 5);
+        _mrBaseSp = BuildMediatRSp(0);
+        _mr1BehSp = BuildMediatRSp(1);
+        _mr3BehSp = BuildMediatRSp(3);
 
         _mrMediatorBase = _mrBaseSp.GetRequiredService<IMediator>();
         _mrMediator1Beh = _mr1BehSp.GetRequiredService<IMediator>();
         _mrMediator3Beh = _mr3BehSp.GetRequiredService<IMediator>();
     }
 
-    private static IServiceProvider BuildOurSp(int behaviors,
-                                               int handlersCountForEvent)
+    private static IServiceProvider BuildOurSp(int behaviors)
     {
         var services = new ServiceCollection();
         services.AddMediator(cfg =>
@@ -100,8 +95,7 @@ public class MediatorVsMediatRBenchmarks
         return services.BuildServiceProvider();
     }
 
-    private static IServiceProvider BuildMediatRSp(int behaviors,
-                                                   int handlersCountForEvent)
+    private static IServiceProvider BuildMediatRSp(int behaviors)
     {
         var services = new ServiceCollection();
         // MediatR v13 performs a license check that resolves ILoggerFactory; register minimal no-op logging to satisfy DI

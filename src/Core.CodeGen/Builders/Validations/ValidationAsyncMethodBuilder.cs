@@ -8,12 +8,7 @@ namespace UnambitiousFx.Core.CodeGen.Builders.Validations;
 /// </summary>
 internal sealed class ValidationAsyncMethodBuilder
 {
-    private readonly string _baseNamespace;
 
-    public ValidationAsyncMethodBuilder(string baseNamespace)
-    {
-        _baseNamespace = baseNamespace ?? throw new ArgumentNullException(nameof(baseNamespace));
-    }
 
     #region EnsureNotNull Async
 

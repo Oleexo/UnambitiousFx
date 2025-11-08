@@ -44,7 +44,7 @@ public sealed class ResultEnsureNotNullTests
         var user = new User { Name = "Jane" };
         var awaitable = ValueTask.FromResult(Result.Success(user));
 
-        var r = await awaitable.EnsureNotNullAsync(u => u.Name, "is required");
+        var r = await awaitable.EnsureNotNullAsync(us => us.Name, "is required");
 
         Assert.True(r.IsSuccess);
         Assert.True(r.TryGet(out var u));

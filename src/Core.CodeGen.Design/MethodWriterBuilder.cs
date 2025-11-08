@@ -230,33 +230,6 @@ public sealed class MethodWriterBuilder
     }
 
     /// <summary>
-    ///     Marks the method as async and updates the return type if needed.
-    /// </summary>
-    /// <param name="isValueTask">Whether to use ValueTask instead of Task.</param>
-    /// <returns>This builder instance for method chaining.</returns>
-    public MethodWriterBuilder WithAsyncModifier(bool isValueTask = false)
-    {
-        _modifier |= MethodModifier.Async;
-
-        // Update return type if it's not already async
-        if (!_returnType.StartsWith("Task") &&
-            !_returnType.StartsWith("ValueTask"))
-        {
-            var asyncReturnType = isValueTask
-                                      ? "ValueTask"
-                                      : "Task";
-            if (_returnType != "void")
-            {
-                asyncReturnType += $"<{_returnType}>";
-            }
-            // Note: We can't modify _returnType here as it's readonly, 
-            // this would need to be handled in the Build method or constructor
-        }
-
-        return this;
-    }
-
-    /// <summary>
     ///     Builds the immutable MethodWriter instance.
     /// </summary>
     /// <returns>A new MethodWriter instance.</returns>

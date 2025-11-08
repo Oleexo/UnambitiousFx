@@ -8,12 +8,7 @@ namespace UnambitiousFx.Core.CodeGen.Builders.ValueAccess;
 /// </summary>
 internal sealed class ToNullableMethodBuilder
 {
-    private readonly string _baseNamespace;
-
-    public ToNullableMethodBuilder(string baseNamespace)
-    {
-        _baseNamespace = baseNamespace ?? throw new ArgumentNullException(nameof(baseNamespace));
-    }
+  
 
     /// <summary>
     ///     Builds a standalone ToNullable method for a specific arity.

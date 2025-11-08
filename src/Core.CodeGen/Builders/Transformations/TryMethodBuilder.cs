@@ -8,13 +8,6 @@ namespace UnambitiousFx.Core.CodeGen.Builders.Transformations;
 /// </summary>
 internal sealed class TryMethodBuilder
 {
-    private readonly string _baseNamespace;
-
-    public TryMethodBuilder(string baseNamespace)
-    {
-        _baseNamespace = baseNamespace ?? throw new ArgumentNullException(nameof(baseNamespace));
-    }
-
     /// <summary>
     ///     Builds a standalone Try method for a specific arity.
     /// </summary>

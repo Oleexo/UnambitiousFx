@@ -8,12 +8,7 @@ namespace UnambitiousFx.Core.CodeGen.Builders.ValueAccess;
 /// </summary>
 internal sealed class ValueOrMethodBuilder
 {
-    private readonly string _baseNamespace;
-
-    public ValueOrMethodBuilder(string baseNamespace)
-    {
-        _baseNamespace = baseNamespace ?? throw new ArgumentNullException(nameof(baseNamespace));
-    }
+  
 
     /// <summary>
     ///     Builds ValueOr method with default fallback values.

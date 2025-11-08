@@ -26,7 +26,7 @@ internal sealed class ResultBindExtensionsCodeGenerator : BaseCodeGenerator
                    "ResultBindExtensions",
                    FileOrganizationMode.SingleFile))
     {
-        _bindBuilder = new BindMethodBuilder(baseNamespace);
+        _bindBuilder = new BindMethodBuilder();
     }
 
     protected override string PrepareOutputDirectory(string outputPath)

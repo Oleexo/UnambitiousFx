@@ -22,8 +22,8 @@ public sealed class RegionFileWriter
     {
         _namespace = @namespace;
         _useNullable = useNullable;
-        _regions = new List<RegionContent>();
-        _usings = new HashSet<string>();
+        _regions = [];
+        _usings = [];
     }
 
     /// <summary>
@@ -32,11 +32,10 @@ public sealed class RegionFileWriter
     /// <param name="arity">The arity of the region.</param>
     /// <param name="typeWriters">A collection of type definition writers for the region.</param>
     public void AddRegion(ushort arity,
-                          IEnumerable<ITypeDefinitionWriter> typeWriters)
+                          IReadOnlyCollection<ITypeDefinitionWriter> typeWriters)
     {
         _regions.Add(new RegionContent(arity, typeWriters.ToList()));
 
-        // Collect usings from all type writers
         foreach (var typeWriter in typeWriters)
         {
             foreach (var @using in typeWriter.Usings)

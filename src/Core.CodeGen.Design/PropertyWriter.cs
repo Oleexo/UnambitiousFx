@@ -46,7 +46,10 @@ public sealed class PropertyWriter
         _documentation = documentation;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Writes the property definition to the supplied text writer.
+    /// </summary>
+    /// <param name="writer">The writer to which the property will be written.</param>
     public void Write(IndentedTextWriter writer)
     {
         _documentation?.Write(writer);

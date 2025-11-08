@@ -32,7 +32,7 @@ internal sealed class NamingConvention
     /// <summary>
     ///     Gets the suffix used for test classes.
     /// </summary>
-    public string TestClassSuffix { get; init; } = "Tests";
+    public string TestClassSuffix { get; init; }
 
     /// <summary>
     ///     Gets the pattern used for test method names.

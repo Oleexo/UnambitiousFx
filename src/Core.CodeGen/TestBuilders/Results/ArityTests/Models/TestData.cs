@@ -20,7 +20,7 @@ internal sealed class TestData
         Arity = arity;
         Values = values ?? throw new ArgumentNullException(nameof(values));
         ExpectedState = expectedState;
-        SetupCode = setupCode ?? string.Empty;
+        SetupCode = setupCode;
     }
 
     /// <summary>

@@ -8,13 +8,6 @@ namespace UnambitiousFx.Core.CodeGen.Builders.Transformations;
 /// </summary>
 internal sealed class MapMethodBuilder
 {
-    private readonly string _baseNamespace;
-
-    public MapMethodBuilder(string baseNamespace)
-    {
-        _baseNamespace = baseNamespace ?? throw new ArgumentNullException(nameof(baseNamespace));
-    }
-
     /// <summary>
     ///     Builds a standalone Map method for a specific arity.
     /// </summary>

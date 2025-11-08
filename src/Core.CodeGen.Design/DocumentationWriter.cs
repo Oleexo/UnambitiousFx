@@ -32,7 +32,12 @@ public sealed class DocumentationWriter
         _exceptions = exceptions;
     }
 
-    /// <inheritdoc />
+
+    /// <summary>
+    /// Writes the documentation comments to the specified writer. The method generates XML comments based
+    /// on the provided summary, parameters, type parameters, return type, remarks, examples, and exceptions.
+    /// </summary>
+    /// <param name="writer">The <see cref="IndentedTextWriter"/> to write the generated documentation.</param>
     public void Write(IndentedTextWriter writer)
     {
         if (string.IsNullOrWhiteSpace(_summary) &&
@@ -142,7 +147,11 @@ public sealed class DocumentationWriter
         return new Builder();
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Provides a fluent API for constructing XML documentation elements, such as summaries,
+    /// parameter documentations, type parameter descriptions, return values, exception details,
+    /// and more.
+    /// </summary>
     public sealed class Builder
     {
         private readonly List<string> _examples = new();

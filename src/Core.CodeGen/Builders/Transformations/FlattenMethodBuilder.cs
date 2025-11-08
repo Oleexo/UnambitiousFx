@@ -8,13 +8,6 @@ namespace UnambitiousFx.Core.CodeGen.Builders.Transformations;
 /// </summary>
 internal sealed class FlattenMethodBuilder
 {
-    private readonly string _baseNamespace;
-
-    public FlattenMethodBuilder(string baseNamespace)
-    {
-        _baseNamespace = baseNamespace ?? throw new ArgumentNullException(nameof(baseNamespace));
-    }
-
     /// <summary>
     ///     Builds a standalone Flatten method for a specific arity.
     /// </summary>

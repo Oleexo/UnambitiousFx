@@ -11,7 +11,7 @@ public sealed class ResultEnsureNotNullTests
     [Fact]
     public void EnsureNotNull_WhenInnerNull_FailsWithValidationError()
     {
-        var r = Result.Success(new User(null, new List<string> { "admin" }))
+        var r = Result.Success(new User(null))
                       .EnsureNotNull(u => u.Email, "Email required", "email");
         Assert.True(r.IsFaulted);
         Assert.Contains(r.Reasons, rr => rr is ValidationError ve && ve.Failures.Any(f => f.Contains("email: Email required")));
@@ -20,7 +20,7 @@ public sealed class ResultEnsureNotNullTests
     [Fact]
     public void EnsureNotNull_PassesThrough_WhenInnerNotNull()
     {
-        var r = Result.Success(new User("a@b.c", new List<string>()))
+        var r = Result.Success(new User("a@b.c"))
                       .EnsureNotNull(u => u.Email, "Email required");
         Assert.True(r.IsSuccess);
     }
@@ -33,6 +33,5 @@ public sealed class ResultEnsureNotNullTests
         Assert.Contains(guarded.Reasons, rr => rr is ValidationError ve && ve.Failures.Contains("orig"));
     }
 
-    private sealed record User(string? Email,
-                               List<string> Roles);
+    private sealed record User(string? Email);
 }

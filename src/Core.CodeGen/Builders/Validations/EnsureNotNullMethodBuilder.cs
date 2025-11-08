@@ -8,12 +8,7 @@ namespace UnambitiousFx.Core.CodeGen.Builders.Validations;
 /// </summary>
 internal sealed class EnsureNotNullMethodBuilder
 {
-    private readonly string _baseNamespace;
-
-    public EnsureNotNullMethodBuilder(string baseNamespace)
-    {
-        _baseNamespace = baseNamespace ?? throw new ArgumentNullException(nameof(baseNamespace));
-    }
+  
 
     /// <summary>
     ///     Builds EnsureNotNull for Result{T}.

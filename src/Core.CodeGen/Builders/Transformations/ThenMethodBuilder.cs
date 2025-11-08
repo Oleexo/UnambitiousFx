@@ -8,13 +8,6 @@ namespace UnambitiousFx.Core.CodeGen.Builders.Transformations;
 /// </summary>
 internal sealed class ThenMethodBuilder
 {
-    private readonly string _baseNamespace;
-
-    public ThenMethodBuilder(string baseNamespace)
-    {
-        _baseNamespace = baseNamespace ?? throw new ArgumentNullException(nameof(baseNamespace));
-    }
-
     /// <summary>
     ///     Builds a standalone Then method for a specific arity.
     /// </summary>

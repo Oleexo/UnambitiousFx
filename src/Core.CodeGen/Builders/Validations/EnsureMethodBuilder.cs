@@ -8,12 +8,6 @@ namespace UnambitiousFx.Core.CodeGen.Builders.Validations;
 /// </summary>
 internal sealed class EnsureMethodBuilder
 {
-    private readonly string _baseNamespace;
-
-    public EnsureMethodBuilder(string baseNamespace)
-    {
-        _baseNamespace = baseNamespace ?? throw new ArgumentNullException(nameof(baseNamespace));
-    }
 
     /// <summary>
     ///     Builds a standalone Ensure method for a specific arity.

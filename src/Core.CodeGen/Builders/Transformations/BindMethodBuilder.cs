@@ -9,13 +9,6 @@ namespace UnambitiousFx.Core.CodeGen.Builders.Transformations;
 /// </summary>
 internal sealed class BindMethodBuilder
 {
-    private readonly string _baseNamespace;
-
-    public BindMethodBuilder(string baseNamespace)
-    {
-        _baseNamespace = baseNamespace ?? throw new ArgumentNullException(nameof(baseNamespace));
-    }
-
     /// <summary>
     ///     Builds a standalone synchronous Bind method for a specific input and output arity.
     /// </summary>
