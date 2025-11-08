@@ -29,9 +29,9 @@ public static class ResultPredicateExtensions
             Assert.Fail(because ?? "Expected failure but was success.");
         }
 
-        if (!predicate(err!))
+        if (!predicate(err))
         {
-            var firstError = err!.FirstOrDefault();
+            var firstError = err.FirstOrDefault();
             var errorMessage = firstError?.Message ?? "Unknown error";
             Assert.Fail(because ?? $"Errors do not satisfy predicate. First error: '{errorMessage}'");
         }
@@ -75,9 +75,9 @@ public static class ResultPredicateExtensions
             Assert.Fail(because ?? "Expected failure but was success.");
         }
 
-        if (!predicate(err!))
+        if (!predicate(err))
         {
-            var firstError = err!.FirstOrDefault();
+            var firstError = err.FirstOrDefault();
             var errorMessage = firstError?.Message ?? "Unknown error";
             Assert.Fail(because ?? $"Errors do not satisfy predicate. First error: '{errorMessage}'");
         }
@@ -176,9 +176,9 @@ public static class ResultPredicateExtensions
             Assert.Fail(because ?? "Expected failure but was success.");
         }
 
-        if (!predicate(err!))
+        if (!predicate(err))
         {
-            var firstError = err!.FirstOrDefault();
+            var firstError = err.FirstOrDefault();
             var errorMessage = firstError?.Message ?? "Unknown error";
             Assert.Fail(because ?? $"Errors do not satisfy predicate. First error: '{errorMessage}'");
         }
@@ -283,9 +283,9 @@ public static class ResultPredicateExtensions
             Assert.Fail(because ?? "Expected failure but was success.");
         }
 
-        if (!predicate(err!))
+        if (!predicate(err))
         {
-            var firstError = err!.FirstOrDefault();
+            var firstError = err.FirstOrDefault();
             var errorMessage = firstError?.Message ?? "Unknown error";
             Assert.Fail(because ?? $"Errors do not satisfy predicate. First error: '{errorMessage}'");
         }
@@ -396,9 +396,9 @@ public static class ResultPredicateExtensions
             Assert.Fail(because ?? "Expected failure but was success.");
         }
 
-        if (!predicate(err!))
+        if (!predicate(err))
         {
-            var firstError = err!.FirstOrDefault();
+            var firstError = err.FirstOrDefault();
             var errorMessage = firstError?.Message ?? "Unknown error";
             Assert.Fail(because ?? $"Errors do not satisfy predicate. First error: '{errorMessage}'");
         }
@@ -515,9 +515,9 @@ public static class ResultPredicateExtensions
             Assert.Fail(because ?? "Expected failure but was success.");
         }
 
-        if (!predicate(err!))
+        if (!predicate(err))
         {
-            var firstError = err!.FirstOrDefault();
+            var firstError = err.FirstOrDefault();
             var errorMessage = firstError?.Message ?? "Unknown error";
             Assert.Fail(because ?? $"Errors do not satisfy predicate. First error: '{errorMessage}'");
         }
@@ -676,9 +676,9 @@ public static class ResultPredicateExtensions
             Assert.Fail(because ?? "Expected failure but was success.");
         }
 
-        if (!predicate(err!))
+        if (!predicate(err))
         {
-            var firstError = err!.FirstOrDefault();
+            var firstError = err.FirstOrDefault();
             var errorMessage = firstError?.Message ?? "Unknown error";
             Assert.Fail(because ?? $"Errors do not satisfy predicate. First error: '{errorMessage}'");
         }
@@ -807,9 +807,9 @@ public static class ResultPredicateExtensions
             Assert.Fail(because ?? "Expected failure but was success.");
         }
 
-        if (!predicate(err!))
+        if (!predicate(err))
         {
-            var firstError = err!.FirstOrDefault();
+            var firstError = err.FirstOrDefault();
             var errorMessage = firstError?.Message ?? "Unknown error";
             Assert.Fail(because ?? $"Errors do not satisfy predicate. First error: '{errorMessage}'");
         }
@@ -944,9 +944,9 @@ public static class ResultPredicateExtensions
             Assert.Fail(because ?? "Expected failure but was success.");
         }
 
-        if (!predicate(err!))
+        if (!predicate(err))
         {
-            var firstError = err!.FirstOrDefault();
+            var firstError = err.FirstOrDefault();
             var errorMessage = firstError?.Message ?? "Unknown error";
             Assert.Fail(because ?? $"Errors do not satisfy predicate. First error: '{errorMessage}'");
         }

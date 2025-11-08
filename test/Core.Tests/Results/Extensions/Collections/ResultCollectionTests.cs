@@ -28,7 +28,7 @@ public sealed class ResultCollectionTests
         var sequenced = results.Sequence();
 
         Assert.False(sequenced.TryGet(out _, out var err));
-        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
+        { var firstError = err.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -53,7 +53,7 @@ public sealed class ResultCollectionTests
                                                 : Result.Success(s));
 
         Assert.False(traversed.TryGet(out _, out var err));
-        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
+        { var firstError = err.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]

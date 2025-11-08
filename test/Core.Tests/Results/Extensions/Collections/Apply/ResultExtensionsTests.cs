@@ -30,7 +30,7 @@ public sealed class ResultExtensionsTests
         var r = rf.Apply(ra);
 
         Assert.False(r.TryGet(out _, out var err));
-        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
+        { var firstError = err.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 
     [Fact]
@@ -43,6 +43,6 @@ public sealed class ResultExtensionsTests
         var r = rf.Apply(ra);
 
         Assert.False(r.TryGet(out _, out var err));
-        { var firstError = err?.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
+        { var firstError = err.OfType<ExceptionalError>().FirstOrDefault(); Assert.NotNull(firstError); Assert.Same(ex, firstError.Exception); }
     }
 }

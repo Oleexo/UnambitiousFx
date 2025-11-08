@@ -14,7 +14,7 @@ public class ResultTupleVsMultiBenchmark
     private const int C = 3;
 
     private readonly Result<(int, int, int)> _tupleSuccess = Result.Success<(int, int, int)>((A, B, C));
-    private readonly Result<int, int, int> _multiSuccess = Result.Success<int, int, int>(A, B, C);
+    private readonly Result<int, int, int> _multiSuccess = Result.Success(A, B, C);
 
     private readonly Exception _error = new("boom");
     private readonly Result<(int, int, int)> _tupleFailure;
@@ -31,7 +31,7 @@ public class ResultTupleVsMultiBenchmark
     public Result<(int, int, int)> Create_Success_Tuple() => Result.Success<(int, int, int)>((A, B, C));
 
     [Benchmark(Description = "Create Success (Multi)")]
-    public Result<int, int, int> Create_Success_Multi() => Result.Success<int, int, int>(A, B, C);
+    public Result<int, int, int> Create_Success_Multi() => Result.Success(A, B, C);
 
     // Creation (Failure)
     [Benchmark(Description = "Create Failure (Tuple)")]

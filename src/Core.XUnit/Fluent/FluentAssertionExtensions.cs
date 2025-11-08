@@ -110,7 +110,7 @@ public static class FluentAssertionExtensions
             Assert.Fail("Expected failure result but was success.");
         }
 
-        return new FailureAssertion(error!);
+        return new FailureAssertion(error);
     }
 
     /// <summary>
@@ -147,7 +147,7 @@ public static class FluentAssertionExtensions
             Assert.Fail("Expected failure result but was success.");
         }
 
-        return new FailureAssertion(error!);
+        return new FailureAssertion(error);
     }
 
     /// <summary>
@@ -188,7 +188,7 @@ public static class FluentAssertionExtensions
             Assert.Fail("Expected failure result but was success.");
         }
 
-        return new FailureAssertion(error!);
+        return new FailureAssertion(error);
     }
 
     /// <summary>
@@ -227,7 +227,7 @@ public static class FluentAssertionExtensions
             Assert.Fail("Expected failure result but was success.");
         }
 
-        return new FailureAssertion(error!);
+        return new FailureAssertion(error);
     }
 
     /// <summary>
@@ -268,7 +268,7 @@ public static class FluentAssertionExtensions
             Assert.Fail("Expected failure result but was success.");
         }
 
-        return new FailureAssertion(error!);
+        return new FailureAssertion(error);
     }
 
     /// <summary>
@@ -318,7 +318,7 @@ public static class FluentAssertionExtensions
             Assert.Fail("Expected failure result but was success.");
         }
 
-        return new FailureAssertion(error!);
+        return new FailureAssertion(error);
     }
 
     /// <summary>
@@ -380,7 +380,7 @@ public static class FluentAssertionExtensions
             Assert.Fail("Expected failure result but was success.");
         }
 
-        return new FailureAssertion(error!);
+        return new FailureAssertion(error);
     }
 
     // Option
