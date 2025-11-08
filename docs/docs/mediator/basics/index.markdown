@@ -27,6 +27,7 @@ If you prefer a 30‑second tour, see the Mediator landing page’s Quick start:
 ## Quick links
 - Send a request: ./send-request.html — Define `IRequest<T>`/`IRequest` and call `ISender.SendAsync(...)`.
 - Publish an event: ./publish-event.html — Define `IEvent`, publish, and handle with one or many `IEventHandler<TEvent>`.
+- Working with context: ./working-with-context.html — `IContext`, `IContextAccessor`, `IContextFactory`; lifetimes and pitfalls.
 - Streaming requests: ./streaming-requests.html — Define `IStreamRequest<TItem>`, implement `IStreamRequestHandler<,>`, and consume `IAsyncEnumerable<Result<TItem>>`.
 - Register mediator (DI): ./register-mediator.html — Add mediator, handlers, and pipeline behaviors via `AddMediator`.
 
