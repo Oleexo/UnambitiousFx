@@ -22,7 +22,7 @@ public sealed class LoggingEnrichmentBehavior<TRequest, TResponse> : IRequestPip
     /// <param name="context"></param>
     /// <param name="logger">The logger instance.</param>
     public LoggingEnrichmentBehavior(IContext context,
-                                     ILogger<LoggingEnrichmentBehavior<TRequest, TResponse>> logger)
+        ILogger<LoggingEnrichmentBehavior<TRequest, TResponse>> logger)
     {
         _context = context;
         _logger = logger;
@@ -36,8 +36,8 @@ public sealed class LoggingEnrichmentBehavior<TRequest, TResponse> : IRequestPip
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A result containing the response.</returns>
     public ValueTask<Result<TResponse>> HandleAsync(TRequest request,
-                                                    RequestHandlerDelegate<TResponse> next,
-                                                    CancellationToken cancellationToken = default)
+        RequestHandlerDelegate<TResponse> next,
+        CancellationToken cancellationToken = default)
     {
         using (_logger.BeginScope(CreateState(_context)))
         {
@@ -49,15 +49,11 @@ public sealed class LoggingEnrichmentBehavior<TRequest, TResponse> : IRequestPip
     {
         var state = new Dictionary<string, object>
         {
-            ["CorrelationId"] = context.CorrelationId,
-            ["OccurredAt"] = context.OccuredAt
+            ["CorrelationId"] = context.CorrelationId
         };
 
 
-        foreach (var metadata in context.Metadata)
-        {
-            state[$"Metadata_{metadata.Key}"] = metadata.Value;
-        }
+        foreach (var metadata in context.Metadata) state[$"Metadata_{metadata.Key}"] = metadata.Value;
 
         return state;
     }

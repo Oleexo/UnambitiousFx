@@ -1,4 +1,4 @@
-﻿using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.Results;
 
 namespace UnambitiousFx.Mediator.Abstractions;
 
@@ -13,11 +13,6 @@ public interface IContext
     /// </summary>
     string CorrelationId { get; }
 
-    /// Gets the exact date and time at which the operation or context occurred.
-    /// This property provides a timestamp that can be used for logging,
-    /// debugging, or tracking purposes.
-    DateTimeOffset OccuredAt { get; }
-
     /// <summary>
     ///     Gets a read-only dictionary containing metadata key-value pairs associated with the context.
     /// </summary>
@@ -29,7 +24,7 @@ public interface IContext
     /// <param name="key">The metadata key.</param>
     /// <param name="value">The metadata value to set.</param>
     void SetMetadata(string key,
-                     object value);
+        object value);
 
     /// <summary>
     ///     Removes a metadata entry for the specified key from the context.
@@ -45,7 +40,7 @@ public interface IContext
     /// <param name="value">When this method returns, contains the metadata value if found; otherwise, the default value.</param>
     /// <returns>True if the metadata value was found; otherwise, false.</returns>
     bool TryGetMetadata<T>(string key,
-                           out T? value);
+        out T? value);
 
     /// <summary>
     ///     Gets a metadata value for the specified key.
@@ -69,7 +64,7 @@ public interface IContext
     ///     operation.
     /// </returns>
     ValueTask<Result> PublishEventAsync<TEvent>(TEvent @event,
-                                                CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default)
         where TEvent : class, IEvent;
 
     /// <summary>
@@ -93,8 +88,8 @@ public interface IContext
     ///     operation.
     /// </returns>
     ValueTask<Result> PublishEventAsync<TEvent>(TEvent @event,
-                                                PublishMode mode,
-                                                CancellationToken cancellationToken = default)
+        PublishMode mode,
+        CancellationToken cancellationToken = default)
         where TEvent : class, IEvent;
 
     /// <summary>
@@ -109,4 +104,30 @@ public interface IContext
     ///     operation.
     /// </returns>
     ValueTask<Result> CommitEventsAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     Tries to get a feature of the specified type from the context.
+    /// </summary>
+    /// <typeparam name="TFeature">The type of the feature to retrieve.</typeparam>
+    /// <param name="feature">When this method returns, contains the feature if found; otherwise, null.</param>
+    /// <returns>True if the feature was found; otherwise, false.</returns>
+    bool TryGetFeature<TFeature>(out TFeature? feature)
+        where TFeature : class, IContextFeature;
+
+    /// <summary>
+    ///     Gets a feature of the specified type from the context.
+    /// </summary>
+    /// <typeparam name="TFeature">The type of the feature to retrieve.</typeparam>
+    /// <returns>The feature if found; otherwise, null.</returns>
+    TFeature? GetFeature<TFeature>()
+        where TFeature : class, IContextFeature;
+
+    /// <summary>
+    ///     Gets a feature of the specified type from the context, throwing an exception if not found.
+    /// </summary>
+    /// <typeparam name="TFeature">The type of the feature to retrieve.</typeparam>
+    /// <returns>The feature.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when the feature is not found.</exception>
+    TFeature MustGetFeature<TFeature>()
+        where TFeature : class, IContextFeature;
 }

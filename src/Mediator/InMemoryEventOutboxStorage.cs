@@ -1,4 +1,4 @@
-﻿using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 
 namespace UnambitiousFx.Mediator;
@@ -25,19 +25,19 @@ public sealed class InMemoryEventOutboxStorage : IEventOutboxStorage
     {
         // Returns events ready for dispatch (not processed, not dead-letter, and past scheduled time)
         var now = DateTimeOffset.UtcNow;
-        return new ValueTask<IEnumerable<IEvent>>(_items.Where(item => !item.Processed && !item.DeadLetter && (item.NextAttemptAt is null || item.NextAttemptAt <= now))
-                                                        .Select(item => item.Event));
+        return new ValueTask<IEnumerable<IEvent>>(_items
+            .Where(item =>
+                !item.Processed && !item.DeadLetter && (item.NextAttemptAt is null || item.NextAttemptAt <= now))
+            .Select(item => item.Event));
     }
 
     /// <inheritdoc />
     public ValueTask<Result> MarkAsProcessedAsync(IEvent @event,
-                                                  CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default)
     {
         var item = _items.FirstOrDefault(i => i.Event.Equals(@event));
         if (item == null)
-        {
             return new ValueTask<Result>(Result.Failure($"Event '{@event}' was not found in the outbox storage"));
-        }
 
         item.Processed = true;
         item.ProcessedAt = DateTimeOffset.UtcNow;
@@ -55,7 +55,7 @@ public sealed class InMemoryEventOutboxStorage : IEventOutboxStorage
 
     /// <inheritdoc />
     public ValueTask<Result> AddAsync<TEvent>(TEvent @event,
-                                              CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default)
         where TEvent : class, IEvent
     {
         _items.Add(new Item(@event));
@@ -65,16 +65,14 @@ public sealed class InMemoryEventOutboxStorage : IEventOutboxStorage
 
     /// <inheritdoc />
     public ValueTask<Result> MarkAsFailedAsync(IEvent @event,
-                                               string reason,
-                                               bool deadLetter,
-                                               DateTimeOffset? nextAttemptAt = null,
-                                               CancellationToken cancellationToken = default)
+        string reason,
+        bool deadLetter,
+        DateTimeOffset? nextAttemptAt = null,
+        CancellationToken cancellationToken = default)
     {
         var item = _items.FirstOrDefault(i => i.Event.Equals(@event));
         if (item == null)
-        {
             return new ValueTask<Result>(Result.Failure($"Event '{@event}' was not found in the outbox storage"));
-        }
 
         item.Attempts++;
         item.LastError = reason;
@@ -99,7 +97,7 @@ public sealed class InMemoryEventOutboxStorage : IEventOutboxStorage
 
     /// <inheritdoc />
     public ValueTask<int?> GetAttemptCountAsync(IEvent @event,
-                                                CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default)
     {
         return new ValueTask<int?>(_items.FirstOrDefault(i => i.Event.Equals(@event))?.Attempts);
     }

@@ -1,4 +1,4 @@
-﻿using Application.Domain.Entities;
+using Application.Domain.Entities;
 using Application.Domain.Events;
 using UnambitiousFx.Mediator.Abstractions;
 

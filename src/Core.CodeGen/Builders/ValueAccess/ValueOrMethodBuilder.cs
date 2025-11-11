@@ -8,7 +8,7 @@ namespace UnambitiousFx.Core.CodeGen.Builders.ValueAccess;
 /// </summary>
 internal sealed class ValueOrMethodBuilder
 {
-  
+
 
     /// <summary>
     ///     Builds ValueOr method with default fallback values.

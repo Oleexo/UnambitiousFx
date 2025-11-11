@@ -1,4 +1,4 @@
-﻿using BenchmarkDotNet.Running;
+using BenchmarkDotNet.Running;
 using CoreBenchmark;
 
 BenchmarkSwitcher.FromTypes(new[]

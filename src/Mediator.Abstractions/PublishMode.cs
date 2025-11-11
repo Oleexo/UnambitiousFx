@@ -1,4 +1,4 @@
-﻿namespace UnambitiousFx.Mediator.Abstractions;
+namespace UnambitiousFx.Mediator.Abstractions;
 
 /// <summary>
 ///     Specifies that the event should be published immediately without any delay or queuing mechanism.

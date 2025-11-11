@@ -1,5 +1,6 @@
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
+using UnambitiousFx.Mediator.Abstractions.Exceptions;
 
 namespace UnambitiousFx.Mediator.Pipelines;
 
@@ -31,8 +32,8 @@ public sealed class CqrsBoundaryEnforcementBehavior : IRequestPipelineBehavior
     /// <typeparam name="TRequest"></typeparam>
     /// <returns></returns>
     public async ValueTask<Result> HandleAsync<TRequest>(TRequest request,
-                                                         RequestHandlerDelegate next,
-                                                         CancellationToken cancellationToken = default)
+        RequestHandlerDelegate next,
+        CancellationToken cancellationToken = default)
         where TRequest : IRequest
     {
         var requestName = typeof(TRequest).Name;
@@ -54,8 +55,8 @@ public sealed class CqrsBoundaryEnforcementBehavior : IRequestPipelineBehavior
     /// <typeparam name="TResponse"></typeparam>
     /// <returns></returns>
     public async ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest request,
-                                                                               RequestHandlerDelegate<TResponse> next,
-                                                                               CancellationToken cancellationToken = default)
+        RequestHandlerDelegate<TResponse> next,
+        CancellationToken cancellationToken = default)
         where TRequest : IRequest<TResponse>
         where TResponse : notnull
     {
@@ -71,29 +72,25 @@ public sealed class CqrsBoundaryEnforcementBehavior : IRequestPipelineBehavior
     private static void RemoveBoundaryMetadata(IContext context)
     {
         if (!context.RemoveMetadata(CQRSBoundaryEnforcementKey))
-        {
             throw new CqrsBoundaryViolationException(
                 "CQRS boundary enforcement metadata was missing when trying to remove it. This indicates a violation of the CQRS boundary enforcement behavior.");
-        }
 
         context.RemoveMetadata(CQRSBoundaryEnforcementNameKey);
     }
 
     private static void AddBoundaryMetadata(IContext context,
-                                            string requestName)
+        string requestName)
     {
         context.SetMetadata(CQRSBoundaryEnforcementKey, true);
         context.SetMetadata(CQRSBoundaryEnforcementNameKey, requestName);
     }
 
     private static void ValidateBoundaries(IContext context,
-                                           string requestName)
+        string requestName)
     {
         if (!context.TryGetMetadata<bool>(CQRSBoundaryEnforcementKey, out var isInRequest) ||
             !isInRequest)
-        {
             return;
-        }
 
         var previousRequestName = context.GetMetadata<string>(CQRSBoundaryEnforcementNameKey);
 

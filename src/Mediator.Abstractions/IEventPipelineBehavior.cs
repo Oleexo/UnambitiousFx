@@ -1,4 +1,4 @@
-﻿using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.Results;
 
 namespace UnambitiousFx.Mediator.Abstractions;
 
@@ -27,7 +27,7 @@ public interface IEventPipelineBehavior
     ///     failure.
     /// </returns>
     ValueTask<Result> HandleAsync<TEvent>(TEvent @event,
-                                          EventHandlerDelegate next,
-                                          CancellationToken cancellationToken = default)
+        EventHandlerDelegate next,
+        CancellationToken cancellationToken = default)
         where TEvent : IEvent;
 }

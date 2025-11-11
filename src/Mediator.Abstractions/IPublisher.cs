@@ -18,7 +18,7 @@ public interface IPublisher
     /// <param name="cancellationToken">An optional cancellation token to cancel the operation.</param>
     /// <returns>A <see cref="ValueTask{TResult}" /> containing the result of the publish operation.</returns>
     ValueTask<Result> PublishAsync<TEvent>(TEvent @event,
-                                           CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default)
         where TEvent : class, IEvent;
 
     /// <summary>
@@ -39,8 +39,8 @@ public interface IPublisher
     /// </param>
     /// <returns>A <see cref="ValueTask{TResult}" /> containing the result of the publish operation.</returns>
     ValueTask<Result> PublishAsync<TEvent>(TEvent @event,
-                                           PublishMode mode,
-                                           CancellationToken cancellationToken = default)
+        PublishMode mode,
+        CancellationToken cancellationToken = default)
         where TEvent : class, IEvent;
 
     /// <summary>

@@ -19,7 +19,7 @@ high-signal planning items and provides visibility into the evolution of the med
 |---------------------------------|--------|-------------------------------------------------------|
 | Sequential orchestrator         | ✅      | Execute handlers in order                             |
 | Concurrent orchestrator         | ✅      | Execute handlers in parallel                          |
-| Custom orchestration strategies | 🤔     | Priority-based, conditional, throttled execution      |
+| Custom orchestration strategies | 🤔     | Priority-based, conditional execution                 |
 | Event filtering                 | 🤔     | Handler selection based on runtime criteria           |
 | Event versioning                | 🤔     | Support multiple versions of same event type          |
 | Distributed event bus           | 📋     | Integration with message brokers (RabbitMQ, Azure SB) |
@@ -34,7 +34,6 @@ high-signal planning items and provides visibility into the evolution of the med
 | Streaming requests           | ✅      | IAsyncEnumerable support for large datasets                                            |
 | Request validation behavior  | ✅      | Built-in validation pipeline behavior                                                  |
 | CQRS boundary enforcement    | ✅      | Prevent queries in command, commands in query, commands in command or queries in query |
-| Request caching behavior     | 📋     | Automatic response caching with invalidation                                           |
 | Request deduplication        | 📋     | Prevent duplicate request processing                                                   |
 | Request timeout behavior     | 📋     | Automatic timeout enforcement                                                          |
 | Multi-handler requests       | 🤔     | Support multiple handlers for single request (scatter)                                 |
@@ -46,7 +45,7 @@ high-signal planning items and provides visibility into the evolution of the med
 | Request pipeline behaviors     | ✅      | Cross-cutting concerns for requests            |
 | Event pipeline behaviors       | ✅      | Cross-cutting concerns for events              |
 | Simple logging behavior        | ✅      | Built-in logging example                       |
-| Typed behaviors                | ✅      | Behaviors specific to request/event types      |
+| Logging behavior               | ✅      | Request/event logging with examples            |
 | Conditional behavior execution | ✅      | Execute behaviors based on context or metadata |
 | Behavior ordering              | 🤔     | Explicit control over behavior execution order |
 | Exception handling behavior    | 🤔     | Centralized exception mapping to Result errors |
@@ -80,16 +79,14 @@ high-signal planning items and provides visibility into the evolution of the med
 
 ## Performance & Scalability
 
-| Feature                    | Status | Purpose                                        |
-|----------------------------|--------|------------------------------------------------|
-| ValueTask usage            | ✅      | Reduce allocations for synchronous completions |
-| Handler result caching     | 🤔     | Cache expensive request results                |
-| Request batching           | 🤔     | Group similar requests for efficiency          |
-| Streaming support          | ✅      | Handle large datasets with IAsyncEnumerable    |
-| Memory pooling             | 🤔     | Reuse buffers for event/request processing     |
-| Parallel event dispatching | ✅      | Concurrent orchestrator                        |
-| Rate limiting behavior     | 🤔     | Throttle request/event processing              |
-| Backpressure handling      | 🤔     | Manage event queue overflow                    |
+| Feature                | Status | Purpose                                        |
+|------------------------|--------|------------------------------------------------|
+| ValueTask usage        | ✅      | Reduce allocations for synchronous completions |
+| Handler result caching | 🤔     | Cache expensive request results                |
+| Request batching       | 🤔     | Group similar requests for efficiency          |
+| Memory pooling         | 🤔     | Reuse buffers for event/request processing     |
+| Rate limiting behavior | 🤔     | Throttle request/event processing              |
+| Backpressure handling  | 🤔     | Manage event queue overflow                    |
 
 ## Observability & Diagnostics
 
@@ -100,7 +97,6 @@ high-signal planning items and provides visibility into the evolution of the med
 | Request/event logging behavior  | ✅      | Simple logging example included             |
 | Performance metrics             | 🤔     | Track handler execution time, success rates |
 | Handler execution visualization | 🤔     | Debug complex pipelines and behaviors       |
-| Diagnostic source integration   | 🤔     | .NET diagnostic infrastructure support      |
 | Health checks                   | 🤔     | Monitor mediator and handler health         |
 | Debugger display attributes     | 🤔     | Rich debugging experience                   |
 
@@ -111,7 +107,6 @@ high-signal planning items and provides visibility into the evolution of the med
 | ASP.NET Core integration     | ⭐      | Endpoint filters, minimal APIs           |
 | Native AOT compatibility     | ✅      | Optimized for ahead-of-time compilation  |
 | Dependency injection support | ✅      | Microsoft.Extensions.DependencyInjection |
-| Other DI containers          | 🤔     | Autofac, Simple Injector support         |
 | gRPC integration             | 🤔     | Use mediator in gRPC services            |
 | SignalR integration          | 🤔     | Publish events to connected clients      |
 | Azure Functions support      | 🤔     | Use mediator in serverless functions     |

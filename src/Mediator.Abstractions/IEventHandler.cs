@@ -1,4 +1,4 @@
-﻿using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.Results;
 
 namespace UnambitiousFx.Mediator.Abstractions;
 
@@ -17,5 +17,5 @@ public interface IEventHandler<in TEvent>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <return>A task that, when completed, contains the result of the operation.</return>
     ValueTask<Result> HandleAsync(TEvent @event,
-                                  CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken = default);
 }

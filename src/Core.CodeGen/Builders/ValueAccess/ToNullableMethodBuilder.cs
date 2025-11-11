@@ -8,7 +8,7 @@ namespace UnambitiousFx.Core.CodeGen.Builders.ValueAccess;
 /// </summary>
 internal sealed class ToNullableMethodBuilder
 {
-  
+
 
     /// <summary>
     ///     Builds a standalone ToNullable method for a specific arity.

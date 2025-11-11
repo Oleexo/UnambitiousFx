@@ -1,4 +1,4 @@
-﻿namespace UnambitiousFx.Mediator.Abstractions;
+namespace UnambitiousFx.Mediator.Abstractions;
 
 /// Represents a contract for registering groups of dependencies for use within the application's dependency injection container.
 /// A group typically encapsulates related request or event handlers and their configurations, aiming to modularize registration processes.

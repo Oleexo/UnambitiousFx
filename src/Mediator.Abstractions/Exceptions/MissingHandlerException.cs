@@ -1,9 +1,9 @@
-namespace UnambitiousFx.Mediator;
+namespace UnambitiousFx.Mediator.Abstractions.Exceptions;
 
 /// <summary>
 ///     Represents an exception that is thrown when no handler is found for a specified request type.
 /// </summary>
-public sealed class MissingHandlerException : Exception
+public sealed class MissingHandlerException : MediatorException
 {
     /// <summary>
     ///     Represents an exception that is thrown when a handler for a specific request type is not found.

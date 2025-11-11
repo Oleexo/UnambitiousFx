@@ -1,4 +1,4 @@
-﻿namespace UnambitiousFx.Core.Maybe.Tasks;
+namespace UnambitiousFx.Core.Maybe.Tasks;
 
 /// Provides extension methods for working with asynchronous options in the context
 /// of the IOption interface and its implementations.

@@ -1,4 +1,4 @@
-﻿using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.Results;
 
 namespace UnambitiousFx.Mediator.Abstractions;
 
@@ -27,7 +27,7 @@ public abstract class RequestHandler<TRequest, TResponse> : IRequestHandler<TReq
     ///     containing the result of type <typeparamref name="TResponse" />.
     /// </return>
     public ValueTask<Result<TResponse>> HandleAsync(TRequest request,
-                                                    CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default)
     {
         var result = Handle(request);
 
@@ -64,7 +64,7 @@ public abstract class RequestHandler<TRequest> : IRequestHandler<TRequest>
     ///     success or failure.
     /// </returns>
     public ValueTask<Result> HandleAsync(TRequest request,
-                                         CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default)
     {
         var result = Handle(request);
         return new ValueTask<Result>(result);

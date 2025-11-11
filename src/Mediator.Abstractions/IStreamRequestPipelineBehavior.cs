@@ -20,8 +20,8 @@ public interface IStreamRequestPipelineBehavior
     /// </param>
     /// <returns>An asynchronous enumerable sequence of results.</returns>
     IAsyncEnumerable<Result<TItem>> HandleAsync<TRequest, TItem>(TRequest request,
-                                                                 StreamRequestHandlerDelegate<TItem> next,
-                                                                 CancellationToken cancellationToken = default)
+        StreamRequestHandlerDelegate<TItem> next,
+        CancellationToken cancellationToken = default)
         where TRequest : IStreamRequest<TItem>
         where TItem : notnull;
 }
@@ -44,6 +44,6 @@ public interface IStreamRequestPipelineBehavior<in TRequest, TItem>
     /// <param name="cancellationToken">Token for cancelling the operation.</param>
     /// <returns>An asynchronous enumerable sequence of results.</returns>
     IAsyncEnumerable<Result<TItem>> HandleAsync(TRequest request,
-                                                StreamRequestHandlerDelegate<TItem> next,
-                                                CancellationToken cancellationToken = default);
+        StreamRequestHandlerDelegate<TItem> next,
+        CancellationToken cancellationToken = default);
 }

@@ -3,7 +3,7 @@ using UnambitiousFx.Core.Results;
 namespace UnambitiousFx.Mediator.Abstractions;
 
 /// <summary>
-/// Represents a contract for validating requests of a specified type.
+///     Represents a contract for validating requests of a specified type.
 /// </summary>
 /// <typeparam name="TRequest">The type of the request to be validated.</typeparam>
 public interface IRequestValidator<in TRequest>

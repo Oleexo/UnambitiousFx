@@ -1,9 +1,9 @@
-namespace UnambitiousFx.Mediator.Abstractions;
+namespace UnambitiousFx.Mediator.Abstractions.Exceptions;
 
 /// <summary>
 ///     Exception thrown when a CQRS boundary violation is detected.
 /// </summary>
-public sealed class CqrsBoundaryViolationException : InvalidOperationException
+public sealed class CqrsBoundaryViolationException : MediatorException
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="CqrsBoundaryViolationException" /> class.

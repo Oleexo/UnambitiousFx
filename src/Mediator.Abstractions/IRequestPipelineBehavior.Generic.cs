@@ -17,8 +17,8 @@ public interface IRequestPipelineBehavior<in TRequest>
     /// <param name="cancellationToken">Token for cancelling the operation.</param>
     /// <returns>A task containing the result of the operation.</returns>
     ValueTask<Result> HandleAsync(TRequest request,
-                                  RequestHandlerDelegate next,
-                                  CancellationToken cancellationToken = default);
+        RequestHandlerDelegate next,
+        CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -39,6 +39,6 @@ public interface IRequestPipelineBehavior<in TRequest, TResponse>
     /// <param name="cancellationToken">Token for cancelling the operation.</param>
     /// <returns>A task containing the result of the operation.</returns>
     ValueTask<Result<TResponse>> HandleAsync(TRequest request,
-                                             RequestHandlerDelegate<TResponse> next,
-                                             CancellationToken cancellationToken = default);
+        RequestHandlerDelegate<TResponse> next,
+        CancellationToken cancellationToken = default);
 }

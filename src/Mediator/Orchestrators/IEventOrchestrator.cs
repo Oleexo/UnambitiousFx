@@ -1,4 +1,4 @@
-﻿using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 
 namespace UnambitiousFx.Mediator.Orchestrators;
@@ -18,7 +18,7 @@ public interface IEventOrchestrator
     ///     handling process.
     /// </returns>
     ValueTask<Result> RunAsync<TEvent>(IEnumerable<IEventHandler<TEvent>> handlers,
-                                       TEvent @event,
-                                       CancellationToken cancellationToken = default)
+        TEvent @event,
+        CancellationToken cancellationToken = default)
         where TEvent : class, IEvent;
 }

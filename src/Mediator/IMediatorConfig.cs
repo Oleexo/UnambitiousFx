@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using UnambitiousFx.Mediator.Abstractions;
 using UnambitiousFx.Mediator.Orchestrators;
@@ -32,7 +32,9 @@ public interface IMediatorConfig
     /// <returns>
     ///     The current instance of <see cref="IMediatorConfig" />, enabling further configuration chaining.
     /// </returns>
-    IMediatorConfig RegisterRequestPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TRequestPipelineBehavior>()
+    IMediatorConfig RegisterRequestPipelineBehavior<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    TRequestPipelineBehavior>()
         where TRequestPipelineBehavior : class, IRequestPipelineBehavior;
 
     /// <summary>
@@ -49,7 +51,9 @@ public interface IMediatorConfig
     /// <returns>
     ///     The current instance of <see cref="IMediatorConfig" />, enabling further configuration chaining.
     /// </returns>
-    IMediatorConfig RegisterRequestPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TBehavior, TRequest>()
+    IMediatorConfig RegisterRequestPipelineBehavior<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    TBehavior, TRequest>()
         where TBehavior : class, IRequestPipelineBehavior<TRequest>
         where TRequest : IRequest;
 
@@ -70,7 +74,10 @@ public interface IMediatorConfig
     /// <returns>
     ///     The current instance of <see cref="IMediatorConfig" />, enabling further configuration chaining.
     /// </returns>
-    IMediatorConfig RegisterRequestPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TBehavior, TRequest, TResponse>()
+    IMediatorConfig RegisterRequestPipelineBehavior<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    TBehavior, TRequest,
+        TResponse>()
         where TBehavior : class, IRequestPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
         where TResponse : notnull;
@@ -89,7 +96,9 @@ public interface IMediatorConfig
     /// <returns>
     ///     The current instance of <see cref="IMediatorConfig" />, enabling further configuration chaining.
     /// </returns>
-    IMediatorConfig RegisterConditionalRequestPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TBehavior>(
+    IMediatorConfig RegisterConditionalRequestPipelineBehavior<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    TBehavior>(
         Func<object, bool> predicate)
         where TBehavior : class, IRequestPipelineBehavior;
 
@@ -110,7 +119,9 @@ public interface IMediatorConfig
     /// <returns>
     ///     The current instance of <see cref="IMediatorConfig" />, enabling further configuration chaining.
     /// </returns>
-    IMediatorConfig RegisterConditionalRequestPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TBehavior, TRequest>(
+    IMediatorConfig RegisterConditionalRequestPipelineBehavior<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    TBehavior, TRequest>(
         Func<TRequest, bool> predicate)
         where TBehavior : class, IRequestPipelineBehavior<TRequest>
         where TRequest : IRequest;
@@ -135,7 +146,9 @@ public interface IMediatorConfig
     /// <returns>
     ///     The current instance of <see cref="IMediatorConfig" />, enabling further configuration chaining.
     /// </returns>
-    IMediatorConfig RegisterConditionalRequestPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TBehavior, TRequest, TResponse>(
+    IMediatorConfig RegisterConditionalRequestPipelineBehavior<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    TBehavior, TRequest, TResponse>(
         Func<TRequest, bool> predicate)
         where TBehavior : class, IRequestPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
@@ -152,7 +165,9 @@ public interface IMediatorConfig
     /// <returns>
     ///     The instance of <see cref="IMediatorConfig" />, enabling method chaining for further configuration.
     /// </returns>
-    IMediatorConfig RegisterEventPipelineBehavior<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TEventPipelineBehavior>()
+    IMediatorConfig RegisterEventPipelineBehavior<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    TEventPipelineBehavior>()
         where TEventPipelineBehavior : class, IEventPipelineBehavior;
 
     /// <summary>
@@ -166,7 +181,9 @@ public interface IMediatorConfig
     /// <returns>
     ///     The current <see cref="IMediatorConfig" /> instance to allow method chaining.
     /// </returns>
-    IMediatorConfig SetEventOrchestrator<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TEventOrchestrator>()
+    IMediatorConfig SetEventOrchestrator<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    TEventOrchestrator>()
         where TEventOrchestrator : class, IEventOrchestrator;
 
     /// <summary>
@@ -197,7 +214,9 @@ public interface IMediatorConfig
     /// <returns>
     ///     The current instance of <see cref="IMediatorConfig" />, enabling method chaining for additional configuration.
     /// </returns>
-    IMediatorConfig RegisterRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest, TResponse>()
+    IMediatorConfig RegisterRequestHandler<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    THandler, TRequest, TResponse>()
         where TResponse : notnull
         where TRequest : IRequest<TResponse>
         where THandler : class, IRequestHandler<TRequest, TResponse>;
@@ -214,7 +233,9 @@ public interface IMediatorConfig
     /// <returns>
     ///     The current instance of <see cref="IMediatorConfig" />, enabling chained configuration.
     /// </returns>
-    IMediatorConfig RegisterRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest>()
+    IMediatorConfig RegisterRequestHandler<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    THandler, TRequest>()
         where TRequest : IRequest
         where THandler : class, IRequestHandler<TRequest>;
 
@@ -230,7 +251,9 @@ public interface IMediatorConfig
     /// <returns>
     ///     The current instance of <see cref="IMediatorConfig" />, allowing for fluent configuration.
     /// </returns>
-    IMediatorConfig RegisterEventHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TEvent>()
+    IMediatorConfig RegisterEventHandler<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    THandler, TEvent>()
         where THandler : class, IEventHandler<TEvent>
         where TEvent : class, IEvent;
 
@@ -244,7 +267,9 @@ public interface IMediatorConfig
     /// <returns>
     ///     The current <see cref="IMediatorConfig" /> instance, allowing for method chaining.
     /// </returns>
-    IMediatorConfig SetEventOutboxStorage<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TEventOutboxStorage>()
+    IMediatorConfig SetEventOutboxStorage<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    TEventOutboxStorage>()
         where TEventOutboxStorage : class, IEventOutboxStorage;
 
     /// <summary>
@@ -272,20 +297,53 @@ public interface IMediatorConfig
     IMediatorConfig EnableCqrsBoundaryEnforcement(bool enable = true);
 
     /// <summary>
-    /// Adds a request validator to the mediator configuration.
+    ///     Adds a request validator to the mediator configuration.
     /// </summary>
     /// <typeparam name="TValidator">
-    /// The type of the validator, implementing <see cref="IRequestValidator{TRequest}" />.
+    ///     The type of the validator, implementing <see cref="IRequestValidator{TRequest}" />.
     /// </typeparam>
     /// <typeparam name="TRequest">
-    /// The type of the request that the validator applies to, implementing <see cref="IRequest" />.
+    ///     The type of the request that the validator applies to, implementing <see cref="IRequest" />.
     /// </typeparam>
     /// <returns>
-    /// The current instance of <see cref="IMediatorConfig" />, allowing for fluent configuration.
+    ///     The current instance of <see cref="IMediatorConfig" />, allowing for fluent configuration.
     /// </returns>
-    IMediatorConfig AddValidator<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TValidator, TRequest>()
+    IMediatorConfig AddValidator<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    TValidator, TRequest>()
         where TValidator : class, IRequestValidator<TRequest>
         where TRequest : IRequest;
+
+    /// <summary>
+    ///     Configures the mediator to use the default context factory implementation.
+    /// </summary>
+    /// <returns>
+    ///     The current instance of <see cref="IMediatorConfig" />, allowing for fluent configuration.
+    /// </returns>
+    IMediatorConfig UseDefaultContextFactory();
+
+    /// <summary>
+    ///     Configures the mediator to use the slim context factory implementation for improved performance.
+    /// </summary>
+    /// <returns>
+    ///     The current instance of <see cref="IMediatorConfig" />, allowing for fluent configuration.
+    /// </returns>
+    IMediatorConfig UseSlimContextFactory();
+
+    /// <summary>
+    ///     Configures the mediator to use a custom context factory implementation.
+    /// </summary>
+    /// <typeparam name="TContextFactory">
+    ///     The type of the context factory to use. Must implement <see cref="IContextFactory" />.
+    /// </typeparam>
+    /// <returns>
+    ///     The current instance of <see cref="IMediatorConfig" />, allowing for fluent configuration.
+    /// </returns>
+    IMediatorConfig UseContextFactory<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    TContextFactory>()
+        where TContextFactory : class, IContextFactory;
+
 
     /// <summary>
     ///     Applies the current configuration to set up the mediator with the provided services and options.

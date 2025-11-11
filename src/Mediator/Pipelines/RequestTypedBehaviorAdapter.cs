@@ -14,21 +14,18 @@ internal sealed class RequestTypedBehaviorAdapter<TRequest> : IRequestPipelineBe
     }
 
     public ValueTask<Result> HandleAsync<TReq>(TReq request,
-                                               RequestHandlerDelegate next,
-                                               CancellationToken cancellationToken = default)
+        RequestHandlerDelegate next,
+        CancellationToken cancellationToken = default)
         where TReq : IRequest
     {
-        if (request is TRequest typed)
-        {
-            return _inner.HandleAsync(typed, next, cancellationToken);
-        }
+        if (request is TRequest typed) return _inner.HandleAsync(typed, next, cancellationToken);
 
         return next();
     }
 
     public ValueTask<Result<TResponse>> HandleAsync<TReq, TResponse>(TReq request,
-                                                                     RequestHandlerDelegate<TResponse> next,
-                                                                     CancellationToken cancellationToken = default)
+        RequestHandlerDelegate<TResponse> next,
+        CancellationToken cancellationToken = default)
         where TResponse : notnull
         where TReq : IRequest<TResponse>
     {

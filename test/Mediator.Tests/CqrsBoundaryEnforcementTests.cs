@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
+using UnambitiousFx.Mediator.Abstractions.Exceptions;
 
 namespace UnambitiousFx.Mediator.Tests;
 
@@ -21,7 +22,9 @@ public sealed class CqrsBoundaryEnforcementTests
         var sender = provider.GetRequiredService<ISender>();
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<CqrsBoundaryViolationException>(async () => await sender.SendAsync(new FirstRequest()));
+        var exception =
+            await Assert.ThrowsAsync<CqrsBoundaryViolationException>(async () =>
+                await sender.SendAsync(new FirstRequest()));
 
         Assert.Contains("CQRS boundary violation", exception.Message);
         Assert.Contains("SecondRequest", exception.Message);
@@ -43,8 +46,10 @@ public sealed class CqrsBoundaryEnforcementTests
         var sender = provider.GetRequiredService<ISender>();
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<CqrsBoundaryViolationException>(async () => await sender.SendAsync(new FirstRequest())
-                        );
+        var exception =
+            await Assert.ThrowsAsync<CqrsBoundaryViolationException>(async () =>
+                await sender.SendAsync(new FirstRequest())
+            );
 
         Assert.Contains("CQRS boundary violation", exception.Message);
         Assert.Contains("FirstRequestWithResponse", exception.Message);
@@ -52,13 +57,15 @@ public sealed class CqrsBoundaryEnforcementTests
     }
 
     [Fact]
-    public async Task Should_throw_when_request_with_response_sends_another_request_within_handler_when_enforcement_enabled()
+    public async Task
+        Should_throw_when_request_with_response_sends_another_request_within_handler_when_enforcement_enabled()
     {
         // Arrange
         var services = new ServiceCollection();
         services.AddMediator(cfg =>
         {
-            cfg.RegisterRequestHandler<FirstRequestWithResponseHandlerThatSendsRequest, FirstRequestWithResponse, int>();
+            cfg.RegisterRequestHandler<FirstRequestWithResponseHandlerThatSendsRequest, FirstRequestWithResponse,
+                int>();
             cfg.RegisterRequestHandler<ValidSecondRequestWithResponseHandler, SecondRequestWithResponse, string>();
             cfg.EnableCqrsBoundaryEnforcement();
         });
@@ -66,8 +73,9 @@ public sealed class CqrsBoundaryEnforcementTests
         var sender = provider.GetRequiredService<ISender>();
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<CqrsBoundaryViolationException>(async () => await sender.SendAsync<FirstRequestWithResponse, int>(new FirstRequestWithResponse())
-                        );
+        var exception = await Assert.ThrowsAsync<CqrsBoundaryViolationException>(async () =>
+            await sender.SendAsync<FirstRequestWithResponse, int>(new FirstRequestWithResponse())
+        );
 
         Assert.Contains("CQRS boundary violation", exception.Message);
         Assert.Contains("SecondRequestWithResponse", exception.Message);
@@ -128,13 +136,9 @@ public sealed class CqrsBoundaryEnforcementTests
         var result = await sender.SendAsync<FirstRequestWithResponse, int>(new FirstRequestWithResponse());
         Assert.True(result.IsSuccess);
         if (result.TryGet(out var value))
-        {
             Assert.Equal(42, value);
-        }
         else
-        {
             Assert.Fail("Result should be successful");
-        }
     }
 
     [Fact]
@@ -174,8 +178,10 @@ public sealed class CqrsBoundaryEnforcementTests
         var sender = provider.GetRequiredService<ISender>();
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<CqrsBoundaryViolationException>(async () => await sender.SendAsync(new FirstRequest())
-                        );
+        var exception =
+            await Assert.ThrowsAsync<CqrsBoundaryViolationException>(async () =>
+                await sender.SendAsync(new FirstRequest())
+            );
 
         // Verify error message contains useful debugging information
         Assert.Contains("Cannot send request 'SecondRequest'", exception.Message);
@@ -216,29 +222,34 @@ public sealed class CqrsBoundaryEnforcementTests
         var sender = provider.GetRequiredService<ISender>();
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<CqrsBoundaryViolationException>(async () => await sender.SendAsync(new FirstRequest())
-                        );
+        var exception =
+            await Assert.ThrowsAsync<CqrsBoundaryViolationException>(async () =>
+                await sender.SendAsync(new FirstRequest())
+            );
 
         Assert.Contains("CQRS boundary enforcement metadata was missing", exception.Message);
         Assert.Contains("violation of the CQRS boundary enforcement behavior", exception.Message);
     }
 
     [Fact]
-    public async Task Should_throw_when_user_manually_removes_boundary_enforcement_key_from_context_in_request_with_response()
+    public async Task
+        Should_throw_when_user_manually_removes_boundary_enforcement_key_from_context_in_request_with_response()
     {
         // Arrange
         var services = new ServiceCollection();
         services.AddMediator(cfg =>
         {
-            cfg.RegisterRequestHandler<RequestWithResponseHandlerThatRemovesBoundaryKey, FirstRequestWithResponse, int>();
+            cfg.RegisterRequestHandler<RequestWithResponseHandlerThatRemovesBoundaryKey, FirstRequestWithResponse,
+                int>();
             cfg.EnableCqrsBoundaryEnforcement();
         });
         var provider = services.BuildServiceProvider();
         var sender = provider.GetRequiredService<ISender>();
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<CqrsBoundaryViolationException>(async () => await sender.SendAsync<FirstRequestWithResponse, int>(new FirstRequestWithResponse())
-                        );
+        var exception = await Assert.ThrowsAsync<CqrsBoundaryViolationException>(async () =>
+            await sender.SendAsync<FirstRequestWithResponse, int>(new FirstRequestWithResponse())
+        );
 
         Assert.Contains("CQRS boundary enforcement metadata was missing", exception.Message);
         Assert.Contains("violation of the CQRS boundary enforcement behavior", exception.Message);
@@ -264,7 +275,7 @@ public sealed class CqrsBoundaryEnforcementTests
         }
 
         public async ValueTask<Result> HandleAsync(FirstRequest request,
-                                                   CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default)
         {
             // This should throw CqrsBoundaryViolationException
             await _sender.SendAsync(new SecondRequest(), cancellationToken);
@@ -283,7 +294,7 @@ public sealed class CqrsBoundaryEnforcementTests
         }
 
         public async ValueTask<Result> HandleAsync(FirstRequest request,
-                                                   CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default)
         {
             // This should throw CqrsBoundaryViolationException
             await _sender.SendAsync<FirstRequestWithResponse, int>(new FirstRequestWithResponse(), cancellationToken);
@@ -292,7 +303,8 @@ public sealed class CqrsBoundaryEnforcementTests
     }
 
     // Handler with response that attempts to send another request (violates CQRS boundary)
-    private sealed class FirstRequestWithResponseHandlerThatSendsRequest : IRequestHandler<FirstRequestWithResponse, int>
+    private sealed class
+        FirstRequestWithResponseHandlerThatSendsRequest : IRequestHandler<FirstRequestWithResponse, int>
     {
         private readonly ISender _sender;
 
@@ -302,10 +314,11 @@ public sealed class CqrsBoundaryEnforcementTests
         }
 
         public async ValueTask<Result<int>> HandleAsync(FirstRequestWithResponse request,
-                                                        CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default)
         {
             // This should throw CqrsBoundaryViolationException
-            await _sender.SendAsync<SecondRequestWithResponse, string>(new SecondRequestWithResponse(), cancellationToken);
+            await _sender.SendAsync<SecondRequestWithResponse, string>(new SecondRequestWithResponse(),
+                cancellationToken);
             return Result.Success(42);
         }
     }
@@ -321,7 +334,7 @@ public sealed class CqrsBoundaryEnforcementTests
         }
 
         public ValueTask<Result> HandleAsync(FirstRequest request,
-                                             CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default)
         {
             // Malicious attempt to remove the boundary enforcement key
             _context.RemoveMetadata("__CQRSBoundaryEnforcement");
@@ -330,7 +343,8 @@ public sealed class CqrsBoundaryEnforcementTests
     }
 
     // Handler with response that attempts to manually remove the boundary enforcement key
-    private sealed class RequestWithResponseHandlerThatRemovesBoundaryKey : IRequestHandler<FirstRequestWithResponse, int>
+    private sealed class
+        RequestWithResponseHandlerThatRemovesBoundaryKey : IRequestHandler<FirstRequestWithResponse, int>
     {
         private readonly IContext _context;
 
@@ -340,7 +354,7 @@ public sealed class CqrsBoundaryEnforcementTests
         }
 
         public ValueTask<Result<int>> HandleAsync(FirstRequestWithResponse request,
-                                                  CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default)
         {
             // Malicious attempt to remove the boundary enforcement key
             _context.RemoveMetadata("__CQRSBoundaryEnforcement");
@@ -352,7 +366,7 @@ public sealed class CqrsBoundaryEnforcementTests
     private sealed class ValidSecondRequestHandler : IRequestHandler<SecondRequest>
     {
         public ValueTask<Result> HandleAsync(SecondRequest request,
-                                             CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default)
         {
             return new ValueTask<Result>(Result.Success());
         }
@@ -361,7 +375,7 @@ public sealed class CqrsBoundaryEnforcementTests
     private sealed class ValidFirstRequestHandler : IRequestHandler<FirstRequest>
     {
         public ValueTask<Result> HandleAsync(FirstRequest request,
-                                             CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default)
         {
             return new ValueTask<Result>(Result.Success());
         }
@@ -370,7 +384,7 @@ public sealed class CqrsBoundaryEnforcementTests
     private sealed class ValidFirstRequestWithResponseHandler : IRequestHandler<FirstRequestWithResponse, int>
     {
         public ValueTask<Result<int>> HandleAsync(FirstRequestWithResponse request,
-                                                  CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default)
         {
             return new ValueTask<Result<int>>(Result.Success(42));
         }
@@ -379,7 +393,7 @@ public sealed class CqrsBoundaryEnforcementTests
     private sealed class ValidSecondRequestWithResponseHandler : IRequestHandler<SecondRequestWithResponse, string>
     {
         public ValueTask<Result<string>> HandleAsync(SecondRequestWithResponse request,
-                                                     CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default)
         {
             return new ValueTask<Result<string>>(Result.Success("test"));
         }

@@ -25,7 +25,7 @@ public interface ISender
     ///     holding the response of type <typeparamref name="TResponse" />.
     /// </returns>
     ValueTask<Result<TResponse>> SendAsync<TRequest, TResponse>(TRequest request,
-                                                                CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default)
         where TResponse : notnull
         where TRequest : IRequest<TResponse>;
 
@@ -35,7 +35,7 @@ public interface ISender
     /// <param name="cancellationToken">An optional cancellation token to cancel the operation.</param>
     /// <returns>A <see cref="ValueTask{Result}" /> that represents the result of the operation.</returns>
     ValueTask<Result> SendAsync<TRequest>(TRequest request,
-                                          CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default)
         where TRequest : IRequest;
 
     /// Sends a streaming request and returns an async enumerable of results.
@@ -57,7 +57,7 @@ public interface ISender
     ///     where each result holds an item of type <typeparamref name="TItem" /> or an error.
     /// </returns>
     IAsyncEnumerable<Result<TItem>> SendStreamAsync<TRequest, TItem>(TRequest request,
-                                                                     CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default)
         where TRequest : IStreamRequest<TItem>
         where TItem : notnull;
 }

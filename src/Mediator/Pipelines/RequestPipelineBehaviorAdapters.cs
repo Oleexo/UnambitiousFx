@@ -15,8 +15,8 @@ internal sealed class RequestTypedBehaviorAdapter<TRequest, TResponse> : IReques
     }
 
     public ValueTask<Result> HandleAsync<TReq>(TReq request,
-                                               RequestHandlerDelegate next,
-                                               CancellationToken cancellationToken = default)
+        RequestHandlerDelegate next,
+        CancellationToken cancellationToken = default)
         where TReq : IRequest
     {
         // This typed behavior only applies to requests with a response.
@@ -24,8 +24,8 @@ internal sealed class RequestTypedBehaviorAdapter<TRequest, TResponse> : IReques
     }
 
     public ValueTask<Result<TRes>> HandleAsync<TReq, TRes>(TReq request,
-                                                           RequestHandlerDelegate<TRes> next,
-                                                           CancellationToken cancellationToken = default)
+        RequestHandlerDelegate<TRes> next,
+        CancellationToken cancellationToken = default)
         where TRes : notnull
         where TReq : IRequest<TRes>
     {

@@ -25,8 +25,8 @@ public sealed class SimpleLoggingBehavior : IRequestPipelineBehavior, IEventPipe
 
     /// <inheritdoc />
     public async ValueTask<Result> HandleAsync<TEvent>(TEvent @event,
-                                                       EventHandlerDelegate next,
-                                                       CancellationToken cancellationToken = default)
+        EventHandlerDelegate next,
+        CancellationToken cancellationToken = default)
         where TEvent : IEvent
     {
         var startedAt = Stopwatch.GetTimestamp();
@@ -37,21 +37,18 @@ public sealed class SimpleLoggingBehavior : IRequestPipelineBehavior, IEventPipe
 
         var elapsedTime = Stopwatch.GetElapsedTime(startedAt);
         if (!result.TryGet(out var error))
-        {
-            _logger.LogWarning("Event {EventName} handled in {ElapsedMilliseconds}ms with error {ErrorMessage}", eventName, elapsedTime, error.ToDisplayString());
-        }
+            _logger.LogWarning("Event {EventName} handled in {ElapsedMilliseconds}ms with error {ErrorMessage}",
+                eventName, elapsedTime, error.ToDisplayString());
         else
-        {
             _logger.LogInformation("Event {EventName} handled in {ElapsedMilliseconds}ms", eventName, elapsedTime);
-        }
 
         return result;
     }
 
     /// <inheritdoc />
     public async ValueTask<Result> HandleAsync<TRequest>(TRequest request,
-                                                         RequestHandlerDelegate next,
-                                                         CancellationToken cancellationToken = default)
+        RequestHandlerDelegate next,
+        CancellationToken cancellationToken = default)
         where TRequest : IRequest
     {
         var startedAt = Stopwatch.GetTimestamp();
@@ -63,21 +60,19 @@ public sealed class SimpleLoggingBehavior : IRequestPipelineBehavior, IEventPipe
 
         var elapsedTime = Stopwatch.GetElapsedTime(startedAt);
         if (!result.TryGet(out var errors))
-        {
-            _logger.LogWarning("Request {RequestName} handled in {ElapsedMilliseconds}ms with error {ErrorMessage}", requestName, elapsedTime, errors.ToDisplayString());
-        }
+            _logger.LogWarning("Request {RequestName} handled in {ElapsedMilliseconds}ms with error {ErrorMessage}",
+                requestName, elapsedTime, errors.ToDisplayString());
         else
-        {
-            _logger.LogInformation("Request {RequestName} handled in {ElapsedMilliseconds}ms", requestName, elapsedTime);
-        }
+            _logger.LogInformation("Request {RequestName} handled in {ElapsedMilliseconds}ms", requestName,
+                elapsedTime);
 
         return result;
     }
 
     /// <inheritdoc />
     public async ValueTask<Result<TResponse>> HandleAsync<TRequest, TResponse>(TRequest request,
-                                                                               RequestHandlerDelegate<TResponse> next,
-                                                                               CancellationToken cancellationToken = default)
+        RequestHandlerDelegate<TResponse> next,
+        CancellationToken cancellationToken = default)
         where TRequest : IRequest<TResponse>
         where TResponse : notnull
     {
@@ -89,13 +84,11 @@ public sealed class SimpleLoggingBehavior : IRequestPipelineBehavior, IEventPipe
 
         var elapsedTime = Stopwatch.GetElapsedTime(startedAt);
         if (!result.TryGet(out _, out var error))
-        {
-            _logger.LogWarning("Request {RequestName} handled in {ElapsedMilliseconds}ms with error {ErrorMessage}", requestName, elapsedTime, error.ToDisplayString());
-        }
+            _logger.LogWarning("Request {RequestName} handled in {ElapsedMilliseconds}ms with error {ErrorMessage}",
+                requestName, elapsedTime, error.ToDisplayString());
         else
-        {
-            _logger.LogInformation("Request {RequestName} handled in {ElapsedMilliseconds}ms", requestName, elapsedTime);
-        }
+            _logger.LogInformation("Request {RequestName} handled in {ElapsedMilliseconds}ms", requestName,
+                elapsedTime);
 
         return result;
     }

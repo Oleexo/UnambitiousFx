@@ -24,7 +24,10 @@ public interface IDependencyInjectionBuilder
     ///     response.
     ///     It enables decoupling of the request processing logic and promotes testability and maintainability.
     /// </remarks>
-    IDependencyInjectionBuilder RegisterRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TRequestHandler, TRequest, TResponse>()
+    IDependencyInjectionBuilder RegisterRequestHandler<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    TRequestHandler, TRequest,
+        TResponse>()
         where TRequestHandler : class, IRequestHandler<TRequest, TResponse>
         where TResponse : notnull
         where TRequest : IRequest<TResponse>;
@@ -34,7 +37,9 @@ public interface IDependencyInjectionBuilder
     /// TRequest: The type of the request to be handled. Must implement the IRequest interface.
     /// This method is used to register a request handler that processes a specific request type without returning a response.
     /// The method ensures that the appropriate request handler is associated with its corresponding request type for processing.
-    IDependencyInjectionBuilder RegisterRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TRequestHandler, TRequest>()
+    IDependencyInjectionBuilder RegisterRequestHandler<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    TRequestHandler, TRequest>()
         where TRequestHandler : class, IRequestHandler<TRequest>
         where TRequest : IRequest;
 
@@ -53,7 +58,9 @@ public interface IDependencyInjectionBuilder
     ///     container,
     ///     enabling automatic resolution and invocation of the handlers during event processing.
     /// </remarks>
-    IDependencyInjectionBuilder RegisterEventHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TEventHandler, TEvent>()
+    IDependencyInjectionBuilder RegisterEventHandler<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    TEventHandler, TEvent>()
         where TEventHandler : class, IEventHandler<TEvent>
         where TEvent : class, IEvent;
 
@@ -76,8 +83,10 @@ public interface IDependencyInjectionBuilder
     ///     asynchronous stream of items. This enables efficient handling of large datasets without loading everything into
     ///     memory.
     /// </remarks>
-    IDependencyInjectionBuilder RegisterStreamRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TStreamRequestHandler, TRequest,
-                                                             TItem>()
+    IDependencyInjectionBuilder RegisterStreamRequestHandler<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    TStreamRequestHandler, TRequest,
+        TItem>()
         where TStreamRequestHandler : class, IStreamRequestHandler<TRequest, TItem>
         where TItem : notnull
         where TRequest : IStreamRequest<TItem>;

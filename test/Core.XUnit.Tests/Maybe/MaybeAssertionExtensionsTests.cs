@@ -1,7 +1,7 @@
 using UnambitiousFx.Core.Maybe;
-using UnambitiousFx.Core.XUnit.Options;
+using UnambitiousFx.Core.XUnit.Maybe;
 
-namespace UnambitiousFx.Core.XUnit.Tests.Options;
+namespace UnambitiousFx.Core.XUnit.Tests.Maybe;
 
 public sealed class OptionAssertionExtensionsTests
 {

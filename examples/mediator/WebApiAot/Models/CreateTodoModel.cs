@@ -1,4 +1,4 @@
-﻿namespace WebApiAot.Models;
+namespace WebApiAot.Models;
 
 public sealed record CreateTodoModel
 {

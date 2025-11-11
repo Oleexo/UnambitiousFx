@@ -25,5 +25,5 @@ public interface IStreamRequestHandler<in TRequest, TItem>
     ///     <typeparamref name="TItem" /> or an error.
     /// </returns>
     IAsyncEnumerable<Result<TItem>> HandleAsync(TRequest request,
-                                                CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken = default);
 }

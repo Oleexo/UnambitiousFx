@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using UnambitiousFx.Mediator.Abstractions.Exceptions;
 
 namespace UnambitiousFx.Mediator.Resolvers;
 

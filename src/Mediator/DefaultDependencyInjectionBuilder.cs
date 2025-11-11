@@ -8,52 +8,57 @@ internal sealed class DefaultDependencyInjectionBuilder : IDependencyInjectionBu
 {
     private readonly List<Action<IServiceCollection, ServiceLifetime>> _actions = [];
 
-    public IDependencyInjectionBuilder RegisterRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TRequestHandler, TRequest,
-                                                              TResponse>()
+    public IDependencyInjectionBuilder RegisterRequestHandler<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    TRequestHandler, TRequest,
+        TResponse>()
         where TRequestHandler : class, IRequestHandler<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
         where TResponse : notnull
     {
         _actions.Add((services,
-                      lifetime) => services.RegisterRequestHandler<TRequestHandler, TRequest, TResponse>(lifetime));
+            lifetime) => services.RegisterRequestHandler<TRequestHandler, TRequest, TResponse>(lifetime));
         return this;
     }
 
-    public IDependencyInjectionBuilder RegisterRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TRequestHandler, TRequest>()
+    public IDependencyInjectionBuilder RegisterRequestHandler<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    TRequestHandler, TRequest>()
         where TRequestHandler : class, IRequestHandler<TRequest>
         where TRequest : IRequest
     {
         _actions.Add((services,
-                      lifetime) => services.RegisterRequestHandler<TRequestHandler, TRequest>(lifetime));
+            lifetime) => services.RegisterRequestHandler<TRequestHandler, TRequest>(lifetime));
         return this;
     }
 
-    public IDependencyInjectionBuilder RegisterEventHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TEventHandler, TEvent>()
+    public IDependencyInjectionBuilder RegisterEventHandler<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    TEventHandler, TEvent>()
         where TEventHandler : class, IEventHandler<TEvent>
         where TEvent : class, IEvent
     {
         _actions.Add((services,
-                      lifetime) => services.RegisterEventHandler<TEventHandler, TEvent>(lifetime));
+            lifetime) => services.RegisterEventHandler<TEventHandler, TEvent>(lifetime));
         return this;
     }
 
-    public IDependencyInjectionBuilder RegisterStreamRequestHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TStreamRequestHandler,
-                                                                    TRequest, TItem>()
+    public IDependencyInjectionBuilder RegisterStreamRequestHandler<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    TStreamRequestHandler,
+        TRequest, TItem>()
         where TStreamRequestHandler : class, IStreamRequestHandler<TRequest, TItem>
         where TItem : notnull
         where TRequest : IStreamRequest<TItem>
     {
         _actions.Add((services,
-                      lifetime) => services.RegisterStreamRequestHandler<TStreamRequestHandler, TRequest, TItem>(lifetime));
+            lifetime) => services.RegisterStreamRequestHandler<TStreamRequestHandler, TRequest, TItem>(lifetime));
         return this;
     }
 
     public void Apply(IServiceCollection services,
-                      ServiceLifetime lifetime)
+        ServiceLifetime lifetime)
     {
-        foreach (var action in _actions)
-        {
-            action(services, lifetime);
-        }
+        foreach (var action in _actions) action(services, lifetime);
     }
 }

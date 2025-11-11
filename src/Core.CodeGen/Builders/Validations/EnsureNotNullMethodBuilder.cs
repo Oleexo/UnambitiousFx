@@ -8,7 +8,7 @@ namespace UnambitiousFx.Core.CodeGen.Builders.Validations;
 /// </summary>
 internal sealed class EnsureNotNullMethodBuilder
 {
-  
+
 
     /// <summary>
     ///     Builds EnsureNotNull for Result{T}.

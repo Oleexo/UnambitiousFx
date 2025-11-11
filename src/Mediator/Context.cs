@@ -1,49 +1,32 @@
-﻿using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
+using UnambitiousFx.Mediator.Abstractions.Exceptions;
 
 namespace UnambitiousFx.Mediator;
 
-internal sealed class ContextAccessor : IContextAccessor
+internal readonly record struct Context : IContext
 {
-    public ContextAccessor(IContext context)
-    {
-        Context = context;
-    }
-
-    public IContext Context { get; set; }
-}
-
-internal readonly struct Context : IContext
-{
-    private readonly IPublisher _publisher;
+    private readonly Dictionary<Type, IContextFeature> _features;
     private readonly Dictionary<string, object> _metadata;
+    private readonly IPublisher _publisher;
 
     public Context(IPublisher publisher,
-                   string? correlationId = null,
-                   DateTimeOffset? occuredAt = null,
-                   Dictionary<string, object>? metadata = null)
+        string correlationId,
+        IReadOnlyDictionary<Type, IContextFeature>? features = null,
+        IReadOnlyDictionary<string, object>? metadata = null)
     {
         _publisher = publisher;
         CorrelationId = correlationId ??
                         Guid.CreateVersion7()
                             .ToString();
-        OccuredAt = occuredAt ?? DateTimeOffset.UtcNow;
-        _metadata = metadata ?? new Dictionary<string, object>();
-    }
-
-    private Context(Context context)
-    {
-        _publisher = context._publisher;
-        CorrelationId = context.CorrelationId;
-        OccuredAt = context.OccuredAt;
-        _metadata = new Dictionary<string, object>(context._metadata);
+        _metadata = metadata?.ToDictionary() ?? new Dictionary<string, object>();
+        _features = features?.ToDictionary() ?? new Dictionary<Type, IContextFeature>();
     }
 
     public string CorrelationId { get; }
-    public DateTimeOffset OccuredAt { get; }
 
     public void SetMetadata(string key,
-                            object value)
+        object value)
     {
         _metadata[key] = value;
     }
@@ -54,7 +37,7 @@ internal readonly struct Context : IContext
     }
 
     public bool TryGetMetadata<T>(string key,
-                                  out T? value)
+        out T? value)
     {
         if (_metadata.TryGetValue(key, out var obj) &&
             obj is T tValue)
@@ -71,9 +54,7 @@ internal readonly struct Context : IContext
     {
         if (_metadata.TryGetValue(key, out var obj) &&
             obj is T tValue)
-        {
             return tValue;
-        }
 
         return default;
     }
@@ -81,15 +62,15 @@ internal readonly struct Context : IContext
     public IReadOnlyDictionary<string, object> Metadata => _metadata;
 
     public ValueTask<Result> PublishEventAsync<TEvent>(TEvent @event,
-                                                       CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default)
         where TEvent : class, IEvent
     {
         return _publisher.PublishAsync(@event, cancellationToken);
     }
 
     public ValueTask<Result> PublishEventAsync<TEvent>(TEvent @event,
-                                                       PublishMode mode,
-                                                       CancellationToken cancellationToken = default)
+        PublishMode mode,
+        CancellationToken cancellationToken = default)
         where TEvent : class, IEvent
     {
         return _publisher.PublishAsync(@event, mode, cancellationToken);
@@ -98,5 +79,24 @@ internal readonly struct Context : IContext
     public ValueTask<Result> CommitEventsAsync(CancellationToken cancellationToken = default)
     {
         return _publisher.CommitAsync(cancellationToken);
+    }
+
+    public bool TryGetFeature<TFeature>(out TFeature? feature) where TFeature : class, IContextFeature
+    {
+        feature = GetFeature<TFeature>();
+        return feature != null;
+    }
+
+    public TFeature? GetFeature<TFeature>() where TFeature : class, IContextFeature
+    {
+        return _features.TryGetValue(typeof(TFeature), out var value)
+            ? (TFeature)value
+            : null;
+    }
+
+    public TFeature MustGetFeature<TFeature>() where TFeature : class, IContextFeature
+    {
+        var feature = GetFeature<TFeature>();
+        return feature ?? throw new MissingContextFeatureException(typeof(TFeature));
     }
 }

@@ -1,4 +1,4 @@
-﻿using UnambitiousFx.Mediator.Abstractions;
+using UnambitiousFx.Mediator.Abstractions;
 
 namespace UnambitiousFx.Mediator;
 

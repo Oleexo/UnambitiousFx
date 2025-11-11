@@ -1,4 +1,4 @@
-﻿using Application.Domain.Entities;
+using Application.Domain.Entities;
 using UnambitiousFx.Core.Maybe;
 
 namespace Application.Domain.Repositories;

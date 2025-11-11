@@ -1,4 +1,4 @@
-﻿using UnambitiousFx.Core.Results;
+using UnambitiousFx.Core.Results;
 
 namespace UnambitiousFx.Mediator.Abstractions;
 
@@ -18,7 +18,7 @@ public interface IEventDispatcher
     ///     A ValueTask containing the result of the dispatch operation, which may indicate success or a failure.
     /// </returns>
     ValueTask<Result> DispatchAsync(IEvent @event,
-                                    CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     Dispatches an event asynchronously within the specified context.
@@ -31,6 +31,6 @@ public interface IEventDispatcher
     ///     indicating the outcome of the operation.
     /// </returns>
     ValueTask<Result> DispatchAsync<TEvent>(TEvent @event,
-                                            CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default)
         where TEvent : class, IEvent;
 }
