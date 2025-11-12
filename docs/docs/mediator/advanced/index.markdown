@@ -17,6 +17,7 @@ Advanced usage of UnambitiousFx.Mediator: compile‑time registrations, AOT/trim
 - Structure larger apps (e.g., register groups) and how this interacts with behaviors
 
 ## Quick links
+- Unified event dispatching: ./unified-event-dispatching.html — Comprehensive guide to event distribution modes, routing filters, and dispatch strategies.
 - Mediator configuration reference: ./mediator-config-reference.html — Full IMediatorConfig surface, lifetimes, behaviors, streaming.
 - Event orchestrator: ./event-orchestrator.html — Choose how to run event handlers (sequential, concurrent, or custom).
 - Mediator generator: ./mediator-generator.html — Generate DI registrations for handlers at compile time; AOT‑safe, no reflection.

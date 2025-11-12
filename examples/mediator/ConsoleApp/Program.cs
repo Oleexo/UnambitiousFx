@@ -1,7 +1,7 @@
 using System.Diagnostics;
-using ConsoleApp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using UnambitiousFx.Examples.ConsoleApp;
 using UnambitiousFx.Examples.ConsoleApp.Commands;
 using UnambitiousFx.Examples.ConsoleApp.Events;
 using UnambitiousFx.Examples.ConsoleApp.Pipelines;
@@ -11,14 +11,14 @@ using UnambitiousFx.Mediator.Abstractions;
 
 // Setup DI container
 var services = new ServiceCollection()
-              .AddLogging(builder =>
-              {
-                  builder.AddConsole();
-                  builder.SetMinimumLevel(LogLevel.Information);
-              })
-              .AddMediator(cfg => cfg.AddRegisterGroup(new RegisterGroup()))
-              .AddScoped<IStreamRequestPipelineBehavior, StreamLoggingBehavior>()
-              .BuildServiceProvider();
+    .AddLogging(builder =>
+    {
+        builder.AddConsole();
+        builder.SetMinimumLevel(LogLevel.Information);
+    })
+    .AddMediator(cfg => cfg.AddRegisterGroup(new RegisterGroup()))
+    .AddScoped<IStreamRequestPipelineBehavior, StreamLoggingBehavior>()
+    .BuildServiceProvider();
 
 var sender = services.GetRequiredService<ISender>();
 var publisher = services.GetRequiredService<IPublisher>();
@@ -52,10 +52,7 @@ async Task RunSimpleCommandScenario(ISender senderService)
         var command = new SimpleCommand { Message = $"Command {i}" };
         var result = await senderService.SendAsync(command);
 
-        if (!result.IsSuccess)
-        {
-            Console.WriteLine($"Failed with {result.Errors.Count} errors");
-        }
+        if (!result.IsSuccess) Console.WriteLine($"Failed with {result.Errors.Count} errors");
     }
 
     stopwatch.Stop();
@@ -79,10 +76,7 @@ async Task RunCommandWithResponseScenario(ISender senderService)
         };
         var result = await senderService.SendAsync<CreateOrderCommand, OrderCreatedResponse>(command);
 
-        if (!result.IsSuccess)
-        {
-            Console.WriteLine($"Failed with {result.Errors.Count} errors");
-        }
+        if (!result.IsSuccess) Console.WriteLine($"Failed with {result.Errors.Count} errors");
     }
 
     stopwatch.Stop();
@@ -101,10 +95,7 @@ async Task RunQueryScenario(ISender senderService)
         var query = new GetOrderQuery { OrderId = Guid.NewGuid() };
         var result = await senderService.SendAsync<GetOrderQuery, OrderDto>(query);
 
-        if (!result.IsSuccess)
-        {
-            Console.WriteLine($"Failed with {result.Errors.Count} errors");
-        }
+        if (!result.IsSuccess) Console.WriteLine($"Failed with {result.Errors.Count} errors");
     }
 
     stopwatch.Stop();
@@ -126,7 +117,6 @@ async Task RunStreamingQueryScenario(ISender senderService)
     var orderCount = 0;
 
     await foreach (var result in senderService.SendStreamAsync<GetOrdersStreamQuery, OrderDto>(streamQuery))
-    {
         if (result.IsSuccess)
         {
             orderCount++;
@@ -134,11 +124,10 @@ async Task RunStreamingQueryScenario(ISender senderService)
         else
         {
             var errorMsg = result.Errors.FirstOrDefault()
-                                ?.Message ??
+                               ?.Message ??
                            "Unknown error";
             Console.WriteLine($"Error receiving order: {errorMsg}");
         }
-    }
 
     stopwatch.Stop();
     Console.WriteLine($"Streamed {orderCount} orders in {stopwatch.ElapsedMilliseconds}ms");
@@ -162,10 +151,7 @@ async Task RunEventPublishingScenario(IPublisher publisherService)
         };
         var result = await publisherService.PublishAsync(@event);
 
-        if (!result.IsSuccess)
-        {
-            Console.WriteLine($"Failed with {result.Errors.Count} errors");
-        }
+        if (!result.IsSuccess) Console.WriteLine($"Failed with {result.Errors.Count} errors");
     }
 
     stopwatch.Stop();
@@ -189,10 +175,7 @@ async Task RunMultipleEventHandlersScenario(IPublisher publisherService)
         };
         var result = await publisherService.PublishAsync(@event);
 
-        if (!result.IsSuccess)
-        {
-            Console.WriteLine($"Failed with {result.Errors.Count} errors");
-        }
+        if (!result.IsSuccess) Console.WriteLine($"Failed with {result.Errors.Count} errors");
     }
 
     stopwatch.Stop();
@@ -269,18 +252,18 @@ async Task RunConcurrentRequestsScenario(ISender senderService)
     var stopwatch = Stopwatch.StartNew();
 
     var tasks = Enumerable.Range(0, 10)
-                          .Select(async batchIndex =>
-                          {
-                              for (var i = 0; i < 10; i++)
-                              {
-                                  var command = new ConcurrentCommand
-                                  {
-                                      BatchId = batchIndex,
-                                      ItemId = i
-                                  };
-                                  await senderService.SendAsync(command);
-                              }
-                          });
+        .Select(async batchIndex =>
+        {
+            for (var i = 0; i < 10; i++)
+            {
+                var command = new ConcurrentCommand
+                {
+                    BatchId = batchIndex,
+                    ItemId = i
+                };
+                await senderService.SendAsync(command);
+            }
+        });
 
     await Task.WhenAll(tasks);
 

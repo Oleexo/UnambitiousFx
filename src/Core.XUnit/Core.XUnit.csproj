@@ -1,28 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <IncludeSymbols>true</IncludeSymbols>
-        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <Description>Assertion helpers for UnambitiousFx Core functional primitives (Result / Option / Either) when using xUnit.</Description>
-        <PackageTags>Result;Option;Either;xunit;assertions;testing;functional;unambitiousfx</PackageTags>
-        <PackageId>UnambitiousFx.Core.XUnit</PackageId>
-        <AssemblyName>UnambitiousFx.Core.XUnit</AssemblyName>
-    </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="xunit.assert" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="xunit.assert" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Core\Core.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Remove="README.md" />
-    </ItemGroup>
+  <ItemGroup>
+    <None Remove="README.md" />
+  </ItemGroup>
 
 </Project>

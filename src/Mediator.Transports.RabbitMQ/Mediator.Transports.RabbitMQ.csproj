@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>UnambitiousFx.Mediator.Transports.RabbitMQ</RootNamespace>
+    <AssemblyName>UnambitiousFx.Mediator.Transports.RabbitMQ</AssemblyName>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>Unambitious.Mediator.Transports.RabbitMQ</PackageId>
+    <Description>RabbitMQ transport implementation for Unambitious Mediator distributed messaging</Description>
+    <PackageTags>mediator;rabbitmq;messaging;cqrs;distributed</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Mediator.Transports.Abstractions\Mediator.Transports.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="RabbitMQ.Client" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
+  </ItemGroup>
+
+</Project>

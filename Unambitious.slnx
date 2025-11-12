@@ -1,29 +1,33 @@
 <Solution>
   <Folder Name="/benchmarks/">
-    <Project Path="benchmarks\CoreBenchmark\CoreBenchmark.csproj" Type="Classic C#" />
-    <Project Path="benchmarks\MediatorBenchmark\MediatorBenchmark.csproj" Type="Classic C#" />
+    <Project Path="benchmarks\CoreBenchmark\CoreBenchmark.csproj" />
+    <Project Path="benchmarks\MediatorBenchmark\MediatorBenchmark.csproj" />
   </Folder>
   <Folder Name="/examples/" />
   <Folder Name="/examples/mediator/">
-    <Project Path="examples\ConsoleApp\ConsoleApp.csproj" Type="Classic C#" />
-    <Project Path="examples\mediator\Application\Application.csproj" Type="Classic C#" />
-    <Project Path="examples\mediator\WebApi.Tests\WebApi.Tests.csproj" Type="Classic C#" />
-    <Project Path="examples\mediator\WebApiAot\WebApiAot.csproj" Type="Classic C#" />
-    <Project Path="examples\mediator\WebApi\WebApi.csproj" Type="Classic C#" />
+    <Project Path="examples\mediator\Application\Application.csproj" />
+    <Project Path="examples\mediator\ConsoleApp\ConsoleApp.csproj" />
+    <Project Path="examples\mediator\WebApi.Tests\WebApi.Tests.csproj" />
+    <Project Path="examples\mediator\WebApiAot\WebApiAot.csproj" />
+    <Project Path="examples\mediator\WebApi\WebApi.csproj" />
   </Folder>
   <Folder Name="/src/">
-    <Project Path="src\Core.CodeGen.Design\Core.CodeGen.Design.csproj" Type="Classic C#" />
-    <Project Path="src\Core.CodeGen\Core.CodeGen.csproj" Type="Classic C#" />
-    <Project Path="src\Core.XUnit\Core.XUnit.csproj" Type="Classic C#" />
-    <Project Path="src\Core\Core.csproj" Type="Classic C#" />
-    <Project Path="src\Mediator.Abstractions\Mediator.Abstractions.csproj" Type="Classic C#" />
-    <Project Path="src\Mediator.Generator\Mediator.Generator.csproj" Type="Classic C#" />
-    <Project Path="src\Mediator\Mediator.csproj" Type="Classic C#" />
+    <Project Path="src/Mediator.Transports.RabbitMQ/Mediator.Transports.RabbitMQ.csproj" />
+    <Project Path="src/Mediator.Transports/Mediator.Transports.csproj" />
+    <Project Path="src\Core.CodeGen.Design\Core.CodeGen.Design.csproj" />
+    <Project Path="src\Core.CodeGen\Core.CodeGen.csproj" />
+    <Project Path="src\Core.XUnit\Core.XUnit.csproj" />
+    <Project Path="src\Core\Core.csproj" />
+    <Project Path="src\Mediator.Abstractions\Mediator.Abstractions.csproj" />
+    <Project Path="src\Mediator.Generator\Mediator.Generator.csproj" />
+    <Project Path="src\Mediator.Transports.Abstractions\Mediator.Transports.Abstractions.csproj" />
+    <Project Path="src\Mediator.Transports.AwsSnsSqs\Mediator.Transports.AwsSnsSqs.csproj" />
+    <Project Path="src\Mediator\Mediator.csproj" />
   </Folder>
   <Folder Name="/test/">
-    <Project Path="test\Core.Tests\Core.Tests.csproj" Type="Classic C#" />
-    <Project Path="test\Core.XUnit.Tests\Core.XUnit.Tests.csproj" Type="Classic C#" />
-    <Project Path="test\Mediator.Tests\Mediator.Tests.csproj" Type="Classic C#" />
+    <Project Path="test\Core.Tests\Core.Tests.csproj" />
+    <Project Path="test\Core.XUnit.Tests\Core.XUnit.Tests.csproj" />
+    <Project Path="test\Mediator.Tests\Mediator.Tests.csproj" />
   </Folder>
   <Folder Name="/test/_/">
     <File Path="test\Directory.Build.props" />

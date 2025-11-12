@@ -1,5 +1,6 @@
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
+using UnambitiousFx.Mediator.Transports.Abstractions;
 
 namespace UnambitiousFx.Mediator;
 
@@ -58,7 +59,17 @@ public sealed class InMemoryEventOutboxStorage : IEventOutboxStorage
         CancellationToken cancellationToken = default)
         where TEvent : class, IEvent
     {
-        _items.Add(new Item(@event));
+        // Default to LocalOnly for backward compatibility
+        return AddAsync(@event, DistributionMode.LocalOnly, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public ValueTask<Result> AddAsync<TEvent>(TEvent @event,
+        DistributionMode distributionMode,
+        CancellationToken cancellationToken = default)
+        where TEvent : class, IEvent
+    {
+        _items.Add(new Item(@event, distributionMode));
 
         return new ValueTask<Result>(Result.Success());
     }
@@ -102,16 +113,27 @@ public sealed class InMemoryEventOutboxStorage : IEventOutboxStorage
         return new ValueTask<int?>(_items.FirstOrDefault(i => i.Event.Equals(@event))?.Attempts);
     }
 
+    /// <inheritdoc />
+    public ValueTask<DistributionMode> GetDistributionModeAsync(IEvent @event,
+        CancellationToken cancellationToken = default)
+    {
+        var item = _items.FirstOrDefault(i => i.Event.Equals(@event));
+        // Return LocalOnly as default if event not found (defensive programming)
+        return new ValueTask<DistributionMode>(item?.DistributionMode ?? DistributionMode.LocalOnly);
+    }
+
     private sealed record Item
     {
-        public Item(IEvent @event)
+        public Item(IEvent @event, DistributionMode distributionMode = DistributionMode.LocalOnly)
         {
             Event = @event;
+            DistributionMode = distributionMode;
             Processed = false;
             CreatedAt = DateTimeOffset.UtcNow;
         }
 
         public IEvent Event { get; }
+        public DistributionMode DistributionMode { get; }
         public bool Processed { get; set; }
         public DateTimeOffset CreatedAt { get; }
         public DateTimeOffset? ProcessedAt { get; set; }

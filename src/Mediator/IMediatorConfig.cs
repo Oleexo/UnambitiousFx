@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using UnambitiousFx.Mediator.Abstractions;
 using UnambitiousFx.Mediator.Orchestrators;
+using UnambitiousFx.Mediator.Transports.Configuration;
 
 namespace UnambitiousFx.Mediator;
 
@@ -34,7 +35,7 @@ public interface IMediatorConfig
     /// </returns>
     IMediatorConfig RegisterRequestPipelineBehavior<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-    TRequestPipelineBehavior>()
+        TRequestPipelineBehavior>()
         where TRequestPipelineBehavior : class, IRequestPipelineBehavior;
 
     /// <summary>
@@ -53,7 +54,7 @@ public interface IMediatorConfig
     /// </returns>
     IMediatorConfig RegisterRequestPipelineBehavior<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-    TBehavior, TRequest>()
+        TBehavior, TRequest>()
         where TBehavior : class, IRequestPipelineBehavior<TRequest>
         where TRequest : IRequest;
 
@@ -76,7 +77,7 @@ public interface IMediatorConfig
     /// </returns>
     IMediatorConfig RegisterRequestPipelineBehavior<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-    TBehavior, TRequest,
+        TBehavior, TRequest,
         TResponse>()
         where TBehavior : class, IRequestPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
@@ -98,7 +99,7 @@ public interface IMediatorConfig
     /// </returns>
     IMediatorConfig RegisterConditionalRequestPipelineBehavior<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-    TBehavior>(
+        TBehavior>(
         Func<object, bool> predicate)
         where TBehavior : class, IRequestPipelineBehavior;
 
@@ -121,7 +122,7 @@ public interface IMediatorConfig
     /// </returns>
     IMediatorConfig RegisterConditionalRequestPipelineBehavior<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-    TBehavior, TRequest>(
+        TBehavior, TRequest>(
         Func<TRequest, bool> predicate)
         where TBehavior : class, IRequestPipelineBehavior<TRequest>
         where TRequest : IRequest;
@@ -148,7 +149,7 @@ public interface IMediatorConfig
     /// </returns>
     IMediatorConfig RegisterConditionalRequestPipelineBehavior<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-    TBehavior, TRequest, TResponse>(
+        TBehavior, TRequest, TResponse>(
         Func<TRequest, bool> predicate)
         where TBehavior : class, IRequestPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
@@ -167,7 +168,7 @@ public interface IMediatorConfig
     /// </returns>
     IMediatorConfig RegisterEventPipelineBehavior<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-    TEventPipelineBehavior>()
+        TEventPipelineBehavior>()
         where TEventPipelineBehavior : class, IEventPipelineBehavior;
 
     /// <summary>
@@ -183,7 +184,7 @@ public interface IMediatorConfig
     /// </returns>
     IMediatorConfig SetEventOrchestrator<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-    TEventOrchestrator>()
+        TEventOrchestrator>()
         where TEventOrchestrator : class, IEventOrchestrator;
 
     /// <summary>
@@ -216,7 +217,7 @@ public interface IMediatorConfig
     /// </returns>
     IMediatorConfig RegisterRequestHandler<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-    THandler, TRequest, TResponse>()
+        THandler, TRequest, TResponse>()
         where TResponse : notnull
         where TRequest : IRequest<TResponse>
         where THandler : class, IRequestHandler<TRequest, TResponse>;
@@ -235,7 +236,7 @@ public interface IMediatorConfig
     /// </returns>
     IMediatorConfig RegisterRequestHandler<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-    THandler, TRequest>()
+        THandler, TRequest>()
         where TRequest : IRequest
         where THandler : class, IRequestHandler<TRequest>;
 
@@ -253,7 +254,7 @@ public interface IMediatorConfig
     /// </returns>
     IMediatorConfig RegisterEventHandler<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-    THandler, TEvent>()
+        THandler, TEvent>()
         where THandler : class, IEventHandler<TEvent>
         where TEvent : class, IEvent;
 
@@ -269,7 +270,7 @@ public interface IMediatorConfig
     /// </returns>
     IMediatorConfig SetEventOutboxStorage<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-    TEventOutboxStorage>()
+        TEventOutboxStorage>()
         where TEventOutboxStorage : class, IEventOutboxStorage;
 
     /// <summary>
@@ -310,7 +311,7 @@ public interface IMediatorConfig
     /// </returns>
     IMediatorConfig AddValidator<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-    TValidator, TRequest>()
+        TValidator, TRequest>()
         where TValidator : class, IRequestValidator<TRequest>
         where TRequest : IRequest;
 
@@ -341,9 +342,62 @@ public interface IMediatorConfig
     /// </returns>
     IMediatorConfig UseContextFactory<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-    TContextFactory>()
+        TContextFactory>()
         where TContextFactory : class, IContextFactory;
 
+
+    /// <summary>
+    ///     Enables distributed messaging support for the mediator, allowing events to be published
+    ///     to external message transports while maintaining local-first defaults.
+    /// </summary>
+    /// <param name="configure">
+    ///     Optional action to configure distributed messaging options and message traits.
+    /// </param>
+    /// <returns>
+    ///     A builder instance for configuring distributed messaging features.
+    /// </returns>
+    IMediatorConfig EnableDistributedMessaging(Action<IDistributedMessagingBuilder>? configure = null);
+
+    /// <summary>
+    ///     Registers an event routing filter that determines how events should be distributed.
+    ///     Filters are evaluated in order of their <see cref="IEventRoutingFilter.Order"/> property.
+    /// </summary>
+    /// <typeparam name="TEventRoutingFilter">
+    ///     The type of the routing filter to register. Must implement <see cref="IEventRoutingFilter"/>.
+    /// </typeparam>
+    /// <returns>
+    ///     The current instance of <see cref="IMediatorConfig"/>, enabling method chaining.
+    /// </returns>
+    /// <remarks>
+    ///     Multiple routing filters can be registered. They will be evaluated in ascending order
+    ///     of their Order property. The first filter that returns a non-null distribution mode
+    ///     determines how the event is routed.
+    /// </remarks>
+    IMediatorConfig RegisterEventRoutingFilter<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+        TEventRoutingFilter>()
+        where TEventRoutingFilter : class, IEventRoutingFilter;
+
+    /// <summary>
+    ///     Registers event dispatcher delegates using a generated registration class.
+    ///     This is typically used with source-generated IEventDispatcherRegistration implementations
+    ///     for NativeAOT compatibility.
+    /// </summary>
+    /// <typeparam name="TRegistration">
+    ///     The type of the registration class. Must implement <see cref="IEventDispatcherRegistration"/>.
+    /// </typeparam>
+    /// <returns>
+    ///     The current instance of <see cref="IMediatorConfig"/>, enabling method chaining.
+    /// </returns>
+    /// <remarks>
+    ///     This method should be called with the generated EventDispatcherRegistration class
+    ///     to register typed dispatcher delegates for all event types, avoiding reflection
+    ///     during outbox replay.
+    /// </remarks>
+    IMediatorConfig UseEventDispatcherRegistration<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+        TRegistration>()
+        where TRegistration : class, IEventDispatcherRegistration, new();
 
     /// <summary>
     ///     Applies the current configuration to set up the mediator with the provided services and options.

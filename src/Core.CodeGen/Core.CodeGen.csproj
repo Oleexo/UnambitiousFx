@@ -1,117 +1,115 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <TargetFramework>net9.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <IsPackable>false</IsPackable>
-    </PropertyGroup>
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-            <_Parameter1>UnambitiousFx.Core.Tests</_Parameter1>
-        </AssemblyAttribute>
-    </ItemGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>UnambitiousFx.Core.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
 
-    <ItemGroup>
-        <Compile Remove="src\Core\Results\Extensions\Validations\ResultEnsureExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\Transformations\ValueTasks\ResultZipExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\Transformations\ValueTasks\ResultTryExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\Transformations\ValueTasks\ResultThenExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\Transformations\ValueTasks\ResultMapExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\Transformations\ValueTasks\ResultFlattenExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\Transformations\Tasks\ResultZipExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\Transformations\Tasks\ResultTryExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\Transformations\Tasks\ResultThenExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\Transformations\Tasks\ResultMapExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\Transformations\ResultTryExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\Transformations\ResultThenExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\Transformations\ResultMapExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\Transformations\ResultFlattenExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\Transformations\ResultBindExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\SideEffects\ValueTasks\ResultTapExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\SideEffects\ValueTasks\ResultTapErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\SideEffects\Tasks\ResultTapExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\SideEffects\Tasks\ResultTapErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\SideEffects\ResultTapExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\SideEffects\ResultTapErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\SideEffects\ResultTapBothExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ValueTasks\ResultShapeErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ValueTasks\ResultRecoveryExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ValueTasks\ResultPrependErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ValueTasks\ResultMatchErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ValueTasks\ResultMapErrorsExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ValueTasks\ResultMapErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ValueTasks\ResultHasExceptionExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ValueTasks\ResultHasErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ValueTasks\ResultFindErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ValueTasks\ResultFilterErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ValueTasks\ResultAppendErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\Tasks\ResultShapeErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\Tasks\ResultRecoveryExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\Tasks\ResultPrependErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\Tasks\ResultMatchErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\Tasks\ResultMapErrorsExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\Tasks\ResultMapErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\Tasks\ResultHasExceptionExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\Tasks\ResultHasErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\Tasks\ResultFindErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\Tasks\ResultFilterErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\Tasks\ResultAppendErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ResultShapeErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ResultRecoveryExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ResultPrependErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ResultMatchErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ResultMapErrorsExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ResultMapErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ResultHasExceptionExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ResultHasErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ResultFindErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ResultFilterErrorExtensions.g.cs" />
-        <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ResultAccumulateExtensions.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.8.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.8.Third.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.8.Sixth.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.8.Seventh.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.8.Second.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.8.Fourth.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.8.First.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.8.Fifth.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.8.Eighth.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.7.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.7.Third.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.7.Sixth.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.7.Seventh.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.7.Second.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.7.Fourth.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.7.First.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.7.Fifth.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.6.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.6.Third.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.6.Sixth.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.6.Second.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.6.First.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.5.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.5.Third.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.5.Second.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.5.First.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.5.Fifth.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.4.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.4.Third.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.4.Second.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.4.Fourth.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.4.First.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.3.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.3.Third.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.3.Second.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.3.First.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.2.g.cs" />
-        <Compile Remove="src\Core\OneOf\OneOf.2.Second.g.cs" />
-    </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="src\Core\Results\Extensions\Validations\ResultEnsureExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\Transformations\ValueTasks\ResultZipExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\Transformations\ValueTasks\ResultTryExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\Transformations\ValueTasks\ResultThenExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\Transformations\ValueTasks\ResultMapExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\Transformations\ValueTasks\ResultFlattenExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\Transformations\Tasks\ResultZipExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\Transformations\Tasks\ResultTryExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\Transformations\Tasks\ResultThenExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\Transformations\Tasks\ResultMapExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\Transformations\ResultTryExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\Transformations\ResultThenExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\Transformations\ResultMapExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\Transformations\ResultFlattenExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\Transformations\ResultBindExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\SideEffects\ValueTasks\ResultTapExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\SideEffects\ValueTasks\ResultTapErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\SideEffects\Tasks\ResultTapExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\SideEffects\Tasks\ResultTapErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\SideEffects\ResultTapExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\SideEffects\ResultTapErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\SideEffects\ResultTapBothExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ValueTasks\ResultShapeErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ValueTasks\ResultRecoveryExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ValueTasks\ResultPrependErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ValueTasks\ResultMatchErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ValueTasks\ResultMapErrorsExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ValueTasks\ResultMapErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ValueTasks\ResultHasExceptionExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ValueTasks\ResultHasErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ValueTasks\ResultFindErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ValueTasks\ResultFilterErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ValueTasks\ResultAppendErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\Tasks\ResultShapeErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\Tasks\ResultRecoveryExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\Tasks\ResultPrependErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\Tasks\ResultMatchErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\Tasks\ResultMapErrorsExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\Tasks\ResultMapErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\Tasks\ResultHasExceptionExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\Tasks\ResultHasErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\Tasks\ResultFindErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\Tasks\ResultFilterErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\Tasks\ResultAppendErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ResultShapeErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ResultRecoveryExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ResultPrependErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ResultMatchErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ResultMapErrorsExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ResultMapErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ResultHasExceptionExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ResultHasErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ResultFindErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ResultFilterErrorExtensions.g.cs" />
+    <Compile Remove="src\Core\Results\Extensions\ErrorHandling\ResultAccumulateExtensions.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.8.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.8.Third.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.8.Sixth.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.8.Seventh.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.8.Second.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.8.Fourth.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.8.First.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.8.Fifth.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.8.Eighth.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.7.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.7.Third.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.7.Sixth.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.7.Seventh.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.7.Second.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.7.Fourth.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.7.First.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.7.Fifth.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.6.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.6.Third.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.6.Sixth.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.6.Second.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.6.First.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.5.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.5.Third.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.5.Second.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.5.First.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.5.Fifth.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.4.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.4.Third.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.4.Second.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.4.Fourth.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.4.First.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.3.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.3.Third.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.3.Second.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.3.First.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.2.g.cs" />
+    <Compile Remove="src\Core\OneOf\OneOf.2.Second.g.cs" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Core.CodeGen.Design\Core.CodeGen.Design.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core.CodeGen.Design\Core.CodeGen.Design.csproj" />
+  </ItemGroup>
 
 </Project>

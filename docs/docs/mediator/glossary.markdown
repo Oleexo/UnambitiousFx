@@ -43,7 +43,27 @@ A compact reference for the core concepts and types used in UnambitiousFx.Mediat
 
 - IPublisher
   - The service responsible for publishing events. Obtain via DI; most app code publishes via a context (see `IContext`).
-  - See: Publish an event.
+  - See: Publish an event, Unified event dispatching.
+
+- Distribution Mode
+  - Determines how events are processed: LocalOnly (local handlers only), ExternalOnly (external transport only), or Hybrid (both local and external).
+  - Configured via `[DistributedEvent]` attribute, routing filters, or default configuration.
+  - See: Unified event dispatching.
+
+- Dispatch Strategy
+  - Controls when and how events are processed: Immediate (synchronous), Deferred (background processing), or Batched (accumulated processing).
+  - Configured in `EventDispatcherOptions`.
+  - See: Unified event dispatching.
+
+- Event Routing Filter
+  - Custom logic implementing `IEventRoutingFilter` that determines distribution mode for events based on runtime conditions (tenant, feature flags, etc.).
+  - Filters are evaluated in order before falling back to message traits or defaults.
+  - See: Unified event dispatching.
+
+- Outbox Pattern
+  - Reliability pattern that stores events in a transient store before dispatching to ensure at-least-once delivery with automatic retry and dead-letter handling.
+  - Integrated into the unified event dispatching system.
+  - See: Unified event dispatching.
 
 - IContext / IContextFactory / IContextAccessor
   - Ambient context used by the mediator to carry ephemeral information and to publish events during request processing.

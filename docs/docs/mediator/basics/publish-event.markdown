@@ -166,3 +166,14 @@ UnambitiousFx.Mediator's event system can be used as a foundation for event-driv
 - **Event Sourcing**: Store and replay events to reconstruct the state of your application
 
 By leveraging events effectively, you can build more maintainable and scalable applications with clear separation of concerns.
+
+## Advanced Event Dispatching
+
+For more advanced scenarios including distributed event publishing, custom routing filters, and outbox pattern integration, see the [Unified Event Dispatching](../advanced/unified-event-dispatching.html) guide.
+
+Key advanced features:
+- **Distribution Modes**: LocalOnly, ExternalOnly, and Hybrid event processing
+- **Dispatch Strategies**: Immediate, Deferred, and Batched processing
+- **Custom Routing Filters**: Dynamic routing based on runtime conditions
+- **Integrated Outbox**: Built-in reliability with automatic retry and dead-letter handling
+- **Observability**: Comprehensive tracing and metrics

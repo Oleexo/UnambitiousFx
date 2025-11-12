@@ -1,9 +1,13 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Metrics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using UnambitiousFx.Mediator.Abstractions;
 using UnambitiousFx.Mediator.Pipelines;
 using UnambitiousFx.Mediator.Resolvers;
+using UnambitiousFx.Mediator.Transports.Abstractions;
+using UnambitiousFx.Mediator.Transports.Observability;
+using UnambitiousFx.Mediator.Transports.Outbox;
 
 namespace UnambitiousFx.Mediator;
 
@@ -26,6 +30,7 @@ public static class DependencyInjectionExtensions
         configure(cfg);
         cfg.Apply();
         services.TryAddScoped<IDependencyResolver, DefaultDependencyResolver>();
+        services.TryAddScoped<OutboxManager>();
         services.TryAddScoped<IEventDispatcher, EventDispatcher>();
         services.TryAddScoped<ISender, Sender>();
         services.TryAddScoped<IPublisher, Publisher>();
@@ -37,6 +42,16 @@ public static class DependencyInjectionExtensions
         });
         services.AddScoped<IContext>(sp => sp.GetRequiredService<IContextAccessor>()
             .Context);
+        
+        // Register metrics as singleton
+        services.TryAddSingleton(sp =>
+        {
+            var meterFactory = sp.GetRequiredService<IMeterFactory>();
+            var distributedOutboxStorage = sp.GetService<IDistributedOutboxStorage>();
+            var eventOutboxStorage = sp.GetService<IEventOutboxStorage>();
+            return new MediatorMetrics(meterFactory, distributedOutboxStorage, eventOutboxStorage);
+        });
+        
         return services;
     }
 
