@@ -1,0 +1,73 @@
+// This file shows how to configure RabbitMQ transport instead of InMemory
+// To use this:
+// 1. Add package reference: <PackageReference Include="UnambitiousFx.Mediator.Transports.RabbitMQ" />
+// 2. Replace the EnableDistributedMessaging configuration in Program.cs with this code
+// 3. Ensure RabbitMQ is running (docker run -d -p 5672:5672 -p 15672:15672 rabbitmq:3-management)
+
+using UnambitiousFx.Mediator.Transports.RabbitMQ.DependencyInjection;
+
+// In your Program.cs, replace the EnableDistributedMessaging section with:
+
+cfg.EnableDistributedMessaging(messaging =>
+{
+    // Configure which events are external (sent through transport)
+    messaging.ConfigureEvent<OrderShipped>(opts => opts
+        .AsExternal()
+        .WithTopic("orders.shipped")
+        .WithRetryPolicy(maxAttempts: 3, retryDelay: TimeSpan.FromSeconds(5)));
+
+    messaging.ConfigureEvent<PaymentProcessed>(opts => opts
+        .AsExternal()
+        .WithTopic("payments.processed")
+        .WithRetryPolicy(maxAttempts: 3, retryDelay: TimeSpan.FromSeconds(5)));
+
+    messaging.ConfigureEvent<InventoryUpdated>(opts => opts
+        .AsExternal()
+        .WithTopic("inventory.updated")
+        .WithRetryPolicy(maxAttempts: 3, retryDelay: TimeSpan.FromSeconds(5)));
+
+    // Local events (not sent through transport)
+    messaging.ConfigureEvent<OrderCreated>(opts => opts.AsLocal());
+    messaging.ConfigureEvent<NotificationRequested>(opts => opts.AsLocal());
+    messaging.ConfigureEvent<TodoUpdated>(opts => opts.AsLocal());
+    messaging.ConfigureEvent<TodoDeleted>(opts => opts.AsLocal());
+
+    // Configure RabbitMQ transport
+    messaging.AddRabbitMq(opts =>
+    {
+        opts.HostName = builder.Configuration["RabbitMQ:HostName"] ?? "localhost";
+        opts.Port = builder.Configuration.GetValue<int>("RabbitMQ:Port", 5672);
+        opts.UserName = builder.Configuration["RabbitMQ:UserName"] ?? "guest";
+        opts.Password = builder.Configuration["RabbitMQ:Password"] ?? "guest";
+        opts.VirtualHost = builder.Configuration["RabbitMQ:VirtualHost"] ?? "/";
+        opts.ExchangeName = builder.Configuration["RabbitMQ:ExchangeName"] ?? "mediator-events";
+        opts.ExchangeType = builder.Configuration["RabbitMQ:ExchangeType"] ?? "topic";
+        opts.DurableExchange = builder.Configuration.GetValue<bool>("RabbitMQ:DurableExchange", true);
+        opts.DurableQueues = builder.Configuration.GetValue<bool>("RabbitMQ:DurableQueues", true);
+        opts.AutoDeleteQueues = builder.Configuration.GetValue<bool>("RabbitMQ:AutoDeleteQueues", false);
+    });
+
+    // Subscribe to external events (consume from transport)
+    messaging.Subscribe<OrderShipped>(opts => opts
+        .WithMaxConcurrency(10)
+        .WithRetryPolicy(maxAttempts: 3, retryDelay: TimeSpan.FromSeconds(5)));
+
+    messaging.Subscribe<PaymentProcessed>(opts => opts
+        .WithMaxConcurrency(10)
+        .WithRetryPolicy(maxAttempts: 3, retryDelay: TimeSpan.FromSeconds(5)));
+
+    messaging.Subscribe<InventoryUpdated>(opts => opts
+        .WithMaxConcurrency(5)
+        .WithRetryPolicy(maxAttempts: 3, retryDelay: TimeSpan.FromSeconds(5)));
+});
+
+// To run RabbitMQ with Docker:
+// docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+//
+// Access RabbitMQ Management UI at: http://localhost:15672
+// Default credentials: guest/guest
+//
+// To see messages flowing:
+// 1. Start the application
+// 2. Send requests using TransportExamples.http
+// 3. Check RabbitMQ Management UI to see exchanges, queues, and messages

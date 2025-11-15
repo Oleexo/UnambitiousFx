@@ -1,38 +1,36 @@
+using System.Runtime.CompilerServices;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 using UnambitiousFx.Mediator.Resolvers;
 
 namespace UnambitiousFx.Mediator;
 
-internal sealed class Sender : ISender {
-    private readonly IContextFactory     _contextFactory;
-    private readonly IDependencyResolver _resolver;
-
-    public Sender(IDependencyResolver resolver,
-                  IContextFactory     contextFactory) {
-        _resolver       = resolver;
-        _contextFactory = contextFactory;
-    }
-
-    public ValueTask<Result<TResponse>> SendAsync<TRequest, TResponse>(TRequest          request,
-                                                                       CancellationToken cancellationToken = default)
+internal sealed class Sender(IDependencyResolver resolver) : ISender
+{
+    public ValueTask<Result<TResponse>> SendAsync<TRequest, TResponse>(TRequest request,
+        CancellationToken cancellationToken = default)
         where TResponse : notnull
-        where TRequest : IRequest<TResponse> {
-        return _resolver.GetService<IRequestHandler<TRequest, TResponse>>()
-                        .Match(handler => {
-                             var ctx = _contextFactory.Create();
-                             return handler.HandleAsync(ctx, request, cancellationToken);
-                         }, () => throw new MissingHandlerException(typeof(IRequestHandler<TRequest, TResponse>)));
+        where TRequest : IRequest<TResponse>
+    {
+        var handler = resolver.GetRequiredService<IRequestHandler<TRequest, TResponse>>();
+        return handler.HandleAsync(request, cancellationToken);
     }
 
-    public ValueTask<Result> SendAsync<TRequest>(TRequest          request,
-                                                 CancellationToken cancellationToken = default)
-        where TRequest : IRequest {
-        return _resolver.GetService<IRequestHandler<TRequest>>()
-                        .Match(handler => {
-                                   var ctx = _contextFactory.Create();
-                                   return handler.HandleAsync(ctx, request, cancellationToken);
-                               },
-                               () => throw new MissingHandlerException(typeof(IRequestHandler<TRequest>)));
+    public ValueTask<Result> SendAsync<TRequest>(TRequest request,
+        CancellationToken cancellationToken = default)
+        where TRequest : IRequest
+    {
+        var handler = resolver.GetRequiredService<IRequestHandler<TRequest>>();
+        var result = handler.HandleAsync(request, cancellationToken);
+        return result;
+    }
+
+    public async IAsyncEnumerable<Result<TItem>> SendStreamAsync<TRequest, TItem>(TRequest request,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        where TRequest : IStreamRequest<TItem>
+        where TItem : notnull
+    {
+        var handler = resolver.GetRequiredService<IStreamRequestHandler<TRequest, TItem>>();
+        await foreach (var item in handler.HandleAsync(request, cancellationToken)) yield return item;
     }
 }

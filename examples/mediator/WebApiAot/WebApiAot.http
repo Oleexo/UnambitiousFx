@@ -1,6 +1,8 @@
-@WebApiAot_HostAddress = http://localhost:5225
+@baseUrl = http://localhost:5225
 
-GET {{WebApiAot_HostAddress}}/todos/
+### ===== Todo Examples =====
+
+GET {{baseUrl}}/todos/
 Accept: application/json
 
 > {%
@@ -13,7 +15,7 @@ Accept: application/json
 
 ###
 
-POST {{WebApiAot_HostAddress}}/todos/
+POST {{baseUrl}}/todos/
 Accept: application/json
 Content-Type: application/json
 
@@ -39,7 +41,7 @@ Content-Type: application/json
 
 ###
 
-GET {{WebApiAot_HostAddress}}/todos/{{todoId}}
+GET {{baseUrl}}/todos/{{todoId}}
 Accept: application/json
 
 > {%
@@ -52,7 +54,7 @@ Accept: application/json
 
 ###
 
-PUT {{WebApiAot_HostAddress}}/todos/{{todoId}}
+PUT {{baseUrl}}/todos/{{todoId}}
 Accept: application/json
 Content-Type: application/json
 
@@ -68,7 +70,7 @@ Content-Type: application/json
 
 ###
 
-GET {{WebApiAot_HostAddress}}/todos/
+GET {{baseUrl}}/todos/
 Accept: application/json
 
 > {%
@@ -87,3 +89,179 @@ Accept: application/json
 
 
 
+
+DELETE {{baseUrl}}/todos/{{todoId}}
+Accept: application/json
+
+> {%
+    client.test("Delete todo response", function () {
+        client.assert(response.status === 200, "Response status is OK");
+    });
+%}
+
+###
+
+### ===== Transport Examples - Orders =====
+
+### Create Order (triggers LOCAL events: OrderCreated, NotificationRequested)
+POST {{baseUrl}}/orders
+Content-Type: application/json
+
+{
+  "customerName": "John Doe",
+  "totalAmount": 299.99
+}
+
+> {%
+    client.test("Create order response", function () {
+        client.assert(response.status === 201, "Response status is Created");
+        client.assert(response.body.orderId, "Response contains orderId");
+        client.global.set("orderId", response.body.orderId);
+    });
+%}
+
+###
+
+### Ship Order (triggers EXTERNAL event: OrderShipped - sent through transport)
+POST {{baseUrl}}/orders/{{orderId}}/ship
+
+> {%
+    client.test("Ship order response", function () {
+        client.assert(response.status === 200, "Response status is OK");
+        client.assert(response.body.message, "Response contains message");
+    });
+%}
+
+###
+
+### Ship Order - with specific ID
+POST {{baseUrl}}/orders/550e8400-e29b-41d4-a716-446655440000/ship
+
+###
+
+### ===== Transport Examples - Payments =====
+
+### Process Payment (triggers EXTERNAL event: PaymentProcessed - sent through transport)
+POST {{baseUrl}}/payments
+Content-Type: application/json
+
+{
+  "orderId": "{{orderId}}",
+  "amount": 299.99,
+  "paymentMethod": "CreditCard"
+}
+
+> {%
+    client.test("Process payment response", function () {
+        client.assert(response.status === 200, "Response status is OK");
+        client.assert(response.body.message, "Response contains message");
+    });
+%}
+
+###
+
+### Process Payment - PayPal
+POST {{baseUrl}}/payments
+Content-Type: application/json
+
+{
+  "orderId": "550e8400-e29b-41d4-a716-446655440000",
+  "amount": 599.99,
+  "paymentMethod": "PayPal"
+}
+
+###
+
+### ===== Transport Examples - Inventory =====
+
+### Update Inventory - Decrease (triggers EXTERNAL event: InventoryUpdated - sent through transport)
+POST {{baseUrl}}/inventory/660e8400-e29b-41d4-a716-446655440000/update
+Content-Type: application/json
+
+{
+  "quantityChange": -10
+}
+
+> {%
+    client.test("Update inventory response", function () {
+        client.assert(response.status === 200, "Response status is OK");
+        client.assert(response.body.message, "Response contains message");
+    });
+%}
+
+###
+
+### Update Inventory - Increase
+POST {{baseUrl}}/inventory/660e8400-e29b-41d4-a716-446655440000/update
+Content-Type: application/json
+
+{
+  "quantityChange": 50
+}
+
+###
+
+### ===== Complete Workflow Example =====
+
+### Step 1: Create an order (local events)
+POST {{baseUrl}}/orders
+Content-Type: application/json
+
+{
+  "customerName": "Jane Smith",
+  "totalAmount": 599.99
+}
+
+> {%
+    client.test("Workflow - Create order", function () {
+        client.assert(response.status === 201, "Response status is Created");
+        client.global.set("workflowOrderId", response.body.orderId);
+    });
+%}
+
+###
+
+### Step 2: Process payment for the order (external event)
+POST {{baseUrl}}/payments
+Content-Type: application/json
+
+{
+  "orderId": "{{workflowOrderId}}",
+  "amount": 599.99,
+  "paymentMethod": "PayPal"
+}
+
+> {%
+    client.test("Workflow - Process payment", function () {
+        client.assert(response.status === 200, "Response status is OK");
+    });
+%}
+
+###
+
+### Step 3: Update inventory (external event)
+POST {{baseUrl}}/inventory/770e8400-e29b-41d4-a716-446655440000/update
+Content-Type: application/json
+
+{
+  "quantityChange": -1
+}
+
+> {%
+    client.test("Workflow - Update inventory", function () {
+        client.assert(response.status === 200, "Response status is OK");
+    });
+%}
+
+###
+
+### Step 4: Ship the order (external event)
+POST {{baseUrl}}/orders/{{workflowOrderId}}/ship
+
+> {%
+    client.test("Workflow - Ship order", function () {
+        client.assert(response.status === 200, "Response status is OK");
+    });
+%}
+
+###

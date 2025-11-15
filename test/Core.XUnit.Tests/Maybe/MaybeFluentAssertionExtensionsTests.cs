@@ -1,0 +1,40 @@
+using UnambitiousFx.Core.Maybe;
+using UnambitiousFx.Core.XUnit.Fluent;
+
+namespace UnambitiousFx.Core.XUnit.Tests.Maybe;
+
+public sealed class OptionFluentAssertionExtensionsTests
+{
+    [Fact]
+    public void EnsureSome_Chaining()
+    {
+        Maybe<int>.Some(10)
+                  .EnsureSome()
+                  .And(v => Assert.Equal(10, v))
+                  .Map(v => v + 5)
+                  .And(v => Assert.Equal(15, v));
+    }
+
+    [Fact]
+    public void EnsureNone_Chaining()
+    {
+        Maybe<string>.None()
+                     .EnsureNone()
+                     .And(() => Assert.True(true));
+    }
+
+    [Fact]
+    public async Task Async_Task_EnsureSome()
+    {
+        var assertion = await Task.FromResult(Maybe<int>.Some(7))
+                                  .EnsureSome();
+        assertion.And(v => Assert.Equal(7, v));
+    }
+
+    [Fact]
+    public async Task Async_ValueTask_EnsureNone()
+    {
+        var assertion = await new ValueTask<Maybe<int>>(Maybe<int>.None()).EnsureNone();
+        assertion.And(() => Assert.True(true));
+    }
+}

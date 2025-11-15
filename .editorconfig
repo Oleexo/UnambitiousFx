@@ -1,0 +1,25 @@
+# Editor configuration, see https://editorconfig.org
+
+# This is the top-most EditorConfig file.
+root = true
+
+# Default settings
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Project files
+[*.{csproj,props,targets}]
+indent_size = 2
+space_before_self_closing = true
+ij_xml_space_inside_empty_tag = true
+
+[*.{yml,yaml}]
+indent_size = 2
+
+[*.md]
+max_line_length = off
+trim_trailing_whitespace = false

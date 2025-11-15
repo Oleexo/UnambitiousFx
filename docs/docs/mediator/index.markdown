@@ -8,44 +8,64 @@ has_children: true
 
 # Mediator
 
-UnambitiousFx.Mediator is a lightweight implementation of the mediator pattern for .NET applications. It facilitates loose coupling between components by providing a central communication mechanism.
+UnambitiousFx.Mediator is a lightweight, AOT-friendly mediator for .NET. It helps you decouple application logic by sending requests to handlers through a single abstraction, and it supports events and pipelines for cross‑cutting concerns.
 
-## Overview
+## Quick start
 
-The mediator pattern is a behavioral design pattern that reduces coupling between components by having them communicate indirectly through a mediator object. UnambitiousFx.Mediator implements this pattern with a focus on:
+This is the minimum you need: a request, its handler, and registration in DI.
 
-- **Simplicity**: Clean, intuitive API that's easy to understand and use
-- **Flexibility**: Support for both request/response and event-based communication
-- **Performance**: Optimized for high-performance scenarios, including Native AOT compatibility
-- **Extensibility**: Pipeline behaviors for cross-cutting concerns like logging, validation, and error handling
+### 1) Define a request
+```csharp
+using UnambitiousFx.Mediator.Abstractions;
 
-## Key Concepts
+public sealed record GetTodoByIdQuery(Guid Id) : IRequest<Todo>;
+```
 
-### Requests and Handlers
+### 2) Implement the handler
+```csharp
+using UnambitiousFx.Core.Results;
+using UnambitiousFx.Mediator.Abstractions;
 
-Requests represent operations that should be performed by the application. They can be:
+public sealed class GetTodoByIdQueryHandler : IRequestHandler<GetTodoByIdQuery, Todo>
+{
+    private readonly ITodoRepository _repo;
 
-- **Commands**: Requests that change state and may not return a value
-- **Queries**: Requests that retrieve data without changing state
+    public GetTodoByIdQueryHandler(ITodoRepository repo) => _repo = repo;
 
-Each request has a corresponding handler that contains the logic to process the request.
+    public async ValueTask<Result<Todo>> HandleAsync(
+        GetTodoByIdQuery request,
+        CancellationToken cancellationToken = default)
+    {
+        var todo = await _repo.GetByIdAsync(request.Id, cancellationToken);
+        return todo is not null
+            ? Result.Success(todo)
+            : Result.Failure<Todo>("Todo not found");
+    }
+}
+```
 
-### Events and Handlers
+### 3) Register mediator and the handler in DI
+```csharp
+using Microsoft.Extensions.DependencyInjection;
+using UnambitiousFx.Mediator;
 
-Events represent notifications that something has happened. They are published by components and can be handled by multiple event handlers.
+var services = new ServiceCollection();
 
-### Pipeline Behaviors
+services.AddMediator(config =>
+{
+    // Register the request handler
+    config.RegisterRequestHandler<GetTodoByIdQueryHandler, GetTodoByIdQuery, Todo>();
+});
+```
 
-Pipeline behaviors allow you to add cross-cutting concerns to your request and event processing pipelines, such as logging, validation, and error handling.
+At this point you can inject `ISender` anywhere and call `SendAsync(new GetTodoByIdQuery(id))` to get a `Result<Todo>`.
 
-## Getting Started
-
-To get started with UnambitiousFx.Mediator, follow these guides:
-
-- [Send a request using mediator](./send-request.html)
-- [Publish an event using mediator](./publish-event.html)
-- [Creating a RequestPipelineBehavior](./request-pipeline-behavior.html)
-- [Creating an EventPipelineBehavior](./event-pipeline-behavior.html)
-- [Registering Mediator into dependency injection](./register-mediator.html)
-- [Use Mediator.Generator to facilitate the registering into dependency injection](./mediator-generator.html)
-- **[Mediator Roadmap](./roadmap.html)** - Current features and planned capabilities
+## Further reading
+- Basics — Send a request: ./basics/send-request.html
+- Basics — Publish an event: ./basics/publish-event.html
+- Behaviors — Request pipeline behaviors: ./behaviors/request-pipeline-behavior.html
+- Behaviors — Event pipeline behaviors: ./behaviors/event-pipeline-behavior.html
+- Behaviors — Request validation: ./behaviors/validator.html
+- Basics — Register mediator into DI (all options): ./basics/register-mediator.html
+- Advanced — Source generator to simplify registrations: ./advanced/mediator-generator.html
+- Roadmap: ./roadmap.html

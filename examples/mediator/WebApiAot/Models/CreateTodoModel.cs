@@ -1,5 +1,6 @@
-﻿namespace WebApiAot.Models;
+namespace WebApiAot.Models;
 
-public sealed record CreateTodoModel {
+public sealed record CreateTodoModel
+{
     public required string Name { get; init; }
 }

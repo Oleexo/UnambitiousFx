@@ -1,6 +1,8 @@
 namespace UnambitiousFx.Mediator.Generator;
 
-public enum HandlerType {
+public enum HandlerType
+{
     RequestHandler,
-    EventHandler
+    EventHandler,
+    StreamRequestHandler
 }

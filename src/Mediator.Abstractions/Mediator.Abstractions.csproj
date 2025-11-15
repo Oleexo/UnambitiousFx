@@ -1,11 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
-    </PropertyGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Core\Core.csproj"/>
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\Mediator.Transports.Abstractions\Mediator.Transports.Abstractions.csproj" />
+  </ItemGroup>
 
 </Project>

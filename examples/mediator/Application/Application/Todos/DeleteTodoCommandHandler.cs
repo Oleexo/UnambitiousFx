@@ -1,29 +1,36 @@
-﻿using Application.Domain.Events;
+using Application.Domain.Events;
 using Application.Domain.Repositories;
 using UnambitiousFx.Core.Results;
 using UnambitiousFx.Mediator.Abstractions;
 
 namespace Application.Application.Todos;
 
-public sealed class DeleteTodoCommandHandler : IRequestHandler<DeleteTodoCommand> {
+public sealed class DeleteTodoCommandHandler : IRequestHandler<DeleteTodoCommand>
+{
+    private readonly IContext _context;
     private readonly ITodoRepository _todoRepository;
 
-    public DeleteTodoCommandHandler(ITodoRepository todoRepository) {
+    public DeleteTodoCommandHandler(ITodoRepository todoRepository,
+                                    IContext context)
+    {
         _todoRepository = todoRepository;
+        _context = context;
     }
 
-    public async ValueTask<Result> HandleAsync(IContext          context,
-                                               DeleteTodoCommand request,
-                                               CancellationToken cancellationToken = default) {
+    public async ValueTask<Result> HandleAsync(DeleteTodoCommand request,
+                                               CancellationToken cancellationToken = default)
+    {
         var todoOpt = await _todoRepository.GetAsync(request.Id, cancellationToken);
 
-        if (!todoOpt.Some(out var todo)) {
+        if (!todoOpt.Some(out var todo))
+        {
             return Result.Failure("Not found");
         }
 
         await _todoRepository.DeleteAsync(todo.Id, cancellationToken);
 
-        await context.PublishEventAsync(new TodoDeleted {
+        await _context.PublishEventAsync(new TodoDeleted
+        {
             Todo = todo
         }, cancellationToken);
 

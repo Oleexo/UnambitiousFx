@@ -1,9 +1,10 @@
-﻿namespace UnambitiousFx.Mediator.Abstractions;
+namespace UnambitiousFx.Mediator.Abstractions;
 
 /// <summary>
 ///     Specifies that the event should be published immediately without any delay or queuing mechanism.
 /// </summary>
-public enum PublishMode {
+public enum PublishMode
+{
     /// <summary>
     ///     Represents the default publishing mode for events, determined by the mediator's configuration or system default.
     /// </summary>
